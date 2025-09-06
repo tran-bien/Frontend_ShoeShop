@@ -1,0 +1,11 @@
+/* App.css */
+.App {
+  min-height: 100vh;
+}
+
+/* Global styles for the application */
+* {
+  box-sizing: border-box;
+}
+
+/* Additional app-specific styles can be added here */
