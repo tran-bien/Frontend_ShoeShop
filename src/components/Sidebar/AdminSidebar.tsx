@@ -15,18 +15,21 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaChevronDown, FaBars } from "react-icons/fa";
+import { useAuth } from "../../hooks/useAuth";
 
 interface LinkProps {
   name: string;
   href?: string;
   icon: React.ElementType;
   subLinks?: { name: string; href: string }[];
+  adminOnly?: boolean; // Chỉ admin mới thấy
 }
 
 const AdminSidebar = () => {
   const activeClass = "bg-[#1E304B] border-l-[6px] border-red-500";
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const [isExpanded, setIsExpanded] = useState(window.innerWidth >= 768);
+  const { hasAdminOnlyAccess } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -45,11 +48,17 @@ const AdminSidebar = () => {
   };
 
   const links: LinkProps[] = [
-    { name: "Dashboard", href: "/admin/dashboard", icon: GrDashboard },
+    {
+      name: "Dashboard",
+      href: "/admin/dashboard",
+      icon: GrDashboard,
+      adminOnly: true, // Chỉ admin mới thấy dashboard
+    },
     {
       name: "Users",
       href: "/admin/users",
       icon: GrUser,
+      adminOnly: true, // Chỉ admin mới thấy
       subLinks: [
         { name: "All Users", href: "/admin/users" },
         //{ name: "Add User", href: "/admin/users/add" },
@@ -74,8 +83,21 @@ const AdminSidebar = () => {
       href: "/admin/products/discount",
       icon: FaGift,
     },
-    { name: "Settings", href: "/admin/settings", icon: GrSettingsOption },
+    {
+      name: "Settings",
+      href: "/admin/settings",
+      icon: GrSettingsOption,
+      adminOnly: true, // Chỉ admin mới thấy
+    },
   ];
+
+  // Lọc menu items theo quyền
+  const filteredLinks = links.filter((link) => {
+    if (link.adminOnly) {
+      return hasAdminOnlyAccess();
+    }
+    return true;
+  });
 
   const { pathname } = useLocation();
 
@@ -94,7 +116,7 @@ const AdminSidebar = () => {
         <p className={`${isExpanded ? "block" : "hidden"}`}>Menu</p>
       </button>
       <div className="flex flex-col gap-2">
-        {links.map((link, index) => (
+        {filteredLinks.map((link, index) => (
           <div key={index}>
             <div className="flex items-center justify-between transition-all duration-300 hover:bg-[#1E304B]">
               <Link

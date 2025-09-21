@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { colorApi } from "../../../services/ColorService";
 import AddColor from "./AddColor";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface Color {
   _id: string;
@@ -157,6 +158,7 @@ const EditColorModal: React.FC<{
 };
 
 const ColorPage: React.FC = () => {
+  const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
   const [showAddColor, setShowAddColor] = useState(false);
   const [showEditColor, setShowEditColor] = useState<Color | null>(null);
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
@@ -285,7 +287,7 @@ const ColorPage: React.FC = () => {
         >
           Màu đã xóa
         </button>
-        {!showDeleted && (
+        {!showDeleted && canCreate() && (
           <button
             className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
             onClick={() => setShowAddColor(true)}
@@ -384,26 +386,32 @@ const ColorPage: React.FC = () => {
                   <div className="flex flex-col gap-2 min-w-[120px]">
                     {!showDeleted ? (
                       <>
-                        <button
-                          onClick={() => setShowEditColor(color)}
-                          className="inline-flex items-center justify-center bg-gray-400 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          onClick={() => handleDeleteColor(color._id)}
-                          className="inline-flex items-center justify-center bg-gray-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Xóa
-                        </button>
+                        {canUpdate() && (
+                          <button
+                            onClick={() => setShowEditColor(color)}
+                            className="inline-flex items-center justify-center bg-gray-400 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Sửa
+                          </button>
+                        )}
+                        {canDelete() && (
+                          <button
+                            onClick={() => handleDeleteColor(color._id)}
+                            className="inline-flex items-center justify-center bg-gray-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Xóa
+                          </button>
+                        )}
                       </>
                     ) : (
-                      <button
-                        onClick={() => handleRestoreColor(color._id)}
-                        className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                      >
-                        Khôi phục
-                      </button>
+                      canUpdate() && (
+                        <button
+                          onClick={() => handleRestoreColor(color._id)}
+                          className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                        >
+                          Khôi phục
+                        </button>
+                      )
                     )}
                   </div>
                 </td>

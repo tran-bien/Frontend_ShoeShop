@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { sizeApi } from "../../../services/Size";
 import AddSize from "./AddSixe";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface Size {
   _id: string;
@@ -101,6 +102,7 @@ const EditSizeModal: React.FC<{
 };
 
 const SizePage: React.FC = () => {
+  const { canDelete, canCreate, canUpdate } = useAuth();
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sizes, setSizes] = useState<Size[]>([]);
@@ -230,7 +232,7 @@ const SizePage: React.FC = () => {
         >
           Size đã xóa
         </button>
-        {!showDeleted && (
+        {!showDeleted && canCreate() && (
           <button
             className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
             onClick={() => setShowAddSize(true)}
@@ -289,26 +291,32 @@ const SizePage: React.FC = () => {
                   <div className="flex flex-col gap-2 min-w-[120px]">
                     {!showDeleted ? (
                       <>
-                        <button
-                          onClick={() => setEditingSize(size)}
-                          className="inline-flex items-center justify-center bg-gray-400 hover:bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          onClick={() => handleDeleteSize(size._id)}
-                          className="inline-flex items-center justify-center bg-gray-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Xóa
-                        </button>
+                        {canUpdate() && (
+                          <button
+                            onClick={() => setEditingSize(size)}
+                            className="inline-flex items-center justify-center bg-gray-400 hover:bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Sửa
+                          </button>
+                        )}
+                        {canDelete() && (
+                          <button
+                            onClick={() => handleDeleteSize(size._id)}
+                            className="inline-flex items-center justify-center bg-gray-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Xóa
+                          </button>
+                        )}
                       </>
                     ) : (
-                      <button
-                        onClick={() => handleRestoreSize(size._id)}
-                        className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-2 py-1 rounded-full shadow-sm transition-all"
-                      >
-                        Khôi phục
-                      </button>
+                      canUpdate() && (
+                        <button
+                          onClick={() => handleRestoreSize(size._id)}
+                          className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-2 py-1 rounded-full shadow-sm transition-all"
+                        >
+                          Khôi phục
+                        </button>
+                      )
                     )}
                   </div>
                 </td>

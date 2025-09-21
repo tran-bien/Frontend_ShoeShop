@@ -5,8 +5,10 @@ import { categoryApi } from "../../../services/CategoryService";
 import { Product } from "../../../model/Product";
 import AddProduct from "./AddProduct";
 import ProductDetail from "./ProductDetail";
+import { useAuth } from "../../../hooks/useAuth";
 
 const ProductPage = () => {
+  const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -215,7 +217,7 @@ const ProductPage = () => {
         >
           Sản phẩm đã xóa
         </button>
-        {!showDeleted && (
+        {!showDeleted && canCreate() && (
           <button
             className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
             onClick={() => openModal("add")}
@@ -269,7 +271,7 @@ const ProductPage = () => {
                         : "0 VND"}
                     </td>
                     <td className="px-4 py-3 text-center">
-                      {!showDeleted && (
+                      {!showDeleted && canToggleStatus() && (
                         <button
                           type="button"
                           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold focus:outline-none transition ${
@@ -283,16 +285,30 @@ const ProductPage = () => {
                           {isActive ? "Đang bán" : "Ẩn"}
                         </button>
                       )}
+                      {!showDeleted && !canToggleStatus() && (
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                            isActive
+                              ? "bg-green-100 text-green-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {isActive ? "Đang bán" : "Ẩn"}
+                        </span>
+                      )}
                     </td>
                     <td
-                      className="px-4 py-3 text-center select-none cursor-pointer"
+                      className={`px-4 py-3 text-center select-none ${
+                        canUpdate() ? "cursor-pointer" : ""
+                      }`}
                       title={
-                        !showDeleted
+                        !showDeleted && canUpdate()
                           ? "Nhấn để cập nhật trạng thái tồn kho"
                           : ""
                       }
                       onClick={() => {
-                        if (!showDeleted) handleUpdateStockStatus(product);
+                        if (!showDeleted && canUpdate())
+                          handleUpdateStockStatus(product);
                       }}
                     >
                       {
@@ -318,18 +334,22 @@ const ProductPage = () => {
                     <td className="px-4 py-3 flex gap-2 justify-center">
                       {!showDeleted ? (
                         <>
-                          <button
-                            className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
-                            onClick={() => openModal("edit", product)}
-                          >
-                            Sửa
-                          </button>
-                          <button
-                            className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
-                            onClick={() => openModal("delete", product)}
-                          >
-                            Xóa
-                          </button>
+                          {canUpdate() && (
+                            <button
+                              className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
+                              onClick={() => openModal("edit", product)}
+                            >
+                              Sửa
+                            </button>
+                          )}
+                          {canDelete() && (
+                            <button
+                              className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
+                              onClick={() => openModal("delete", product)}
+                            >
+                              Xóa
+                            </button>
+                          )}
                           <button
                             className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
                             onClick={() => openModal("detail", product)}
@@ -338,12 +358,14 @@ const ProductPage = () => {
                           </button>
                         </>
                       ) : (
-                        <button
-                          className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs"
-                          onClick={() => handleRestore(product._id)}
-                        >
-                          Khôi phục
-                        </button>
+                        canUpdate() && (
+                          <button
+                            className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs"
+                            onClick={() => handleRestore(product._id)}
+                          >
+                            Khôi phục
+                          </button>
+                        )
                       )}
                     </td>
                   </tr>

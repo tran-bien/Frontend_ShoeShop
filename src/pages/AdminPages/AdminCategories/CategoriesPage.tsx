@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { categoryApi } from "../../../services/CategoryService";
 import AddCategoryPage from "./AddCategories";
+import { useAuth } from "../../../hooks/useAuth";
 
 // Định nghĩa lại interface cho đúng với dữ liệu backend trả về
 interface Category {
@@ -106,6 +107,7 @@ const EditCategoryModal: React.FC<{
 };
 
 const ListCategoriesPage: React.FC = () => {
+  const { canCreate, canUpdate, canDelete, canToggleStatus } = useAuth();
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -247,7 +249,7 @@ const ListCategoriesPage: React.FC = () => {
         >
           Danh mục đã xóa
         </button>
-        {!showDeleted && (
+        {!showDeleted && canCreate() && (
           <button
             className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
             onClick={() => setShowAddCategory(true)}
@@ -314,38 +316,49 @@ const ListCategoriesPage: React.FC = () => {
                   <div className="flex flex-col gap-2 min-w-[120px]">
                     {!showDeleted ? (
                       <>
-                        <button
-                          onClick={() => setEditingCategory(category)}
-                          className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          onClick={() => handleDeleteCategory(category._id)}
-                          className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Xóa
-                        </button>
-                        <button
-                          className={`inline-flex items-center justify-center text-xs px-3 py-1 rounded-full shadow-sm transition-all ${
-                            category.isActive
-                              ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                              : "bg-gray-400 hover:bg-gray-500 text-white"
-                          }`}
-                          onClick={() =>
-                            handleUpdateStatus(category._id, !category.isActive)
-                          }
-                        >
-                          {category.isActive ? "Tắt hoạt động" : "Kích hoạt"}
-                        </button>
+                        {canUpdate() && (
+                          <button
+                            onClick={() => setEditingCategory(category)}
+                            className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Sửa
+                          </button>
+                        )}
+                        {canDelete() && (
+                          <button
+                            onClick={() => handleDeleteCategory(category._id)}
+                            className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Xóa
+                          </button>
+                        )}
+                        {canToggleStatus() && (
+                          <button
+                            className={`inline-flex items-center justify-center text-xs px-3 py-1 rounded-full shadow-sm transition-all ${
+                              category.isActive
+                                ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                                : "bg-gray-400 hover:bg-gray-500 text-white"
+                            }`}
+                            onClick={() =>
+                              handleUpdateStatus(
+                                category._id,
+                                !category.isActive
+                              )
+                            }
+                          >
+                            {category.isActive ? "Tắt hoạt động" : "Kích hoạt"}
+                          </button>
+                        )}
                       </>
                     ) : (
-                      <button
-                        onClick={() => handleRestoreCategory(category._id)}
-                        className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                      >
-                        Khôi phục
-                      </button>
+                      canUpdate() && (
+                        <button
+                          onClick={() => handleRestoreCategory(category._id)}
+                          className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                        >
+                          Khôi phục
+                        </button>
+                      )
                     )}
                   </div>
                 </td>

@@ -28,6 +28,7 @@ import SizePage from "../pages/AdminPages/SizePage/SizePage";
 import PaymentStatusPage from "../pages/OrderConfirmationPage/PaymentStatusPage";
 import VariantPage from "../pages/AdminPages/VariantPage/VariantPage";
 import AuthGuard from "../components/Auth/AuthGuard";
+import UnauthorizedPage from "../pages/UnauthorizedPage/UnauthorizedPage";
 import CouponsPage from "../pages/MainPages/Coupons/Coupons";
 import ResetPasswordPage from "../pages/AuthPages/ResetPasswordPage";
 import UserChangePasswordPage from "../pages/MainPages/UserPage/UserChangePasswordPage";
@@ -42,27 +43,52 @@ const AppRouter = () => {
       <Route path="/otp-verification" element={<OTPVerificationPage />} />
       <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+      <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
       {/* Admin routes - sử dụng AdminLayout */}
       <Route
         path="/admin/*"
         element={
-          <AuthGuard adminOnly>
+          <AuthGuard requireStaff>
             <AdminLayout />
           </AuthGuard>
         }
       >
-        <Route path="" element={<Dashboard />} />
-        <Route path="dashboard" element={<Dashboard />} />
+        {/* Routes cho Staff và Admin */}
         <Route path="products" element={<ProductPage />} />
         <Route path="products/discount" element={<DiscountPage />} />
         <Route path="products/variants" element={<VariantPage />} />
-        <Route path="users" element={<ListCustomerPage />} />
         <Route path="categories" element={<ListCategoriesPage />} />
         <Route path="brand" element={<BrandPage />} />
         <Route path="color" element={<ColorPage />} />
         <Route path="size" element={<SizePage />} />
         <Route path="orders" element={<ListOrderPage />} />
+
+        {/* Routes chỉ dành cho Admin */}
+        <Route
+          path=""
+          element={
+            <AuthGuard requireAdminOnly>
+              <Dashboard />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="dashboard"
+          element={
+            <AuthGuard requireAdminOnly>
+              <Dashboard />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="users"
+          element={
+            <AuthGuard requireAdminOnly>
+              <ListCustomerPage />
+            </AuthGuard>
+          }
+        />
       </Route>
 
       {/* Main layout routes - sử dụng MainLayout với MainNavbar */}

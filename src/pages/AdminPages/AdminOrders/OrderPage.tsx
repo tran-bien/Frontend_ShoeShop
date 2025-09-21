@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { adminOrderService } from "../../../services/OrderServiceV2";
 import CancelRequestList from "./CancelRequestList";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface Order {
   _id: string;
@@ -16,6 +17,7 @@ interface Order {
 }
 
 const ListOrderPage: React.FC = () => {
+  const { canProcessOrders } = useAuth();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [paymentFilter, setPaymentFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
@@ -299,28 +301,34 @@ const ListOrderPage: React.FC = () => {
                           >
                             Xem chi tiết
                           </button>
-                          <select
-                            className="py-1 px-2 border rounded-full text-xs w-32"
-                            value=""
-                            onChange={(e) => {
-                              let statusRaw = e.target.value;
-                              if (statusRaw)
-                                handleUpdateOrderStatus(order._id, statusRaw);
-                            }}
-                          >
-                            <option value="">Chọn trạng thái</option>
-                            {order.orderStatusRaw === "pending" && (
-                              <option value="confirmed">Đã xác nhận</option>
-                            )}
-                            {order.orderStatusRaw === "confirmed" && (
-                              <option value="shipping">Đang giao hàng</option>
-                            )}
-                            {order.orderStatusRaw === "shipping" && (
-                              <option value="delivered">
-                                Giao hàng thành công
-                              </option>
-                            )}
-                          </select>
+                          {canProcessOrders() ? (
+                            <select
+                              className="py-1 px-2 border rounded-full text-xs w-32"
+                              value=""
+                              onChange={(e) => {
+                                const statusRaw = e.target.value;
+                                if (statusRaw)
+                                  handleUpdateOrderStatus(order._id, statusRaw);
+                              }}
+                            >
+                              <option value="">Chọn trạng thái</option>
+                              {order.orderStatusRaw === "pending" && (
+                                <option value="confirmed">Đã xác nhận</option>
+                              )}
+                              {order.orderStatusRaw === "confirmed" && (
+                                <option value="shipping">Đang giao hàng</option>
+                              )}
+                              {order.orderStatusRaw === "shipping" && (
+                                <option value="delivered">
+                                  Giao hàng thành công
+                                </option>
+                              )}
+                            </select>
+                          ) : (
+                            <span className="py-1 px-2 text-xs text-gray-600">
+                              Chỉ xem
+                            </span>
+                          )}
                         </div>
                       </td>
                     </tr>

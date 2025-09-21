@@ -260,11 +260,13 @@ const MainNavbar = () => {
             <AiOutlineUser className="text-2xl text-gray-700 hover:text-red-500 transition" />
           </Link>
         </li>
-        {/* Dashboard - Hiển thị nếu là admin */}
-        {user?.role === "admin" && (
+        {/* Dashboard/Admin Panel - Hiển thị cho cả admin và staff */}
+        {(user?.role === "admin" || user?.role === "staff") && (
           <li>
             <Link
-              to="/admin/dashboard"
+              to={
+                user?.role === "admin" ? "/admin/dashboard" : "/admin/products"
+              }
               className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <AiOutlineDashboard className="text-2xl text-gray-700 hover:text-green-500 transition" />

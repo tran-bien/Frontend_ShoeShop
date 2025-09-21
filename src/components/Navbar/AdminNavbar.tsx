@@ -1,4 +1,5 @@
 import default_avatar from "../../assets/default_avatar.png";
+import avatar from "../../assets/avtatar.png";
 // @ts-ignore
 import "@fontsource/lobster";
 import { useState, useEffect } from "react";
@@ -9,7 +10,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const AdminNavbar = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, user, getRoleDisplayName } = useAuth();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -73,7 +74,7 @@ const AdminNavbar = () => {
           alt="avatar"
           className="w-10 h-10 rounded-full border-2 border-white"
         />
-        <p className="text-lg font-semibold">Admin</p>
+        <p className="text-lg font-semibold">{getRoleDisplayName()}</p>
       </div>
 
       {/* Mobile menu button */}

@@ -2,13 +2,16 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { roleHelpers } from "../../utils/roleHelpers";
 
 interface AuthGuardProps {
   children: React.ReactNode;
   requireAuth?: boolean;
   requireRole?: string[];
   redirectTo?: string;
-  adminOnly?: boolean; // Thêm thuộc tính adminOnly
+  adminOnly?: boolean; // Thêm thuộc tính adminOnly - giữ lại để backward compatibility
+  requireStaff?: boolean; // Mới - cho phép cả staff và admin
+  requireAdminOnly?: boolean; // Mới - chỉ admin
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({
@@ -17,6 +20,8 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   requireRole = [],
   redirectTo = "/login",
   adminOnly = false, // Giá trị mặc định là false
+  requireStaff = false, // Mới
+  requireAdminOnly = false, // Mới
 }) => {
   const { isAuthenticated, user, isLoading } = useAuth();
   const location = useLocation();
@@ -46,7 +51,17 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Kiểm tra quyền admin nếu cần
+  // Kiểm tra quyền staff (cho phép cả staff và admin)
+  if (requireStaff && user && !roleHelpers.hasStaffAccess(user.role)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  // Kiểm tra quyền admin only (chỉ admin)
+  if (requireAdminOnly && user && !roleHelpers.hasAdminOnlyAccess(user.role)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  // Backward compatibility cho adminOnly
   if (adminOnly && user?.role !== "admin") {
     return <Navigate to="/unauthorized" replace />;
   }

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { discountApi } from "../../../services/DiscountService";
 import AddDiscount from "./AddDiscount";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface Discount {
   id: string;
@@ -33,6 +34,7 @@ const initialForm: Omit<Discount, "id" | "currentUses" | "status"> = {
 };
 
 const DiscountPage = () => {
+  const { canCreate, canUpdate, canToggleStatus, canDelete } = useAuth();
   const [discounts, setDiscounts] = useState<Discount[]>([]);
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -209,15 +211,17 @@ const DiscountPage = () => {
         )}
       </div>
       <div className="flex border-b mb-4">
-        <button
-          className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
-          onClick={() => {
-            setShowAdd(true);
-            setForm(initialForm);
-          }}
-        >
-          Thêm Coupon
-        </button>
+        {canCreate() && (
+          <button
+            className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
+            onClick={() => {
+              setShowAdd(true);
+              setForm(initialForm);
+            }}
+          >
+            Thêm Coupon
+          </button>
+        )}
       </div>
       <div className="overflow-x-auto shadow rounded-lg">
         <table className="min-w-full bg-white rounded-md overflow-hidden border">
@@ -291,33 +295,39 @@ const DiscountPage = () => {
                 </td>
                 <td className="py-2 px-4 border-b text-center">
                   <div className="flex flex-col gap-2 min-w-[120px]">
-                    <button
-                      onClick={() => handleEditDiscount(discount)}
-                      className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                    >
-                      Sửa
-                    </button>
-                    <button
-                      onClick={() => handleDeleteDiscount(discount)}
-                      className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                    >
-                      Xóa
-                    </button>
-                    <button
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        discount.status === "active"
-                          ? "bg-yellow-400 hover:bg-yellow-500 text-white"
-                          : "bg-green-500 hover:bg-green-600 text-white"
-                      }`}
-                      onClick={() =>
-                        handleUpdateStatus(
-                          discount,
-                          discount.status === "active" ? "inactive" : "active"
-                        )
-                      }
-                    >
-                      {discount.status === "active" ? "Ngừng" : "Kích hoạt"}
-                    </button>
+                    {canUpdate() && (
+                      <button
+                        onClick={() => handleEditDiscount(discount)}
+                        className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                      >
+                        Sửa
+                      </button>
+                    )}
+                    {canDelete() && (
+                      <button
+                        onClick={() => handleDeleteDiscount(discount)}
+                        className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                      >
+                        Xóa
+                      </button>
+                    )}
+                    {canToggleStatus() && (
+                      <button
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          discount.status === "active"
+                            ? "bg-yellow-400 hover:bg-yellow-500 text-white"
+                            : "bg-green-500 hover:bg-green-600 text-white"
+                        }`}
+                        onClick={() =>
+                          handleUpdateStatus(
+                            discount,
+                            discount.status === "active" ? "inactive" : "active"
+                          )
+                        }
+                      >
+                        {discount.status === "active" ? "Ngừng" : "Kích hoạt"}
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

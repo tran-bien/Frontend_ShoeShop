@@ -3,6 +3,7 @@ import { IoIosSearch } from "react-icons/io";
 import { brandApi } from "../../../services/BrandService";
 import AddBrand from "./AddBrand";
 import BrandLogoManager from "./BrandLogoManager";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface Brand {
   _id: string;
@@ -110,6 +111,7 @@ const EditBrand: React.FC<{
 };
 
 const ListBrandsPage: React.FC = () => {
+  const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -252,7 +254,7 @@ const ListBrandsPage: React.FC = () => {
         >
           Thương hiệu đã xóa
         </button>
-        {!showDeleted && (
+        {!showDeleted && canCreate() && (
           <button
             className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
             onClick={() => setShowAddBrand(true)}
@@ -328,44 +330,54 @@ const ListBrandsPage: React.FC = () => {
                   <div className="flex flex-col gap-2 min-w-[120px]">
                     {!showDeleted ? (
                       <>
-                        <button
-                          onClick={() => setEditingBrand(brand)}
-                          className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          onClick={() => handleDeleteBrand(brand._id)}
-                          className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Xóa
-                        </button>
-                        <button
-                          className={`inline-flex items-center justify-center text-xs px-3 py-1 rounded-full shadow-sm transition-all ${
-                            brand.isActive
-                              ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                              : "bg-gray-400 hover:bg-gray-500 text-white"
-                          }`}
-                          onClick={() =>
-                            handleUpdateStatus(brand._id, !brand.isActive)
-                          }
-                        >
-                          {brand.isActive ? "Tắt hoạt động" : "Kích hoạt"}
-                        </button>
-                        <button
-                          onClick={() => setShowLogoManager(brand)}
-                          className="inline-flex items-center justify-center bg-purple-500 hover:bg-purple-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                        >
-                          Quản lý logo
-                        </button>
+                        {canUpdate() && (
+                          <button
+                            onClick={() => setEditingBrand(brand)}
+                            className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Sửa
+                          </button>
+                        )}
+                        {canDelete() && (
+                          <button
+                            onClick={() => handleDeleteBrand(brand._id)}
+                            className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Xóa
+                          </button>
+                        )}
+                        {canToggleStatus() && (
+                          <button
+                            className={`inline-flex items-center justify-center text-xs px-3 py-1 rounded-full shadow-sm transition-all ${
+                              brand.isActive
+                                ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                                : "bg-gray-400 hover:bg-gray-500 text-white"
+                            }`}
+                            onClick={() =>
+                              handleUpdateStatus(brand._id, !brand.isActive)
+                            }
+                          >
+                            {brand.isActive ? "Tắt hoạt động" : "Kích hoạt"}
+                          </button>
+                        )}
+                        {canUpdate() && (
+                          <button
+                            onClick={() => setShowLogoManager(brand)}
+                            className="inline-flex items-center justify-center bg-purple-500 hover:bg-purple-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                          >
+                            Quản lý logo
+                          </button>
+                        )}
                       </>
                     ) : (
-                      <button
-                        onClick={() => handleRestoreBrand(brand._id)}
-                        className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
-                      >
-                        Khôi phục
-                      </button>
+                      canUpdate() && (
+                        <button
+                          onClick={() => handleRestoreBrand(brand._id)}
+                          className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                        >
+                          Khôi phục
+                        </button>
+                      )
                     )}
                   </div>
                 </td>

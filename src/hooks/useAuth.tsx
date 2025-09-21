@@ -12,6 +12,7 @@ import authService, {
   SessionInfo,
 } from "../services/AuthService";
 import { jwtDecode } from "jwt-decode";
+import { roleHelpers } from "../utils/roleHelpers";
 
 interface User {
   _id: string;
@@ -55,6 +56,21 @@ interface AuthContextType {
   logoutAllOtherSessions: () => Promise<AuthResponse>;
   logoutAll: () => Promise<AuthResponse>;
   isLoading: boolean;
+
+  // Role helper methods
+  isStaff: () => boolean;
+  hasStaffAccess: () => boolean;
+  hasAdminOnlyAccess: () => boolean;
+  getRoleDisplayName: () => string;
+  canDelete: () => boolean;
+  canViewFinancialReports: () => boolean;
+  canManageUsers: () => boolean;
+  canCreate: () => boolean;
+  canUpdate: () => boolean;
+  canToggleStatus: () => boolean;
+  canAccessDashboard: () => boolean;
+  canProcessOrders: () => boolean;
+  canManageInventory: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -372,6 +388,60 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  // Role helper methods
+  const isStaff = useCallback(() => {
+    return user ? roleHelpers.isStaff(user.role) : false;
+  }, [user]);
+
+  const hasStaffAccess = useCallback(() => {
+    return user ? roleHelpers.hasStaffAccess(user.role) : false;
+  }, [user]);
+
+  const hasAdminOnlyAccess = useCallback(() => {
+    return user ? roleHelpers.hasAdminOnlyAccess(user.role) : false;
+  }, [user]);
+
+  const getRoleDisplayName = useCallback(() => {
+    return user ? roleHelpers.getRoleDisplayName(user.role) : "Khách";
+  }, [user]);
+
+  const canDelete = useCallback(() => {
+    return user ? roleHelpers.canDelete(user.role) : false;
+  }, [user]);
+
+  const canViewFinancialReports = useCallback(() => {
+    return user ? roleHelpers.canViewFinancialReports(user.role) : false;
+  }, [user]);
+
+  const canManageUsers = useCallback(() => {
+    return user ? roleHelpers.canManageUsers(user.role) : false;
+  }, [user]);
+
+  // Thêm các helper methods mới
+  const canCreate = useCallback(() => {
+    return user ? roleHelpers.canCreate(user.role) : false;
+  }, [user]);
+
+  const canUpdate = useCallback(() => {
+    return user ? roleHelpers.canUpdate(user.role) : false;
+  }, [user]);
+
+  const canToggleStatus = useCallback(() => {
+    return user ? roleHelpers.canToggleStatus(user.role) : false;
+  }, [user]);
+
+  const canAccessDashboard = useCallback(() => {
+    return user ? roleHelpers.canAccessDashboard(user.role) : false;
+  }, [user]);
+
+  const canProcessOrders = useCallback(() => {
+    return user ? roleHelpers.canProcessOrders(user.role) : false;
+  }, [user]);
+
+  const canManageInventory = useCallback(() => {
+    return user ? roleHelpers.canManageInventory(user.role) : false;
+  }, [user]);
+
   const value = {
     isAuthenticated,
     isAdmin: user?.role === "admin",
@@ -388,6 +458,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     logoutAllOtherSessions,
     logoutAll,
     isLoading,
+
+    // Role helper methods
+    isStaff,
+    hasStaffAccess,
+    hasAdminOnlyAccess,
+    getRoleDisplayName,
+    canDelete,
+    canCreate,
+    canUpdate,
+    canToggleStatus,
+    canAccessDashboard,
+    canProcessOrders,
+    canManageInventory,
+    canViewFinancialReports,
+    canManageUsers,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
