@@ -71,6 +71,7 @@ interface AuthContextType {
   canAccessDashboard: () => boolean;
   canProcessOrders: () => boolean;
   canManageInventory: () => boolean;
+  canManageImages: () => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -442,6 +443,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     return user ? roleHelpers.canManageInventory(user.role) : false;
   }, [user]);
 
+  const canManageImages = useCallback(() => {
+    return user ? roleHelpers.canManageImages(user.role) : false;
+  }, [user]);
+
   const value = {
     isAuthenticated,
     isAdmin: user?.role === "admin",
@@ -471,6 +476,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     canAccessDashboard,
     canProcessOrders,
     canManageInventory,
+    canManageImages,
     canViewFinancialReports,
     canManageUsers,
   };

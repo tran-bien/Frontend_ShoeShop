@@ -5,10 +5,12 @@ import {
   setVariantMainImage,
   reorderVariantImages,
 } from "../../../services/ImageService";
+import { useAuth } from "../../../hooks/useAuth";
 
 const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [localImages, setLocalImages] = useState(images);
+  const { canManageImages } = useAuth();
 
   // Cập nhật localImages khi images props thay đổi
   React.useEffect(() => {
@@ -60,23 +62,27 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-xl text-black">
-      <h3 className="text-lg font-bold mb-4">Quản Lý Ảnh Biến Thể</h3>
-      <div className="mb-4 flex flex-col md:flex-row gap-2 items-center">
-        <input
-          type="file"
-          accept="image/*"
-          name="images"
-          multiple
-          onChange={(e) => setSelectedFiles(e.target.files)}
-          className="block border border-gray-300 rounded px-2 py-1"
-        />
-        <button
-          onClick={handleUpload}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-        >
-          Tải ảnh lên
-        </button>
-      </div>
+      <h3 className="text-lg font-bold mb-4">
+        {canManageImages() ? "Quản Lý Ảnh Biến Thể" : "Xem Ảnh Biến Thể"}
+      </h3>
+      {canManageImages() && (
+        <div className="mb-4 flex flex-col md:flex-row gap-2 items-center">
+          <input
+            type="file"
+            accept="image/*"
+            name="images"
+            multiple
+            onChange={(e) => setSelectedFiles(e.target.files)}
+            className="block border border-gray-300 rounded px-2 py-1"
+          />
+          <button
+            onClick={handleUpload}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+          >
+            Tải ảnh lên
+          </button>
+        </div>
+      )}
       <div className="flex gap-3 mt-2 flex-wrap">
         {localImages.map((img: any, idx: number) => (
           <div
@@ -88,31 +94,35 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
               alt=""
               className="h-24 w-24 object-cover border rounded mb-2"
             />
-            <div className="flex gap-1 mb-1">
+            {canManageImages() && (
+              <div className="flex gap-1 mb-1">
+                <button
+                  disabled={idx === 0}
+                  className="px-2 py-1 bg-gray-200 rounded text-xs"
+                  onClick={() => moveImage(idx, idx - 1)}
+                  title="Lên"
+                >
+                  ↑
+                </button>
+                <button
+                  disabled={idx === localImages.length - 1}
+                  className="px-2 py-1 bg-gray-200 rounded text-xs"
+                  onClick={() => moveImage(idx, idx + 1)}
+                  title="Xuống"
+                >
+                  ↓
+                </button>
+              </div>
+            )}
+            {canManageImages() && (
               <button
-                disabled={idx === 0}
-                className="px-2 py-1 bg-gray-200 rounded text-xs"
-                onClick={() => moveImage(idx, idx - 1)}
-                title="Lên"
+                className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs mb-1"
+                onClick={() => handleRemove(img._id)}
               >
-                ↑
+                Xóa
               </button>
-              <button
-                disabled={idx === localImages.length - 1}
-                className="px-2 py-1 bg-gray-200 rounded text-xs"
-                onClick={() => moveImage(idx, idx + 1)}
-                title="Xuống"
-              >
-                ↓
-              </button>
-            </div>
-            <button
-              className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs mb-1"
-              onClick={() => handleRemove(img._id)}
-            >
-              Xóa
-            </button>
-            {!img.isMain && (
+            )}
+            {canManageImages() && !img.isMain && (
               <button
                 className="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded text-xs"
                 onClick={() => handleSetMain(img._id)}
@@ -126,13 +136,15 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
           </div>
         ))}
       </div>
-      <button
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-        onClick={handleReorder}
-        disabled={localImages.length < 2}
-      >
-        Lưu thứ tự ảnh
-      </button>
+      {canManageImages() && (
+        <button
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          onClick={handleReorder}
+          disabled={localImages.length < 2}
+        >
+          Lưu thứ tự ảnh
+        </button>
+      )}
     </div>
   );
 };

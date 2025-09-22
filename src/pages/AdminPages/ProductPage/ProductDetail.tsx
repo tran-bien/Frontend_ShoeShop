@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { productApi } from "../../../services/ProductService";
 import { Product } from "../../../model/Product";
 import ProductImagesManager from "./ProductImagesManager";
+import { useAuth } from "../../../hooks/useAuth";
 
 interface ProductDetailProps {
   product: Product;
@@ -12,6 +13,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
   const [detail, setDetail] = useState<any>(product);
   const [loading, setLoading] = useState(false);
   const [showImageManager, setShowImageManager] = useState(false);
+  const { canManageImages } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -132,12 +134,14 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   <span className="text-gray-400">Không có hình ảnh</span>
                 )}
               </div>
-              <button
-                className="mt-3 inline-flex items-center gap-2 bg-gray-400 border-gray-300 hover:bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md text-sm transition"
-                onClick={() => setShowImageManager(true)}
-              >
-                Quản Lý Ảnh
-              </button>
+              {canManageImages() && (
+                <button
+                  className="mt-3 inline-flex items-center gap-2 bg-gray-400 border-gray-300 hover:bg-gray-100 text-gray-700 px-3 py-1.5 rounded-md text-sm transition"
+                  onClick={() => setShowImageManager(true)}
+                >
+                  Quản Lý Ảnh
+                </button>
+              )}
             </div>
           </div>
 

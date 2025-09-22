@@ -8,7 +8,14 @@ import ProductDetail from "./ProductDetail";
 import { useAuth } from "../../../hooks/useAuth";
 
 const ProductPage = () => {
-  const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
+  const {
+    canDelete,
+    canCreate,
+    canUpdate,
+    canToggleStatus,
+    hasStaffAccess,
+    hasAdminOnlyAccess,
+  } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -207,16 +214,18 @@ const ProductPage = () => {
         >
           Sản phẩm
         </button>
-        <button
-          onClick={() => setShowDeleted(true)}
-          className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
-            showDeleted
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
-          }`}
-        >
-          Sản phẩm đã xóa
-        </button>
+        {hasStaffAccess() && (
+          <button
+            onClick={() => setShowDeleted(true)}
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
+              showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+          >
+            Sản phẩm đã xóa
+          </button>
+        )}
         {!showDeleted && canCreate() && (
           <button
             className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
@@ -358,7 +367,7 @@ const ProductPage = () => {
                           </button>
                         </>
                       ) : (
-                        canUpdate() && (
+                        hasAdminOnlyAccess() && (
                           <button
                             className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs"
                             onClick={() => handleRestore(product._id)}

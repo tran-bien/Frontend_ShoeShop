@@ -107,7 +107,14 @@ const EditCategoryModal: React.FC<{
 };
 
 const ListCategoriesPage: React.FC = () => {
-  const { canCreate, canUpdate, canDelete, canToggleStatus } = useAuth();
+  const {
+    canCreate,
+    canUpdate,
+    canDelete,
+    canToggleStatus,
+    hasStaffAccess,
+    hasAdminOnlyAccess,
+  } = useAuth();
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -239,16 +246,18 @@ const ListCategoriesPage: React.FC = () => {
         >
           Danh mục đang hoạt động
         </button>
-        <button
-          onClick={() => setShowDeleted(true)}
-          className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
-            showDeleted
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
-          }`}
-        >
-          Danh mục đã xóa
-        </button>
+        {hasStaffAccess() && (
+          <button
+            onClick={() => setShowDeleted(true)}
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
+              showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+          >
+            Danh mục đã xóa
+          </button>
+        )}
         {!showDeleted && canCreate() && (
           <button
             className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
@@ -351,7 +360,7 @@ const ListCategoriesPage: React.FC = () => {
                         )}
                       </>
                     ) : (
-                      canUpdate() && (
+                      hasAdminOnlyAccess() && (
                         <button
                           onClick={() => handleRestoreCategory(category._id)}
                           className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"

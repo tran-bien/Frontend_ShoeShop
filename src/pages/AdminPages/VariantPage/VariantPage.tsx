@@ -3,6 +3,7 @@ import { variantApi } from "../../../services/VariantService";
 import { Variant } from "../../../types/product";
 import VariantForm from "./VariantForm";
 import VariantImagesManager from "./VariantImagesManager";
+import { useAuth } from "../../../hooks/useAuth";
 
 const VariantPage: React.FC = () => {
   const [variants, setVariants] = useState<Variant[]>([]);
@@ -11,6 +12,14 @@ const VariantPage: React.FC = () => {
   const [editingVariant, setEditingVariant] = useState<Variant | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
+  const {
+    canToggleStatus,
+    canDelete,
+    canUpdate,
+    canCreate,
+    hasStaffAccess,
+    hasAdminOnlyAccess,
+  } = useAuth();
 
   // State cho quản lý ảnh
   const [showImageManager, setShowImageManager] = useState<string | null>(null);
@@ -120,17 +129,19 @@ const VariantPage: React.FC = () => {
         >
           Biến thể đang hoạt động
         </button>
-        <button
-          onClick={() => setShowDeleted(true)}
-          className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
-            showDeleted
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
-          }`}
-        >
-          Biến thể đã xóa
-        </button>
-        {!showDeleted && (
+        {hasStaffAccess() && (
+          <button
+            onClick={() => setShowDeleted(true)}
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
+              showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+          >
+            Biến thể đã xóa
+          </button>
+        )}
+        {!showDeleted && canCreate() && (
           <button
             className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
             onClick={handleAddNew}
@@ -281,26 +292,30 @@ const VariantPage: React.FC = () => {
                   <td className="px-4 py-3 flex gap-2 justify-center">
                     {!showDeleted ? (
                       <>
-                        <button
-                          className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
-                          onClick={() => handleEdit(v)}
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          className={`px-2 py-1 rounded text-xs ${
-                            v.isActive
-                              ? "bg-yellow-500 text-white"
-                              : "bg-gray-400 text-white"
-                          }`}
-                          onClick={async () => {
-                            await variantApi.updateStatus(v._id, !v.isActive);
-                            fetchVariants();
-                          }}
-                        >
-                          {v.isActive ? "Tắt hoạt động" : "Kích hoạt"}
-                        </button>
-                        {!v.deletedAt ? (
+                        {canUpdate() && (
+                          <button
+                            className="bg-gray-500 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs"
+                            onClick={() => handleEdit(v)}
+                          >
+                            Sửa
+                          </button>
+                        )}
+                        {canToggleStatus() && (
+                          <button
+                            className={`px-2 py-1 rounded text-xs ${
+                              v.isActive
+                                ? "bg-yellow-500 text-white"
+                                : "bg-gray-400 text-white"
+                            }`}
+                            onClick={async () => {
+                              await variantApi.updateStatus(v._id, !v.isActive);
+                              fetchVariants();
+                            }}
+                          >
+                            {v.isActive ? "Tắt hoạt động" : "Kích hoạt"}
+                          </button>
+                        )}
+                        {canDelete() && !v.deletedAt ? (
                           <button
                             className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs"
                             onClick={() => handleDelete(v._id)}
@@ -316,12 +331,14 @@ const VariantPage: React.FC = () => {
                         </button>
                       </>
                     ) : (
-                      <button
-                        className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs"
-                        onClick={() => handleRestore(v._id)}
-                      >
-                        Khôi phục
-                      </button>
+                      hasAdminOnlyAccess() && (
+                        <button
+                          className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs"
+                          onClick={() => handleRestore(v._id)}
+                        >
+                          Khôi phục
+                        </button>
+                      )
                     )}
                   </td>
                 </tr>
