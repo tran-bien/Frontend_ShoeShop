@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { productApi } from "../../../services/ProductService";
 import { brandApi } from "../../../services/BrandService";
 import { categoryApi } from "../../../services/CategoryService";
-import { Product } from "../../../model/Product";
+import { Product } from "../../../types/product";
 import AddProduct from "./AddProduct";
 import ProductDetail from "./ProductDetail";
 import { useAuth } from "../../../hooks/useAuth";

@@ -1,112 +1,16 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
+import {
+  Cart,
+  AddToCartRequest,
+  UpdateCartItemRequest,
+  PreviewOrderRequest,
+  CartApiResponse,
+} from "../types/cart";
 
-export interface CartItem {
-  _id: string;
-  variant: {
-    _id: string;
-    color: {
-      name: string;
-      code: string;
-    };
-    price: number;
-    priceFinal: number;
-    percentDiscount?: number;
-    product?: {
-      _id: string;
-      name?: string;
-    };
-  };
-  size: {
-    _id: string;
-    value: string | number;
-  };
-  quantity: number;
-  price: number;
-  productName: string;
-  image: string;
-  isSelected: boolean;
-  isAvailable: boolean;
-  unavailableReason?: string;
-}
-
-export interface Cart {
-  _id: string;
-  user: string;
-  cartItems: CartItem[];
-  totalQuantity: number;
-  totalPrice: number;
-}
-
-export interface AddToCartRequest {
-  variantId: string;
-  sizeId: string;
-  quantity: number;
-}
-
-export interface UpdateCartItemRequest {
-  quantity: number;
-}
-
-export interface PreviewOrderRequest {
-  couponCode?: string;
-}
-
-export interface PreviewOrderData {
-  couponCode?: string;
-}
-
-export interface PreviewOrderResponse {
-  success: boolean;
-  message: string;
-  preview: {
-    items: number;
-    itemsDetail: Array<{
-      productName: string;
-      color: { name: string; code: string };
-      sizeValue: string | number;
-      price: number;
-      quantity: number;
-      image: string;
-      totalPrice: number;
-    }>;
-    totalQuantity: number;
-    subTotal: number;
-    discount: number;
-    shippingFee: number;
-    totalPrice: number;
-    couponApplied: boolean;
-    couponDetail?: {
-      code: string;
-      type: "percent" | "fixed";
-      value: number;
-      maxDiscount?: number;
-    };
-  };
-}
-
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  message: string;
-  data?: T;
-  cart?: Cart;
-  preview?: PreviewOrderResponse["preview"];
-  updatedItem?: {
-    quantity: number;
-    // Các trường khác của cart item
-  };
-  productInfo?: {
-    exceededInventory?: boolean;
-    availableQuantity?: number;
-    variant?: string;
-    size?: string;
-    requestedQuantity?: number;
-    adjustedQuantity?: number;
-  };
-}
-
+// Cart Service
 export const cartService = {
   // Lấy giỏ hàng hiện tại
-  getCart: (): Promise<{ data: ApiResponse<Cart> }> => {
+  getCart: (): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Getting cart...");
     return axiosInstanceAuth
       .get("/api/v1/cart")
@@ -124,7 +28,9 @@ export const cartService = {
   },
 
   // Thêm sản phẩm vào giỏ hàng
-  addToCart: (data: AddToCartRequest): Promise<{ data: ApiResponse<Cart> }> => {
+  addToCart: (
+    data: AddToCartRequest
+  ): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Adding to cart:", data);
     return axiosInstanceAuth
       .post("/api/v1/cart/items", data)
@@ -145,7 +51,7 @@ export const cartService = {
   updateCartItemQuantity: (
     itemId: string,
     data: UpdateCartItemRequest
-  ): Promise<{ data: ApiResponse<Cart> }> => {
+  ): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Updating cart item quantity:", itemId, data);
     return axiosInstanceAuth
       .put(`/api/v1/cart/items/${itemId}`, data)
@@ -163,7 +69,9 @@ export const cartService = {
   },
 
   // Chọn/bỏ chọn sản phẩm
-  toggleCartItem: (itemId: string): Promise<{ data: ApiResponse<Cart> }> => {
+  toggleCartItem: (
+    itemId: string
+  ): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Toggling cart item:", itemId);
     return axiosInstanceAuth
       .patch(`/api/v1/cart/items/${itemId}/toggle`)
@@ -181,7 +89,7 @@ export const cartService = {
   },
 
   // Xóa các sản phẩm đã chọn
-  removeSelectedItems: (): Promise<{ data: ApiResponse<Cart> }> => {
+  removeSelectedItems: (): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Removing selected items");
     return axiosInstanceAuth
       .delete("/api/v1/cart/items")
@@ -202,7 +110,7 @@ export const cartService = {
   },
 
   // Xóa toàn bộ giỏ hàng
-  clearCart: (): Promise<{ data: ApiResponse }> => {
+  clearCart: (): Promise<{ data: CartApiResponse }> => {
     console.log("🛒 CartService: Clearing cart");
     return axiosInstanceAuth
       .delete("/api/v1/cart")
@@ -222,7 +130,7 @@ export const cartService = {
   // Xem trước đơn hàng trước khi tạo
   previewBeforeOrder: (
     data: PreviewOrderRequest = {}
-  ): Promise<{ data: ApiResponse }> => {
+  ): Promise<{ data: CartApiResponse }> => {
     console.log("🛒 CartService: Previewing order:", data);
     return axiosInstanceAuth
       .post("/api/v1/cart/preview-before-order", data)

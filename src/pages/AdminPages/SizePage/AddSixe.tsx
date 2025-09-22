@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { sizeApi } from "../../../services/Size";
+import { sizeApi } from "../../../services/SizeService";
 
 interface AddSizeProps {
   handleClose: () => void;

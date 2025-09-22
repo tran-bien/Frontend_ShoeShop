@@ -1,5 +1,4 @@
 import default_avatar from "../../assets/default_avatar.png";
-import avatar from "../../assets/avtatar.png";
 // @ts-ignore
 import "@fontsource/lobster";
 import { useState, useEffect } from "react";
@@ -10,7 +9,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const AdminNavbar = () => {
   const navigate = useNavigate();
-  const { logout, user, getRoleDisplayName } = useAuth();
+  const { logout, getRoleDisplayName } = useAuth();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 

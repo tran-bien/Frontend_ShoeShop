@@ -4,10 +4,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductCard from "../../../components/ProductCard/ProductCard";
 import {
-  Product,
   productPublicService,
   convertToProductCardProduct,
 } from "../../../services/ProductService";
+import { Product } from "../../../types/product";
 import { publicCouponService } from "../../../services/CouponService";
 import { Coupon } from "../../../types/coupon";
 import { toast } from "react-hot-toast";
@@ -93,28 +93,40 @@ const LandingPage: React.FC = () => {
           const products =
             featuredRes.data.data || featuredRes.data.products || [];
           console.log("Featured products:", products);
-          setFeaturedProducts(products);
+          const flattenedProducts = Array.isArray(products)
+            ? products.flat()
+            : [];
+          setFeaturedProducts(flattenedProducts);
         }
 
         if (bestSellersRes.data.success) {
           const products =
             bestSellersRes.data.data || bestSellersRes.data.products || [];
           console.log("Best sellers:", products);
-          setBestSellers(products);
+          const flattenedProducts = Array.isArray(products)
+            ? products.flat()
+            : [];
+          setBestSellers(flattenedProducts);
         }
 
         if (newArrivalsRes.data.success) {
           const products =
             newArrivalsRes.data.data || newArrivalsRes.data.products || [];
           console.log("New arrivals:", products);
-          setNewArrivals(products);
+          const flattenedProducts = Array.isArray(products)
+            ? products.flat()
+            : [];
+          setNewArrivals(flattenedProducts);
         }
 
         if (allProductsRes.data.success) {
           const products =
             allProductsRes.data.data || allProductsRes.data.products || [];
           console.log("All products:", products);
-          setAllProducts(products);
+          const flattenedProducts = Array.isArray(products)
+            ? products.flat()
+            : [];
+          setAllProducts(flattenedProducts);
         }
 
         // Xử lý dữ liệu coupon - sửa để khớp với cấu trúc response

@@ -7,7 +7,7 @@ import { productPublicService } from "../../services/ProductService";
 import {
   Product as ProductType,
   ProductCardProduct,
-} from "../../services/ProductService";
+} from "../../types/product";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   FiMinus,

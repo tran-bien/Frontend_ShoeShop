@@ -7,10 +7,8 @@ import React, {
   useCallback,
 } from "react";
 import { toast } from "react-hot-toast";
-import authService, {
-  AuthResponse,
-  SessionInfo,
-} from "../services/AuthService";
+import authService from "../services/AuthService";
+import { AuthResponse, SessionInfo } from "../types/auth";
 import { jwtDecode } from "jwt-decode";
 import { roleHelpers } from "../utils/roleHelpers";
 

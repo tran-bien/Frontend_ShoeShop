@@ -10,10 +10,9 @@ import filterService, {
 } from "../../services/FilterService";
 import {
   productPublicService,
-  Product,
-  ProductQueryParams,
   convertToProductCardProduct,
 } from "../../services/ProductService";
+import { Product, ProductQueryParams } from "../../types/product";
 import { toast } from "react-hot-toast";
 
 // Helper function để xử lý split cho string hoặc array
@@ -97,7 +96,11 @@ const ProductListPage: React.FC = () => {
 
       if (response.data.success) {
         const productsData = response.data.data || response.data.products || [];
-        setProducts(productsData);
+        // Ensure we have a flat array of products
+        const flattenedProducts = Array.isArray(productsData)
+          ? productsData.flat()
+          : [];
+        setProducts(flattenedProducts);
 
         // Xử lý đúng cấu trúc phân trang - API backend có thể trả về các dạng khác nhau
         setPagination({

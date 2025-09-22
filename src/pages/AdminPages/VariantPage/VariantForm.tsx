@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { variantApi } from "../../../services/VariantService";
 import { productApi } from "../../../services/ProductService";
 import { colorApi } from "../../../services/ColorService";
-import { sizeApi } from "../../../services/Size";
+import { sizeApi } from "../../../services/SizeService";
 
 interface VariantFormProps {
   editingVariant: any | null;

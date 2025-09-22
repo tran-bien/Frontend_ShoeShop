@@ -1,24 +1,64 @@
+import {
+  Color,
+  Size,
+  PriceRange,
+  ProductImage,
+  Brand,
+  Category,
+  StockStatus,
+} from "./common";
+
+// =======================
+// VARIANT TYPES
+// =======================
+export interface VariantSize {
+  size: Size | string;
+  quantity: number;
+  _id?: string;
+  sizeId?: string;
+  sizeValue?: string | number;
+  description?: string;
+  sku?: string;
+  isSizeAvailable?: boolean;
+}
+
+export interface Variant {
+  _id: string;
+  product: Product | string;
+  color: Color | string;
+  price: number;
+  costPrice?: number;
+  percentDiscount?: number;
+  priceFinal?: number;
+  profit?: number;
+  profitPercentage?: number;
+  gender: string;
+  sizes: VariantSize[];
+  isActive: boolean;
+  deletedAt?: Date | null;
+  imagesvariant?: Array<{
+    _id?: string;
+    url: string;
+    public_id?: string;
+    isMain: boolean;
+    displayOrder: number;
+  }>;
+  createdAt?: string;
+  updatedAt?: string;
+  deletedBy?: string | { _id: string; name?: string } | null;
+}
+
+// =======================
+// PRODUCT ATTRIBUTES
+// =======================
 export interface ProductAttributes {
   genders?: Array<{
     id: string;
     name: string;
   }>;
-  colors?: Array<{
-    _id: string;
-    name: string;
-    code: string;
-    type: "solid" | "half";
-    colors?: string[];
-  }>;
-  sizes?: Array<{
-    _id: string;
-    value: string | number;
-    description?: string;
-  }>;
-  priceRange?: {
-    min: number;
-    max: number;
-  };
+  colors?: Color[];
+  sizes?: Size[];
+  priceRange?: PriceRange;
   inventoryMatrix?: {
     summary?: {
       total: number;
@@ -29,12 +69,7 @@ export interface ProductAttributes {
 export interface ProductVariants {
   [key: string]: {
     id: string;
-    sizes?: Array<{
-      sizeId: string;
-      sizeValue?: string | number;
-      quantity: number;
-      description?: string;
-    }>;
+    sizes?: VariantSize[];
     price?: number;
     priceFinal?: number;
     percentDiscount?: number;
@@ -48,40 +83,161 @@ export interface ProductImages {
   }>;
 }
 
-export interface Variant {
+// =======================
+// MAIN PRODUCT INTERFACE
+// =======================
+export interface Product {
   _id: string;
-  product:
-    | {
-        _id: string;
-        name: string;
-      }
-    | string;
-  color:
-    | {
-        _id: string;
-        name: string;
-        code?: string;
-        type: "solid" | "half";
-        colors?: string[];
-      }
-    | string;
-  price: number;
-  gender: string;
-  sizes: Array<{
-    size:
-      | {
-          _id: string;
-          value: string | number;
-        }
-      | string;
-    quantity: number;
-  }>;
+  name: string;
+  slug: string;
+  description: string;
+  images: ProductImage[];
+  category: Category | string;
+  brand: Brand | string;
+  variants: string[] | Variant[];
+  totalQuantity: number;
+  stockStatus: StockStatus;
   isActive: boolean;
-  deletedAt?: Date | null;
-  imagesvariant?: Array<{
+  rating: number;
+  numReviews: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+  deletedBy?: string | { _id: string; name?: string } | null;
+
+  // Additional computed fields
+  priceRange?: PriceRange;
+  originalPrice?: number;
+  averageRating?: number;
+  reviewCount?: number;
+  isNew?: boolean;
+  salePercentage?: number;
+  price?: number;
+  discountPercent?: number;
+  hasDiscount?: boolean;
+  maxDiscountPercent?: number;
+  mainImage?: string;
+  totalInventory?: number;
+
+  // Variant summary
+  variantSummary?: {
+    total: number;
+    active: number;
+    colors: Color[];
+    colorCount: number;
+    sizeCount: number;
+    priceRange: PriceRange;
+    discount: {
+      hasDiscount: boolean;
+      maxPercent: number;
+    };
+  };
+}
+
+// =======================
+// PRODUCT FOR CARDS
+// =======================
+export interface ProductCardProduct {
+  _id: string;
+  name: string;
+  slug?: string;
+  images?: ProductImage[];
+  category?: Category;
+  brand?: Brand;
+  priceRange: PriceRange;
+  originalPrice?: number;
+  averageRating: number;
+  reviewCount: number;
+  isNew?: boolean;
+  salePercentage?: number;
+  stockStatus?: StockStatus;
+  totalQuantity?: number;
+  price?: number;
+  discountPercent?: number;
+  hasDiscount?: boolean;
+  mainImage?: string;
+}
+
+// =======================
+// PRODUCT QUERY PARAMS
+// =======================
+export interface ProductQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  name?: string;
+  category?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  priceMin?: number;
+  priceMax?: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  sort?: string;
+  isActive?: boolean;
+  stockStatus?: StockStatus;
+  gender?: string;
+  color?: string;
+  colors?: string | string[];
+  size?: string;
+  sizes?: string | string[];
+  rating?: number;
+}
+
+// =======================
+// PRODUCT CRUD DATA
+// =======================
+export interface CreateProductData {
+  name: string;
+  description: string;
+  category: string;
+  brand: string;
+  images?: ProductImage[];
+  isActive?: boolean;
+}
+
+export interface UpdateProductData extends Partial<CreateProductData> {
+  _id?: string;
+}
+
+// =======================
+// PRODUCT INVENTORY INFO
+// =======================
+export interface ProductInventoryInfo {
+  colors: Array<{
     _id: string;
-    url: string;
-    isMain: boolean;
-    displayOrder: number;
+    name: string;
+    code: string;
+    type?: string;
+    colors?: string[];
   }>;
+  sizes: Array<{
+    _id: string;
+    value: string | number;
+    description: string;
+  }>;
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  genders: Array<{
+    id: string;
+    name: string;
+  }>;
+  inventoryMatrix: {
+    colors: Color[];
+    sizes: Size[];
+    genders: Array<{
+      id: string;
+      name: string;
+    }>;
+    stock: Record<string, Record<string, Record<string, VariantSize>>>;
+    summary: {
+      byGender: Record<string, number>;
+      byColor: Record<string, number>;
+      bySize: Record<string, number>;
+      total: number;
+    };
+  };
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Product } from "../../../model/Product";
+import { Product } from "../../../types/product";
 
 interface EditProductProps {
   handleClose: () => void;

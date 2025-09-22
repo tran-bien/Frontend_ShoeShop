@@ -1,111 +1,13 @@
 import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
 import { toast } from "react-hot-toast";
-
-// Product Interfaces
-export interface ProductImage {
-  url: string;
-  public_id: string;
-  isMain: boolean;
-  displayOrder: number;
-}
-
-export interface Product {
-  _id: string;
-  name: string;
-  slug: string;
-  description: string;
-  images: ProductImage[];
-  category: {
-    _id: string;
-    name: string;
-  };
-  brand: {
-    _id: string;
-    name: string;
-    logo?: {
-      url: string;
-      public_id: string;
-    };
-  };
-  variants: string[] | any[];
-  totalQuantity: number;
-  stockStatus: "in_stock" | "low_stock" | "out_of_stock";
-  isActive: boolean;
-  rating: number;
-  numReviews: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string | null;
-  deletedBy?: string | { _id: string; name?: string } | null;
-
-  // Add missing fields for ProductCard compatibility
-  priceRange?: {
-    min: number | null;
-    max: number | null;
-    isSinglePrice?: boolean;
-  };
-  originalPrice?: number;
-  averageRating?: number;
-  reviewCount?: number;
-  isNew?: boolean;
-  salePercentage?: number;
-
-  variantSummary?: {
-    total: number;
-    active: number;
-    colors: any[];
-    colorCount: number;
-    sizeCount: number;
-    priceRange: {
-      min: number | null;
-      max: number | null;
-      isSinglePrice: boolean;
-    };
-    discount: { hasDiscount: boolean; maxPercent: number };
-  };
-  price?: number;
-  discountPercent?: number;
-  hasDiscount?: boolean;
-  maxDiscountPercent?: number;
-  mainImage?: string;
-  totalInventory?: number;
-}
-
-// Add ProductCardProduct interface for explicit ProductCard usage
-export interface ProductCardProduct {
-  _id: string;
-  name: string;
-  slug?: string; // Cập nhật để có thể là optional
-  images?: ProductImage[];
-  category?: {
-    _id: string;
-    name: string;
-  };
-  brand?: {
-    _id: string;
-    name: string;
-    logo?: {
-      url: string;
-      public_id: string;
-    };
-  };
-  priceRange: {
-    min: number;
-    max: number;
-    isSinglePrice?: boolean;
-  };
-  originalPrice?: number;
-  averageRating: number;
-  reviewCount: number;
-  isNew?: boolean;
-  salePercentage?: number;
-  stockStatus?: "in_stock" | "low_stock" | "out_of_stock";
-  totalQuantity?: number;
-  price?: number;
-  discountPercent?: number;
-  hasDiscount?: boolean;
-  mainImage?: string;
-}
+import {
+  Product,
+  ProductCardProduct,
+  CreateProductData,
+  UpdateProductData,
+  ProductQueryParams,
+} from "../types/product";
+import { ApiResponse } from "../types/common";
 
 // Helper type to convert Product to ProductCardProduct
 export type ProductToCardProduct = (product: Product) => ProductCardProduct;
@@ -123,8 +25,9 @@ export const convertToProductCardProduct: ProductToCardProduct = (product) => {
     name: product.name,
     slug: product.slug,
     images: product.images,
-    category: product.category,
-    brand: product.brand,
+    category:
+      typeof product.category === "string" ? undefined : product.category,
+    brand: typeof product.brand === "string" ? undefined : product.brand,
     priceRange: {
       min: priceRange.min || 0,
       max: priceRange.max || 0,
@@ -143,101 +46,6 @@ export const convertToProductCardProduct: ProductToCardProduct = (product) => {
     mainImage: product.mainImage,
   };
 };
-
-export interface CreateProductData {
-  name: string;
-  description: string;
-  images?: ProductImage[];
-  category: string;
-  brand: string;
-  isActive?: boolean;
-}
-
-export interface UpdateProductData extends Partial<CreateProductData> {
-  _id?: string;
-}
-
-export interface ProductQueryParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  name?: string;
-  category?: string;
-  brand?: string;
-  priceMin?: number;
-  priceMax?: number;
-  minPrice?: number;
-  maxPrice?: number;
-  rating?: number;
-  stockStatus?: "in_stock" | "low_stock" | "out_of_stock";
-  isActive?: boolean;
-  sort?: string;
-  gender?: "male" | "female";
-  sizes?: string | string[];
-  colors?: string | string[];
-}
-
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  message?: string;
-  data?: T;
-  pagination?: {
-    page: number;
-    limit: number;
-    totalPages: number;
-    totalItems: number;
-    hasNext?: boolean;
-    hasPrev?: boolean;
-    hasNextPage?: boolean;
-    hasPrevPage?: boolean;
-  };
-  product?: Product;
-  products?: Product[];
-  count?: number;
-  total?: number;
-  currentPage?: number;
-  totalPages?: number;
-  hasNextPage?: boolean;
-  hasPrevPage?: boolean;
-  // Thêm các thuộc tính có thể có từ backend
-  hasNext?: boolean;
-  hasPrev?: boolean;
-}
-
-export interface ProductInventoryInfo {
-  colors: Array<{
-    _id: string;
-    name: string;
-    code: string;
-    type?: string;
-    colors?: string[];
-  }>;
-  sizes: Array<{
-    _id: string;
-    value: string | number;
-    description: string;
-  }>;
-  priceRange: {
-    min: number;
-    max: number;
-  };
-  genders: Array<{
-    id: string;
-    name: string;
-  }>;
-  inventoryMatrix: {
-    colors: any[];
-    sizes: any[];
-    genders: any[];
-    stock: Record<string, Record<string, Record<string, any>>>;
-    summary: {
-      byGender: Record<string, number>;
-      byColor: Record<string, number>;
-      bySize: Record<string, number>;
-      total: number;
-    };
-  };
-}
 
 // Admin Product Service
 export const productAdminService = {
@@ -316,9 +124,10 @@ export const productPublicService = {
     try {
       const response = await axiosInstance.get(`/api/v1/products/slug/${slug}`);
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching product by slug:", error);
-      if (error.response?.status === 404) {
+      const axiosError = error as { response?: { status?: number } };
+      if (axiosError.response?.status === 404) {
         toast.error("Không tìm thấy sản phẩm");
       } else {
         toast.error("Lỗi khi tải sản phẩm");
@@ -346,7 +155,7 @@ export const productPublicService = {
         { params }
       );
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching related products:", error);
       // Không hiển thị toast error cho related products vì đây là tính năng phụ
       throw error;
@@ -357,9 +166,10 @@ export const productPublicService = {
     try {
       const response = await axiosInstance.get(`/api/v1/products/${id}`);
       return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error fetching product by ID:", error);
-      if (error.response?.status === 404) {
+      const axiosError = error as { response?: { status?: number } };
+      if (axiosError.response?.status === 404) {
         toast.error("Không tìm thấy sản phẩm");
       } else {
         toast.error("Lỗi khi tải sản phẩm");

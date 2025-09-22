@@ -1,89 +1,14 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
-
-// Dashboard Data Interfaces
-export interface DashboardData {
-  totalProducts: number;
-  totalUsers: number;
-  totalOrders: number;
-  totalRevenue: number;
-  totalCost: number;
-  totalProfit: number;
-  profitMargin: number;
-}
-
-export interface DailyRevenueItem {
-  date: string;
-  revenue: number;
-  cost: number;
-  profit: number;
-  profitMargin: number;
-  count: number;
-}
-
-export interface DailyRevenueSummary {
-  totalRevenue: number;
-  totalCost: number;
-  totalProfit: number;
-  totalOrders: number;
-  profitMargin: number;
-  period: {
-    startDate: string;
-    endDate: string;
-  };
-}
-
-export interface MonthlyRevenueItem {
-  month: number;
-  revenue: number;
-  cost: number;
-  profit: number;
-  profitMargin: number;
-  count: number;
-}
-
-export interface MonthlyRevenueSummary {
-  totalYearlyRevenue: number;
-  totalYearlyCost: number;
-  totalYearlyProfit: number;
-  totalYearlyOrders: number;
-  yearlyProfitMargin: number;
-}
-
-export interface TopSellingProduct {
-  productId: string;
-  productName: string;
-  totalQuantity: number;
-  totalRevenue: number;
-  totalCost: number;
-  totalProfit: number;
-  image: string;
-  percentage: number;
-  profitMargin: number;
-}
-
-export interface TopSellingProductsSummary {
-  totalQuantity: number;
-  totalRevenue: number;
-  totalCost: number;
-  totalProfit: number;
-  profitMargin: number;
-  period: {
-    startDate: string;
-    endDate: string;
-  };
-}
-
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  message?: string;
-  data?: T;
-  summary?:
-    | DailyRevenueSummary
-    | MonthlyRevenueSummary
-    | TopSellingProductsSummary;
-  year?: number;
-  period?: string;
-}
+import {
+  DashboardData,
+  DailyRevenueItem,
+  DailyRevenueSummary,
+  MonthlyRevenueItem,
+  MonthlyRevenueSummary,
+  TopSellingProduct,
+  TopSellingProductsSummary,
+} from "../types/dashboard";
+import { ApiResponse } from "../types/api";
 
 // Dashboard Service
 export const dashboardService = {

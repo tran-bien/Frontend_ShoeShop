@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ProductCardProduct } from "../../services/ProductService";
+import { ProductCardProduct } from "../../types/product";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
 interface ProductCardProps {
@@ -52,8 +52,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           {product.hasDiscount ? (
             <>
               <span className="text-red-600 font-bold text-base md:text-lg">
-                {product.priceRange.min.toLocaleString()} -{" "}
-                {product.priceRange.max.toLocaleString()}đ
+                {(product.priceRange.min || 0).toLocaleString()} -{" "}
+                {(product.priceRange.max || 0).toLocaleString()}đ
               </span>
               {product.originalPrice && (
                 <span className="text-gray-400 text-sm line-through">
@@ -63,8 +63,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
             </>
           ) : (
             <span className="text-gray-900 font-bold text-base md:text-lg">
-              {product.priceRange.min.toLocaleString()} -{" "}
-              {product.priceRange.max.toLocaleString()}đ
+              {(product.priceRange.min || 0).toLocaleString()} -{" "}
+              {(product.priceRange.max || 0).toLocaleString()}đ
             </span>
           )}
         </div>

@@ -5,13 +5,13 @@ import {
   FiShoppingBag,
   FiUsers,
 } from "react-icons/fi";
+import { dashboardService } from "../../../services/DashboardService";
 import {
-  dashboardService,
   DashboardData,
   TopSellingProduct,
   DailyRevenueItem,
   MonthlyRevenueItem,
-} from "../../../services/DashboardService";
+} from "../../../types/dashboard";
 import toast from "react-hot-toast";
 import { Line, Bar, Doughnut } from "react-chartjs-2";
 import {

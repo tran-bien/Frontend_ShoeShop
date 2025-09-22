@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { productApi } from "../../../services/ProductService";
-import { Product } from "../../../model/Product";
+import { Product } from "../../../types/product";
 import ProductImagesManager from "./ProductImagesManager";
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -18,7 +18,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
   useEffect(() => {
     setLoading(true);
     productApi
-      .getDetailById(product._id)
+      .getProductById(product._id)
       .then((res) => setDetail(res.data.product))
       .finally(() => setLoading(false));
   }, [product._id]);
@@ -296,7 +296,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                 productId={detail._id}
                 images={detail.images}
                 reloadImages={async () => {
-                  const res = await productApi.getDetailById(detail._id);
+                  const res = await productApi.getProductById(detail._id);
                   setDetail(res.data.product);
                 }}
               />

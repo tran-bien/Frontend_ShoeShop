@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
-import { sizeApi } from "../../../services/Size";
+import { sizeApi } from "../../../services/SizeService";
 import AddSize from "./AddSixe";
 import { useAuth } from "../../../hooks/useAuth";
 

@@ -158,7 +158,7 @@ const EditColorModal: React.FC<{
 };
 
 const ColorPage: React.FC = () => {
-  const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
+  const { canDelete, canCreate, canUpdate } = useAuth();
   const [showAddColor, setShowAddColor] = useState(false);
   const [showEditColor, setShowEditColor] = useState<Color | null>(null);
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);

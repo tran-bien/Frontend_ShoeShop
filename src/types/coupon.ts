@@ -1,3 +1,7 @@
+// =======================
+// COUPON TYPES
+// =======================
+
 export interface Coupon {
   _id: string;
   code: string;
@@ -33,4 +37,20 @@ export interface CouponQuery {
   status?: "active" | "inactive" | "expired" | "archived";
   isPublic?: boolean;
   sort?: string;
+}
+
+// =======================
+// COUPON RESPONSE TYPES
+// =======================
+
+export interface PublicCouponsResponse {
+  success: boolean;
+  message: string;
+  coupons: Coupon[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }

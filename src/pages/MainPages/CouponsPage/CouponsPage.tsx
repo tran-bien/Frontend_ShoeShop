@@ -4,7 +4,7 @@ import {
   publicCouponService,
   userCouponService,
 } from "../../../services/CouponService";
-import type { Coupon } from "../../../services/CouponService";
+import type { Coupon } from "../../../types/coupon";
 import { useAuth } from "../../../hooks/useAuth";
 
 const CouponsPage: React.FC = () => {

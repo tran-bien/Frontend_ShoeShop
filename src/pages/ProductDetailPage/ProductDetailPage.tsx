@@ -5,12 +5,10 @@ import {
   ProductAttributes,
   ProductVariants,
   ProductImages,
+  Product as ServiceProduct,
 } from "../../types/product";
 import ProductDetail from "../../components/ProductDetail/ProductDetail";
-import {
-  Product as ServiceProduct,
-  productPublicService,
-} from "../../services/ProductService";
+import { productPublicService } from "../../services/ProductService";
 
 // Local Product interface for component compatibility
 interface Product {
@@ -90,8 +88,14 @@ const ProductDetailPage: React.FC = () => {
       _id: serviceProduct._id,
       name: serviceProduct.name,
       description: serviceProduct.description,
-      category: serviceProduct.category,
-      brand: serviceProduct.brand,
+      category:
+        typeof serviceProduct.category === "string"
+          ? undefined
+          : serviceProduct.category,
+      brand:
+        typeof serviceProduct.brand === "string"
+          ? undefined
+          : serviceProduct.brand,
       stockStatus: serviceProduct.stockStatus,
       totalQuantity: serviceProduct.totalQuantity,
       rating: serviceProduct.rating,
