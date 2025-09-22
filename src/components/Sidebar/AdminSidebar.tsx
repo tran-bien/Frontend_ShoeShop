@@ -11,6 +11,7 @@ import {
   FaPalette,
   FaTrademark,
   FaGift,
+  FaImage,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -75,6 +76,7 @@ const AdminSidebar = () => {
     },
     { name: "Categories", href: "/admin/categories", icon: GrClipboard },
     { name: "Brand", href: "/admin/brand", icon: FaTrademark },
+    { name: "Banner", href: "/admin/banners", icon: FaImage },
     { name: "Color", href: "/admin/color", icon: FaPalette },
     { name: "Size", href: "/admin/size", icon: FaRulerCombined },
     { name: "Orders", href: "/admin/orders", icon: GrCart },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -10,6 +10,7 @@ import {
 import { Product } from "../../../types/product";
 import { publicCouponService } from "../../../services/CouponService";
 import { Coupon } from "../../../types/coupon";
+import { bannerPublicService } from "../../../services/BannerService";
 import { toast } from "react-hot-toast";
 import {
   FiChevronRight,
@@ -21,6 +22,17 @@ import {
 } from "react-icons/fi";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
 
+interface Banner {
+  _id: string;
+  title: string;
+  image: {
+    url: string;
+  };
+  displayOrder: number;
+  isActive: boolean;
+  link?: string;
+}
+
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -28,42 +40,33 @@ const LandingPage: React.FC = () => {
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
+  const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
-  const bannerImages = [
-    {
-      url: "https://res.cloudinary.com/dlettieyo/image/upload/v1748965117/uppnq8h5ztvk6spbdvl7.jpg",
-    },
-    {
-      url: "https://res.cloudinary.com/dlettieyo/image/upload/v1748965117/ipfybtskefkig8miiy2n.jpg",
-    },
-    {
-      url: "https://res.cloudinary.com/dlettieyo/image/upload/v1748966099/axvwuull9ul3ohkwslm6.jpg",
-    },
-  ];
-
-  const nextBanner = () => {
+  const nextBanner = useCallback(() => {
     setCurrentBannerIndex((prevIndex) =>
-      prevIndex === bannerImages.length - 1 ? 0 : prevIndex + 1
+      prevIndex === banners.length - 1 ? 0 : prevIndex + 1
     );
-  };
+  }, [banners.length]);
 
-  const prevBanner = () => {
+  const prevBanner = useCallback(() => {
     setCurrentBannerIndex((prevIndex) =>
-      prevIndex === 0 ? bannerImages.length - 1 : prevIndex - 1
+      prevIndex === 0 ? banners.length - 1 : prevIndex - 1
     );
-  };
+  }, [banners.length]);
 
   useEffect(() => {
-    // Auto rotate banner mỗi 5 giây
-    const interval = setInterval(() => {
-      nextBanner();
-    }, 5000);
+    // Auto rotate banner mỗi 5 giây - chỉ khi có banners
+    if (banners.length > 1) {
+      const interval = setInterval(() => {
+        nextBanner();
+      }, 5000);
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    }
+  }, [banners, nextBanner]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -78,6 +81,7 @@ const LandingPage: React.FC = () => {
           newArrivalsRes,
           allProductsRes,
           couponsRes,
+          bannersRes,
         ] = await Promise.all([
           productPublicService.getFeaturedProducts({ limit: 8 }),
           productPublicService.getBestSellers({ limit: 8 }),
@@ -85,6 +89,8 @@ const LandingPage: React.FC = () => {
           productPublicService.getProducts({ limit: 8 }),
           // Lấy 5 mã giảm giá để hiển thị trên trang chủ
           publicCouponService.getPublicCoupons({ limit: 5, status: "active" }),
+          // Lấy banner hiển thị
+          bannerPublicService.getPublicBanners(),
         ]);
 
         // Kiểm tra và xử lý dữ liệu trả về từ API
@@ -136,6 +142,13 @@ const LandingPage: React.FC = () => {
           console.log("Public coupons:", coupons);
           setPublicCoupons(coupons);
         }
+
+        // Xử lý dữ liệu banners
+        if (bannersRes.data.success) {
+          const bannerData = bannersRes.data.banners || [];
+          console.log("Banners:", bannerData);
+          setBanners(bannerData);
+        }
       } catch (error) {
         console.error("Error fetching landing page data:", error);
         setError("Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.");
@@ -167,6 +180,22 @@ const LandingPage: React.FC = () => {
       month: "2-digit",
       year: "numeric",
     });
+  };
+
+  // Format currency
+  const handleBannerClick = (banner: Banner) => {
+    if (banner.link) {
+      // Kiểm tra nếu link bắt đầu với http hoặc https thì mở tab mới
+      if (
+        banner.link.startsWith("http://") ||
+        banner.link.startsWith("https://")
+      ) {
+        window.open(banner.link, "_blank");
+      } else {
+        // Nếu là internal link, sử dụng navigate
+        navigate(banner.link);
+      }
+    }
   };
 
   // Format currency
@@ -344,48 +373,76 @@ const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Banner Section */}
-      <section className="py-10 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="relative">
-            <div className="overflow-hidden h-[400px] rounded-lg">
-              <img
-                src={bannerImages[currentBannerIndex].url}
-                alt={`Banner ${currentBannerIndex + 1}`}
-                className="w-full h-full object-cover transition-transform duration-500 ease-out"
-              />
-            </div>
+      {banners.length > 0 && (
+        <section className="py-8 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="relative">
+              {/* Banner container với chiều cao lớn hơn */}
+              <div className="overflow-hidden h-[600px] md:h-[700px] lg:h-[800px] w-full rounded-xl shadow-lg">
+                <div
+                  className="relative w-full h-full cursor-pointer group"
+                  onClick={() => handleBannerClick(banners[currentBannerIndex])}
+                >
+                  <img
+                    src={
+                      banners[currentBannerIndex]?.image?.url ||
+                      "/image/default-banner.jpg"
+                    }
+                    alt={
+                      banners[currentBannerIndex]?.title ||
+                      `Banner ${currentBannerIndex + 1}`
+                    }
+                    className="w-full h-full object-cover transition-all duration-700 ease-in-out transform group-hover:scale-105"
+                  />
+                </div>
+              </div>
 
-            {/* Nút điều hướng trái */}
-            <button
-              onClick={prevBanner}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-all duration-300"
-            >
-              <BsArrowLeft size={24} />
-            </button>
-
-            {/* Nút điều hướng phải */}
-            <button
-              onClick={nextBanner}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-all duration-300"
-            >
-              <BsArrowRight size={24} />
-            </button>
-
-            {/* Chỉ báo (dots) */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {bannerImages.map((_, index) => (
+              {/* Nút điều hướng trái - với hiệu ứng mờ */}
+              {banners.length > 1 && (
                 <button
-                  key={index}
-                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    currentBannerIndex === index ? "bg-white" : "bg-white/50"
-                  }`}
-                  onClick={() => setCurrentBannerIndex(index)}
-                />
-              ))}
+                  onClick={prevBanner}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white p-4 rounded-full transition-all duration-300 backdrop-blur-sm opacity-70 hover:opacity-100 group"
+                >
+                  <BsArrowLeft
+                    size={28}
+                    className="group-hover:scale-110 transition-transform"
+                  />
+                </button>
+              )}
+
+              {/* Nút điều hướng phải - với hiệu ứng mờ */}
+              {banners.length > 1 && (
+                <button
+                  onClick={nextBanner}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white p-4 rounded-full transition-all duration-300 backdrop-blur-sm opacity-70 hover:opacity-100 group"
+                >
+                  <BsArrowRight
+                    size={28}
+                    className="group-hover:scale-110 transition-transform"
+                  />
+                </button>
+              )}
+
+              {/* Chỉ báo (dots) - cải thiện design */}
+              {banners.length > 1 && (
+                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
+                  {banners.map((_, index) => (
+                    <button
+                      key={index}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 border-2 ${
+                        currentBannerIndex === index
+                          ? "bg-white border-white scale-125"
+                          : "bg-transparent border-white/60 hover:border-white hover:scale-110"
+                      }`}
+                      onClick={() => setCurrentBannerIndex(index)}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Mã giảm giá - Layout ngang với height đồng đều */}
       {publicCoupons && publicCoupons.length > 0 && (

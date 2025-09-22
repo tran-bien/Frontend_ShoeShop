@@ -27,6 +27,7 @@ import ColorPage from "../pages/AdminPages/ColorPage/ColorPage";
 import SizePage from "../pages/AdminPages/SizePage/SizePage";
 import PaymentStatusPage from "../pages/OrderConfirmationPage/PaymentStatusPage";
 import VariantPage from "../pages/AdminPages/VariantPage/VariantPage";
+import BannerPage from "../pages/AdminPages/BannerPage";
 import AuthGuard from "../components/Auth/AuthGuard";
 import UnauthorizedPage from "../pages/UnauthorizedPage/UnauthorizedPage";
 import CouponsPage from "../pages/MainPages/Coupons/Coupons";
@@ -62,6 +63,7 @@ const AppRouter = () => {
         <Route path="brand" element={<BrandPage />} />
         <Route path="color" element={<ColorPage />} />
         <Route path="size" element={<SizePage />} />
+        <Route path="banners" element={<BannerPage />} />
         <Route path="orders" element={<ListOrderPage />} />
 
         {/* Routes chỉ dành cho Admin */}

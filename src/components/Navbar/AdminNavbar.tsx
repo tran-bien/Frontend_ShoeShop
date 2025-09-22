@@ -44,6 +44,7 @@ const AdminNavbar = () => {
     if (path.includes("/admin/categories")) return "Quản lý danh mục";
     if (path.includes("/admin/orders")) return "Quản lý đơn hàng";
     if (path.includes("/admin/brand")) return "Quản lý thương hiệu";
+    if (path.includes("/admin/banners")) return "Quản lý banner";
     if (path.includes("/admin/color")) return "Quản lý màu sắc";
     if (path.includes("/admin/size")) return "Quản lý kích thước";
     return "Admin";
