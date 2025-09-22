@@ -8,6 +8,7 @@ import {
   Product as ProductType,
   ProductCardProduct,
 } from "../../types/product";
+import { Brand, Category, Color, Size } from "../../types/common";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   FiMinus,
@@ -21,35 +22,6 @@ import ProductComments from "./ProductComments";
 import ProductCard from "../ProductCard/ProductCard";
 import toast from "react-hot-toast";
 import { FaStar, FaRegStar } from "react-icons/fa";
-
-interface Brand {
-  _id: string;
-  name: string;
-  logo?:
-    | {
-        url: string;
-      }
-    | string;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-}
-
-interface Color {
-  _id: string;
-  name: string;
-  code: string;
-  type: "solid" | "gradient";
-  colors?: string[];
-}
-
-interface Size {
-  _id: string;
-  value: string | number;
-  description?: string;
-}
 
 interface Gender {
   id: string;

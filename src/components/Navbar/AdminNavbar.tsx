@@ -1,5 +1,5 @@
 import default_avatar from "../../assets/default_avatar.png";
-// @ts-ignore
+// @ts-expect-error - Google Fonts import does not have TypeScript declarations
 import "@fontsource/lobster";
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";

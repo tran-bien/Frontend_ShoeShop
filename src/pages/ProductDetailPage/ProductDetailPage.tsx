@@ -5,64 +5,10 @@ import {
   ProductAttributes,
   ProductVariants,
   ProductImages,
-  Product as ServiceProduct,
+  Product,
 } from "../../types/product";
 import ProductDetail from "../../components/ProductDetail/ProductDetail";
 import { productPublicService } from "../../services/ProductService";
-
-// Local Product interface for component compatibility
-interface Product {
-  _id: string;
-  id?: string;
-  name: string;
-  description: string;
-  category?: {
-    _id: string;
-    name: string;
-  };
-  brand?: {
-    _id: string;
-    name: string;
-  };
-  stockStatus: "in_stock" | "low_stock" | "out_of_stock";
-  totalQuantity?: number;
-  rating?: number;
-  numReviews?: number;
-  images?: Array<{
-    url: string;
-    alt?: string;
-    isMain?: boolean;
-    public_id?: string;
-    displayOrder?: number;
-  }>;
-  slug?: string;
-  mainImage?: string;
-  price?: number;
-  variants?: string[] | any[];
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  priceRange?: {
-    min: number | null;
-    max: number | null;
-    isSinglePrice?: boolean;
-  };
-  originalPrice?: number;
-  averageRating?: number;
-  reviewCount?: number;
-  isNew?: boolean;
-  salePercentage?: number;
-  discountPercent?: number;
-  hasDiscount?: boolean;
-  maxDiscountPercent?: number;
-  variantSummary?: {
-    priceRange?: {
-      min: number | null;
-      max: number | null;
-      isSinglePrice?: boolean;
-    };
-  };
-}
 
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -79,47 +25,6 @@ const ProductDetailPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug, location.pathname]);
-
-  // Helper function to convert service product to local product
-  const convertServiceProductToLocal = (
-    serviceProduct: ServiceProduct
-  ): Product => {
-    return {
-      _id: serviceProduct._id,
-      name: serviceProduct.name,
-      description: serviceProduct.description,
-      category:
-        typeof serviceProduct.category === "string"
-          ? undefined
-          : serviceProduct.category,
-      brand:
-        typeof serviceProduct.brand === "string"
-          ? undefined
-          : serviceProduct.brand,
-      stockStatus: serviceProduct.stockStatus,
-      totalQuantity: serviceProduct.totalQuantity,
-      rating: serviceProduct.rating,
-      numReviews: serviceProduct.numReviews,
-      images: serviceProduct.images,
-      slug: serviceProduct.slug,
-      mainImage: serviceProduct.mainImage,
-      price: serviceProduct.price,
-      variants: serviceProduct.variants,
-      isActive: serviceProduct.isActive,
-      createdAt: serviceProduct.createdAt,
-      updatedAt: serviceProduct.updatedAt,
-      priceRange: serviceProduct.priceRange,
-      originalPrice: serviceProduct.originalPrice,
-      averageRating: serviceProduct.averageRating,
-      reviewCount: serviceProduct.reviewCount,
-      isNew: serviceProduct.isNew,
-      salePercentage: serviceProduct.salePercentage,
-      discountPercent: serviceProduct.discountPercent,
-      hasDiscount: serviceProduct.hasDiscount,
-      maxDiscountPercent: serviceProduct.maxDiscountPercent,
-      variantSummary: serviceProduct.variantSummary,
-    };
-  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -144,7 +49,7 @@ const ProductDetailPage: React.FC = () => {
 
         if (response.data.success) {
           const serviceProduct = response.data.product || response.data.data;
-          setProduct(convertServiceProductToLocal(serviceProduct));
+          setProduct(serviceProduct);
 
           // Lấy thông tin về thuộc tính và biến thể
           if (response.data.attributes) {
@@ -170,10 +75,7 @@ const ProductDetailPage: React.FC = () => {
               if (relatedRes.data.success) {
                 const relatedServiceProducts =
                   relatedRes.data.products || relatedRes.data.data || [];
-                const relatedLocalProducts = relatedServiceProducts.map(
-                  convertServiceProductToLocal
-                );
-                setSimilarProducts(relatedLocalProducts);
+                setSimilarProducts(relatedServiceProducts);
               }
             } catch (relatedError) {
               console.error("Error fetching related products:", relatedError);
@@ -246,11 +148,11 @@ const ProductDetailPage: React.FC = () => {
   return (
     <div>
       <ProductDetail
-        product={product}
-        attributes={attributes || undefined}
-        variants={variants || undefined}
+        product={product as any}
+        attributes={attributes as any}
+        variants={variants as any}
         images={images || undefined}
-        similarProducts={similarProducts}
+        similarProducts={similarProducts as any}
       />
     </div>
   );

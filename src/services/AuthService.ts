@@ -3,7 +3,6 @@ import {
   RegisterRequest,
   OtpVerificationRequest,
   ForgotPasswordRequest,
-  ResetPasswordRequest,
   ChangePasswordRequest,
   AuthResponse,
   LoginResponse,
@@ -26,15 +25,11 @@ const authService = {
 
   // Đăng ký
   register: async (data: RegisterRequest) => {
-    try {
-      const response = await axiosInstance.post<AuthResponse>(
-        "/api/v1/auth/register",
-        data
-      );
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.post<AuthResponse>(
+      "/api/v1/auth/register",
+      data
+    );
+    return response;
   },
 
   // Xác thực OTP
@@ -73,17 +68,13 @@ const authService = {
 
   // Refresh token
   refreshToken: async (refreshToken: string) => {
-    try {
-      const response = await axiosInstance.post<AuthResponse>(
-        "/api/v1/auth/refresh-token",
-        {
-          refreshToken,
-        }
-      );
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.post<AuthResponse>(
+      "/api/v1/auth/refresh-token",
+      {
+        refreshToken,
+      }
+    );
+    return response;
   },
 
   // Lấy thông tin user hiện tại
