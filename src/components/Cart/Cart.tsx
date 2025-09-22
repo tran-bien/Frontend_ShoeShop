@@ -158,7 +158,7 @@ const Cart: React.FC = () => {
           couponCode ? { couponCode } : {}
         );
 
-        if (response.data.success) {
+        if (response.data.success && response.data.preview) {
           let preview = response.data.preview;
 
           // Áp dụng optimistic quantities vào preview

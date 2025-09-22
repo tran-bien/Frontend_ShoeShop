@@ -55,8 +55,8 @@ interface Product {
   _id: string;
   name: string;
   description: string;
-  category?: Category;
-  brand?: Brand;
+  category?: Category | string;
+  brand?: Brand | string;
   stockStatus: "in_stock" | "low_stock" | "out_of_stock";
   totalQuantity?: number;
   rating?: number;
@@ -106,12 +106,16 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
           <div className="space-y-2">
             <div className="flex">
               <span className="w-36 text-gray-600">Danh mục:</span>
-              <span className="font-medium">{product.category?.name}</span>
+              <span className="font-medium">
+                {typeof product.category === "object"
+                  ? product.category?.name
+                  : product.category || "Chưa phân loại"}
+              </span>
             </div>
             <div className="flex">
               <span className="w-36 text-gray-600">Thương hiệu:</span>
               <div className="flex items-center">
-                {product.brand?.logo ? (
+                {typeof product.brand === "object" && product.brand?.logo ? (
                   <img
                     src={
                       typeof product.brand.logo === "string"
@@ -122,7 +126,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
                     className="h-6 mr-2 object-contain"
                   />
                 ) : null}
-                <span className="font-medium">{product.brand?.name}</span>
+                <span className="font-medium">
+                  {typeof product.brand === "object"
+                    ? product.brand?.name
+                    : product.brand || "Chưa có thương hiệu"}
+                </span>
               </div>
             </div>
 

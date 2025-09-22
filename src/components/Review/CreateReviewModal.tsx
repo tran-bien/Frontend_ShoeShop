@@ -63,10 +63,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
 
       // Kiểm tra response structure linh hoạt hơn
       const responseData = response.data || response;
-      const isSuccess =
-        responseData.success === true ||
-        response.status === 200 ||
-        response.status === 201;
+      const isSuccess = responseData.success === true;
 
       if (isSuccess) {
         toast.success(responseData.message || "Đánh giá sản phẩm thành công");

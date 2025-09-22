@@ -8,7 +8,7 @@ import {
   Product as ProductType,
   ProductCardProduct,
 } from "../../types/product";
-import { Brand, Category, Color, Size } from "../../types/common";
+import { Color, Size } from "../../types/common";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   FiMinus,
@@ -61,48 +61,6 @@ interface Variant {
   percentDiscount?: number;
 }
 
-interface Product {
-  _id: string;
-  id?: string;
-  name: string;
-  description: string;
-  category?: Category;
-  brand?: Brand;
-  stockStatus: "in_stock" | "low_stock" | "out_of_stock";
-  totalQuantity?: number;
-  rating?: number;
-  numReviews?: number;
-  images?: ProductImage[];
-  slug?: string;
-  mainImage?: string;
-  price?: number;
-  // Add missing properties for compatibility
-  variants?: string[] | any[];
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  priceRange?: {
-    min: number | null;
-    max: number | null;
-    isSinglePrice?: boolean;
-  };
-  originalPrice?: number;
-  averageRating?: number;
-  reviewCount?: number;
-  isNew?: boolean;
-  salePercentage?: number;
-  discountPercent?: number;
-  hasDiscount?: boolean;
-  maxDiscountPercent?: number;
-  variantSummary?: {
-    priceRange?: {
-      min: number | null;
-      max: number | null;
-      isSinglePrice?: boolean;
-    };
-  };
-}
-
 interface ProductAttributes {
   genders?: Gender[];
   colors?: Color[];
@@ -119,11 +77,11 @@ interface ProductAttributes {
 }
 
 interface ProductDetailProps {
-  product: Product;
+  product: ProductType;
   attributes?: ProductAttributes;
   variants?: Record<string, Variant>;
   images?: Record<string, ProductImage[]>;
-  similarProducts?: Product[];
+  similarProducts?: ProductType[];
 }
 
 const ProductDetail: React.FC<ProductDetailProps> = ({
@@ -163,12 +121,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   // Fetch related products
   useEffect(() => {
     const fetchRelatedProducts = async () => {
-      if (!product?._id && !product?.id) return;
+      if (!product?._id) return;
 
       setLoadingRelated(true);
       try {
         const response = await productPublicService.getRelatedProducts(
-          product._id || product.id || "",
+          product._id || "",
           { limit: 8 }
         );
 
@@ -185,7 +143,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     };
 
     fetchRelatedProducts();
-  }, [product?._id, product?.id]);
+  }, [product?._id]);
 
   // Cập nhật hiển thị ảnh theo variant được chọn
   useEffect(() => {
@@ -294,12 +252,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   // Kiểm tra sản phẩm đã có trong wishlist khi component mount hoặc variant thay đổi
   useEffect(() => {
     const checkWishlistStatus = async () => {
-      if (
-        isAuthenticated &&
-        product &&
-        (product._id || product.id) &&
-        selectedColorId
-      ) {
+      if (isAuthenticated && product && product._id && selectedColorId) {
         const variantId = getVariantId();
         if (!variantId) return;
 
@@ -307,8 +260,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           const wishlistResponse = await wishlistService.getWishlist();
           if (wishlistResponse.data && wishlistResponse.data.success) {
             const foundItem = wishlistResponse.data.wishlist.find((item) => {
-              const productIdMatches =
-                item.product._id === (product._id || product.id);
+              const productIdMatches = item.product._id === product._id;
               const variantIdMatches =
                 item.variant && item.variant._id === variantId;
               return productIdMatches && variantIdMatches;
@@ -497,7 +449,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         }
       } else {
         // Thêm vào wishlist
-        const productId = product._id || product.id || "";
+        const productId = product._id || "";
         const response = await wishlistService.addToWishlist(
           productId,
           variantId
@@ -524,7 +476,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             // Tìm item mới thêm vào
             const newItem = wishlistItems.find(
               (item) =>
-                item.product._id === (product._id || product.id) &&
+                item.product._id === product._id &&
                 item.variant?._id === variantId
             );
 
@@ -550,14 +502,20 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
   // Convert ProductType to ProductCardProduct
   const convertToProductCardFormat = (
-    products: Product[]
+    products: ProductType[]
   ): ProductCardProduct[] => {
     return products.map((p) => {
       // Calculate price range safely
       const variants = Array.isArray(p.variants) ? p.variants : [];
       const prices = variants
-        .filter((v) => v && typeof v === "object" && v.priceFinal !== undefined)
-        .map((v) => v.priceFinal);
+        .filter(
+          (v) =>
+            v &&
+            typeof v === "object" &&
+            typeof v !== "string" &&
+            "priceFinal" in v
+        )
+        .map((v) => (v as any).priceFinal);
 
       // Fallback to variantSummary if available
       let priceRange = {
@@ -597,15 +555,19 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
       // Xử lý brand.logo để đảm bảo đúng định dạng yêu cầu
       let brandLogo: { url: string; public_id: string } | undefined = undefined;
-      if (p.brand?.logo) {
-        if (typeof p.brand.logo === "string") {
-          brandLogo = { url: p.brand.logo, public_id: "" };
-        } else if (typeof p.brand.logo === "object") {
-          const logoObj = p.brand.logo as any;
-          brandLogo = {
-            url: logoObj.url || "",
-            public_id: logoObj.public_id || "",
-          };
+      const brand = p.brand;
+      if (brand && typeof brand === "object" && "logo" in brand) {
+        const brandObj = brand as any;
+        if (brandObj.logo) {
+          if (typeof brandObj.logo === "string") {
+            brandLogo = { url: brandObj.logo, public_id: "" };
+          } else if (typeof brandObj.logo === "object") {
+            const logoObj = brandObj.logo as any;
+            brandLogo = {
+              url: logoObj.url || "",
+              public_id: logoObj.public_id || "",
+            };
+          }
         }
       }
 
@@ -622,12 +584,15 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               displayOrder: img.displayOrder || 0,
             }))
           : [],
-        category: p.category || { _id: "", name: "Chưa phân loại" },
-        brand: {
-          _id: p.brand?._id || "",
-          name: p.brand?.name || "Chưa có thương hiệu",
-          logo: brandLogo, // Sử dụng brandLogo đã được xử lý
-        },
+        category: typeof p.category === "object" ? p.category : undefined,
+        brand:
+          typeof p.brand === "object"
+            ? {
+                _id: (p.brand as any)?._id || "",
+                name: (p.brand as any)?.name || "Chưa có thương hiệu",
+                logo: brandLogo, // Sử dụng brandLogo đã được xử lý
+              }
+            : undefined,
         priceRange: {
           min: priceRange.min || 0,
           max: priceRange.max || 0,
@@ -1053,7 +1018,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             <div className="py-4">
               {activeTab === "details" && <ProductInfo product={product} />}
               {activeTab === "reviews" && (
-                <ProductComments productId={product._id || product.id || ""} />
+                <ProductComments productId={product._id || ""} />
               )}
             </div>
           </div>

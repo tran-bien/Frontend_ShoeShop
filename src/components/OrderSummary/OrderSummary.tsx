@@ -121,7 +121,7 @@ const OrderSummary: React.FC = () => {
         // Preview đơn hàng KHÔNG có mã giảm giá ban đầu
         const previewRes = await cartApi.previewBeforeOrder({});
 
-        if (previewRes.data.success) {
+        if (previewRes.data.success && previewRes.data.preview) {
           setPreviewData(previewRes.data.preview);
         }
       } catch (error: any) {
@@ -167,7 +167,7 @@ const OrderSummary: React.FC = () => {
         couponCode: couponCode.trim(),
       });
 
-      if (previewRes.data.success) {
+      if (previewRes.data.success && previewRes.data.preview) {
         setPreviewData(previewRes.data.preview);
         if (previewRes.data.preview.couponApplied) {
           toast.success("Áp dụng mã giảm giá thành công!");

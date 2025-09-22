@@ -18,7 +18,8 @@ import {
   LogoutOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
-import authService, { SessionInfo } from "../../services/AuthService";
+import authService from "../../services/AuthService";
+import { SessionInfo } from "../../types/auth";
 import { useAuth } from "../../hooks/useAuth";
 
 const { Text } = Typography;
