@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { discountApi } from "../../../services/DiscountService";
+import { couponApi } from "../../../services/CouponService";
 
 interface AddDiscountProps {
   handleClose: () => void;
@@ -71,7 +71,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
       data.maxDiscount = form.maxDiscount;
     }
     try {
-      await discountApi.createAdminCoupon(data);
+      await couponApi.adminCreateCoupon(data);
       handleClose();
     } catch (err) {
       setError("Thêm phiếu giảm giá thất bại!");

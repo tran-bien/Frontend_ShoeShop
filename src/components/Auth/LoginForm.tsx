@@ -4,8 +4,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 // @ts-expect-error - Font import doesn't have TypeScript types
 import "@fontsource/lobster";
-// Đảm bảo import đúng từ service
-import { register as registerUser } from "../../services/AuthenticationService";
+import authService from "../../services/AuthService";
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
@@ -80,11 +79,11 @@ const LoginForm: React.FC = () => {
   const handleRegister = async () => {
     console.log("Hàm handleRegister được gọi");
     try {
-      const response = await registerUser(
-        registerName,
-        registerEmail,
-        registerPassword
-      );
+      const response = await authService.register({
+        name: registerName,
+        email: registerEmail,
+        password: registerPassword,
+      });
       console.log("Phản hồi từ API:", response);
 
       toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");

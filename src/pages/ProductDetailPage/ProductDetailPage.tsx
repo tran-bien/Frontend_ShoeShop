@@ -10,7 +10,7 @@ import ProductDetail from "../../components/ProductDetail/ProductDetail";
 import {
   Product as ServiceProduct,
   productPublicService,
-} from "../../services/ProductServiceV2";
+} from "../../services/ProductService";
 
 // Local Product interface for component compatibility
 interface Product {

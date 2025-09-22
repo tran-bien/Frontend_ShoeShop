@@ -1,6 +1,6 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
 
-const API_PREFIX = "http://localhost:5005/api/v1/admin/colors";
+const API_PREFIX = "/api/v1/admin/colors";
 
 export const colorApi = {
   getAll: (params?: any) => axiosInstanceAuth.get(`${API_PREFIX}`, { params }),

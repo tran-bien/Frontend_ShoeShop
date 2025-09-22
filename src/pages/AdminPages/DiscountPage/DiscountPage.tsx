@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
-import { discountApi } from "../../../services/DiscountService";
+import { couponApi } from "../../../services/CouponService";
 import AddDiscount from "./AddDiscount";
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -49,8 +49,8 @@ const DiscountPage = () => {
 
   const fetchDiscounts = async () => {
     try {
-      const res = await discountApi.getAllAdminCoupons();
-      const coupons = res.data.coupons || res.data.data || [];
+      const res = await couponApi.adminGetCoupons();
+      const coupons = res.data.data || [];
       setDiscounts(
         coupons.map((c: any) => ({
           id: c._id,
@@ -109,7 +109,7 @@ const DiscountPage = () => {
       data.maxDiscount = form.maxDiscount;
     }
     try {
-      await discountApi.updateAdminCoupon(editDiscount.id, data);
+      await couponApi.adminUpdateCoupon(editDiscount.id, data);
       setShowEdit(false);
       setEditDiscount(null);
       setForm(initialForm);
@@ -123,7 +123,7 @@ const DiscountPage = () => {
   const handleDeleteDiscount = async (discount: Discount) => {
     if (!window.confirm("Bạn chắc chắn muốn xóa coupon này?")) return;
     try {
-      await discountApi.deleteAdminCoupon(discount.id);
+      await couponApi.adminDeleteCoupon(discount.id);
       fetchDiscounts();
     } catch {
       alert("Xóa coupon thất bại!");
@@ -131,9 +131,12 @@ const DiscountPage = () => {
   };
 
   // Đổi trạng thái
-  const handleUpdateStatus = async (discount: Discount, status: string) => {
+  const handleUpdateStatus = async (
+    discount: Discount,
+    status: "active" | "inactive" | "archived"
+  ) => {
     try {
-      await discountApi.updateAdminCouponStatus(discount.id, status);
+      await couponApi.adminUpdateCouponStatus(discount.id, status);
       fetchDiscounts();
     } catch {
       alert("Cập nhật trạng thái thất bại!");

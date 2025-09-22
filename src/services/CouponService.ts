@@ -152,6 +152,7 @@ export const couponApi = {
   adminCreateCoupon: adminCouponService.createCoupon,
   adminUpdateCoupon: adminCouponService.updateCoupon,
   adminDeleteCoupon: adminCouponService.deleteCoupon,
+  adminUpdateCouponStatus: adminCouponService.updateCouponStatus,
 };
 
 export default userCouponService;

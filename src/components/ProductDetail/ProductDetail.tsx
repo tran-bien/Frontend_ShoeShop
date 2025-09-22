@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import cartService from "../../services/CartServiceV2";
+import cartService from "../../services/CartService";
 import wishlistService from "../../services/WishlistService";
-import { productPublicService } from "../../services/ProductServiceV2";
+import { productPublicService } from "../../services/ProductService";
 import {
   Product as ProductType,
   ProductCardProduct,
-} from "../../services/ProductServiceV2";
+} from "../../services/ProductService";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   FiMinus,

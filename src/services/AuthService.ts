@@ -179,6 +179,11 @@ const authService = {
     );
   },
 
+  // Đăng xuất hiện tại (session hiện tại)
+  logout: async () => {
+    return axiosInstanceAuth.delete("/api/v1/auth/logout");
+  },
+
   // Đăng xuất session cụ thể
   logoutSession: async (sessionId: string) => {
     return axiosInstanceAuth.delete(`/api/v1/auth/sessions/${sessionId}`);

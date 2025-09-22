@@ -1,6 +1,6 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
 
-const API_PREFIX = "http://localhost:5005/api/v1/admin/brands";
+const API_PREFIX = "/api/v1/admin/brands";
 
 export const brandApi = {
   // Lấy tất cả thương hiệu

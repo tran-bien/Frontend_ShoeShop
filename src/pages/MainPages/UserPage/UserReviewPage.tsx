@@ -31,7 +31,7 @@ import {
   Review,
   ReviewableProduct,
   UpdateReviewData,
-} from "../../../services/ReviewServiceV2";
+} from "../../../services/ReviewService";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import Sidebar from "../../../components/User/Sidebar";

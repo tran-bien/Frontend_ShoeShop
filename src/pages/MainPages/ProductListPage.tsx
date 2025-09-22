@@ -13,7 +13,7 @@ import {
   Product,
   ProductQueryParams,
   convertToProductCardProduct,
-} from "../../services/ProductServiceV2";
+} from "../../services/ProductService";
 import { toast } from "react-hot-toast";
 
 // Helper function để xử lý split cho string hoặc array

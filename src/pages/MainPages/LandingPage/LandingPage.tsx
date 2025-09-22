@@ -7,8 +7,8 @@ import {
   Product,
   productPublicService,
   convertToProductCardProduct,
-} from "../../../services/ProductServiceV2";
-import { publicCouponService } from "../../../services/CouponServiceV2";
+} from "../../../services/ProductService";
+import { publicCouponService } from "../../../services/CouponService";
 import { Coupon } from "../../../types/coupon";
 import { toast } from "react-hot-toast";
 import {

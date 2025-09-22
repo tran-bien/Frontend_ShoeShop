@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { FaHeart, FaTrash } from "react-icons/fa";
 import wishlistService from "../../../services/WishlistService";
 import ProductCard from "../../../components/ProductCard/ProductCard";
-import { convertToProductCardProduct } from "../../../services/ProductServiceV2";
+import { convertToProductCardProduct } from "../../../services/ProductService";
 import { useAuth } from "../../../hooks/useAuth";
 import Sidebar from "../../../components/User/Sidebar";
 

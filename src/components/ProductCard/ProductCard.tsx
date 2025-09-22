@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ProductCardProduct } from "../../services/ProductServiceV2";
+import { ProductCardProduct } from "../../services/ProductService";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
 interface ProductCardProps {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { publicCouponService } from "../../../services/CouponServiceV2";
+import { publicCouponService } from "../../../services/CouponService";
 import { Coupon } from "../../../types/coupon";
 import { toast } from "react-hot-toast";
 import {

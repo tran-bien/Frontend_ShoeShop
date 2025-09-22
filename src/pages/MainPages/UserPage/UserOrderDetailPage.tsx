@@ -4,7 +4,7 @@ import Sidebar from "../../../components/User/Sidebar";
 import OrderCard from "../../../components/User/OrderCard";
 import CancelOrderModal from "../../../components/Modal/CancelOrderModal";
 import RepayOrderModal from "../../../components/Modal/RepayOrderModal";
-import { userOrderService, Order } from "../../../services/OrderServiceV2";
+import { userOrderService, Order } from "../../../services/OrderService";
 // Thay đổi từ react-toastify sang react-hot-toast
 import toast from "react-hot-toast";
 import {

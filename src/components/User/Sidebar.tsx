@@ -10,7 +10,7 @@ import {
   FaLaptopCode,
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import { authenticateApi } from "../../services/AuthenticationService";
+import authService from "../../services/AuthService";
 import Cookie from "js-cookie";
 import toast from "react-hot-toast";
 
@@ -20,7 +20,7 @@ const Sidebar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await authenticateApi.logout();
+      await authService.logout();
       localStorage.removeItem("accessToken");
       Cookie.remove("token");
       toast.success("Đăng xuất thành công");

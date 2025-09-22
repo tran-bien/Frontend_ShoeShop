@@ -11,7 +11,7 @@ import {
 import {
   paymentService,
   VnpayCallbackParams,
-} from "../../services/OrderServiceV2";
+} from "../../services/OrderService";
 
 interface PaymentStatus {
   status: "loading" | "success" | "failed" | "error";

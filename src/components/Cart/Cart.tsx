@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { cartService } from "../../services/CartServiceV2";
+import { cartService } from "../../services/CartService";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../../hooks/useAuth";
 import {

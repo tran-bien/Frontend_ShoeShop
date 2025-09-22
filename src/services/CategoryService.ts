@@ -1,6 +1,6 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
 
-const API_PREFIX = "http://localhost:5005/api/v1/admin/categories";
+const API_PREFIX = "/api/v1/admin/categories";
 
 export const categoryApi = {
   // Lấy tất cả danh mục

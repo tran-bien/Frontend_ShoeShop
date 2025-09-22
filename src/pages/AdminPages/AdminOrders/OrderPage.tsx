@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { adminOrderService } from "../../../services/OrderServiceV2";
+import { adminOrderService } from "../../../services/OrderService";
 import CancelRequestList from "./CancelRequestList";
 import { useAuth } from "../../../hooks/useAuth";
 

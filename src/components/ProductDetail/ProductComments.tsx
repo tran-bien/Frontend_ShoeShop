@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { reviewApi, Review } from "../../services/ReviewServiceV2";
+import { reviewApi, Review } from "../../services/ReviewService";
 import { FaHeart, FaRegHeart, FaStar, FaRegStar, FaUser } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-hot-toast";

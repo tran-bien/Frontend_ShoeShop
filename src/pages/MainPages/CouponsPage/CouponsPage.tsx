@@ -3,8 +3,8 @@ import { toast } from "react-hot-toast";
 import {
   publicCouponService,
   userCouponService,
-} from "../../../services/CouponServiceV2";
-import type { Coupon } from "../../../services/CouponServiceV2";
+} from "../../../services/CouponService";
+import type { Coupon } from "../../../services/CouponService";
 import { useAuth } from "../../../hooks/useAuth";
 
 const CouponsPage: React.FC = () => {

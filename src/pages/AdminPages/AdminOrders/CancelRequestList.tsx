@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { adminOrderService } from "../../../services/OrderServiceV2";
+import { adminOrderService } from "../../../services/OrderService";
 
 interface CancelRequest {
   _id: string;
