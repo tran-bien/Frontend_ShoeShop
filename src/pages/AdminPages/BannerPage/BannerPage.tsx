@@ -126,21 +126,20 @@ const BannerPage: React.FC = () => {
 
       // Kiểm tra nếu vị trí không thay đổi
       if (currentBanner.displayOrder === newOrder) {
+        toast.error("Banner đã ở vị trí này rồi!");
         return; // Không cần cập nhật nếu vị trí giống nhau
       }
 
-      // Kiểm tra xung đột vị trí trên frontend trước khi gọi API
-      if (currentBanner.isActive) {
-        const conflictingBanner = banners.find(
-          (b) => b._id !== bannerId && b.displayOrder === newOrder && b.isActive
-        );
+      // Kiểm tra xung đột vị trí với banner active khác trên frontend trước khi gọi API
+      const conflictingBanner = banners.find(
+        (b) => b._id !== bannerId && b.displayOrder === newOrder && b.isActive
+      );
 
-        if (conflictingBanner) {
-          toast.error(
-            `Vị trí ${newOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
-          );
-          return;
-        }
+      if (conflictingBanner) {
+        toast.error(
+          `Vị trí ${newOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
+        );
+        return;
       }
 
       // Cập nhật displayOrder của banner
@@ -148,7 +147,7 @@ const BannerPage: React.FC = () => {
         displayOrder: newOrder,
       });
       toast.success(
-        `Đã chuyển banner "${currentBanner.title}" đến vị trí ${newOrder}!`
+        `Đã chuyển banner "${currentBanner.title}" đến vị trí ${newOrder}`
       );
       fetchBanners();
     } catch (error: unknown) {
