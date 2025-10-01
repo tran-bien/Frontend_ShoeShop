@@ -25,6 +25,8 @@ import DiscountPage from "../pages/AdminPages/DiscountPage/DiscountPage";
 import BrandPage from "../pages/AdminPages/BrandPage/BrandPage";
 import ColorPage from "../pages/AdminPages/ColorPage/ColorPage";
 import SizePage from "../pages/AdminPages/SizePage/SizePage";
+import MaterialPage from "../pages/AdminPages/MaterialPage/MaterialPage";
+import UseCasePage from "../pages/AdminPages/UseCasePage/UseCasePage";
 import PaymentStatusPage from "../pages/OrderConfirmationPage/PaymentStatusPage";
 import VariantPage from "../pages/AdminPages/VariantPage/VariantPage";
 import BannerPage from "../pages/AdminPages/BannerPage";
@@ -63,6 +65,8 @@ const AppRouter = () => {
         <Route path="brand" element={<BrandPage />} />
         <Route path="color" element={<ColorPage />} />
         <Route path="size" element={<SizePage />} />
+        <Route path="material" element={<MaterialPage />} />
+        <Route path="usecase" element={<UseCasePage />} />
         <Route path="banners" element={<BannerPage />} />
         <Route path="orders" element={<ListOrderPage />} />
 
