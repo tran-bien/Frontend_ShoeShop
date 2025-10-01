@@ -34,6 +34,7 @@ const MaterialPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState(""); // Input tạm thời cho debounce
   const [totalCount, setTotalCount] = useState(0);
   const [activeCount, setActiveCount] = useState(0);
   const [inactiveCount, setInactiveCount] = useState(0);
@@ -45,18 +46,29 @@ const MaterialPage: React.FC = () => {
     setIsSearchVisible(!isSearchVisible);
     if (isSearchVisible) {
       setSearchQuery("");
+      setSearchInput("");
       setCurrentPage(1);
     }
   };
 
+  // Debounce search query - chỉ search sau khi user ngừng gõ 500ms
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSearchQuery(searchInput);
+      setCurrentPage(1);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1);
+    setSearchInput(e.target.value);
   };
 
   const handleBack = () => {
     setIsSearchVisible(false);
     setSearchQuery("");
+    setSearchInput("");
     setCurrentPage(1);
   };
 
@@ -688,7 +700,7 @@ const MaterialPage: React.FC = () => {
             />
             <input
               type="text"
-              value={searchQuery}
+              value={searchInput}
               onChange={handleSearchChange}
               placeholder="Tìm theo tên chất liệu..."
               className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
