@@ -29,6 +29,9 @@ export const materialApi = {
   // Toggle status
   toggleStatus: (id: string, data: { isActive: boolean }) =>
     axiosInstanceAuth.patch(`${API_PREFIX}/${id}/status`, data),
+
+  // Get stats - lấy thống kê tổng hợp
+  getStats: () => axiosInstanceAuth.get(`${API_PREFIX}/stats`),
 };
 
 export default materialApi;

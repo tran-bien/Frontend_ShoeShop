@@ -16,20 +16,24 @@ interface UseCase {
 
 const UseCasePage: React.FC = () => {
   const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
-  const [useCases, setUseCases] = useState<UseCase[]>([]);
+  const [UseCases, setUseCases] = useState<UseCase[]>([]);
   const [deletedUseCases, setDeletedUseCases] = useState<UseCase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
   const [selectedUseCase, setSelectedUseCase] = useState<UseCase | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [showDeleted, setShowDeleted] = useState<boolean>(false);
 
-  // Pagination & Filter
+  // Pagination & Filter & Stats
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [totalCount, setTotalCount] = useState(0);
+  const [activeCount, setActiveCount] = useState(0);
+  const [inactiveCount, setInactiveCount] = useState(0);
   const limit = 10;
 
   const fetchUseCases = async () => {
@@ -40,11 +44,25 @@ const UseCasePage: React.FC = () => {
         limit,
         name: searchQuery || undefined,
       });
-      setUseCases(response.data.data || []);
-      setTotalPages(response.data.pagination?.totalPages || 1);
+      const data = response.data.data || [];
+      setUseCases(data);
+      setTotalPages(response.data.totalPages || 1);
+
+      // Lấy stats tổng thể (không phân trang) để hiển thị chính xác
+      const statsResponse = await useCaseApi.getAll({
+        page: 1,
+        limit: 1000, // Lấy tất cả để tính stats
+      });
+      const allUseCases = statsResponse.data.data || [];
+      setTotalCount(statsResponse.data.total || 0);
+      setActiveCount(allUseCases.filter((m: UseCase) => m.isActive).length);
+      setInactiveCount(allUseCases.filter((m: UseCase) => !m.isActive).length);
     } catch (error) {
       console.error("Error fetching UseCases:", error);
       setUseCases([]);
+      setTotalCount(0);
+      setActiveCount(0);
+      setInactiveCount(0);
     } finally {
       setLoading(false);
     }
@@ -102,8 +120,8 @@ const UseCasePage: React.FC = () => {
     }
   };
 
-  const handleDeleteUseCase = (item: UseCase) => {
-    setSelectedUseCase(item);
+  const handleDeleteUseCase = (useCase: UseCase) => {
+    setSelectedUseCase(useCase);
     setShowDeleteModal(true);
   };
 
@@ -409,6 +427,190 @@ const UseCasePage: React.FC = () => {
     );
   };
 
+  // View Detail Modal
+  const ViewDetailModal = () => {
+    if (!showDetailModal || !selectedUseCase) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl max-w-2xl w-full p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">
+              Chi Tiết Chất Liệu
+            </h3>
+            <button
+              onClick={() => {
+                setShowDetailModal(false);
+                setSelectedUseCase(null);
+              }}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            {/* Tên và Trạng thái */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">
+                    Tên Chất Liệu
+                  </h4>
+                  <p className="text-xl font-bold text-gray-900">
+                    {selectedUseCase.name}
+                  </p>
+                </div>
+                <div>
+                  {selectedUseCase.deletedAt ? (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      Đã xóa
+                    </span>
+                  ) : selectedUseCase.isActive ? (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      Đang hoạt động
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                      Đã vô hiệu hóa
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Mô tả */}
+            <div className="border rounded-lg p-4">
+              <h4 className="text-sm font-medium text-gray-500 mb-2">Mô Tả</h4>
+              <p className="text-gray-900">
+                {selectedUseCase.description || "Không có mô tả"}
+              </p>
+            </div>
+
+            {/* Thông tin chi tiết */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="border rounded-lg p-4">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                  Ngày Tạo
+                </h4>
+                <p className="text-gray-900">
+                  {new Date(selectedUseCase.createdAt).toLocaleString("vi-VN")}
+                </p>
+              </div>
+              <div className="border rounded-lg p-4">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                  Cập Nhật Lần Cuối
+                </h4>
+                <p className="text-gray-900">
+                  {new Date(selectedUseCase.updatedAt).toLocaleString("vi-VN")}
+                </p>
+              </div>
+            </div>
+
+            {/* Nếu đã xóa, hiển thị thông tin người xóa */}
+            {selectedUseCase.deletedAt && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <h4 className="text-sm font-medium text-red-700 mb-2">
+                  Thông Tin Xóa
+                </h4>
+                <div className="space-y-1 text-sm text-red-800">
+                  <p>
+                    Ngày xóa:{" "}
+                    {new Date(selectedUseCase.deletedAt).toLocaleString(
+                      "vi-VN"
+                    )}
+                  </p>
+                  {selectedUseCase.deletedBy && (
+                    <p>
+                      Người xóa:{" "}
+                      {typeof selectedUseCase.deletedBy === "object"
+                        ? selectedUseCase.deletedBy.name || "N/A"
+                        : selectedUseCase.deletedBy}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4 border-t">
+              {!selectedUseCase.deletedAt && (
+                <>
+                  {canUpdate() && (
+                    <button
+                      onClick={() => {
+                        setShowDetailModal(false);
+                        setShowEditModal(true);
+                      }}
+                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
+                      </svg>
+                      Chỉnh sửa
+                    </button>
+                  )}
+                  {canToggleStatus() && (
+                    <button
+                      onClick={() => {
+                        setShowDetailModal(false);
+                        handleToggleStatus(
+                          selectedUseCase._id,
+                          selectedUseCase.isActive
+                        );
+                      }}
+                      className={`flex-1 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 ${
+                        selectedUseCase.isActive
+                          ? "bg-yellow-600 hover:bg-yellow-700 text-white"
+                          : "bg-green-600 hover:bg-green-700 text-white"
+                      }`}
+                    >
+                      {selectedUseCase.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
+                    </button>
+                  )}
+                </>
+              )}
+              <button
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setSelectedUseCase(null);
+                }}
+                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading && currentPage === 1) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -417,7 +619,7 @@ const UseCasePage: React.FC = () => {
     );
   }
 
-  const displayUseCases = showDeleted ? deletedUseCases : useCases;
+  const displayUseCases = showDeleted ? deletedUseCases : UseCases;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -528,9 +730,7 @@ const UseCasePage: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-900">
                 Tổng Chất Liệu
               </h3>
-              <p className="text-2xl font-bold text-blue-600">
-                {useCases.length}
-              </p>
+              <p className="text-2xl font-bold text-blue-600">{totalCount}</p>
             </div>
           </div>
         </div>
@@ -558,9 +758,7 @@ const UseCasePage: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-900">
                 Đang Hoạt Động
               </h3>
-              <p className="text-2xl font-bold text-green-600">
-                {useCases.filter((m: UseCase) => m.isActive).length}
-              </p>
+              <p className="text-2xl font-bold text-green-600">{activeCount}</p>
             </div>
           </div>
         </div>
@@ -589,7 +787,7 @@ const UseCasePage: React.FC = () => {
                 Đã Vô Hiệu Hóa
               </h3>
               <p className="text-2xl font-bold text-gray-600">
-                {useCases.filter((m: UseCase) => !m.isActive).length}
+                {inactiveCount}
               </p>
             </div>
           </div>
@@ -649,7 +847,7 @@ const UseCasePage: React.FC = () => {
       ) : (
         <>
           <div className="space-y-4">
-            {displayUseCases.map((item: UseCase) => (
+            {displayUseCases.map((item) => (
               <div
                 key={item._id}
                 className="bg-white rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 p-6"
@@ -695,9 +893,37 @@ const UseCasePage: React.FC = () => {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     {!showDeleted ? (
                       <>
+                        <button
+                          onClick={() => {
+                            setSelectedUseCase(item);
+                            setShowDetailModal(true);
+                          }}
+                          className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                          Chi tiết
+                        </button>
                         {canUpdate() && (
                           <button
                             onClick={() => {
@@ -719,7 +945,7 @@ const UseCasePage: React.FC = () => {
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                               />
                             </svg>
-                            Chỉnh sửa
+                            Sửa
                           </button>
                         )}
                         {canDelete() && (
@@ -767,15 +993,18 @@ const UseCasePage: React.FC = () => {
                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                               />
                             </svg>
-                            {item.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
+                            {item.isActive ? "Tắt" : "Bật"}
                           </button>
                         )}
                       </>
                     ) : (
-                      canUpdate() && (
+                      <>
                         <button
-                          onClick={() => handleRestoreUseCase(item._id)}
-                          className="px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 text-sm font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-2"
+                          onClick={() => {
+                            setSelectedUseCase(item);
+                            setShowDetailModal(true);
+                          }}
+                          className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-2"
                         >
                           <svg
                             className="w-4 h-4"
@@ -787,12 +1016,39 @@ const UseCasePage: React.FC = () => {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                             />
                           </svg>
-                          Khôi phục
+                          Chi tiết
                         </button>
-                      )
+                        {canUpdate() && (
+                          <button
+                            onClick={() => handleRestoreUseCase(item._id)}
+                            className="px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 text-sm font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-2"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                              />
+                            </svg>
+                            Khôi phục
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -831,6 +1087,7 @@ const UseCasePage: React.FC = () => {
       <CreateModal />
       <EditModal />
       <DeleteModal />
+      <ViewDetailModal />
     </div>
   );
 };

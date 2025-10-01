@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { materialApi } from "../../../services/MaterialService";
+import { useCaseApi } from "../../../services/UseCaseService";
 import { useAuth } from "../../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 
-interface Material {
+interface UseCase {
   _id: string;
   name: string;
   description: string;
@@ -14,18 +14,16 @@ interface Material {
   updatedAt: string;
 }
 
-const MaterialPage: React.FC = () => {
+const UseCasePage: React.FC = () => {
   const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
-  const [materials, setMaterials] = useState<Material[]>([]);
-  const [deletedMaterials, setDeletedMaterials] = useState<Material[]>([]);
+  const [useCases, setUseCases] = useState<UseCase[]>([]);
+  const [deletedUseCases, setDeletedUseCases] = useState<UseCase[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
-  const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
-    null
-  );
+  const [selectedUseCase, setSelectedUseCase] = useState<UseCase | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [showDeleted, setShowDeleted] = useState<boolean>(false);
 
@@ -38,53 +36,37 @@ const MaterialPage: React.FC = () => {
   const [inactiveCount, setInactiveCount] = useState(0);
   const limit = 10;
 
-  const fetchMaterials = async () => {
+  const fetchUseCases = async () => {
     try {
       setLoading(true);
-      const response = await materialApi.getAll({
+      const response = await useCaseApi.getAll({
         page: currentPage,
         limit,
         name: searchQuery || undefined,
       });
-      const data = response.data.data || [];
-      setMaterials(data);
-      setTotalPages(response.data.totalPages || 1);
-
-      // Lấy stats tổng thể (không phân trang) để hiển thị chính xác
-      const statsResponse = await materialApi.getAll({
-        page: 1,
-        limit: 1000, // Lấy tất cả để tính stats
-      });
-      const allMaterials = statsResponse.data.data || [];
-      setTotalCount(statsResponse.data.total || 0);
-      setActiveCount(allMaterials.filter((m: Material) => m.isActive).length);
-      setInactiveCount(
-        allMaterials.filter((m: Material) => !m.isActive).length
-      );
+      setUseCases(response.data.data || []);
+      setTotalPages(response.data.pagination?.totalPages || 1);
     } catch (error) {
-      console.error("Error fetching materials:", error);
-      setMaterials([]);
-      setTotalCount(0);
-      setActiveCount(0);
-      setInactiveCount(0);
+      console.error("Error fetching UseCases:", error);
+      setUseCases([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchDeletedMaterials = async () => {
+  const fetchDeletedUseCases = async () => {
     try {
       setLoading(true);
-      const response = await materialApi.getDeleted({
+      const response = await useCaseApi.getDeleted({
         page: currentPage,
         limit,
         name: searchQuery || undefined,
       });
-      setDeletedMaterials(response.data.data || []);
+      setDeletedUseCases(response.data.data || []);
       setTotalPages(response.data.pagination?.totalPages || 1);
     } catch (error) {
-      console.error("Error fetching deleted materials:", error);
-      setDeletedMaterials([]);
+      console.error("Error fetching deleted UseCases:", error);
+      setDeletedUseCases([]);
     } finally {
       setLoading(false);
     }
@@ -92,24 +74,24 @@ const MaterialPage: React.FC = () => {
 
   useEffect(() => {
     if (showDeleted) {
-      fetchDeletedMaterials();
+      fetchDeletedUseCases();
     } else {
-      fetchMaterials();
+      fetchUseCases();
     }
   }, [currentPage, showDeleted, searchQuery]);
 
   const handleToggleStatus = async (
-    materialId: string,
+    UseCaseId: string,
     currentStatus: boolean
   ) => {
     try {
-      await materialApi.toggleStatus(materialId, { isActive: !currentStatus });
+      await useCaseApi.toggleStatus(UseCaseId, { isActive: !currentStatus });
       toast.success(
         `${currentStatus ? "Vô hiệu hóa" : "Kích hoạt"} chất liệu thành công!`
       );
-      fetchMaterials();
+      fetchUseCases();
     } catch (error: unknown) {
-      console.error("Error toggling material status:", error);
+      console.error("Error toggling UseCase status:", error);
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
           response?: { status?: number; data?: { message?: string } };
@@ -124,23 +106,23 @@ const MaterialPage: React.FC = () => {
     }
   };
 
-  const handleDeleteMaterial = (material: Material) => {
-    setSelectedMaterial(material);
+  const handleDeleteUseCase = (item: UseCase) => {
+    setSelectedUseCase(item);
     setShowDeleteModal(true);
   };
 
-  const confirmDeleteMaterial = async () => {
-    if (!selectedMaterial) return;
+  const confirmDeleteUseCase = async () => {
+    if (!selectedUseCase) return;
 
     try {
       setSubmitting(true);
-      await materialApi.delete(selectedMaterial._id);
+      await useCaseApi.delete(selectedUseCase._id);
       toast.success("Xóa chất liệu thành công!");
-      fetchMaterials();
+      fetchUseCases();
       setShowDeleteModal(false);
-      setSelectedMaterial(null);
+      setSelectedUseCase(null);
     } catch (error: unknown) {
-      console.error("Error deleting material:", error);
+      console.error("Error deleting UseCase:", error);
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
           response?: { data?: { message?: string } };
@@ -157,13 +139,13 @@ const MaterialPage: React.FC = () => {
     }
   };
 
-  const handleRestoreMaterial = async (materialId: string) => {
+  const handleRestoreUseCase = async (UseCaseId: string) => {
     try {
-      await materialApi.restore(materialId);
+      await useCaseApi.restore(UseCaseId);
       toast.success("Khôi phục chất liệu thành công!");
-      fetchDeletedMaterials();
+      fetchDeletedUseCases();
     } catch (error: unknown) {
-      console.error("Error restoring material:", error);
+      console.error("Error restoring UseCase:", error);
       if (error && typeof error === "object" && "response" in error) {
         const axiosError = error as {
           response?: { data?: { message?: string } };
@@ -190,13 +172,13 @@ const MaterialPage: React.FC = () => {
       e.preventDefault();
       setSubmitting(true);
       try {
-        await materialApi.create(formData);
+        await useCaseApi.create(formData);
         setShowCreateModal(false);
         setFormData({ name: "", description: "", isActive: true });
-        fetchMaterials();
+        fetchUseCases();
         toast.success("Thêm chất liệu thành công!");
       } catch (error: unknown) {
-        console.error("Error creating material:", error);
+        console.error("Error creating UseCase:", error);
         if (error && typeof error === "object" && "response" in error) {
           const axiosError = error as {
             response?: { data?: { message?: string } };
@@ -291,32 +273,32 @@ const MaterialPage: React.FC = () => {
   // Edit Modal
   const EditModal = () => {
     const [formData, setFormData] = useState({
-      name: selectedMaterial?.name || "",
-      description: selectedMaterial?.description || "",
+      name: selectedUseCase?.name || "",
+      description: selectedUseCase?.description || "",
     });
 
     useEffect(() => {
-      if (selectedMaterial) {
+      if (selectedUseCase) {
         setFormData({
-          name: selectedMaterial.name,
-          description: selectedMaterial.description,
+          name: selectedUseCase.name,
+          description: selectedUseCase.description,
         });
       }
-    }, [selectedMaterial]);
+    }, [selectedUseCase]);
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!selectedMaterial) return;
+      if (!selectedUseCase) return;
 
       setSubmitting(true);
       try {
-        await materialApi.update(selectedMaterial._id, formData);
+        await useCaseApi.update(selectedUseCase._id, formData);
         setShowEditModal(false);
-        setSelectedMaterial(null);
-        fetchMaterials();
+        setSelectedUseCase(null);
+        fetchUseCases();
         toast.success("Cập nhật chất liệu thành công!");
       } catch (error: unknown) {
-        console.error("Error updating material:", error);
+        console.error("Error updating UseCase:", error);
         if (error && typeof error === "object" && "response" in error) {
           const axiosError = error as {
             response?: { data?: { message?: string } };
@@ -333,7 +315,7 @@ const MaterialPage: React.FC = () => {
       }
     };
 
-    if (!showEditModal || !selectedMaterial) return null;
+    if (!showEditModal || !selectedUseCase) return null;
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -373,7 +355,7 @@ const MaterialPage: React.FC = () => {
                 type="button"
                 onClick={() => {
                   setShowEditModal(false);
-                  setSelectedMaterial(null);
+                  setSelectedUseCase(null);
                 }}
                 className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
                 disabled={submitting}
@@ -396,7 +378,7 @@ const MaterialPage: React.FC = () => {
 
   // Delete Confirmation Modal
   const DeleteModal = () => {
-    if (!showDeleteModal || !selectedMaterial) return null;
+    if (!showDeleteModal || !selectedUseCase) return null;
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -404,14 +386,14 @@ const MaterialPage: React.FC = () => {
           <h3 className="text-xl font-bold mb-4 text-red-600">Xác nhận xóa</h3>
           <p className="text-gray-700 mb-6">
             Bạn có chắc chắn muốn xóa chất liệu{" "}
-            <strong>"{selectedMaterial.name}"</strong>?
+            <strong>"{selectedUseCase.name}"</strong>?
           </p>
           <div className="flex gap-3">
             <button
               type="button"
               onClick={() => {
                 setShowDeleteModal(false);
-                setSelectedMaterial(null);
+                setSelectedUseCase(null);
               }}
               className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
               disabled={submitting}
@@ -419,196 +401,12 @@ const MaterialPage: React.FC = () => {
               Hủy
             </button>
             <button
-              onClick={confirmDeleteMaterial}
+              onClick={confirmDeleteUseCase}
               disabled={submitting}
               className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
             >
               {submitting ? "Đang xóa..." : "Xóa"}
             </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // View Detail Modal
-  const ViewDetailModal = () => {
-    if (!showDetailModal || !selectedMaterial) return null;
-
-    return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl max-w-2xl w-full p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-bold text-gray-900">
-              Chi Tiết Chất Liệu
-            </h3>
-            <button
-              onClick={() => {
-                setShowDetailModal(false);
-                setSelectedMaterial(null);
-              }}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div className="space-y-6">
-            {/* Tên và Trạng thái */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h4 className="text-sm font-medium text-gray-500 mb-1">
-                    Tên Chất Liệu
-                  </h4>
-                  <p className="text-xl font-bold text-gray-900">
-                    {selectedMaterial.name}
-                  </p>
-                </div>
-                <div>
-                  {selectedMaterial.deletedAt ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      Đã xóa
-                    </span>
-                  ) : selectedMaterial.isActive ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      Đang hoạt động
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                      Đã vô hiệu hóa
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Mô tả */}
-            <div className="border rounded-lg p-4">
-              <h4 className="text-sm font-medium text-gray-500 mb-2">Mô Tả</h4>
-              <p className="text-gray-900">
-                {selectedMaterial.description || "Không có mô tả"}
-              </p>
-            </div>
-
-            {/* Thông tin chi tiết */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="border rounded-lg p-4">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">
-                  Ngày Tạo
-                </h4>
-                <p className="text-gray-900">
-                  {new Date(selectedMaterial.createdAt).toLocaleString("vi-VN")}
-                </p>
-              </div>
-              <div className="border rounded-lg p-4">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">
-                  Cập Nhật Lần Cuối
-                </h4>
-                <p className="text-gray-900">
-                  {new Date(selectedMaterial.updatedAt).toLocaleString("vi-VN")}
-                </p>
-              </div>
-            </div>
-
-            {/* Nếu đã xóa, hiển thị thông tin người xóa */}
-            {selectedMaterial.deletedAt && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                <h4 className="text-sm font-medium text-red-700 mb-2">
-                  Thông Tin Xóa
-                </h4>
-                <div className="space-y-1 text-sm text-red-800">
-                  <p>
-                    Ngày xóa:{" "}
-                    {new Date(selectedMaterial.deletedAt).toLocaleString(
-                      "vi-VN"
-                    )}
-                  </p>
-                  {selectedMaterial.deletedBy && (
-                    <p>
-                      Người xóa:{" "}
-                      {typeof selectedMaterial.deletedBy === "object"
-                        ? selectedMaterial.deletedBy.name || "N/A"
-                        : selectedMaterial.deletedBy}
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-4 border-t">
-              {!selectedMaterial.deletedAt && (
-                <>
-                  {canUpdate() && (
-                    <button
-                      onClick={() => {
-                        setShowDetailModal(false);
-                        setShowEditModal(true);
-                      }}
-                      className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg>
-                      Chỉnh sửa
-                    </button>
-                  )}
-                  {canToggleStatus() && (
-                    <button
-                      onClick={() => {
-                        setShowDetailModal(false);
-                        handleToggleStatus(
-                          selectedMaterial._id,
-                          selectedMaterial.isActive
-                        );
-                      }}
-                      className={`flex-1 px-4 py-2 rounded-lg transition-colors flex items-center justify-center gap-2 ${
-                        selectedMaterial.isActive
-                          ? "bg-yellow-600 hover:bg-yellow-700 text-white"
-                          : "bg-green-600 hover:bg-green-700 text-white"
-                      }`}
-                    >
-                      {selectedMaterial.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
-                    </button>
-                  )}
-                </>
-              )}
-              <button
-                onClick={() => {
-                  setShowDetailModal(false);
-                  setSelectedMaterial(null);
-                }}
-                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Đóng
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -623,7 +421,7 @@ const MaterialPage: React.FC = () => {
     );
   }
 
-  const displayMaterials = showDeleted ? deletedMaterials : materials;
+  const displayUseCases = showDeleted ? deletedUseCases : useCases;
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -734,7 +532,9 @@ const MaterialPage: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-900">
                 Tổng Chất Liệu
               </h3>
-              <p className="text-2xl font-bold text-blue-600">{totalCount}</p>
+              <p className="text-2xl font-bold text-blue-600">
+                {useCases.length}
+              </p>
             </div>
           </div>
         </div>
@@ -762,7 +562,9 @@ const MaterialPage: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-900">
                 Đang Hoạt Động
               </h3>
-              <p className="text-2xl font-bold text-green-600">{activeCount}</p>
+              <p className="text-2xl font-bold text-green-600">
+                {useCases.filter((m: UseCase) => m.isActive).length}
+              </p>
             </div>
           </div>
         </div>
@@ -791,15 +593,15 @@ const MaterialPage: React.FC = () => {
                 Đã Vô Hiệu Hóa
               </h3>
               <p className="text-2xl font-bold text-gray-600">
-                {inactiveCount}
+                {useCases.filter((m: UseCase) => !m.isActive).length}
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Material List */}
-      {displayMaterials.length === 0 ? (
+      {/* UseCase List */}
+      {displayUseCases.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-xl border-2 border-dashed border-gray-200">
           <div className="text-gray-400 mb-6">
             <svg
@@ -851,24 +653,24 @@ const MaterialPage: React.FC = () => {
       ) : (
         <>
           <div className="space-y-4">
-            {displayMaterials.map((material) => (
+            {displayUseCases.map((item: UseCase) => (
               <div
-                key={material._id}
+                key={item._id}
                 className="bg-white rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 p-6"
               >
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="text-lg font-bold text-gray-900">
-                        {material.name}
+                        {item.name}
                       </h3>
                       <div className="flex items-center gap-2 ml-4">
-                        {material.deletedAt ? (
+                        {item.deletedAt ? (
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
                             <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                             Đã xóa
                           </span>
-                        ) : material.isActive ? (
+                        ) : item.isActive ? (
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                             <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                             Đang hoạt động
@@ -881,61 +683,29 @@ const MaterialPage: React.FC = () => {
                         )}
                       </div>
                     </div>
-                    <p className="text-gray-600 mb-3">{material.description}</p>
+                    <p className="text-gray-600 mb-3">{item.description}</p>
                     <div className="flex flex-wrap items-center gap-3">
                       <span className="text-sm text-gray-500">
                         Tạo:{" "}
-                        {new Date(material.createdAt).toLocaleDateString(
-                          "vi-VN"
-                        )}
+                        {new Date(item.createdAt).toLocaleDateString("vi-VN")}
                       </span>
-                      {material.updatedAt !== material.createdAt && (
+                      {item.updatedAt !== item.createdAt && (
                         <span className="text-sm text-gray-500">
                           Cập nhật:{" "}
-                          {new Date(material.updatedAt).toLocaleDateString(
-                            "vi-VN"
-                          )}
+                          {new Date(item.updatedAt).toLocaleDateString("vi-VN")}
                         </span>
                       )}
                     </div>
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {!showDeleted ? (
                       <>
-                        <button
-                          onClick={() => {
-                            setSelectedMaterial(material);
-                            setShowDetailModal(true);
-                          }}
-                          className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-2"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                            />
-                          </svg>
-                          Chi tiết
-                        </button>
                         {canUpdate() && (
                           <button
                             onClick={() => {
-                              setSelectedMaterial(material);
+                              setSelectedUseCase(item);
                               setShowEditModal(true);
                             }}
                             className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-2"
@@ -953,12 +723,12 @@ const MaterialPage: React.FC = () => {
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                               />
                             </svg>
-                            Sửa
+                            Chỉnh sửa
                           </button>
                         )}
                         {canDelete() && (
                           <button
-                            onClick={() => handleDeleteMaterial(material)}
+                            onClick={() => handleDeleteUseCase(item)}
                             className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-2"
                           >
                             <svg
@@ -980,13 +750,10 @@ const MaterialPage: React.FC = () => {
                         {canToggleStatus() && (
                           <button
                             onClick={() =>
-                              handleToggleStatus(
-                                material._id,
-                                material.isActive
-                              )
+                              handleToggleStatus(item._id, item.isActive)
                             }
                             className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors flex items-center gap-2 ${
-                              material.isActive
+                              item.isActive
                                 ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border-yellow-200"
                                 : "bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
                             }`}
@@ -1004,18 +771,15 @@ const MaterialPage: React.FC = () => {
                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                               />
                             </svg>
-                            {material.isActive ? "Tắt" : "Bật"}
+                            {item.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
                           </button>
                         )}
                       </>
                     ) : (
-                      <>
+                      canUpdate() && (
                         <button
-                          onClick={() => {
-                            setSelectedMaterial(material);
-                            setShowDetailModal(true);
-                          }}
-                          className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-2"
+                          onClick={() => handleRestoreUseCase(item._id)}
+                          className="px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 text-sm font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-2"
                         >
                           <svg
                             className="w-4 h-4"
@@ -1027,39 +791,12 @@ const MaterialPage: React.FC = () => {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
-                          Chi tiết
+                          Khôi phục
                         </button>
-                        {canUpdate() && (
-                          <button
-                            onClick={() => handleRestoreMaterial(material._id)}
-                            className="px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 text-sm font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-2"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                              />
-                            </svg>
-                            Khôi phục
-                          </button>
-                        )}
-                      </>
+                      )
                     )}
                   </div>
                 </div>
@@ -1098,9 +835,8 @@ const MaterialPage: React.FC = () => {
       <CreateModal />
       <EditModal />
       <DeleteModal />
-      <ViewDetailModal />
     </div>
   );
 };
 
-export default MaterialPage;
+export default UseCasePage;
