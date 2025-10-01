@@ -3,8 +3,7 @@ import { axiosInstanceAuth } from "../utils/axiosIntance";
 const API_PREFIX = "/api/v1/admin/sizes";
 
 export const sizeApi = {
-  getAll: (params?: any) =>
-    axiosInstanceAuth.get(`${API_PREFIX}?limit=50&page=1`, { params }),
+  getAll: (params?: any) => axiosInstanceAuth.get(`${API_PREFIX}`, { params }),
   getDeleted: (params?: any) =>
     axiosInstanceAuth.get(`${API_PREFIX}/deleted`, { params }),
   getById: (id: string) => axiosInstanceAuth.get(`${API_PREFIX}/${id}`),

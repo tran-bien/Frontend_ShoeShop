@@ -17,6 +17,90 @@ interface Category {
   updatedAt: string;
 }
 
+// ViewDetailModal component
+const ViewDetailModal: React.FC<{
+  category: Category;
+  onClose: () => void;
+}> = ({ category, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Chi tiết Danh mục</h2>
+            <button
+              onClick={onClose}
+              className="text-white hover:text-gray-200 text-3xl font-bold leading-none"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">ID</p>
+              <p className="text-gray-800 font-mono text-sm">{category._id}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Tên danh mục</p>
+              <p className="text-gray-800 font-semibold">{category.name}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Slug</p>
+              <p className="text-gray-800 font-mono text-sm">{category.slug}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Trạng thái</p>
+              <div className="mt-1">
+                {category.isActive ? (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                    Hoạt động
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                    Không hoạt động
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 font-medium">Mô tả</p>
+            <p className="text-gray-800 mt-1">
+              {category.description || "Không có mô tả"}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Ngày tạo</p>
+              <p className="text-gray-800 text-sm">
+                {new Date(category.createdAt).toLocaleString("vi-VN")}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">
+                Cập nhật lần cuối
+              </p>
+              <p className="text-gray-800 text-sm">
+                {new Date(category.updatedAt).toLocaleString("vi-VN")}
+              </p>
+            </div>
+          </div>
+          {category.deletedAt && (
+            <div className="pt-4 border-t">
+              <p className="text-sm text-gray-500 font-medium">Ngày xóa</p>
+              <p className="text-gray-800 text-sm">
+                {new Date(category.deletedAt).toLocaleString("vi-VN")}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const EditCategoryModal: React.FC<{
   category: Category;
   onClose: () => void;
@@ -123,48 +207,113 @@ const ListCategoriesPage: React.FC = () => {
   const [showDeleted, setShowDeleted] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
 
-  const fetchCategories = async () => {
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Sorting state
+  const [sortOption, setSortOption] = useState<string>("created_at_desc");
+
+  // Stats states
+  const [activeCount, setActiveCount] = useState(0);
+  const [inactiveCount, setInactiveCount] = useState(0);
+
+  // Detail modal state
+  const [viewDetailCategory, setViewDetailCategory] = useState<Category | null>(
+    null
+  );
+
+  const fetchCategories = async (page: number = 1) => {
     try {
-      const res = await categoryApi.getAll();
+      const params = {
+        page,
+        limit: 10,
+        ...(searchQuery && { name: searchQuery }),
+        sort: sortOption,
+      };
+      const res = await categoryApi.getAll(params);
       setCategories(res.data.data || []);
+      setCurrentPage(res.data.currentPage || 1);
+      setTotalPages(res.data.totalPages || 1);
+      setTotalCount(res.data.total || 0);
     } catch {
       setCategories([]);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setTotalCount(0);
     }
   };
 
-  const fetchDeletedCategories = async () => {
+  const fetchDeletedCategories = async (page: number = 1) => {
     try {
-      const res = await categoryApi.getDeleted();
+      const params = {
+        page,
+        limit: 10,
+        ...(searchQuery && { name: searchQuery }),
+        sort: sortOption,
+      };
+      const res = await categoryApi.getDeleted(params);
       setDeletedCategories(res.data.data || []);
+      setCurrentPage(res.data.currentPage || 1);
+      setTotalPages(res.data.totalPages || 1);
+      setTotalCount(res.data.total || 0);
     } catch {
       setDeletedCategories([]);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setTotalCount(0);
+    }
+  };
+
+  // Fetch stats with limit=100 for estimation
+  const fetchStats = async () => {
+    try {
+      const statsResponse = await categoryApi.getAll({ page: 1, limit: 100 });
+      const statsData = statsResponse.data.data || [];
+      const totalFromAPI = statsResponse.data.total || 0;
+
+      if (totalFromAPI <= 100) {
+        // 100% accurate for ≤100 items
+        const active = statsData.filter((c: Category) => c.isActive).length;
+        const inactive = statsData.filter((c: Category) => !c.isActive).length;
+        setActiveCount(active);
+        setInactiveCount(inactive);
+      } else {
+        // Estimate for >100 items
+        const sampleActive = statsData.filter(
+          (c: Category) => c.isActive
+        ).length;
+        const sampleInactive = statsData.filter(
+          (c: Category) => !c.isActive
+        ).length;
+        const ratio = totalFromAPI / statsData.length;
+        setActiveCount(Math.round(sampleActive * ratio));
+        setInactiveCount(Math.round(sampleInactive * ratio));
+      }
+    } catch {
+      setActiveCount(0);
+      setInactiveCount(0);
     }
   };
 
   useEffect(() => {
     if (showDeleted) {
-      fetchDeletedCategories();
+      fetchDeletedCategories(currentPage);
     } else {
-      fetchCategories();
+      fetchCategories(currentPage);
+      fetchStats();
     }
-  }, [showDeleted]);
+  }, [showDeleted, currentPage, searchQuery, sortOption]);
 
   const handleBack = () => {
     setIsSearchVisible(false);
     setSearchQuery("");
   };
 
-  const filteredCategories = (
-    showDeleted ? deletedCategories : categories
-  ).filter((category) => {
-    return (
-      category.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      category.slug.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1);
   };
 
   const toggleSearchVisibility = () => {
@@ -175,10 +324,11 @@ const ListCategoriesPage: React.FC = () => {
     try {
       await categoryApi.delete(id);
       if (showDeleted) {
-        fetchDeletedCategories();
+        fetchDeletedCategories(currentPage);
       } else {
-        fetchCategories();
+        fetchCategories(currentPage);
       }
+      fetchStats();
     } catch {
       // Xử lý lỗi nếu cần
     }
@@ -187,8 +337,9 @@ const ListCategoriesPage: React.FC = () => {
   const handleRestoreCategory = async (id: string) => {
     try {
       await categoryApi.restore(id);
-      fetchDeletedCategories();
-      fetchCategories();
+      fetchDeletedCategories(currentPage);
+      fetchCategories(currentPage);
+      fetchStats();
     } catch {
       // Xử lý lỗi nếu cần
     }
@@ -197,15 +348,18 @@ const ListCategoriesPage: React.FC = () => {
   const handleUpdateStatus = async (id: string, isActive: boolean) => {
     try {
       await categoryApi.updateStatus(id, { isActive });
-      fetchCategories();
+      fetchCategories(currentPage);
+      fetchStats();
     } catch {
       // Xử lý lỗi nếu cần
     }
   };
 
+  const displayedCategories = showDeleted ? deletedCategories : categories;
+
   return (
     <div className="p-6 w-full font-sans">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug">
           Danh Sách Danh Mục
         </h2>
@@ -227,45 +381,95 @@ const ListCategoriesPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Tìm theo tên hoặc slug..."
+              placeholder="Tìm theo tên danh mục..."
               className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
         )}
       </div>
 
-      {/* Tab chuyển đổi */}
-      <div className="flex border-b mb-4">
-        <button
-          onClick={() => setShowDeleted(false)}
-          className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
-            !showDeleted
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
-          }`}
-        >
-          Danh mục đang hoạt động
-        </button>
-        {hasStaffAccess() && (
+      {/* Stats Cards */}
+      {!showDeleted && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200">
+            <h3 className="text-sm font-medium text-blue-600 mb-1">
+              Tổng số danh mục
+            </h3>
+            <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
+            <h3 className="text-sm font-medium text-green-600 mb-1">
+              Đang hoạt động
+            </h3>
+            <p className="text-3xl font-bold text-green-900">{activeCount}</p>
+          </div>
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-sm border border-yellow-200">
+            <h3 className="text-sm font-medium text-yellow-600 mb-1">
+              Không hoạt động
+            </h3>
+            <p className="text-3xl font-bold text-yellow-900">
+              {inactiveCount}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Tab chuyển đổi và Sort */}
+      <div className="flex items-center justify-between border-b mb-4">
+        <div className="flex">
           <button
-            onClick={() => setShowDeleted(true)}
+            onClick={() => {
+              setShowDeleted(false);
+              setCurrentPage(1);
+            }}
             className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
-              showDeleted
+              !showDeleted
                 ? "text-blue-600 border-blue-600"
                 : "text-gray-500 border-transparent hover:text-blue-600"
             }`}
           >
-            Danh mục đã xóa
+            Danh mục đang hoạt động
           </button>
-        )}
-        {!showDeleted && canCreate() && (
-          <button
-            className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
-            onClick={() => setShowAddCategory(true)}
+          {hasStaffAccess() && (
+            <button
+              onClick={() => {
+                setShowDeleted(true);
+                setCurrentPage(1);
+              }}
+              className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
+                showDeleted
+                  ? "text-blue-600 border-blue-600"
+                  : "text-gray-500 border-transparent hover:text-blue-600"
+              }`}
+            >
+              Danh mục đã xóa
+            </button>
+          )}
+        </div>
+        <div className="flex items-center gap-3 mb-2">
+          {/* Sort Dropdown */}
+          <select
+            value={sortOption}
+            onChange={(e) => {
+              setSortOption(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            Thêm Danh Mục
-          </button>
-        )}
+            <option value="created_at_desc">Mới nhất</option>
+            <option value="created_at_asc">Cũ nhất</option>
+            <option value="name_asc">Tên A-Z</option>
+            <option value="name_desc">Tên Z-A</option>
+          </select>
+          {!showDeleted && canCreate() && (
+            <button
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              onClick={() => setShowAddCategory(true)}
+            >
+              + Thêm Danh Mục
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Add Category Modal */}
@@ -299,35 +503,45 @@ const ListCategoriesPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredCategories.map((category) => (
-              <tr key={category._id} className="hover:bg-gray-50 border-t">
-                <td className="px-4 py-3 text-sm">{category._id}</td>
-                <td className="px-4 py-3 text-sm">{category.name}</td>
-                <td className="px-4 py-3 text-sm">{category.slug}</td>
-                <td className="px-4 py-3 text-sm">{category.description}</td>
+            {displayedCategories.map((item) => (
+              <tr key={item._id} className="hover:bg-gray-50 border-t">
+                <td className="px-4 py-3 font-mono text-xs">
+                  {item._id.slice(-8)}
+                </td>
+                <td className="px-4 py-3 text-sm font-semibold">{item.name}</td>
+                <td className="px-4 py-3 font-mono text-xs">{item.slug}</td>
+                <td className="px-4 py-3 text-sm">
+                  {item.description.substring(0, 50)}...
+                </td>
                 <td className="px-4 py-3 text-center">
-                  {category.deletedAt ? (
-                    <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-semibold">
+                  {item.deletedAt ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
                       Đã xóa
                     </span>
-                  ) : category.isActive ? (
-                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
+                  ) : item.isActive ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                       Hoạt động
                     </span>
                   ) : (
-                    <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-semibold">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
                       Không hoạt động
                     </span>
                   )}
                 </td>
 
                 <td className="px-4 py-3">
-                  <div className="flex flex-col gap-2 min-w-[120px]">
+                  <div className="flex flex-wrap gap-2 justify-center min-w-[140px]">
+                    <button
+                      onClick={() => setViewDetailCategory(item)}
+                      className="inline-flex items-center justify-center bg-gray-500 hover:bg-gray-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                    >
+                      Xem
+                    </button>
                     {!showDeleted ? (
                       <>
                         {canUpdate() && (
                           <button
-                            onClick={() => setEditingCategory(category)}
+                            onClick={() => setEditingCategory(item)}
                             className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                           >
                             Sửa
@@ -335,7 +549,7 @@ const ListCategoriesPage: React.FC = () => {
                         )}
                         {canDelete() && (
                           <button
-                            onClick={() => handleDeleteCategory(category._id)}
+                            onClick={() => handleDeleteCategory(item._id)}
                             className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                           >
                             Xóa
@@ -344,25 +558,22 @@ const ListCategoriesPage: React.FC = () => {
                         {canToggleStatus() && (
                           <button
                             className={`inline-flex items-center justify-center text-xs px-3 py-1 rounded-full shadow-sm transition-all ${
-                              category.isActive
+                              item.isActive
                                 ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                                : "bg-gray-400 hover:bg-gray-500 text-white"
+                                : "bg-green-500 hover:bg-green-600 text-white"
                             }`}
                             onClick={() =>
-                              handleUpdateStatus(
-                                category._id,
-                                !category.isActive
-                              )
+                              handleUpdateStatus(item._id, !item.isActive)
                             }
                           >
-                            {category.isActive ? "Tắt hoạt động" : "Kích hoạt"}
+                            {item.isActive ? "Tắt" : "Bật"}
                           </button>
                         )}
                       </>
                     ) : (
                       hasAdminOnlyAccess() && (
                         <button
-                          onClick={() => handleRestoreCategory(category._id)}
+                          onClick={() => handleRestoreCategory(item._id)}
                           className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                         >
                           Khôi phục
@@ -376,6 +587,123 @@ const ListCategoriesPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between mt-6">
+        <div className="text-sm text-gray-600">
+          Trang {currentPage} / {totalPages} • Tổng: {totalCount} danh mục
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              currentPage === 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Trước
+          </button>
+
+          {/* Page Numbers */}
+          {(() => {
+            const pages = [];
+            const showPages = 5; // Number of page buttons to show
+            let startPage = Math.max(
+              1,
+              currentPage - Math.floor(showPages / 2)
+            );
+            const endPage = Math.min(totalPages, startPage + showPages - 1);
+
+            // Adjust start if we're near the end
+            if (endPage - startPage < showPages - 1) {
+              startPage = Math.max(1, endPage - showPages + 1);
+            }
+
+            // First page
+            if (startPage > 1) {
+              pages.push(
+                <button
+                  key={1}
+                  onClick={() => setCurrentPage(1)}
+                  className="px-3 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                >
+                  1
+                </button>
+              );
+              if (startPage > 2) {
+                pages.push(
+                  <span key="ellipsis1" className="px-2 text-gray-500">
+                    ...
+                  </span>
+                );
+              }
+            }
+
+            // Middle pages
+            for (let i = startPage; i <= endPage; i++) {
+              pages.push(
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i)}
+                  className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                    i === currentPage
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  {i}
+                </button>
+              );
+            }
+
+            // Last page
+            if (endPage < totalPages) {
+              if (endPage < totalPages - 1) {
+                pages.push(
+                  <span key="ellipsis2" className="px-2 text-gray-500">
+                    ...
+                  </span>
+                );
+              }
+              pages.push(
+                <button
+                  key={totalPages}
+                  onClick={() => setCurrentPage(totalPages)}
+                  className="px-3 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                >
+                  {totalPages}
+                </button>
+              );
+            }
+
+            return pages;
+          })()}
+
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+            }
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              currentPage === totalPages
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Tiếp
+          </button>
+        </div>
+      </div>
+
+      {/* View Detail Modal */}
+      {viewDetailCategory && (
+        <ViewDetailModal
+          category={viewDetailCategory}
+          onClose={() => setViewDetailCategory(null)}
+        />
+      )}
     </div>
   );
 };

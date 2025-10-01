@@ -16,6 +16,117 @@ interface Color {
   updatedAt: string;
 }
 
+// ViewDetailModal component
+const ViewDetailModal: React.FC<{
+  color: Color;
+  onClose: () => void;
+}> = ({ color, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Chi tiết Màu sắc</h2>
+            <button
+              onClick={onClose}
+              className="text-white hover:text-gray-200 text-3xl font-bold leading-none"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">ID</p>
+              <p className="text-gray-800 font-mono text-sm">{color._id}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Tên màu</p>
+              <p className="text-gray-800 font-semibold">{color.name}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Loại</p>
+              <p className="text-gray-800">
+                {color.type === "solid" ? "Solid" : "Half"}
+              </p>
+            </div>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 font-medium mb-2">Mã màu</p>
+            {color.type === "solid" ? (
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-16 h-16 rounded-lg border-2 border-gray-300 shadow"
+                  style={{ backgroundColor: color.code || "#FFFFFF" }}
+                ></div>
+                <span className="font-mono text-sm text-gray-700">
+                  {color.code}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-16 h-16 rounded-lg border-2 border-gray-300 shadow relative overflow-hidden">
+                  <div
+                    style={{
+                      backgroundColor: color.colors[0] || "#fff",
+                      width: "100%",
+                      height: "100%",
+                      position: "absolute",
+                      left: 0,
+                      top: 0,
+                      clipPath: "inset(0 50% 0 0)",
+                    }}
+                  />
+                  <div
+                    style={{
+                      backgroundColor: color.colors[1] || "#fff",
+                      width: "100%",
+                      height: "100%",
+                      position: "absolute",
+                      right: 0,
+                      top: 0,
+                      clipPath: "inset(0 0 0 50%)",
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col text-sm font-mono text-gray-700">
+                  <span>{color.colors[0]}</span>
+                  <span>{color.colors[1]}</span>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Ngày tạo</p>
+              <p className="text-gray-800 text-sm">
+                {new Date(color.createdAt).toLocaleString("vi-VN")}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">
+                Cập nhật lần cuối
+              </p>
+              <p className="text-gray-800 text-sm">
+                {new Date(color.updatedAt).toLocaleString("vi-VN")}
+              </p>
+            </div>
+          </div>
+          {color.deletedAt && (
+            <div className="pt-4 border-t">
+              <p className="text-sm text-gray-500 font-medium">Ngày xóa</p>
+              <p className="text-gray-800 text-sm">
+                {new Date(color.deletedAt).toLocaleString("vi-VN")}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const EditColorModal: React.FC<{
   color: Color;
   onClose: () => void;
@@ -167,45 +278,103 @@ const ColorPage: React.FC = () => {
   const [deletedColors, setDeletedColors] = useState<Color[]>([]);
   const [showDeleted, setShowDeleted] = useState(false);
 
-  const fetchColors = async () => {
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Sorting state
+  const [sortOption, setSortOption] = useState<string>("created_at_desc");
+
+  // Stats states
+  const [activeCount, setActiveCount] = useState(0);
+  const [inactiveCount, setInactiveCount] = useState(0);
+
+  // Detail modal state
+  const [viewDetailColor, setViewDetailColor] = useState<Color | null>(null);
+
+  const fetchColors = async (page: number = 1) => {
     try {
-      const res = await colorApi.getAll();
+      const params = {
+        page,
+        limit: 10,
+        ...(searchQuery && { name: searchQuery }),
+        sort: sortOption,
+      };
+      const res = await colorApi.getAll(params);
       setColors(res.data.data || []);
+      setCurrentPage(res.data.currentPage || 1);
+      setTotalPages(res.data.totalPages || 1);
+      setTotalCount(res.data.total || 0);
     } catch {
       setColors([]);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setTotalCount(0);
     }
   };
 
-  const fetchDeletedColors = async () => {
+  const fetchDeletedColors = async (page: number = 1) => {
     try {
-      const res = await colorApi.getDeleted();
+      const params = {
+        page,
+        limit: 10,
+        ...(searchQuery && { name: searchQuery }),
+        sort: sortOption,
+      };
+      const res = await colorApi.getDeleted(params);
       setDeletedColors(res.data.data || []);
+      setCurrentPage(res.data.currentPage || 1);
+      setTotalPages(res.data.totalPages || 1);
+      setTotalCount(res.data.total || 0);
     } catch {
       setDeletedColors([]);
+      setCurrentPage(1);
+      setTotalPages(1);
+      setTotalCount(0);
+    }
+  };
+
+  // Fetch stats with limit=100 for estimation
+  const fetchStats = async () => {
+    try {
+      const statsResponse = await colorApi.getAll({ page: 1, limit: 100 });
+      const statsData = statsResponse.data.data || [];
+      const totalFromAPI = statsResponse.data.total || 0;
+
+      // Colors don't have isActive, so we count all active as non-deleted
+      if (totalFromAPI <= 100) {
+        setActiveCount(statsData.length);
+        setInactiveCount(0); // No inactive for colors, only deleted
+      } else {
+        // Estimate for >100 items
+        const ratio = totalFromAPI / statsData.length;
+        setActiveCount(Math.round(statsData.length * ratio));
+        setInactiveCount(0);
+      }
+    } catch {
+      setActiveCount(0);
+      setInactiveCount(0);
     }
   };
 
   useEffect(() => {
     if (showDeleted) {
-      fetchDeletedColors();
+      fetchDeletedColors(currentPage);
     } else {
-      fetchColors();
+      fetchColors(currentPage);
+      fetchStats();
     }
-  }, [showDeleted]);
+  }, [showDeleted, currentPage, searchQuery, sortOption]);
 
   const handleBack = () => {
     setIsSearchVisible(false);
     setSearchQuery("");
   };
 
-  const filteredColors = (showDeleted ? deletedColors : colors).filter(
-    (color) => {
-      return color.name.toLowerCase().includes(searchQuery.toLowerCase());
-    }
-  );
-
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    setCurrentPage(1);
   };
 
   const toggleSearchVisibility = () => {
@@ -216,10 +385,11 @@ const ColorPage: React.FC = () => {
     try {
       await colorApi.delete(_id);
       if (showDeleted) {
-        fetchDeletedColors();
+        fetchDeletedColors(currentPage);
       } else {
-        fetchColors();
+        fetchColors(currentPage);
       }
+      fetchStats();
     } catch {
       // Xử lý lỗi nếu cần
     }
@@ -228,16 +398,19 @@ const ColorPage: React.FC = () => {
   const handleRestoreColor = async (_id: string) => {
     try {
       await colorApi.restore(_id);
-      fetchDeletedColors();
-      fetchColors();
+      fetchDeletedColors(currentPage);
+      fetchColors(currentPage);
+      fetchStats();
     } catch {
       // Xử lý lỗi nếu cần
     }
   };
 
+  const displayedColors = showDeleted ? deletedColors : colors;
+
   return (
     <div className="p-6 w-full font-sans">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug">
           Danh Sách Màu Sắc
         </h2>
@@ -259,42 +432,93 @@ const ColorPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Nhập tên màu"
+              placeholder="Tìm theo tên màu..."
               className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
         )}
       </div>
-      {/* Tab chuyển đổi */}
-      <div className="flex border-b mb-4">
-        <button
-          className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
-            !showDeleted
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
-          }`}
-          onClick={() => setShowDeleted(false)}
-        >
-          Màu đang hoạt động
-        </button>
-        <button
-          className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
-            showDeleted
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
-          }`}
-          onClick={() => setShowDeleted(true)}
-        >
-          Màu đã xóa
-        </button>
-        {!showDeleted && canCreate() && (
+
+      {/* Stats Cards */}
+      {!showDeleted && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200">
+            <h3 className="text-sm font-medium text-blue-600 mb-1">
+              Tổng số màu sắc
+            </h3>
+            <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
+            <h3 className="text-sm font-medium text-green-600 mb-1">
+              Đang hoạt động
+            </h3>
+            <p className="text-3xl font-bold text-green-900">{activeCount}</p>
+          </div>
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-sm border border-yellow-200">
+            <h3 className="text-sm font-medium text-yellow-600 mb-1">
+              Không hoạt động
+            </h3>
+            <p className="text-3xl font-bold text-yellow-900">
+              {inactiveCount}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Tab chuyển đổi và Sort */}
+      <div className="flex items-center justify-between border-b mb-4">
+        <div className="flex">
           <button
-            className="ml-auto px-4 py-2 bg-slate-500 text-white rounded-3xl font-medium"
-            onClick={() => setShowAddColor(true)}
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
+              !showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+            onClick={() => {
+              setShowDeleted(false);
+              setCurrentPage(1);
+            }}
           >
-            Thêm Màu
+            Màu đang hoạt động
           </button>
-        )}
+          <button
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
+              showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+            onClick={() => {
+              setShowDeleted(true);
+              setCurrentPage(1);
+            }}
+          >
+            Màu đã xóa
+          </button>
+        </div>
+        <div className="flex items-center gap-3 mb-2">
+          {/* Sort Dropdown */}
+          <select
+            value={sortOption}
+            onChange={(e) => {
+              setSortOption(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="created_at_desc">Mới nhất</option>
+            <option value="created_at_asc">Cũ nhất</option>
+            <option value="name_asc">Tên A-Z</option>
+            <option value="name_desc">Tên Z-A</option>
+          </select>
+          {!showDeleted && canCreate() && (
+            <button
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              onClick={() => setShowAddColor(true)}
+            >
+              + Thêm Màu
+            </button>
+          )}
+        </div>
       </div>
       {/* Add Color Modal */}
       {showAddColor && (
@@ -328,24 +552,25 @@ const ColorPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredColors.map((color) => (
-              <tr key={color._id} className="hover:bg-gray-50 border-t">
-                <td className="py-2 px-4 border-b text-sm">{color._id}</td>
-                <td className="py-2 px-4 border-b text-sm">{color.name}</td>
+            {displayedColors.map((item) => (
+              <tr key={item._id} className="hover:bg-gray-50 border-t">
+                <td className="py-2 px-4 border-b font-mono text-xs">
+                  {item._id.slice(-8)}
+                </td>
+                <td className="py-2 px-4 border-b text-sm font-semibold">
+                  {item.name}
+                </td>
                 <td className="py-2 px-4 border-b text-sm">
-                  {color.type === "solid" ? (
+                  {item.type === "solid" ? (
                     <div
-                      className="w-6 h-6 rounded-full border"
-                      style={{ backgroundColor: color.code || "#FFFFFF" }}
+                      className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm"
+                      style={{ backgroundColor: item.code || "#FFFFFF" }}
                     ></div>
                   ) : (
-                    <div
-                      className="w-6 h-6 rounded-full border relative overflow-hidden flex-shrink-0"
-                      style={{ minWidth: 24, minHeight: 24 }}
-                    >
+                    <div className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm relative overflow-hidden">
                       <div
                         style={{
-                          backgroundColor: color.colors[0] || "#fff",
+                          backgroundColor: item.colors[0] || "#fff",
                           width: "100%",
                           height: "100%",
                           position: "absolute",
@@ -356,7 +581,7 @@ const ColorPage: React.FC = () => {
                       />
                       <div
                         style={{
-                          backgroundColor: color.colors[1] || "#fff",
+                          backgroundColor: item.colors[1] || "#fff",
                           width: "100%",
                           height: "100%",
                           position: "absolute",
@@ -369,35 +594,41 @@ const ColorPage: React.FC = () => {
                   )}
                 </td>
                 <td className="py-2 px-4 border-b text-sm">
-                  {color.type === "solid" ? "Solid" : "Half"}
+                  {item.type === "solid" ? "Solid" : "Half"}
                 </td>
                 <td className="py-2 px-4 border-b text-center text-sm">
-                  {color.deletedAt ? (
-                    <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-semibold">
+                  {item.deletedAt ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
                       Đã xóa
                     </span>
                   ) : (
-                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                       Hoạt động
                     </span>
                   )}
                 </td>
                 <td className="py-2 px-4 border-b text-center text-sm">
-                  <div className="flex flex-col gap-2 min-w-[120px]">
+                  <div className="flex flex-wrap gap-2 justify-center min-w-[140px]">
+                    <button
+                      onClick={() => setViewDetailColor(item)}
+                      className="inline-flex items-center justify-center bg-gray-500 hover:bg-gray-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                    >
+                      Xem
+                    </button>
                     {!showDeleted ? (
                       <>
                         {canUpdate() && (
                           <button
-                            onClick={() => setShowEditColor(color)}
-                            className="inline-flex items-center justify-center bg-gray-400 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                            onClick={() => setShowEditColor(item)}
+                            className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                           >
                             Sửa
                           </button>
                         )}
                         {canDelete() && (
                           <button
-                            onClick={() => handleDeleteColor(color._id)}
-                            className="inline-flex items-center justify-center bg-gray-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                            onClick={() => handleDeleteColor(item._id)}
+                            className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                           >
                             Xóa
                           </button>
@@ -406,7 +637,7 @@ const ColorPage: React.FC = () => {
                     ) : (
                       canUpdate() && (
                         <button
-                          onClick={() => handleRestoreColor(color._id)}
+                          onClick={() => handleRestoreColor(item._id)}
                           className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                         >
                           Khôi phục
@@ -420,6 +651,123 @@ const ColorPage: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between mt-6">
+        <div className="text-sm text-gray-600">
+          Trang {currentPage} / {totalPages} • Tổng: {totalCount} màu sắc
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              currentPage === 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Trước
+          </button>
+
+          {/* Page Numbers */}
+          {(() => {
+            const pages = [];
+            const showPages = 5; // Number of page buttons to show
+            let startPage = Math.max(
+              1,
+              currentPage - Math.floor(showPages / 2)
+            );
+            const endPage = Math.min(totalPages, startPage + showPages - 1);
+
+            // Adjust start if we're near the end
+            if (endPage - startPage < showPages - 1) {
+              startPage = Math.max(1, endPage - showPages + 1);
+            }
+
+            // First page
+            if (startPage > 1) {
+              pages.push(
+                <button
+                  key={1}
+                  onClick={() => setCurrentPage(1)}
+                  className="px-3 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                >
+                  1
+                </button>
+              );
+              if (startPage > 2) {
+                pages.push(
+                  <span key="ellipsis1" className="px-2 text-gray-500">
+                    ...
+                  </span>
+                );
+              }
+            }
+
+            // Middle pages
+            for (let i = startPage; i <= endPage; i++) {
+              pages.push(
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i)}
+                  className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                    i === currentPage
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  {i}
+                </button>
+              );
+            }
+
+            // Last page
+            if (endPage < totalPages) {
+              if (endPage < totalPages - 1) {
+                pages.push(
+                  <span key="ellipsis2" className="px-2 text-gray-500">
+                    ...
+                  </span>
+                );
+              }
+              pages.push(
+                <button
+                  key={totalPages}
+                  onClick={() => setCurrentPage(totalPages)}
+                  className="px-3 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                >
+                  {totalPages}
+                </button>
+              );
+            }
+
+            return pages;
+          })()}
+
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+            }
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 rounded-lg font-medium transition-all ${
+              currentPage === totalPages
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Tiếp
+          </button>
+        </div>
+      </div>
+
+      {/* View Detail Modal */}
+      {viewDetailColor && (
+        <ViewDetailModal
+          color={viewDetailColor}
+          onClose={() => setViewDetailColor(null)}
+        />
+      )}
     </div>
   );
 };

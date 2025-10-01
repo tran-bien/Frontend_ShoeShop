@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { IoIosSearch } from "react-icons/io";
 import { useCaseApi } from "../../../services/UseCaseService";
 import { useAuth } from "../../../hooks/useAuth";
 import { toast } from "react-hot-toast";
@@ -34,7 +35,28 @@ const UseCasePage: React.FC = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [activeCount, setActiveCount] = useState(0);
   const [inactiveCount, setInactiveCount] = useState(0);
+  const [sortOption, setSortOption] = useState("created_at_desc");
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const limit = 10;
+
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+    if (isSearchVisible) {
+      setSearchQuery("");
+      setCurrentPage(1);
+    }
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleBack = () => {
+    setIsSearchVisible(false);
+    setSearchQuery("");
+    setCurrentPage(1);
+  };
 
   const fetchUseCases = async () => {
     try {
@@ -43,20 +65,40 @@ const UseCasePage: React.FC = () => {
         page: currentPage,
         limit,
         name: searchQuery || undefined,
+        sortBy: sortOption,
       });
       const data = response.data.data || [];
       setUseCases(data);
       setTotalPages(response.data.totalPages || 1);
 
-      // Lấy stats tổng thể (không phân trang) để hiển thị chính xác
+      // Lấy stats tổng thể (BE giới hạn max 100, nên lấy 100 items để tính stats)
       const statsResponse = await useCaseApi.getAll({
         page: 1,
-        limit: 1000, // Lấy tất cả để tính stats
+        limit: 100, // Max limit theo BE validator (1-100)
       });
-      const allUseCases = statsResponse.data.data || [];
-      setTotalCount(statsResponse.data.total || 0);
-      setActiveCount(allUseCases.filter((m: UseCase) => m.isActive).length);
-      setInactiveCount(allUseCases.filter((m: UseCase) => !m.isActive).length);
+      const statsData = statsResponse.data.data || [];
+      const totalFromAPI = statsResponse.data.total || 0;
+
+      // Nếu tổng số <= 100, stats chính xác 100%
+      // Nếu > 100, tính tỷ lệ từ 100 items đầu
+      if (totalFromAPI <= 100) {
+        setTotalCount(totalFromAPI);
+        setActiveCount(statsData.filter((m: UseCase) => m.isActive).length);
+        setInactiveCount(statsData.filter((m: UseCase) => !m.isActive).length);
+      } else {
+        // Ước lượng dựa trên tỷ lệ của 100 items đầu
+        const sampleActive = statsData.filter(
+          (m: UseCase) => m.isActive
+        ).length;
+        const sampleInactive = statsData.filter(
+          (m: UseCase) => !m.isActive
+        ).length;
+        const ratio = totalFromAPI / statsData.length;
+
+        setTotalCount(totalFromAPI);
+        setActiveCount(Math.round(sampleActive * ratio));
+        setInactiveCount(Math.round(sampleInactive * ratio));
+      }
     } catch (error) {
       console.error("Error fetching UseCases:", error);
       setUseCases([]);
@@ -92,7 +134,8 @@ const UseCasePage: React.FC = () => {
     } else {
       fetchUseCases();
     }
-  }, [currentPage, showDeleted, searchQuery]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, showDeleted, searchQuery, sortOption]);
 
   const handleToggleStatus = async (
     UseCaseId: string,
@@ -190,7 +233,7 @@ const UseCasePage: React.FC = () => {
         setShowCreateModal(false);
         setFormData({ name: "", description: "", isActive: true });
         fetchUseCases();
-        toast.success("Thêm chất liệu thành công!");
+        toast.success("Thêm nhu cầu sử dụng thành công!");
       } catch (error: unknown) {
         console.error("Error creating UseCase:", error);
         if (error && typeof error === "object" && "response" in error) {
@@ -199,10 +242,10 @@ const UseCasePage: React.FC = () => {
           };
           toast.error(
             axiosError.response?.data?.message ||
-              "Có lỗi xảy ra khi thêm chất liệu."
+              "Có lỗi xảy ra khi thêm nhu cầu sử dụng."
           );
         } else {
-          toast.error("Có lỗi xảy ra khi thêm chất liệu.");
+          toast.error("Có lỗi xảy ra khi thêm nhu cầu sử dụng.");
         }
       } finally {
         setSubmitting(false);
@@ -214,11 +257,11 @@ const UseCasePage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">Thêm Chất Liệu</h3>
+          <h3 className="text-xl font-bold mb-4">Thêm Nhu Cầu Sử Dụng</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tên chất liệu
+                Tên nhu cầu sử dụng
               </label>
               <input
                 type="text"
@@ -622,175 +665,116 @@ const UseCasePage: React.FC = () => {
   const displayUseCases = showDeleted ? deletedUseCases : UseCases;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="p-6 w-full font-sans">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Quản lý Chất Liệu
-            </h1>
-            <p className="text-gray-600">Quản lý các loại chất liệu sản phẩm</p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            {canCreate() && !showDeleted && (
-              <button
-                onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                Thêm Chất Liệu
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Search & Filter */}
-      <div className="bg-white rounded-xl shadow-sm border p-4 mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug">
+          Danh Sách Nhu Cầu Sử Dụng
+        </h2>
+        {!isSearchVisible ? (
+          <button
+            onClick={toggleSearchVisibility}
+            className="flex items-center gap-2 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-300 active:bg-gray-200"
+          >
+            <IoIosSearch className="text-xl text-gray-500" />
+            <span className="font-medium">Tìm kiếm</span>
+          </button>
+        ) : (
+          <div className="flex items-center space-x-2 w-full max-w-md">
+            <IoIosSearch
+              onClick={handleBack}
+              className="text-gray-400 cursor-pointer text-xl"
+            />
             <input
               type="text"
-              placeholder="Tìm kiếm theo tên chất liệu..."
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={handleSearchChange}
+              placeholder="Tìm theo tên nhu cầu sử dụng..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setShowDeleted(false);
-                setCurrentPage(1);
-              }}
-              className={`px-4 py-2 font-medium rounded-lg transition-colors ${
-                !showDeleted
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Đang hoạt động
-            </button>
-            <button
-              onClick={() => {
-                setShowDeleted(true);
-                setCurrentPage(1);
-              }}
-              className={`px-4 py-2 font-medium rounded-lg transition-colors ${
-                showDeleted
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Đã xóa
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Tổng Chất Liệu
-              </h3>
-              <p className="text-2xl font-bold text-blue-600">{totalCount}</p>
-            </div>
+      {!showDeleted && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200">
+            <h3 className="text-sm font-medium text-blue-600 mb-1">
+              Tổng số nhu cầu sử dụng
+            </h3>
+            <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
+            <h3 className="text-sm font-medium text-green-600 mb-1">
+              Đang hoạt động
+            </h3>
+            <p className="text-3xl font-bold text-green-900">{activeCount}</p>
+          </div>
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-sm border border-yellow-200">
+            <h3 className="text-sm font-medium text-yellow-600 mb-1">
+              Không hoạt động
+            </h3>
+            <p className="text-3xl font-bold text-yellow-900">
+              {inactiveCount}
+            </p>
           </div>
         </div>
+      )}
 
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Đang Hoạt Động
-              </h3>
-              <p className="text-2xl font-bold text-green-600">{activeCount}</p>
-            </div>
-          </div>
+      {/* Tab chuyển đổi và Sort */}
+      <div className="flex items-center justify-between border-b mb-4">
+        <div className="flex">
+          <button
+            onClick={() => {
+              setShowDeleted(false);
+              setCurrentPage(1);
+            }}
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
+              !showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+          >
+            Nhu cầu sử dụng đang hoạt động
+          </button>
+          <button
+            onClick={() => {
+              setShowDeleted(true);
+              setCurrentPage(1);
+            }}
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
+              showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+          >
+            Nhu cầu sử dụng đã xóa
+          </button>
         </div>
-
-        <div className="bg-white rounded-xl shadow-sm border p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-gray-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Đã Vô Hiệu Hóa
-              </h3>
-              <p className="text-2xl font-bold text-gray-600">
-                {inactiveCount}
-              </p>
-            </div>
-          </div>
+        <div className="flex items-center gap-3 mb-2">
+          {/* Sort Dropdown */}
+          <select
+            value={sortOption}
+            onChange={(e) => {
+              setSortOption(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="created_at_desc">Mới nhất</option>
+            <option value="created_at_asc">Cũ nhất</option>
+            <option value="name_asc">Tên A-Z</option>
+            <option value="name_desc">Tên Z-A</option>
+          </select>
+          {!showDeleted && canCreate() && (
+            <button
+              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              onClick={() => setShowCreateModal(true)}
+            >
+              + Thêm Nhu Cầu Sử Dụng
+            </button>
+          )}
         </div>
       </div>
 
@@ -1057,29 +1041,114 @@ const UseCasePage: React.FC = () => {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-6">
+          <div className="flex items-center justify-between mt-6">
+            <div className="text-sm text-gray-600">
+              Trang {currentPage} / {totalPages} • Tổng: {totalCount} nhu cầu sử
+              dụng
+            </div>
+            <div className="flex gap-2">
               <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  currentPage === 1
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
               >
                 Trước
               </button>
-              <span className="px-4 py-2 text-gray-700">
-                Trang {currentPage} / {totalPages}
-              </span>
+
+              {/* Page Numbers */}
+              {(() => {
+                const pages = [];
+                const showPages = 5; // Number of page buttons to show
+                let startPage = Math.max(
+                  1,
+                  currentPage - Math.floor(showPages / 2)
+                );
+                const endPage = Math.min(totalPages, startPage + showPages - 1);
+
+                // Adjust start if we're near the end
+                if (endPage - startPage < showPages - 1) {
+                  startPage = Math.max(1, endPage - showPages + 1);
+                }
+
+                // First page
+                if (startPage > 1) {
+                  pages.push(
+                    <button
+                      key={1}
+                      onClick={() => setCurrentPage(1)}
+                      className="px-3 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                    >
+                      1
+                    </button>
+                  );
+                  if (startPage > 2) {
+                    pages.push(
+                      <span key="ellipsis1" className="px-2 text-gray-500">
+                        ...
+                      </span>
+                    );
+                  }
+                }
+
+                // Middle pages
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i)}
+                      className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                        i === currentPage
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+
+                // Last page
+                if (endPage < totalPages) {
+                  if (endPage < totalPages - 1) {
+                    pages.push(
+                      <span key="ellipsis2" className="px-2 text-gray-500">
+                        ...
+                      </span>
+                    );
+                  }
+                  pages.push(
+                    <button
+                      key={totalPages}
+                      onClick={() => setCurrentPage(totalPages)}
+                      className="px-3 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                    >
+                      {totalPages}
+                    </button>
+                  );
+                }
+
+                return pages;
+              })()}
+
               <button
                 onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
               >
-                Sau
+                Tiếp
               </button>
             </div>
-          )}
+          </div>
         </>
       )}
 
