@@ -36,6 +36,7 @@ const UseCasePage: React.FC = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [activeCount, setActiveCount] = useState(0);
   const [inactiveCount, setInactiveCount] = useState(0);
+  const [deletedCount, setDeletedCount] = useState(0);
   const [sortOption, setSortOption] = useState("created_at_desc");
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const limit = 10;
@@ -140,9 +141,23 @@ const UseCasePage: React.FC = () => {
     }
   };
 
+  const fetchDeletedStats = async () => {
+    try {
+      const deletedResponse = await useCaseApi.getDeleted({
+        page: 1,
+        limit: 100,
+      });
+      const totalDeleted = deletedResponse.data.pagination?.total || 0;
+      setDeletedCount(totalDeleted);
+    } catch {
+      setDeletedCount(0);
+    }
+  };
+
   useEffect(() => {
     if (showDeleted) {
       fetchDeletedUseCases();
+      fetchDeletedStats();
     } else {
       fetchUseCases();
     }
@@ -535,13 +550,11 @@ const UseCasePage: React.FC = () => {
                       Đã xóa
                     </span>
                   ) : selectedUseCase.isActive ? (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      Đang hoạt động
+                    <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 min-w-[120px] h-7 whitespace-nowrap">
+                      Hoạt động
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                    <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 min-w-[120px] h-7 whitespace-nowrap">
                       Đã vô hiệu hóa
                     </span>
                   )}
@@ -709,7 +722,7 @@ const UseCasePage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      {!showDeleted && (
+      {!showDeleted ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200">
             <h3 className="text-sm font-medium text-blue-600 mb-1">
@@ -730,6 +743,15 @@ const UseCasePage: React.FC = () => {
             <p className="text-3xl font-bold text-yellow-900">
               {inactiveCount}
             </p>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200">
+            <h3 className="text-sm font-medium text-red-600 mb-1">
+              Tổng số nhu cầu sử dụng đã xóa
+            </h3>
+            <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
           </div>
         </div>
       )}
@@ -810,13 +832,13 @@ const UseCasePage: React.FC = () => {
           </div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
             {showDeleted
-              ? "Không có chất liệu nào đã xóa"
-              : "Chưa có chất liệu nào"}
+              ? "Không có Nhu cầu nào đã xóa"
+              : "Chưa có nhu cầu nào"}
           </h3>
           <p className="text-gray-500 mb-6">
             {showDeleted
-              ? "Tất cả chất liệu đang hoạt động bình thường"
-              : "Hãy tạo chất liệu đầu tiên cho sản phẩm của bạn"}
+              ? "Tất cả nhu cầu đang hoạt động bình thường"
+              : "Hãy tạo nhu cầu đầu tiên cho sản phẩm của bạn"}
           </p>
           {canCreate() && !showDeleted && (
             <button
@@ -842,214 +864,209 @@ const UseCasePage: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="space-y-4">
-            {displayUseCases.map((item) => (
-              <div
-                key={item._id}
-                className="bg-white rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 p-6"
-              >
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-lg font-bold text-gray-900">
-                        {item.name}
-                      </h3>
-                      <div className="flex items-center gap-2 ml-4">
-                        {item.deletedAt ? (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                            Đã xóa
-                          </span>
-                        ) : item.isActive ? (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            Đang hoạt động
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                            Đã vô hiệu hóa
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-3">{item.description}</p>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="text-sm text-gray-500">
-                        Tạo:{" "}
-                        {new Date(item.createdAt).toLocaleDateString("vi-VN")}
-                      </span>
-                      {item.updatedAt !== item.createdAt && (
-                        <span className="text-sm text-gray-500">
-                          Cập nhật:{" "}
-                          {new Date(item.updatedAt).toLocaleDateString("vi-VN")}
+          {/* Use Cases Table */}
+          <div className="overflow-x-auto shadow rounded-lg">
+            <table className="min-w-full bg-white rounded-md overflow-hidden border">
+              <thead className="bg-gray-50 text-gray-700 text-sm font-semibold uppercase">
+                <tr>
+                  <th className="py-3 px-4 text-left border-b">ID</th>
+                  <th className="py-3 px-4 text-left border-b">Tên Nhu Cầu</th>
+                  <th className="py-3 px-4 text-left border-b">Mô Tả</th>
+                  <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
+                  <th className="py-3 px-4 text-center border-b">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayUseCases.map((item) => (
+                  <tr key={item._id} className="hover:bg-gray-50 border-t">
+                    <td className="py-2 px-4 border-b font-mono text-xs">
+                      {item._id.slice(-8)}
+                    </td>
+                    <td className="py-2 px-4 border-b text-sm font-semibold">
+                      {item.name}
+                    </td>
+                    <td className="py-2 px-4 border-b text-sm text-gray-600 max-w-md truncate">
+                      {item.description}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center text-sm">
+                      {item.deletedAt ? (
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                          Đã xóa
+                        </span>
+                      ) : item.isActive ? (
+                        <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 min-w-[120px] h-7 whitespace-nowrap">
+                          Hoạt động
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 min-w-[120px] h-7 whitespace-nowrap">
+                          Đã vô hiệu hóa
                         </span>
                       )}
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    {!showDeleted ? (
-                      <>
-                        <button
-                          onClick={() => {
-                            setSelectedUseCase(item);
-                            setShowDetailModal(true);
-                          }}
-                          className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-2"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                            />
-                          </svg>
-                          Chi tiết
-                        </button>
-                        {canUpdate() && (
-                          <button
-                            onClick={() => {
-                              setSelectedUseCase(item);
-                              setShowEditModal(true);
-                            }}
-                            className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-2"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                    </td>
+                    <td className="py-2 px-4 border-b text-center text-sm">
+                      <div className="flex flex-wrap gap-1.5 justify-center min-w-[140px]">
+                        {!showDeleted ? (
+                          <>
+                            <button
+                              onClick={() => {
+                                setSelectedUseCase(item);
+                                setShowDetailModal(true);
+                              }}
+                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-1.5"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                              />
-                            </svg>
-                            Sửa
-                          </button>
-                        )}
-                        {canDelete() && (
-                          <button
-                            onClick={() => handleDeleteUseCase(item)}
-                            className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-2"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
+                              Xem
+                            </button>
+                            {canUpdate() && (
+                              <button
+                                onClick={() => {
+                                  setSelectedUseCase(item);
+                                  setShowEditModal(true);
+                                }}
+                                className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-1.5"
+                              >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                  />
+                                </svg>
+                                Sửa
+                              </button>
+                            )}
+                            {canDelete() && (
+                              <button
+                                onClick={() => handleDeleteUseCase(item)}
+                                className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-1.5"
+                              >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                  />
+                                </svg>
+                                Xóa
+                              </button>
+                            )}
+                            {canToggleStatus() && (
+                              <button
+                                onClick={() =>
+                                  handleToggleStatus(item._id, item.isActive)
+                                }
+                                className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors flex items-center gap-1.5 ${
+                                  item.isActive
+                                    ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border-yellow-200"
+                                    : "bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                                }`}
+                              >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                                  />
+                                </svg>
+                                {item.isActive ? "Tắt" : "Bật"}
+                              </button>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => {
+                                setSelectedUseCase(item);
+                                setShowDetailModal(true);
+                              }}
+                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-1.5"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                            Xóa
-                          </button>
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
+                              Xem
+                            </button>
+                            {canUpdate() && (
+                              <button
+                                onClick={() => handleRestoreUseCase(item._id)}
+                                className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-1.5"
+                              >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                  />
+                                </svg>
+                                Khôi phục
+                              </button>
+                            )}
+                          </>
                         )}
-                        {canToggleStatus() && (
-                          <button
-                            onClick={() =>
-                              handleToggleStatus(item._id, item.isActive)
-                            }
-                            className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors flex items-center gap-2 ${
-                              item.isActive
-                                ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border-yellow-200"
-                                : "bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
-                            }`}
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                              />
-                            </svg>
-                            {item.isActive ? "Tắt" : "Bật"}
-                          </button>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => {
-                            setSelectedUseCase(item);
-                            setShowDetailModal(true);
-                          }}
-                          className="px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-2"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                            />
-                          </svg>
-                          Chi tiết
-                        </button>
-                        {canUpdate() && (
-                          <button
-                            onClick={() => handleRestoreUseCase(item._id)}
-                            className="px-4 py-2 bg-green-50 hover:bg-green-100 text-green-700 text-sm font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-2"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                              />
-                            </svg>
-                            Khôi phục
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* Pagination */}

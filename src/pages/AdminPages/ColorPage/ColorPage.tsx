@@ -288,7 +288,7 @@ const ColorPage: React.FC = () => {
 
   // Stats states
   const [activeCount, setActiveCount] = useState(0);
-  const [inactiveCount, setInactiveCount] = useState(0);
+  const [deletedCount, setDeletedCount] = useState(0);
 
   // Detail modal state
   const [viewDetailColor, setViewDetailColor] = useState<Color | null>(null);
@@ -345,22 +345,33 @@ const ColorPage: React.FC = () => {
       // Colors don't have isActive, so we count all active as non-deleted
       if (totalFromAPI <= 100) {
         setActiveCount(statsData.length);
-        setInactiveCount(0); // No inactive for colors, only deleted
       } else {
         // Estimate for >100 items
         const ratio = totalFromAPI / statsData.length;
         setActiveCount(Math.round(statsData.length * ratio));
-        setInactiveCount(0);
       }
     } catch {
       setActiveCount(0);
-      setInactiveCount(0);
+    }
+  };
+
+  const fetchDeletedStats = async () => {
+    try {
+      const deletedResponse = await colorApi.getDeleted({
+        page: 1,
+        limit: 100,
+      });
+      const totalDeleted = deletedResponse.data.total || 0;
+      setDeletedCount(totalDeleted);
+    } catch {
+      setDeletedCount(0);
     }
   };
 
   useEffect(() => {
     if (showDeleted) {
       fetchDeletedColors(currentPage);
+      fetchDeletedStats();
     } else {
       fetchColors(currentPage);
       fetchStats();
@@ -440,8 +451,8 @@ const ColorPage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      {!showDeleted && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      {!showDeleted ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200">
             <h3 className="text-sm font-medium text-blue-600 mb-1">
               Tổng số màu sắc
@@ -454,13 +465,14 @@ const ColorPage: React.FC = () => {
             </h3>
             <p className="text-3xl font-bold text-green-900">{activeCount}</p>
           </div>
-          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-sm border border-yellow-200">
-            <h3 className="text-sm font-medium text-yellow-600 mb-1">
-              Không hoạt động
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200">
+            <h3 className="text-sm font-medium text-red-600 mb-1">
+              Tổng số màu sắc đã xóa
             </h3>
-            <p className="text-3xl font-bold text-yellow-900">
-              {inactiveCount}
-            </p>
+            <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
           </div>
         </div>
       )}
@@ -608,11 +620,30 @@ const ColorPage: React.FC = () => {
                   )}
                 </td>
                 <td className="py-2 px-4 border-b text-center text-sm">
-                  <div className="flex flex-wrap gap-2 justify-center min-w-[140px]">
+                  <div className="flex flex-wrap gap-1.5 justify-center min-w-[140px]">
                     <button
                       onClick={() => setViewDetailColor(item)}
-                      className="inline-flex items-center justify-center bg-gray-500 hover:bg-gray-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                      className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-1.5"
                     >
+                      <svg
+                        className="w-3.5 h-3.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
                       Xem
                     </button>
                     {!showDeleted ? (
@@ -620,16 +651,42 @@ const ColorPage: React.FC = () => {
                         {canUpdate() && (
                           <button
                             onClick={() => setShowEditColor(item)}
-                            className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                            className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-1.5"
                           >
+                            <svg
+                              className="w-3.5 h-3.5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              />
+                            </svg>
                             Sửa
                           </button>
                         )}
                         {canDelete() && (
                           <button
                             onClick={() => handleDeleteColor(item._id)}
-                            className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                            className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-1.5"
                           >
+                            <svg
+                              className="w-3.5 h-3.5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
                             Xóa
                           </button>
                         )}
@@ -638,8 +695,21 @@ const ColorPage: React.FC = () => {
                       canUpdate() && (
                         <button
                           onClick={() => handleRestoreColor(item._id)}
-                          className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                          className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-1.5"
                         >
+                          <svg
+                            className="w-3.5 h-3.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                            />
+                          </svg>
                           Khôi phục
                         </button>
                       )
