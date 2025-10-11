@@ -82,6 +82,31 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   )}
               </div>
               <div>
+                <span className="font-medium">Tags:</span>{" "}
+                {detail.tags && detail.tags.length > 0 ? (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {detail.tags.map(
+                      (tag: { _id: string; name: string; type: string }) => (
+                        <span
+                          key={tag._id}
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                            tag.type === "MATERIAL"
+                              ? "bg-blue-100 text-blue-800"
+                              : tag.type === "USECASE"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-purple-100 text-purple-800"
+                          }`}
+                        >
+                          {tag.name}
+                        </span>
+                      )
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-gray-400">Chưa có tags</span>
+                )}
+              </div>
+              <div>
                 <span className="font-medium">Trạng thái:</span>{" "}
                 <span
                   className={`ml-1 px-2 py-0.5 rounded-full text-xs font-semibold ${

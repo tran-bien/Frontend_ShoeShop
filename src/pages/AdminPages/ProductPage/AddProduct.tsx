@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { productApi } from "../../../services/ProductService";
 import { brandApi } from "../../../services/BrandService";
 import { categoryApi } from "../../../services/CategoryService";
+import { tagApi } from "../../../services/TagService";
 
 interface AddProductProps {
   handleClose: () => void;
@@ -17,15 +18,23 @@ interface Category {
   name: string;
 }
 
+interface Tag {
+  _id: string;
+  name: string;
+  type: "MATERIAL" | "USECASE" | "CUSTOM";
+}
+
 const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     category: "",
     brand: "",
+    tags: [] as string[],
   });
   const [brands, setBrands] = useState<Brand[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,8 +57,18 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
         setCategories([]);
       }
     };
+    // Lấy danh sách tags
+    const fetchTags = async () => {
+      try {
+        const res = await tagApi.getActiveTags();
+        setTags(res.data.data || []);
+      } catch {
+        setTags([]);
+      }
+    };
     fetchBrands();
     fetchCategories();
+    fetchTags();
   }, []);
 
   const handleChange = (
@@ -59,6 +78,15 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleTagToggle = (tagId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.includes(tagId)
+        ? prev.tags.filter((id) => id !== tagId)
+        : [...prev.tags, tagId],
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -150,8 +178,52 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
               ))}
             </select>
           </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-black mb-2">
+              Tags (Chọn nhiều)
+            </label>
+            <div className="border border-gray-300 rounded-md p-3 max-h-48 overflow-y-auto">
+              {tags.length === 0 ? (
+                <p className="text-gray-500 text-sm">Không có tags nào</p>
+              ) : (
+                <div className="space-y-2">
+                  {tags.map((tag) => (
+                    <label
+                      key={tag._id}
+                      className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.tags.includes(tag._id)}
+                        onChange={() => handleTagToggle(tag._id)}
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <span className="text-sm">
+                        {tag.name}
+                        <span className="ml-2 text-xs text-gray-500">
+                          (
+                          {tag.type === "MATERIAL"
+                            ? "Chất liệu"
+                            : tag.type === "USECASE"
+                            ? "Nhu cầu"
+                            : "Tùy chỉnh"}
+                          )
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+            {formData.tags.length > 0 && (
+              <p className="text-sm text-gray-600 mt-1">
+                Đã chọn: {formData.tags.length} tag(s)
+              </p>
+            )}
+          </div>
           {error && <div className="text-red-500 text-sm">{error}</div>}
           <div className="flex justify-end">
+            `
             <button
               type="submit"
               disabled={loading}

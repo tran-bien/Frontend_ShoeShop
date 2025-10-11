@@ -1,0 +1,1076 @@
+import React, { useState, useEffect } from "react";
+import { IoIosSearch } from "react-icons/io";
+import { tagApi } from "../../../services/TagService";
+import { useAuth } from "../../../hooks/useAuth";
+import { toast } from "react-hot-toast";
+
+interface Tag {
+  _id: string;
+  name: string;
+  type: "MATERIAL" | "USECASE" | "CUSTOM";
+  description: string;
+  isActive: boolean;
+  deletedAt: string | null;
+  deletedBy: string | { _id: string; name?: string } | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const TAG_TYPES = {
+  MATERIAL: "MATERIAL",
+  USECASE: "USECASE",
+  CUSTOM: "CUSTOM",
+} as const;
+
+const TAG_TYPE_LABELS = {
+  MATERIAL: "Chất liệu",
+  USECASE: "Nhu cầu sử dụng",
+  CUSTOM: "Tùy chỉnh",
+};
+
+const TagPage: React.FC = () => {
+  const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [deletedTags, setDeletedTags] = useState<Tag[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
+  const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [showDeleted, setShowDeleted] = useState<boolean>(false);
+
+  // Pagination & Filter & Stats
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>(""); // Filter by type
+  const [totalCount, setTotalCount] = useState(0);
+  const [activeCount, setActiveCount] = useState(0);
+  const [inactiveCount, setInactiveCount] = useState(0);
+  const [deletedCount, setDeletedCount] = useState(0);
+  const [sortOption, setSortOption] = useState("created_at_desc");
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const limit = 10;
+
+  const toggleSearchVisibility = () => {
+    setIsSearchVisible(!isSearchVisible);
+    if (isSearchVisible) {
+      setSearchQuery("");
+      setSearchInput("");
+      setCurrentPage(1);
+    }
+  };
+
+  // Debounce search query
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSearchQuery(searchInput);
+      setCurrentPage(1);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchInput]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+  };
+
+  const handleBack = () => {
+    setIsSearchVisible(false);
+    setSearchQuery("");
+    setSearchInput("");
+    setCurrentPage(1);
+  };
+
+  const fetchTags = async () => {
+    try {
+      setLoading(true);
+      const response = await tagApi.getAll({
+        page: currentPage,
+        limit,
+        name: searchQuery || undefined,
+        type: typeFilter || undefined,
+        sortBy: sortOption,
+      });
+      const data = response.data.data || [];
+      setTags(data);
+      setTotalPages(response.data.totalPages || 1);
+
+      // Lấy stats tổng thể
+      const statsResponse = await tagApi.getAll({
+        page: 1,
+        limit: 100,
+      });
+      const statsData = statsResponse.data.data || [];
+      const totalFromAPI = statsResponse.data.total || 0;
+
+      if (totalFromAPI <= 100) {
+        setTotalCount(totalFromAPI);
+        setActiveCount(statsData.filter((t: Tag) => t.isActive).length);
+        setInactiveCount(statsData.filter((t: Tag) => !t.isActive).length);
+      } else {
+        const sampleActive = statsData.filter((t: Tag) => t.isActive).length;
+        const sampleInactive = statsData.filter((t: Tag) => !t.isActive).length;
+        const ratio = totalFromAPI / statsData.length;
+
+        setTotalCount(totalFromAPI);
+        setActiveCount(Math.round(sampleActive * ratio));
+        setInactiveCount(Math.round(sampleInactive * ratio));
+      }
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+      setTags([]);
+      setTotalCount(0);
+      setActiveCount(0);
+      setInactiveCount(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDeletedTags = async () => {
+    try {
+      setLoading(true);
+      const response = await tagApi.getDeleted({
+        page: currentPage,
+        limit,
+        name: searchQuery || undefined,
+      });
+      setDeletedTags(response.data.data || []);
+      setTotalPages(response.data.pagination?.totalPages || 1);
+    } catch (error) {
+      console.error("Error fetching deleted tags:", error);
+      setDeletedTags([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDeletedStats = async () => {
+    try {
+      const deletedResponse = await tagApi.getDeleted({
+        page: 1,
+        limit: 100,
+      });
+      const totalDeleted = deletedResponse.data.pagination?.total || 0;
+      setDeletedCount(totalDeleted);
+    } catch {
+      setDeletedCount(0);
+    }
+  };
+
+  useEffect(() => {
+    if (showDeleted) {
+      fetchDeletedTags();
+      fetchDeletedStats();
+    } else {
+      fetchTags();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, showDeleted, searchQuery, sortOption, typeFilter]);
+
+  const handleToggleStatus = async (tagId: string, currentStatus: boolean) => {
+    try {
+      await tagApi.toggleStatus(tagId, { isActive: !currentStatus });
+      toast.success(
+        `${currentStatus ? "Vô hiệu hóa" : "Kích hoạt"} tag thành công!`
+      );
+      fetchTags();
+    } catch (error: unknown) {
+      console.error("Error toggling tag status:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { status?: number; data?: { message?: string } };
+        };
+        toast.error(
+          axiosError.response?.data?.message ||
+            "Có lỗi xảy ra khi thay đổi trạng thái."
+        );
+      } else {
+        toast.error("Có lỗi xảy ra khi thay đổi trạng thái.");
+      }
+    }
+  };
+
+  const handleDeleteTag = (tag: Tag) => {
+    setSelectedTag(tag);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteTag = async () => {
+    if (!selectedTag) return;
+
+    try {
+      setSubmitting(true);
+      await tagApi.delete(selectedTag._id);
+      toast.success("Xóa tag thành công!");
+      fetchTags();
+      setShowDeleteModal(false);
+      setSelectedTag(null);
+    } catch (error: unknown) {
+      console.error("Error deleting tag:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        toast.error(
+          axiosError.response?.data?.message || "Có lỗi xảy ra khi xóa tag"
+        );
+      } else {
+        toast.error("Có lỗi xảy ra khi xóa tag");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleRestoreTag = async (tagId: string) => {
+    try {
+      await tagApi.restore(tagId);
+      toast.success("Khôi phục tag thành công!");
+      fetchDeletedTags();
+    } catch (error: unknown) {
+      console.error("Error restoring tag:", error);
+      if (error && typeof error === "object" && "response" in error) {
+        const axiosError = error as {
+          response?: { data?: { message?: string } };
+        };
+        toast.error(
+          axiosError.response?.data?.message ||
+            "Có lỗi xảy ra khi khôi phục tag"
+        );
+      } else {
+        toast.error("Có lỗi xảy ra khi khôi phục tag");
+      }
+    }
+  };
+
+  // Create Modal
+  const CreateModal = () => {
+    const [formData, setFormData] = useState<{
+      name: string;
+      type: "MATERIAL" | "USECASE" | "CUSTOM";
+      description: string;
+      isActive: boolean;
+    }>({
+      name: "",
+      type: TAG_TYPES.MATERIAL,
+      description: "",
+      isActive: true,
+    });
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setSubmitting(true);
+      try {
+        await tagApi.create(formData);
+        setShowCreateModal(false);
+        setFormData({
+          name: "",
+          type: TAG_TYPES.MATERIAL,
+          description: "",
+          isActive: true,
+        });
+        fetchTags();
+        toast.success("Thêm tag thành công!");
+      } catch (error: unknown) {
+        console.error("Error creating tag:", error);
+        if (error && typeof error === "object" && "response" in error) {
+          const axiosError = error as {
+            response?: { data?: { message?: string } };
+          };
+          toast.error(
+            axiosError.response?.data?.message || "Có lỗi xảy ra khi thêm tag."
+          );
+        } else {
+          toast.error("Có lỗi xảy ra khi thêm tag.");
+        }
+      } finally {
+        setSubmitting(false);
+      }
+    };
+
+    if (!showCreateModal) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl max-w-md w-full p-6">
+          <h3 className="text-xl font-bold mb-4">Thêm Tag Mới</h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tên tag
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Loại tag
+              </label>
+              <select
+                value={formData.type}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    type: e.target.value as "MATERIAL" | "USECASE" | "CUSTOM",
+                  })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {Object.entries(TAG_TYPE_LABELS).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Mô tả
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={3}
+              />
+            </div>
+            <div className="flex gap-3 pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCreateModal(false);
+                  setFormData({
+                    name: "",
+                    type: TAG_TYPES.MATERIAL,
+                    description: "",
+                    isActive: true,
+                  });
+                }}
+                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-gray-400"
+              >
+                {submitting ? "Đang thêm..." : "Thêm"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  // Edit Modal
+  const EditModal = () => {
+    const [formData, setFormData] = useState<{
+      name: string;
+      type: "MATERIAL" | "USECASE" | "CUSTOM";
+      description: string;
+    }>({
+      name: selectedTag?.name || "",
+      type: selectedTag?.type || TAG_TYPES.MATERIAL,
+      description: selectedTag?.description || "",
+    });
+
+    useEffect(() => {
+      if (selectedTag) {
+        setFormData({
+          name: selectedTag.name,
+          type: selectedTag.type,
+          description: selectedTag.description,
+        });
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedTag?._id]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!selectedTag) return;
+
+      setSubmitting(true);
+      try {
+        await tagApi.update(selectedTag._id, formData);
+        setShowEditModal(false);
+        setSelectedTag(null);
+        fetchTags();
+        toast.success("Cập nhật tag thành công!");
+      } catch (error: unknown) {
+        console.error("Error updating tag:", error);
+        if (error && typeof error === "object" && "response" in error) {
+          const axiosError = error as {
+            response?: { data?: { message?: string } };
+          };
+          toast.error(
+            axiosError.response?.data?.message ||
+              "Có lỗi xảy ra khi cập nhật tag."
+          );
+        } else {
+          toast.error("Có lỗi xảy ra khi cập nhật tag.");
+        }
+      } finally {
+        setSubmitting(false);
+      }
+    };
+
+    if (!showEditModal || !selectedTag) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl max-w-md w-full p-6">
+          <h3 className="text-xl font-bold mb-4">Chỉnh Sửa Tag</h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tên tag
+              </label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Loại tag
+              </label>
+              <select
+                value={formData.type}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    type: e.target.value as "MATERIAL" | "USECASE" | "CUSTOM",
+                  })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {Object.entries(TAG_TYPE_LABELS).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Mô tả
+              </label>
+              <textarea
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={3}
+              />
+            </div>
+            <div className="flex gap-3 pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEditModal(false);
+                  setSelectedTag(null);
+                }}
+                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-gray-400"
+              >
+                {submitting ? "Đang cập nhật..." : "Cập nhật"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  };
+
+  // Delete Modal
+  const DeleteModal = () => {
+    if (!showDeleteModal || !selectedTag) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl max-w-md w-full p-6">
+          <h3 className="text-xl font-bold mb-4 text-red-600">Xác Nhận Xóa</h3>
+          <p className="text-gray-700 mb-6">
+            Bạn có chắc chắn muốn xóa tag <strong>"{selectedTag.name}"</strong>?
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={() => {
+                setShowDeleteModal(false);
+                setSelectedTag(null);
+              }}
+              disabled={submitting}
+              className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Hủy
+            </button>
+            <button
+              onClick={confirmDeleteTag}
+              disabled={submitting}
+              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:bg-gray-400"
+            >
+              {submitting ? "Đang xóa..." : "Xóa"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // View Detail Modal
+  const ViewDetailModal = () => {
+    if (!showDetailModal || !selectedTag) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-xl max-w-2xl w-full p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">Chi Tiết Tag</h3>
+            <button
+              onClick={() => {
+                setShowDetailModal(false);
+                setSelectedTag(null);
+              }}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            {/* Tên và Trạng thái */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-gray-500 mb-1">
+                    Tên Tag
+                  </h4>
+                  <p className="text-xl font-bold text-gray-900">
+                    {selectedTag.name}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Loại:{" "}
+                    <span className="font-semibold">
+                      {TAG_TYPE_LABELS[selectedTag.type]}
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  {selectedTag.deletedAt ? (
+                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800">
+                      Đã xóa
+                    </span>
+                  ) : selectedTag.isActive ? (
+                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
+                      Hoạt động
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
+                      Vô hiệu
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Mô tả */}
+            <div className="border rounded-lg p-4">
+              <h4 className="text-sm font-medium text-gray-500 mb-2">Mô Tả</h4>
+              <p className="text-gray-900">
+                {selectedTag.description || "Không có mô tả"}
+              </p>
+            </div>
+
+            {/* Thông tin chi tiết */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="border rounded-lg p-4">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                  Ngày Tạo
+                </h4>
+                <p className="text-gray-900">
+                  {new Date(selectedTag.createdAt).toLocaleString("vi-VN")}
+                </p>
+              </div>
+              <div className="border rounded-lg p-4">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                  Cập Nhật Lần Cuối
+                </h4>
+                <p className="text-gray-900">
+                  {new Date(selectedTag.updatedAt).toLocaleString("vi-VN")}
+                </p>
+              </div>
+            </div>
+
+            {selectedTag.deletedAt && (
+              <div className="border border-red-200 bg-red-50 rounded-lg p-4">
+                <h4 className="text-sm font-medium text-red-700 mb-2">
+                  Thông Tin Xóa
+                </h4>
+                <div className="space-y-1">
+                  <p className="text-sm text-red-900">
+                    Ngày xóa:{" "}
+                    {new Date(selectedTag.deletedAt).toLocaleString("vi-VN")}
+                  </p>
+                  {selectedTag.deletedBy && (
+                    <p className="text-sm text-red-900">
+                      Người xóa:{" "}
+                      {typeof selectedTag.deletedBy === "object"
+                        ? selectedTag.deletedBy.name || "N/A"
+                        : selectedTag.deletedBy}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-3 pt-4">
+              {!selectedTag.deletedAt && (
+                <>
+                  {canUpdate() && (
+                    <button
+                      onClick={() => {
+                        setShowDetailModal(false);
+                        setShowEditModal(true);
+                      }}
+                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                    >
+                      Chỉnh Sửa
+                    </button>
+                  )}
+                  {canToggleStatus() && (
+                    <button
+                      onClick={async () => {
+                        await handleToggleStatus(
+                          selectedTag._id,
+                          selectedTag.isActive
+                        );
+                        setShowDetailModal(false);
+                        setSelectedTag(null);
+                      }}
+                      className={`px-6 py-2 rounded-lg transition-colors ${
+                        selectedTag.isActive
+                          ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                          : "bg-green-500 hover:bg-green-600 text-white"
+                      }`}
+                    >
+                      {selectedTag.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
+                    </button>
+                  )}
+                </>
+              )}
+              <button
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setSelectedTag(null);
+                }}
+                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  if (loading && currentPage === 1) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400"></div>
+      </div>
+    );
+  }
+
+  const displayTags = showDeleted ? deletedTags : tags;
+
+  return (
+    <div className="p-6 w-full font-sans">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug">
+          Quản Lý Tags
+        </h2>
+        {!isSearchVisible ? (
+          <div className="flex gap-3">
+            <button
+              onClick={toggleSearchVisibility}
+              className="flex items-center gap-2 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium"
+            >
+              <IoIosSearch className="text-xl" />
+              <span>Tìm kiếm</span>
+            </button>
+            {canCreate() && !showDeleted && (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl shadow transition-colors font-medium"
+              >
+                + Thêm Tag
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="flex items-center space-x-2 w-full max-w-md">
+            <IoIosSearch
+              onClick={handleBack}
+              className="text-gray-400 cursor-pointer text-xl"
+            />
+            <input
+              type="text"
+              value={searchInput}
+              onChange={handleSearchChange}
+              placeholder="Tìm theo tên tag..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Stats Cards */}
+      {!showDeleted ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200">
+            <h3 className="text-sm font-medium text-blue-600 mb-1">
+              Tổng số tags
+            </h3>
+            <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
+            <h3 className="text-sm font-medium text-green-600 mb-1">
+              Tags hoạt động
+            </h3>
+            <p className="text-3xl font-bold text-green-900">{activeCount}</p>
+          </div>
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-sm border border-yellow-200">
+            <h3 className="text-sm font-medium text-yellow-600 mb-1">
+              Tags vô hiệu
+            </h3>
+            <p className="text-3xl font-bold text-yellow-900">
+              {inactiveCount}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200 mb-6">
+          <h3 className="text-sm font-medium text-red-600 mb-1">Tags đã xóa</h3>
+          <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
+        </div>
+      )}
+
+      {/* Tab & Filters */}
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between border-b mb-4 pb-4 gap-4">
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setShowDeleted(false);
+              setCurrentPage(1);
+            }}
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-4 ${
+              !showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+          >
+            Tags đang hoạt động
+          </button>
+          <button
+            onClick={() => {
+              setShowDeleted(true);
+              setCurrentPage(1);
+            }}
+            className={`px-4 py-2 font-medium transition border-b-2 -mb-4 ${
+              showDeleted
+                ? "text-blue-600 border-blue-600"
+                : "text-gray-500 border-transparent hover:text-blue-600"
+            }`}
+          >
+            Tags đã xóa
+          </button>
+        </div>
+
+        {/* Type Filter */}
+        {!showDeleted && (
+          <div className="flex gap-4 items-center">
+            <label className="text-sm font-medium text-gray-700">
+              Lọc theo loại:
+            </label>
+            <select
+              value={typeFilter}
+              onChange={(e) => {
+                setTypeFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="">Tất cả</option>
+              {Object.entries(TAG_TYPE_LABELS).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+
+            <label className="text-sm font-medium text-gray-700">
+              Sắp xếp:
+            </label>
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="created_at_desc">Mới nhất</option>
+              <option value="created_at_asc">Cũ nhất</option>
+              <option value="name_asc">Tên A-Z</option>
+              <option value="name_desc">Tên Z-A</option>
+            </select>
+          </div>
+        )}
+      </div>
+
+      {/* Empty State */}
+      {displayTags.length === 0 ? (
+        <div className="text-center py-16">
+          <svg
+            className="mx-auto h-16 w-16 text-gray-300 mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+            />
+          </svg>
+          <p className="text-gray-500 text-lg mb-4">
+            {showDeleted ? "Không có tags đã xóa" : "Chưa có tags nào"}
+          </p>
+          {canCreate() && !showDeleted && (
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center gap-2"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Tạo Tag Đầu Tiên
+            </button>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Tags Table */}
+          <div className="overflow-x-auto shadow rounded-lg">
+            <table className="min-w-full bg-white rounded-md overflow-hidden border">
+              <thead className="bg-gray-50 text-gray-700 text-sm font-semibold uppercase">
+                <tr>
+                  <th className="py-3 px-4 text-left border-b">ID</th>
+                  <th className="py-3 px-4 text-left border-b">Tên Tag</th>
+                  <th className="py-3 px-4 text-left border-b">Loại</th>
+                  <th className="py-3 px-4 text-left border-b">Mô Tả</th>
+                  <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
+                  <th className="py-3 px-4 text-center border-b">Thao Tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayTags.map((tag) => (
+                  <tr key={tag._id} className="hover:bg-gray-50 border-t">
+                    <td className="py-2 px-4 border-b font-mono text-xs">
+                      {tag._id.slice(-8)}
+                    </td>
+                    <td className="py-2 px-4 border-b text-sm font-semibold">
+                      {tag.name}
+                    </td>
+                    <td className="py-2 px-4 border-b text-sm">
+                      <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
+                        {TAG_TYPE_LABELS[tag.type]}
+                      </span>
+                    </td>
+                    <td className="py-2 px-4 border-b text-sm text-gray-600">
+                      {tag.description?.substring(0, 50) || "—"}
+                      {tag.description && tag.description.length > 50 && "..."}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center text-sm">
+                      {tag.isActive ? (
+                        <span className="inline-flex items-center px-4 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                          Hoạt động
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-4 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                          Vô hiệu
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-2 px-4 border-b text-center text-sm">
+                      <div className="flex flex-wrap gap-1.5 justify-center">
+                        {!showDeleted ? (
+                          <>
+                            <button
+                              onClick={() => {
+                                setSelectedTag(tag);
+                                setShowDetailModal(true);
+                              }}
+                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs rounded-lg border border-blue-200"
+                            >
+                              Xem
+                            </button>
+                            {canUpdate() && (
+                              <button
+                                onClick={() => {
+                                  setSelectedTag(tag);
+                                  setShowEditModal(true);
+                                }}
+                                className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded-lg border border-green-200"
+                              >
+                                Sửa
+                              </button>
+                            )}
+                            {canDelete() && (
+                              <button
+                                onClick={() => handleDeleteTag(tag)}
+                                className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs rounded-lg border border-red-200"
+                              >
+                                Xóa
+                              </button>
+                            )}
+                            {canToggleStatus() && (
+                              <button
+                                onClick={() =>
+                                  handleToggleStatus(tag._id, tag.isActive)
+                                }
+                                className={`px-3 py-1.5 text-xs rounded-lg border ${
+                                  tag.isActive
+                                    ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border-yellow-200"
+                                    : "bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                                }`}
+                              >
+                                {tag.isActive ? "Tắt" : "Bật"}
+                              </button>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => {
+                                setSelectedTag(tag);
+                                setShowDetailModal(true);
+                              }}
+                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs rounded-lg border border-blue-200"
+                            >
+                              Xem
+                            </button>
+                            {canDelete() && (
+                              <button
+                                onClick={() => handleRestoreTag(tag._id)}
+                                className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded-lg border border-green-200"
+                              >
+                                Khôi phục
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex items-center justify-between mt-6">
+            <div className="text-sm text-gray-600">
+              Trang {currentPage} / {totalPages} • Tổng: {totalCount} tags
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  currentPage === 1
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                Trước
+              </button>
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+              >
+                Tiếp
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Modals */}
+      <CreateModal />
+      <EditModal />
+      <DeleteModal />
+      <ViewDetailModal />
+    </div>
+  );
+};
+
+export default TagPage;

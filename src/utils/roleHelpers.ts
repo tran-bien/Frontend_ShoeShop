@@ -35,17 +35,21 @@ export const roleHelpers = {
     }
   },
 
-  // Kiểm tra có thể xóa dữ liệu không (chỉ admin)
-  canDelete: (role: string): boolean => role === ROLES.ADMIN,
+  // Kiểm tra có thể xóa dữ liệu không (staff và admin)
+  canDelete: (role: string): boolean =>
+    role === ROLES.STAFF || role === ROLES.ADMIN,
 
-  // Kiểm tra có thể tạo dữ liệu không (chỉ admin)
-  canCreate: (role: string): boolean => role === ROLES.ADMIN,
+  // Kiểm tra có thể tạo dữ liệu không (staff và admin)
+  canCreate: (role: string): boolean =>
+    role === ROLES.STAFF || role === ROLES.ADMIN,
 
-  // Kiểm tra có thể sửa dữ liệu không (chỉ admin)
-  canUpdate: (role: string): boolean => role === ROLES.ADMIN,
+  // Kiểm tra có thể sửa dữ liệu không (staff và admin)
+  canUpdate: (role: string): boolean =>
+    role === ROLES.STAFF || role === ROLES.ADMIN,
 
-  // Kiểm tra có thể toggle status không (chỉ admin)
-  canToggleStatus: (role: string): boolean => role === ROLES.ADMIN,
+  // Kiểm tra có thể toggle status không (staff và admin)
+  canToggleStatus: (role: string): boolean =>
+    role === ROLES.STAFF || role === ROLES.ADMIN,
 
   // Kiểm tra có thể truy cập dashboard không (chỉ admin)
   canAccessDashboard: (role: string): boolean => role === ROLES.ADMIN,

@@ -1,5 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Product } from "../../../types/product";
+import { tagApi } from "../../../services/TagService";
+
+interface Tag {
+  _id: string;
+  name: string;
+  type: "MATERIAL" | "USECASE" | "CUSTOM";
+  description?: string;
+  isActive: boolean;
+}
 
 interface EditProductProps {
   handleClose: () => void;
@@ -7,7 +16,27 @@ interface EditProductProps {
 }
 
 const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
-  const [formData, setFormData] = useState(product);
+  const [formData, setFormData] = useState({
+    ...product,
+    tags: Array.isArray(product.tags)
+      ? product.tags.map((tag: any) =>
+          typeof tag === "string" ? tag : tag._id
+        )
+      : [],
+  });
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await tagApi.getActiveTags();
+        setTags(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
+    fetchTags();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -16,6 +45,15 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleTagToggle = (tagId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.includes(tagId)
+        ? prev.tags.filter((id) => id !== tagId)
+        : [...prev.tags, tagId],
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -118,6 +156,47 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
               <option value="low_stock">Sắp hết hàng</option>
               <option value="out_of_stock">Hết hàng</option>
             </select>
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-black">
+              Tags (Chọn nhiều)
+            </label>
+            <div className="border rounded-md p-3 max-h-48 overflow-y-auto bg-gray-50">
+              {tags.length > 0 ? (
+                tags.map((tag) => (
+                  <label
+                    key={tag._id}
+                    className="flex items-center space-x-2 py-1 hover:bg-gray-100 px-2 rounded cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={formData.tags.includes(tag._id)}
+                      onChange={() => handleTagToggle(tag._id)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span className="text-sm text-black flex-1">
+                      {tag.name}{" "}
+                      <span className="text-xs text-gray-500">
+                        (
+                        {tag.type === "MATERIAL"
+                          ? "Chất liệu"
+                          : tag.type === "USECASE"
+                          ? "Nhu cầu"
+                          : "Tùy chỉnh"}
+                        )
+                      </span>
+                    </span>
+                  </label>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">Không có tags nào</p>
+              )}
+            </div>
+            {formData.tags.length > 0 && (
+              <p className="text-sm text-gray-600 mt-1">
+                Đã chọn: {formData.tags.length} tag(s)
+              </p>
+            )}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-black">

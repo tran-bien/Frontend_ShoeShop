@@ -94,6 +94,14 @@ export interface Product {
   images: ProductImage[];
   category: Category | string;
   brand: Brand | string;
+  tags?:
+    | Array<{
+        _id: string;
+        name: string;
+        type: "MATERIAL" | "USECASE" | "CUSTOM";
+        description?: string;
+      }>
+    | string[];
   variants: string[] | Variant[];
   totalQuantity: number;
   stockStatus: StockStatus;
