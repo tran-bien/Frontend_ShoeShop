@@ -1,0 +1,351 @@
+import { useState, useEffect } from "react";
+import {
+  FaPlus,
+  FaBox,
+  FaChartLine,
+  FaExclamationTriangle,
+  FaDollarSign,
+} from "react-icons/fa";
+import InventoryService, {
+  InventoryItem,
+} from "../../../services/InventoryService";
+import StockInModal from "../../../components/Admin/Inventory/StockInModal";
+import StockOutModal from "../../../components/Admin/Inventory/StockOutModal";
+import AdjustStockModal from "../../../components/Admin/Inventory/AdjustStockModal";
+import TransactionHistoryModal from "../../../components/Admin/Inventory/TransactionHistoryModal";
+
+const InventoryPage = () => {
+  const [inventoryList, setInventoryList] = useState<InventoryItem[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [filter, setFilter] = useState({
+    lowStock: false,
+    outOfStock: false,
+    productId: "",
+  });
+
+  // Modals
+  const [showStockInModal, setShowStockInModal] = useState(false);
+  const [showStockOutModal, setShowStockOutModal] = useState(false);
+  const [showAdjustModal, setShowAdjustModal] = useState(false);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+
+  useEffect(() => {
+    fetchInventory();
+    fetchStats();
+  }, [currentPage, filter]);
+
+  const fetchInventory = async () => {
+    try {
+      setLoading(true);
+      const response = await InventoryService.getInventoryList({
+        page: currentPage,
+        limit: 20,
+        lowStock: filter.lowStock || undefined,
+        outOfStock: filter.outOfStock || undefined,
+        productId: filter.productId || undefined,
+      });
+
+      setInventoryList(response.data.items);
+      setTotalPages(response.data.pagination.totalPages);
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await InventoryService.getInventoryStats();
+      setStats(response.data);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
+
+  const handleStockIn = () => {
+    setShowStockInModal(true);
+  };
+
+  const handleStockOut = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setShowStockOutModal(true);
+  };
+
+  const handleAdjust = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setShowAdjustModal(true);
+  };
+
+  const handleViewTransactions = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setShowTransactionModal(true);
+  };
+
+  const onSuccess = () => {
+    fetchInventory();
+    fetchStats();
+    setShowStockInModal(false);
+    setShowStockOutModal(false);
+    setShowAdjustModal(false);
+  };
+
+  return (
+    <div className="p-6">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">Quản lý Kho hàng</h1>
+        <button
+          onClick={handleStockIn}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        >
+          <FaPlus size={20} />
+          Nhập kho
+        </button>
+      </div>
+
+      {/* Stats Cards */}
+      {stats && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">Tổng sản phẩm</p>
+                <p className="text-2xl font-bold text-gray-800">
+                  {stats.totalItems}
+                </p>
+              </div>
+              <FaBox className="text-blue-500" size={40} />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">Tồn kho thấp</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {stats.lowStockItems}
+                </p>
+              </div>
+              <FaChartLine className="text-orange-500" size={40} />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">Hết hàng</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {stats.outOfStockItems}
+                </p>
+              </div>
+              <FaExclamationTriangle className="text-red-500" size={40} />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-500 text-sm">Giá trị tồn kho</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {stats.totalValue?.toLocaleString("vi-VN")}₫
+                </p>
+              </div>
+              <FaDollarSign className="text-green-500" size={40} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Filters */}
+      <div className="bg-white p-4 rounded-lg shadow mb-6">
+        <div className="flex gap-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={filter.lowStock}
+              onChange={(e) =>
+                setFilter({ ...filter, lowStock: e.target.checked })
+              }
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">Tồn kho thấp</span>
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={filter.outOfStock}
+              onChange={(e) =>
+                setFilter({ ...filter, outOfStock: e.target.checked })
+              }
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">Hết hàng</span>
+          </label>
+        </div>
+      </div>
+
+      {/* Inventory Table */}
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Sản phẩm
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Biến thể / Size
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Tồn kho
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Giá vốn TB
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Trạng thái
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Hành động
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                  Đang tải...
+                </td>
+              </tr>
+            ) : inventoryList.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                  Không có dữ liệu
+                </td>
+              </tr>
+            ) : (
+              inventoryList.map((item) => (
+                <tr key={item._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4">
+                    <div className="text-sm font-medium text-gray-900">
+                      {item.product?.name || "N/A"}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900">
+                      {item.variant?.colorName || "N/A"} /{" "}
+                      {item.size?.name || "N/A"}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm font-bold text-gray-900">
+                      {item.quantity}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900">
+                      {item.averageCostPrice?.toLocaleString("vi-VN")}₫
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    {item.isOutOfStock ? (
+                      <span className="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded">
+                        Hết hàng
+                      </span>
+                    ) : item.isLowStock ? (
+                      <span className="px-2 py-1 text-xs font-semibold text-orange-800 bg-orange-100 rounded">
+                        Tồn kho thấp
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded">
+                        Bình thường
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm space-x-2">
+                    <button
+                      onClick={() => handleStockOut(item)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Xuất
+                    </button>
+                    <button
+                      onClick={() => handleAdjust(item)}
+                      className="text-orange-600 hover:text-orange-800"
+                    >
+                      Điều chỉnh
+                    </button>
+                    <button
+                      onClick={() => handleViewTransactions(item)}
+                      className="text-gray-600 hover:text-gray-800"
+                    >
+                      Lịch sử
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-6 flex justify-center gap-2">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Trước
+          </button>
+          <span className="px-4 py-2">
+            Trang {currentPage} / {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Sau
+          </button>
+        </div>
+      )}
+
+      {/* Modals */}
+      {showStockInModal && (
+        <StockInModal
+          onClose={() => setShowStockInModal(false)}
+          onSuccess={onSuccess}
+        />
+      )}
+      {showStockOutModal && selectedItem && (
+        <StockOutModal
+          item={selectedItem}
+          onClose={() => setShowStockOutModal(false)}
+          onSuccess={onSuccess}
+        />
+      )}
+      {showAdjustModal && selectedItem && (
+        <AdjustStockModal
+          item={selectedItem}
+          onClose={() => setShowAdjustModal(false)}
+          onSuccess={onSuccess}
+        />
+      )}
+      {showTransactionModal && selectedItem && (
+        <TransactionHistoryModal
+          item={selectedItem}
+          onClose={() => setShowTransactionModal(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default InventoryPage;

@@ -13,6 +13,9 @@ import {
   FaGift,
   FaImage,
   FaTags,
+  FaWarehouse,
+  FaTruck,
+  FaExchangeAlt,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -82,6 +85,9 @@ const AdminSidebar = () => {
     { name: "Size", href: "/admin/size", icon: FaRulerCombined },
     { name: "Tags", href: "/admin/tags", icon: FaTags },
     { name: "Orders", href: "/admin/orders", icon: GrCart },
+    { name: "Inventory", href: "/admin/inventory", icon: FaWarehouse },
+    { name: "Shippers", href: "/admin/shippers", icon: FaTruck },
+    { name: "Returns", href: "/admin/returns", icon: FaExchangeAlt },
     {
       name: "Coupon",
       href: "/admin/products/discount",

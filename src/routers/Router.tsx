@@ -35,6 +35,9 @@ import CouponsPage from "../pages/MainPages/Coupons/Coupons";
 import ResetPasswordPage from "../pages/AuthPages/ResetPasswordPage";
 import UserChangePasswordPage from "../pages/MainPages/UserPage/UserChangePasswordPage";
 import UserSessionsPage from "../pages/MainPages/UserPage/UserSessionsPage";
+import InventoryPage from "../pages/AdminPages/InventoryPage/InventoryPage";
+import ShipperPage from "../pages/AdminPages/ShipperPage/ShipperPage";
+import ReturnPage from "../pages/AdminPages/ReturnPage/ReturnPage";
 
 const AppRouter = () => {
   return (
@@ -67,6 +70,9 @@ const AppRouter = () => {
         <Route path="tags" element={<TagPage />} />
         <Route path="banners" element={<BannerPage />} />
         <Route path="orders" element={<ListOrderPage />} />
+        <Route path="inventory" element={<InventoryPage />} />
+        <Route path="shippers" element={<ShipperPage />} />
+        <Route path="returns" element={<ReturnPage />} />
 
         {/* Routes chỉ dành cho Admin */}
         <Route
