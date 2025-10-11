@@ -42,6 +42,8 @@ export interface StockInData {
   sizeId: string;
   quantity: number;
   costPrice: number;
+  targetProfitPercent?: number;
+  percentDiscount?: number;
   note?: string;
 }
 
