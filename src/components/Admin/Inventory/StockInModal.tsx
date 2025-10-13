@@ -69,7 +69,8 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
           targetProfitPercent: formData.targetProfitPercent,
           percentDiscount: formData.percentDiscount,
         });
-        setPricePreview(result.data);
+        // Response structure: { data: { success, data } }
+        setPricePreview(result.data.data);
       } catch (error) {
         console.error("Error calculating price:", error);
       }
@@ -261,36 +262,123 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
             </div>
           </div>
 
+          {/* Pricing Formula Display */}
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
+            <h3 className="font-bold text-sm text-purple-800 mb-3 flex items-center gap-2">
+              🧮 Công thức tính giá
+            </h3>
+            <div className="space-y-2 text-sm">
+              <div className="bg-white rounded p-2 border border-purple-100">
+                <code className="text-xs font-mono text-gray-700">
+                  Giá gốc = Giá vốn × (1 + Mục tiêu lãi / 100)
+                </code>
+              </div>
+              <div className="bg-white rounded p-2 border border-purple-100">
+                <code className="text-xs font-mono text-gray-700">
+                  Giá bán = Giá gốc × (1 - Giảm giá / 100)
+                </code>
+              </div>
+              <div className="bg-white rounded p-2 border border-purple-100">
+                <code className="text-xs font-mono text-gray-700">
+                  Lãi thực = Giá bán - Giá vốn
+                </code>
+              </div>
+            </div>
+          </div>
+
           {/* Price Preview */}
           {pricePreview && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h3 className="font-semibold text-sm text-blue-800 mb-2">
-                📊 Tính toán giá bán:
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-300 rounded-lg p-4 shadow-sm">
+              <h3 className="font-bold text-sm text-green-800 mb-3 flex items-center gap-2">
+                � Kết quả tính toán
               </h3>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <span className="text-gray-600">Giá gốc:</span>{" "}
-                  <strong>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white rounded-lg p-3 border border-green-100">
+                  <span className="text-xs text-gray-500 block mb-1">
+                    Giá vốn
+                  </span>
+                  <strong className="text-lg text-gray-800">
+                    {formData.costPrice?.toLocaleString("vi-VN")}₫
+                  </strong>
+                </div>
+                <div className="bg-white rounded-lg p-3 border border-green-100">
+                  <span className="text-xs text-gray-500 block mb-1">
+                    Giá gốc
+                  </span>
+                  <strong className="text-lg text-blue-600">
                     {pricePreview.basePrice?.toLocaleString("vi-VN")}₫
                   </strong>
                 </div>
-                <div>
-                  <span className="text-gray-600">Giá sau giảm:</span>{" "}
-                  <strong className="text-green-600">
+                <div className="bg-white rounded-lg p-3 border border-green-100">
+                  <span className="text-xs text-gray-500 block mb-1">
+                    Giảm giá
+                  </span>
+                  <strong className="text-lg text-orange-600">
+                    -{formData.percentDiscount}%
+                  </strong>
+                </div>
+                <div className="bg-green-100 rounded-lg p-3 border-2 border-green-400">
+                  <span className="text-xs text-green-700 block mb-1 font-semibold">
+                    💵 Giá bán cuối
+                  </span>
+                  <strong className="text-xl text-green-700">
                     {pricePreview.finalPrice?.toLocaleString("vi-VN")}₫
                   </strong>
                 </div>
-                <div>
-                  <span className="text-gray-600">Lãi/sản phẩm:</span>{" "}
-                  <strong>
+              </div>
+
+              {/* Profit Details */}
+              <div className="mt-3 pt-3 border-t border-green-200 grid grid-cols-3 gap-2">
+                <div className="text-center">
+                  <span className="text-xs text-gray-600 block">Lãi/SP</span>
+                  <strong className="text-sm text-green-700">
                     {pricePreview.profit?.toLocaleString("vi-VN")}₫
                   </strong>
                 </div>
-                <div>
-                  <span className="text-gray-600">Biên lợi nhuận:</span>{" "}
-                  <strong>{pricePreview.margin?.toFixed(2)}%</strong>
+                <div className="text-center">
+                  <span className="text-xs text-gray-600 block">Biên lãi</span>
+                  <strong className="text-sm text-green-700">
+                    {pricePreview.margin?.toFixed(2)}%
+                  </strong>
+                </div>
+                <div className="text-center">
+                  <span className="text-xs text-gray-600 block">Markup</span>
+                  <strong className="text-sm text-green-700">
+                    {pricePreview.markup?.toFixed(2)}%
+                  </strong>
                 </div>
               </div>
+
+              {/* Total Calculation */}
+              {formData.quantity > 0 && (
+                <div className="mt-3 pt-3 border-t border-green-200">
+                  <div className="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm font-medium text-gray-700">
+                        Tổng vốn ({formData.quantity} sản phẩm):
+                      </span>
+                      <strong className="text-base text-red-600">
+                        {(
+                          formData.costPrice * formData.quantity
+                        ).toLocaleString("vi-VN")}
+                        ₫
+                      </strong>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gray-700">
+                        Tổng lãi dự kiến:
+                      </span>
+                      <strong className="text-base text-green-600">
+                        +
+                        {(
+                          pricePreview.profit * formData.quantity
+                        ).toLocaleString("vi-VN")}
+                        ₫
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

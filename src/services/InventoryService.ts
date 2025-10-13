@@ -1,12 +1,27 @@
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+import { axiosInstanceAuth } from "../utils/axiosIntance";
+import { ApiResponse } from "../types/common";
 
 export interface InventoryItem {
   _id: string;
-  product: any;
-  variant: any;
-  size: any;
+  product: {
+    _id: string;
+    name: string;
+    slug?: string;
+  };
+  variant: {
+    _id: string;
+    color?: {
+      _id: string;
+      name: string;
+    };
+    gender?: string;
+  };
+  size: {
+    _id: string;
+    value: string | number;
+    description?: string;
+  };
+  sku?: string;
   quantity: number;
   costPrice: number;
   averageCostPrice: number;
@@ -20,19 +35,26 @@ export interface InventoryItem {
 export interface InventoryTransaction {
   _id: string;
   type: "IN" | "OUT" | "ADJUST";
-  inventoryItem: InventoryItem;
+  inventoryItem: InventoryItem | string;
   quantityBefore: number;
   quantityChange: number;
   quantityAfter: number;
   costPrice: number;
   totalCost: number;
+  targetProfitPercent?: number;
+  percentDiscount?: number;
   calculatedPrice?: number;
+  calculatedPriceFinal?: number;
   profitPerItem?: number;
   margin?: number;
   markup?: number;
   reason: string;
   notes?: string;
-  performedBy: any;
+  performedBy: {
+    _id: string;
+    name?: string;
+    email?: string;
+  };
   createdAt: string;
 }
 
@@ -91,95 +113,119 @@ export interface TransactionHistoryParams {
   endDate?: string;
 }
 
-class InventoryService {
-  private getAuthHeader() {
-    const token = localStorage.getItem("token");
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }
-
-  async getInventoryList(params: InventoryListParams = {}) {
-    const response = await axios.get(`${API_URL}/admin/inventory`, {
-      ...this.getAuthHeader(),
-      params,
-    });
-    return response.data;
-  }
-
-  async getInventoryDetail(id: string) {
-    const response = await axios.get(
-      `${API_URL}/admin/inventory/${id}`,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-
-  async getInventoryStats() {
-    const response = await axios.get(
-      `${API_URL}/admin/inventory/stats`,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-
-  async getTransactionHistory(params: TransactionHistoryParams = {}) {
-    const response = await axios.get(
-      `${API_URL}/admin/inventory/transactions`,
-      {
-        ...this.getAuthHeader(),
-        params,
-      }
-    );
-    return response.data;
-  }
-
-  async stockIn(data: StockInData) {
-    const response = await axios.post(
-      `${API_URL}/admin/inventory/stock-in`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-
-  async stockOut(data: StockOutData) {
-    const response = await axios.post(
-      `${API_URL}/admin/inventory/stock-out`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-
-  async adjustStock(data: AdjustStockData) {
-    const response = await axios.post(
-      `${API_URL}/admin/inventory/adjust`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-
-  async calculatePrice(data: CalculatePriceData) {
-    const response = await axios.post(
-      `${API_URL}/admin/inventory/calculate-price`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-
-  async updateLowStockThreshold(id: string, lowStockThreshold: number) {
-    const response = await axios.patch(
-      `${API_URL}/admin/inventory/${id}/low-stock-threshold`,
-      { lowStockThreshold },
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+export interface InventoryStats {
+  totalItems: number;
+  lowStockItems: InventoryItem[];
+  outOfStockItems: InventoryItem[];
+  totalValue: number;
 }
 
-export default new InventoryService();
+export interface InventoryListResponse {
+  items: InventoryItem[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface TransactionHistoryResponse {
+  transactions: InventoryTransaction[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+// =====================
+// INVENTORY SERVICE
+// =====================
+
+export const inventoryService = {
+  /**
+   * Lấy danh sách tồn kho với phân trang và filter
+   */
+  getInventoryList: (
+    params?: InventoryListParams
+  ): Promise<{ data: ApiResponse<InventoryListResponse> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/inventory", { params }),
+
+  /**
+   * Lấy chi tiết một mục tồn kho
+   */
+  getInventoryDetail: (
+    id: string
+  ): Promise<{ data: ApiResponse<InventoryItem> }> =>
+    axiosInstanceAuth.get(`/api/v1/admin/inventory/${id}`),
+
+  /**
+   * Lấy thống kê kho hàng tổng quan
+   */
+  getInventoryStats: (): Promise<{ data: ApiResponse<InventoryStats> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/inventory/stats"),
+
+  /**
+   * Lấy lịch sử giao dịch kho
+   */
+  getTransactionHistory: (
+    params?: TransactionHistoryParams
+  ): Promise<{ data: ApiResponse<TransactionHistoryResponse> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/inventory/transactions", { params }),
+
+  /**
+   * Nhập hàng vào kho
+   */
+  stockIn: (
+    data: StockInData
+  ): Promise<{ data: ApiResponse<InventoryTransaction> }> =>
+    axiosInstanceAuth.post("/api/v1/admin/inventory/stock-in", data),
+
+  /**
+   * Xuất hàng khỏi kho
+   */
+  stockOut: (
+    data: StockOutData
+  ): Promise<{ data: ApiResponse<InventoryTransaction> }> =>
+    axiosInstanceAuth.post("/api/v1/admin/inventory/stock-out", data),
+
+  /**
+   * Điều chỉnh số lượng tồn kho
+   */
+  adjustStock: (
+    data: AdjustStockData
+  ): Promise<{ data: ApiResponse<InventoryTransaction> }> =>
+    axiosInstanceAuth.post("/api/v1/admin/inventory/adjust", data),
+
+  /**
+   * Tính toán giá bán từ giá vốn
+   */
+  calculatePrice: (
+    data: CalculatePriceData
+  ): Promise<{
+    data: ApiResponse<{
+      calculatedPrice: number;
+      calculatedPriceFinal: number;
+      profitPerItem: number;
+      margin: number;
+      markup: number;
+    }>;
+  }> => axiosInstanceAuth.post("/api/v1/admin/inventory/calculate-price", data),
+
+  /**
+   * Cập nhật ngưỡng cảnh báo tồn kho thấp
+   */
+  updateLowStockThreshold: (
+    id: string,
+    lowStockThreshold: number
+  ): Promise<{ data: ApiResponse<InventoryItem> }> =>
+    axiosInstanceAuth.patch(
+      `/api/v1/admin/inventory/${id}/low-stock-threshold`,
+      { lowStockThreshold }
+    ),
+};
+
+// Export default for backward compatibility
+export default inventoryService;

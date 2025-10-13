@@ -16,11 +16,8 @@ const VariantForm: React.FC<VariantFormProps> = ({
   const [form, setForm] = useState<any>({
     product: "",
     color: "",
-    price: "",
-    costPrice: "",
-    percentDiscount: "",
     gender: "",
-    sizes: [{ size: "", quantity: "" }],
+    sizes: [{ size: "" }], // Không còn quantity - sẽ thêm khi stock in
   });
 
   // State cho danh sách sản phẩm, màu, size
@@ -47,24 +44,19 @@ const VariantForm: React.FC<VariantFormProps> = ({
       setForm({
         product: editingVariant.product?._id || editingVariant.product,
         color: editingVariant.color?._id || editingVariant.color,
-        price: editingVariant.price,
-        costPrice: editingVariant.costPrice,
-        percentDiscount: editingVariant.percentDiscount,
         gender: editingVariant.gender,
+        // Không còn price, costPrice, percentDiscount
         sizes: editingVariant.sizes?.map((s: any) => ({
           size: s.size?._id || s.size,
-          quantity: s.quantity,
-        })) || [{ size: "", quantity: "" }],
+          // Không còn quantity - quản lý qua inventory
+        })) || [{ size: "" }],
       });
     } else {
       setForm({
         product: "",
         color: "",
-        price: "",
-        costPrice: "",
-        percentDiscount: "",
         gender: "",
-        sizes: [{ size: "", quantity: "" }],
+        sizes: [{ size: "" }],
       });
     }
     setError(null);
@@ -90,7 +82,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
   const handleAddSize = () => {
     setForm((prev: any) => ({
       ...prev,
-      sizes: [...prev.sizes, { size: "", quantity: "" }],
+      sizes: [...prev.sizes, { size: "" }], // Không còn quantity
     }));
   };
 
@@ -115,11 +107,8 @@ const VariantForm: React.FC<VariantFormProps> = ({
       setForm({
         product: "",
         color: "",
-        price: "",
-        costPrice: "",
-        percentDiscount: "",
         gender: "",
-        sizes: [{ size: "", quantity: "" }],
+        sizes: [{ size: "" }],
       });
     } catch {
       setError("Có lỗi xảy ra, vui lòng thử lại!");
@@ -164,47 +153,13 @@ const VariantForm: React.FC<VariantFormProps> = ({
           ))}
         </select>
       </div>
-      <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-black">
-            Giá bán
-          </label>
-          <input
-            name="price"
-            value={form.price}
-            onChange={handleChange}
-            placeholder="Giá"
-            type="number"
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-black">
-            Giá vốn
-          </label>
-          <input
-            name="costPrice"
-            value={form.costPrice}
-            onChange={handleChange}
-            placeholder="Giá vốn"
-            type="number"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-black">
-            % Giảm giá
-          </label>
-          <input
-            name="percentDiscount"
-            value={form.percentDiscount}
-            onChange={handleChange}
-            placeholder="% giảm"
-            type="number"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
+      {/* REMOVED: price, costPrice, percentDiscount fields */}
+      {/* Giá và số lượng sẽ được quản lý qua tính năng Stock In */}
+      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+        <p className="text-sm text-blue-700">
+          💡 <strong>Lưu ý:</strong> Giá bán và số lượng sẽ được thêm khi bạn sử
+          dụng tính năng <strong>Nhập kho (Stock In)</strong>
+        </p>
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-black">
@@ -224,8 +179,12 @@ const VariantForm: React.FC<VariantFormProps> = ({
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-black">
-          Size & Số lượng
+          Kích thước (Size)
         </label>
+        <p className="text-xs text-gray-500 mt-1 mb-2">
+          Chọn các size có sẵn cho variant này. Số lượng sẽ được quản lý qua
+          Stock In.
+        </p>
         <div className="space-y-2">
           {form.sizes.map((s: any, idx: number) => (
             <div key={idx} className="flex gap-2">
@@ -233,7 +192,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
                 name="sizes.size"
                 value={s.size}
                 onChange={(e) => handleChange(e, idx)}
-                className="block w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 required
               >
                 <option value="">Chọn size</option>
@@ -243,23 +202,15 @@ const VariantForm: React.FC<VariantFormProps> = ({
                   </option>
                 ))}
               </select>
-              <input
-                name="sizes.quantity"
-                value={s.quantity}
-                onChange={(e) => handleChange(e, idx)}
-                placeholder="Số lượng"
-                type="number"
-                className="block w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                required
-              />
+              {/* REMOVED: quantity input - managed via inventory */}
               {form.sizes.length > 1 && (
                 <button
                   type="button"
-                  className="bg-red-400 text-white px-2 rounded"
+                  className="bg-red-400 text-white px-3 rounded hover:bg-red-500 transition"
                   onClick={() => handleRemoveSize(idx)}
                   title="Xóa size"
                 >
-                  X
+                  ✕
                 </button>
               )}
             </div>
@@ -269,7 +220,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
             className="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
             onClick={handleAddSize}
           >
-            Thêm size
+            + Thêm size
           </button>
         </div>
       </div>

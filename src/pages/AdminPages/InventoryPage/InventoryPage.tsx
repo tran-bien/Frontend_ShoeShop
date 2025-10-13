@@ -5,18 +5,18 @@ import {
   FaChartLine,
   FaExclamationTriangle,
   FaDollarSign,
+  FaHistory,
 } from "react-icons/fa";
 import InventoryService, {
   InventoryItem,
+  InventoryStats,
 } from "../../../services/InventoryService";
 import StockInModal from "../../../components/Admin/Inventory/StockInModal";
-import StockOutModal from "../../../components/Admin/Inventory/StockOutModal";
-import AdjustStockModal from "../../../components/Admin/Inventory/AdjustStockModal";
 import TransactionHistoryModal from "../../../components/Admin/Inventory/TransactionHistoryModal";
 
 const InventoryPage = () => {
   const [inventoryList, setInventoryList] = useState<InventoryItem[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<InventoryStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -28,19 +28,20 @@ const InventoryPage = () => {
 
   // Modals
   const [showStockInModal, setShowStockInModal] = useState(false);
-  const [showStockOutModal, setShowStockOutModal] = useState(false);
-  const [showAdjustModal, setShowAdjustModal] = useState(false);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
-
-  useEffect(() => {
-    fetchInventory();
-    fetchStats();
-  }, [currentPage, filter]);
 
   const fetchInventory = async () => {
     try {
       setLoading(true);
+      console.log("Fetching inventory with params:", {
+        page: currentPage,
+        limit: 20,
+        lowStock: filter.lowStock || undefined,
+        outOfStock: filter.outOfStock || undefined,
+        productId: filter.productId || undefined,
+      });
+
       const response = await InventoryService.getInventoryList({
         page: currentPage,
         limit: 20,
@@ -49,10 +50,25 @@ const InventoryPage = () => {
         productId: filter.productId || undefined,
       });
 
-      setInventoryList(response.data.items);
-      setTotalPages(response.data.pagination.totalPages);
+      console.log("Inventory response:", response);
+
+      // Response structure: { data: { success, data: { items, pagination } } }
+      const responseData = response.data.data as unknown as {
+        items: InventoryItem[];
+        pagination: { totalPages: number };
+      };
+      const items = responseData?.items || [];
+      const pages = responseData?.pagination?.totalPages || 1;
+
+      console.log("Setting inventory list:", items.length, "items");
+      console.log("Total pages:", pages);
+
+      setInventoryList(items);
+      setTotalPages(pages);
     } catch (error) {
       console.error("Error fetching inventory:", error);
+      setInventoryList([]);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -61,24 +77,23 @@ const InventoryPage = () => {
   const fetchStats = async () => {
     try {
       const response = await InventoryService.getInventoryStats();
-      setStats(response.data);
+      // Response structure: { data: { success, data } }
+      setStats(response.data.data || null);
     } catch (error) {
       console.error("Error fetching stats:", error);
+      setStats(null);
     }
   };
 
+  // Fetch data on mount and when filters change
+  useEffect(() => {
+    fetchInventory();
+    fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, filter]);
+
   const handleStockIn = () => {
     setShowStockInModal(true);
-  };
-
-  const handleStockOut = (item: InventoryItem) => {
-    setSelectedItem(item);
-    setShowStockOutModal(true);
-  };
-
-  const handleAdjust = (item: InventoryItem) => {
-    setSelectedItem(item);
-    setShowAdjustModal(true);
   };
 
   const handleViewTransactions = (item: InventoryItem) => {
@@ -90,8 +105,6 @@ const InventoryPage = () => {
     fetchInventory();
     fetchStats();
     setShowStockInModal(false);
-    setShowStockOutModal(false);
-    setShowAdjustModal(false);
   };
 
   return (
@@ -128,7 +141,7 @@ const InventoryPage = () => {
               <div>
                 <p className="text-gray-500 text-sm">Tồn kho thấp</p>
                 <p className="text-2xl font-bold text-orange-600">
-                  {stats.lowStockItems}
+                  {stats.lowStockItems?.length || 0}
                 </p>
               </div>
               <FaChartLine className="text-orange-500" size={40} />
@@ -140,7 +153,7 @@ const InventoryPage = () => {
               <div>
                 <p className="text-gray-500 text-sm">Hết hàng</p>
                 <p className="text-2xl font-bold text-red-600">
-                  {stats.outOfStockItems}
+                  {stats.outOfStockItems?.length || 0}
                 </p>
               </div>
               <FaExclamationTriangle className="text-red-500" size={40} />
@@ -238,8 +251,8 @@ const InventoryPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">
-                      {item.variant?.colorName || "N/A"} /{" "}
-                      {item.size?.name || "N/A"}
+                      {item.variant?.color?.name || "N/A"} /{" "}
+                      {item.size?.value || "N/A"}
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -267,24 +280,13 @@ const InventoryPage = () => {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm space-x-2">
-                    <button
-                      onClick={() => handleStockOut(item)}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      Xuất
-                    </button>
-                    <button
-                      onClick={() => handleAdjust(item)}
-                      className="text-orange-600 hover:text-orange-800"
-                    >
-                      Điều chỉnh
-                    </button>
+                  <td className="px-6 py-4 text-sm">
                     <button
                       onClick={() => handleViewTransactions(item)}
-                      className="text-gray-600 hover:text-gray-800"
+                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
                     >
-                      Lịch sử
+                      <FaHistory size={16} />
+                      Xem lịch sử
                     </button>
                   </td>
                 </tr>
@@ -321,20 +323,6 @@ const InventoryPage = () => {
       {showStockInModal && (
         <StockInModal
           onClose={() => setShowStockInModal(false)}
-          onSuccess={onSuccess}
-        />
-      )}
-      {showStockOutModal && selectedItem && (
-        <StockOutModal
-          item={selectedItem}
-          onClose={() => setShowStockOutModal(false)}
-          onSuccess={onSuccess}
-        />
-      )}
-      {showAdjustModal && selectedItem && (
-        <AdjustStockModal
-          item={selectedItem}
-          onClose={() => setShowAdjustModal(false)}
           onSuccess={onSuccess}
         />
       )}

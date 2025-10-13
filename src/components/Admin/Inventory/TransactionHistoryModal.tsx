@@ -16,27 +16,31 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetchTransactions();
-  }, [currentPage]);
+    const fetchTransactions = async () => {
+      try {
+        setLoading(true);
+        const response = await InventoryService.getTransactionHistory({
+          productId: item.product?._id,
+          variantId: item.variant?._id,
+          sizeId: item.size?._id,
+          page: currentPage,
+          limit: 10,
+        });
+        const responseData = response.data.data as unknown as {
+          transactions: InventoryTransaction[];
+          pagination: { totalPages: number };
+        };
+        setTransactions(responseData?.transactions || []);
+        setTotalPages(responseData?.pagination?.totalPages || 1);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchTransactions = async () => {
-    try {
-      setLoading(true);
-      const response = await InventoryService.getTransactionHistory({
-        productId: item.product?._id,
-        variantId: item.variant?._id,
-        sizeId: item.size?._id,
-        page: currentPage,
-        limit: 10,
-      });
-      setTransactions(response.data.transactions || []);
-      setTotalPages(response.data.pagination?.totalPages || 1);
-    } catch (error) {
-      console.error("Error fetching transactions:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchTransactions();
+  }, [currentPage, item.product?._id, item.variant?._id, item.size?._id]);
 
   const getTypeLabel = (type: string) => {
     const labels = {
@@ -50,6 +54,20 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
         color: "bg-gray-100 text-gray-800",
       }
     );
+  };
+
+  const getReasonLabel = (reason: string) => {
+    const reasons: Record<string, string> = {
+      initial_stock: "Nhập kho ban đầu",
+      restock: "Nhập hàng bổ sung",
+      sale: "Xuất bán (Giao shipper)",
+      return: "Trả hàng",
+      exchange: "Đổi hàng",
+      damage: "Hàng hỏng",
+      adjustment: "Điều chỉnh kiểm kê",
+      other: "Khác",
+    };
+    return reasons[reason] || reason;
   };
 
   const formatDate = (dateString: string) => {
@@ -85,11 +103,11 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div>
               <span className="text-gray-600">Màu sắc:</span>{" "}
-              <strong>{item.variant?.colorName || "N/A"}</strong>
+              <strong>{item.variant?.color?.name || "N/A"}</strong>
             </div>
             <div>
               <span className="text-gray-600">Size:</span>{" "}
-              <strong>{item.size?.name || "N/A"}</strong>
+              <strong>{item.size?.value || "N/A"}</strong>
             </div>
             <div>
               <span className="text-gray-600">Tồn hiện tại:</span>{" "}
@@ -115,6 +133,9 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Loại
+                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Lý do
                   </th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Số lượng
@@ -144,6 +165,9 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                         >
                           {typeInfo.text}
                         </span>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                        {getReasonLabel(transaction.reason)}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-right">
                         <div className="font-medium">
