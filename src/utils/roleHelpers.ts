@@ -58,11 +58,13 @@ export const roleHelpers = {
   canProcessOrders: (role: string): boolean =>
     role === ROLES.STAFF || role === ROLES.ADMIN,
 
-  // Kiểm tra có thể quản lý inventory không (chỉ admin)
-  canManageInventory: (role: string): boolean => role === ROLES.ADMIN,
+  // Kiểm tra có thể quản lý inventory không (staff và admin)
+  canManageInventory: (role: string): boolean =>
+    role === ROLES.STAFF || role === ROLES.ADMIN,
 
-  // Kiểm tra có thể quản lý ảnh không (chỉ admin)
-  canManageImages: (role: string): boolean => role === ROLES.ADMIN,
+  // Kiểm tra có thể quản lý ảnh không (staff và admin)
+  canManageImages: (role: string): boolean =>
+    role === ROLES.STAFF || role === ROLES.ADMIN,
 
   // Kiểm tra có thể xem báo cáo tài chính không (chỉ admin)
   canViewFinancialReports: (role: string): boolean => role === ROLES.ADMIN,
