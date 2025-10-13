@@ -38,6 +38,11 @@ import UserSessionsPage from "../pages/MainPages/UserPage/UserSessionsPage";
 import InventoryPage from "../pages/AdminPages/InventoryPage/InventoryPage";
 import ShipperPage from "../pages/AdminPages/ShipperPage/ShipperPage";
 import ReturnPage from "../pages/AdminPages/ReturnPage/ReturnPage";
+import ShipperLayout from "./layout/ShipperLayout";
+import ShipperDashboardPage from "../pages/ShipperPages/ShipperDashboardPage";
+import MyOrdersPage from "../pages/ShipperPages/MyOrdersPage";
+import OrderDetailPage from "../pages/ShipperPages/OrderDetailPage";
+import ShipperProfilePage from "../pages/ShipperPages/ShipperProfilePage";
 
 const AppRouter = () => {
   return (
@@ -49,6 +54,23 @@ const AppRouter = () => {
       <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+      {/* Shipper routes - sử dụng ShipperLayout */}
+      <Route
+        path="/shipper/*"
+        element={
+          <AuthGuard requireShipper>
+            <ShipperLayout />
+          </AuthGuard>
+        }
+      >
+        <Route path="" element={<ShipperDashboardPage />} />
+        <Route path="dashboard" element={<ShipperDashboardPage />} />
+        <Route path="orders" element={<MyOrdersPage />} />
+        <Route path="orders/:orderId" element={<OrderDetailPage />} />
+        <Route path="completed" element={<MyOrdersPage />} />
+        <Route path="profile" element={<ShipperProfilePage />} />
+      </Route>
 
       {/* Admin routes - sử dụng AdminLayout */}
       <Route

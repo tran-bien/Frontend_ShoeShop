@@ -1,0 +1,301 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  FaTruck,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaHourglassHalf,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaClock,
+  FaFilter,
+} from "react-icons/fa";
+import ShipperService from "../../services/ShipperService";
+
+const MyOrdersPage = () => {
+  const navigate = useNavigate();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState<string>("");
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    if (filterStatus === "") {
+      setFilteredOrders(orders);
+    } else {
+      setFilteredOrders(orders.filter((o) => o.status === filterStatus));
+    }
+  }, [filterStatus, orders]);
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const response = await ShipperService.getMyOrders();
+      setOrders(response.data || []);
+      setFilteredOrders(response.data || []);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    const statusMap: Record<
+      string,
+      { label: string; color: string; icon: JSX.Element }
+    > = {
+      assigned_to_shipper: {
+        label: "Đã gán",
+        color: "bg-blue-100 text-blue-800",
+        icon: <FaHourglassHalf />,
+      },
+      out_for_delivery: {
+        label: "Đang giao",
+        color: "bg-yellow-100 text-yellow-800",
+        icon: <FaTruck />,
+      },
+      delivered: {
+        label: "Đã giao",
+        color: "bg-green-100 text-green-800",
+        icon: <FaCheckCircle />,
+      },
+      delivery_failed: {
+        label: "Thất bại",
+        color: "bg-red-100 text-red-800",
+        icon: <FaTimesCircle />,
+      },
+    };
+
+    const statusInfo = statusMap[status] || {
+      label: status,
+      color: "bg-gray-100 text-gray-800",
+      icon: <FaHourglassHalf />,
+    };
+
+    return (
+      <span
+        className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 ${statusInfo.color}`}
+      >
+        {statusInfo.icon}
+        {statusInfo.label}
+      </span>
+    );
+  };
+
+  const handleViewDetail = (orderId: string) => {
+    navigate(`/shipper/orders/${orderId}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-gray-500">Đang tải đơn hàng...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Đơn hàng của tôi ({filteredOrders.length})
+        </h1>
+      </div>
+
+      {/* Filter */}
+      <div className="bg-white rounded-lg shadow p-4">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2 text-gray-700 font-medium">
+            <FaFilter />
+            <span>Lọc theo trạng thái:</span>
+          </div>
+          <button
+            onClick={() => setFilterStatus("")}
+            className={`px-4 py-2 rounded-lg ${
+              filterStatus === ""
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Tất cả ({orders.length})
+          </button>
+          <button
+            onClick={() => setFilterStatus("assigned_to_shipper")}
+            className={`px-4 py-2 rounded-lg ${
+              filterStatus === "assigned_to_shipper"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Đã gán (
+            {orders.filter((o) => o.status === "assigned_to_shipper").length})
+          </button>
+          <button
+            onClick={() => setFilterStatus("out_for_delivery")}
+            className={`px-4 py-2 rounded-lg ${
+              filterStatus === "out_for_delivery"
+                ? "bg-yellow-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Đang giao (
+            {orders.filter((o) => o.status === "out_for_delivery").length})
+          </button>
+          <button
+            onClick={() => setFilterStatus("delivered")}
+            className={`px-4 py-2 rounded-lg ${
+              filterStatus === "delivered"
+                ? "bg-green-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Đã giao ({orders.filter((o) => o.status === "delivered").length})
+          </button>
+          <button
+            onClick={() => setFilterStatus("delivery_failed")}
+            className={`px-4 py-2 rounded-lg ${
+              filterStatus === "delivery_failed"
+                ? "bg-red-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Thất bại (
+            {orders.filter((o) => o.status === "delivery_failed").length})
+          </button>
+        </div>
+      </div>
+
+      {/* Orders List */}
+      {filteredOrders.length === 0 ? (
+        <div className="bg-white rounded-lg shadow p-12 text-center">
+          <FaTruck size={48} className="mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-500 text-lg">Không có đơn hàng nào</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {filteredOrders.map((order) => (
+            <div
+              key={order._id}
+              className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
+            >
+              {/* Order Header */}
+              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-t-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-bold text-lg">
+                      #{order.orderNumber || order._id.slice(-8)}
+                    </p>
+                    <p className="text-sm text-blue-100">
+                      {new Date(order.createdAt).toLocaleString("vi-VN")}
+                    </p>
+                  </div>
+                  {getStatusBadge(order.status)}
+                </div>
+              </div>
+
+              {/* Order Body */}
+              <div className="p-6 space-y-4">
+                {/* Customer Info */}
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Khách hàng</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-gray-800">
+                      {order.user?.name || "N/A"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 text-gray-600 text-sm mt-1">
+                    <FaPhone size={12} />
+                    <span>
+                      {order.user?.phone ||
+                        order.shippingAddress?.phone ||
+                        "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Shipping Address */}
+                <div>
+                  <p className="text-sm text-gray-600 mb-1 flex items-center gap-1">
+                    <FaMapMarkerAlt className="text-red-500" />
+                    Địa chỉ giao hàng
+                  </p>
+                  <p className="text-gray-800">
+                    {order.shippingAddress?.address || "N/A"}
+                  </p>
+                  {order.shippingAddress?.ward && (
+                    <p className="text-sm text-gray-600">
+                      {order.shippingAddress.ward},{" "}
+                      {order.shippingAddress.district},{" "}
+                      {order.shippingAddress.province}
+                    </p>
+                  )}
+                </div>
+
+                {/* Order Items Count */}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                  <div>
+                    <p className="text-sm text-gray-600">Số lượng sản phẩm</p>
+                    <p className="font-semibold text-gray-800">
+                      {order.items?.length || 0} mặt hàng
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600">Tổng tiền</p>
+                    <p className="font-bold text-blue-600 text-lg">
+                      {order.finalTotal?.toLocaleString("vi-VN")}₫
+                    </p>
+                  </div>
+                </div>
+
+                {/* Delivery Attempts */}
+                {order.deliveryAttempts &&
+                  order.deliveryAttempts.length > 0 && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <p className="text-sm text-gray-600 mb-2 flex items-center gap-1">
+                        <FaClock />
+                        Lần giao gần nhất
+                      </p>
+                      <p className="text-sm text-gray-800">
+                        {new Date(
+                          order.deliveryAttempts[
+                            order.deliveryAttempts.length - 1
+                          ].timestamp
+                        ).toLocaleString("vi-VN")}
+                      </p>
+                      {order.deliveryAttempts[order.deliveryAttempts.length - 1]
+                        .note && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          Ghi chú:{" "}
+                          {
+                            order.deliveryAttempts[
+                              order.deliveryAttempts.length - 1
+                            ].note
+                          }
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                {/* Action Button */}
+                <button
+                  onClick={() => handleViewDetail(order._id)}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
+                >
+                  Xem chi tiết & Cập nhật
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default MyOrdersPage;

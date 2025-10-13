@@ -32,6 +32,10 @@ const LoginForm: React.FC = () => {
 
       if (response.user?.role === "admin") {
         navigate("/admin");
+      } else if (response.user?.role === "staff") {
+        navigate("/admin");
+      } else if (response.user?.role === "shipper") {
+        navigate("/shipper/dashboard");
       } else {
         const urlParams = new URLSearchParams(window.location.search);
         const redirectTo = urlParams.get("redirect") || "/";
