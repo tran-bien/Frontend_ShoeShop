@@ -8,6 +8,7 @@ interface AddSizeProps {
 
 const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
   const [value, setValue] = useState<number | "">("");
+  const [type, setType] = useState<string>("EU");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +18,7 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
     setLoading(true);
     setError(null);
     try {
-      await sizeApi.create({ value: Number(value), description });
+      await sizeApi.create({ value: Number(value), type, description });
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
@@ -54,6 +55,24 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
               className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
               required
             />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-bold text-gray-600">
+              Loại size
+            </label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            >
+              <option value="EU">EU (European)</option>
+              <option value="US">US (United States)</option>
+              <option value="UK">UK (United Kingdom)</option>
+              <option value="VN">VN (Vietnam)</option>
+              <option value="CM">CM (Centimeters)</option>
+              <option value="INCHES">INCHES</option>
+            </select>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-gray-600">

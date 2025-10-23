@@ -7,6 +7,7 @@ import { useAuth } from "../../../hooks/useAuth";
 interface Size {
   _id: string;
   value: number;
+  type: "EU" | "US" | "UK" | "VN" | "CM" | "INCHES";
   description: string;
   deletedAt: string | null;
   deletedBy: string | { _id: string; name?: string } | null;
@@ -42,6 +43,26 @@ const ViewDetailModal: React.FC<{
             <div>
               <p className="text-sm text-gray-500 font-medium">Giá trị size</p>
               <p className="text-gray-800 font-bold text-2xl">{size.value}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500 font-medium">Loại size</p>
+              <span
+                className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                  size.type === "EU"
+                    ? "bg-blue-100 text-blue-800"
+                    : size.type === "US"
+                    ? "bg-purple-100 text-purple-800"
+                    : size.type === "UK"
+                    ? "bg-green-100 text-green-800"
+                    : size.type === "VN"
+                    ? "bg-red-100 text-red-800"
+                    : size.type === "CM"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {size.type}
+              </span>
             </div>
           </div>
           <div>
@@ -86,6 +107,7 @@ const EditSizeModal: React.FC<{
   onSuccess: () => void;
 }> = ({ size, onClose, onSuccess }) => {
   const [value, setValue] = useState<number>(size.value);
+  const [type, setType] = useState<string>(size.type);
   const [description, setDescription] = useState(size.description);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -95,7 +117,7 @@ const EditSizeModal: React.FC<{
     setLoading(true);
     setError(null);
     try {
-      await sizeApi.update(size._id, { value, description });
+      await sizeApi.update(size._id, { value, type, description });
       onSuccess();
       onClose();
     } catch {
@@ -130,6 +152,24 @@ const EditSizeModal: React.FC<{
               className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
               required
             />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-bold text-gray-600">
+              Loại size
+            </label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              required
+            >
+              <option value="EU">EU (European)</option>
+              <option value="US">US (United States)</option>
+              <option value="UK">UK (United Kingdom)</option>
+              <option value="VN">VN (Vietnam)</option>
+              <option value="CM">CM (Centimeters)</option>
+              <option value="INCHES">INCHES</option>
+            </select>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-gray-600">
@@ -185,6 +225,9 @@ const SizePage: React.FC = () => {
   // Sorting state
   const [sortOption, setSortOption] = useState<string>("created_at_desc");
 
+  // Filter by type state
+  const [typeFilter, setTypeFilter] = useState<string>("all");
+
   // Stats states
   const [activeCount, setActiveCount] = useState(0);
   const [deletedCount, setDeletedCount] = useState(0);
@@ -198,6 +241,7 @@ const SizePage: React.FC = () => {
         page,
         limit: 10,
         ...(searchQuery && { name: searchQuery }),
+        ...(typeFilter !== "all" && { type: typeFilter }),
         sort: sortOption,
       };
       const res = await sizeApi.getAll(params);
@@ -219,6 +263,7 @@ const SizePage: React.FC = () => {
         page,
         limit: 10,
         ...(searchQuery && { name: searchQuery }),
+        ...(typeFilter !== "all" && { type: typeFilter }),
         sort: sortOption,
       };
       const res = await sizeApi.getDeleted(params);
@@ -270,7 +315,8 @@ const SizePage: React.FC = () => {
       fetchSizes(currentPage);
       fetchStats();
     }
-  }, [showDeleted, currentPage, searchQuery, sortOption]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showDeleted, currentPage, searchQuery, sortOption, typeFilter]);
 
   const handleBack = () => {
     setIsSearchVisible(false);
@@ -402,6 +448,23 @@ const SizePage: React.FC = () => {
           </button>
         </div>
         <div className="flex items-center gap-3 mb-2">
+          {/* Type Filter Dropdown */}
+          <select
+            value={typeFilter}
+            onChange={(e) => {
+              setTypeFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            <option value="all">Tất cả loại</option>
+            <option value="EU">EU</option>
+            <option value="US">US</option>
+            <option value="UK">UK</option>
+            <option value="VN">VN</option>
+            <option value="CM">CM</option>
+            <option value="INCHES">INCHES</option>
+          </select>
           {/* Sort Dropdown */}
           <select
             value={sortOption}
@@ -448,6 +511,7 @@ const SizePage: React.FC = () => {
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
               <th className="py-3 px-4 text-left border-b">Giá Trị</th>
+              <th className="py-3 px-4 text-left border-b">Loại</th>
               <th className="py-3 px-4 text-left border-b">Mô Tả</th>
               <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
               <th className="py-3 px-4 text-center border-b">Thao Tác</th>
@@ -461,6 +525,25 @@ const SizePage: React.FC = () => {
                 </td>
                 <td className="py-2 px-4 border-b text-lg font-bold">
                   {item.value}
+                </td>
+                <td className="py-2 px-4 border-b">
+                  <span
+                    className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${
+                      item.type === "EU"
+                        ? "bg-blue-100 text-blue-800"
+                        : item.type === "US"
+                        ? "bg-purple-100 text-purple-800"
+                        : item.type === "UK"
+                        ? "bg-green-100 text-green-800"
+                        : item.type === "VN"
+                        ? "bg-red-100 text-red-800"
+                        : item.type === "CM"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {item.type}
+                  </span>
                 </td>
                 <td className="py-2 px-4 border-b text-sm">
                   {item.description}
