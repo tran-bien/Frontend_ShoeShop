@@ -51,14 +51,24 @@ interface VariantSize {
   sizeValue?: string | number;
   quantity: number;
   description?: string;
+  // Thông tin giá từ InventoryItem (BE trả về)
+  price?: number; // sellingPrice
+  finalPrice?: number; // finalPrice after discount
+  discountPercent?: number;
+  isAvailable?: boolean;
+  isLowStock?: boolean;
+  isOutOfStock?: boolean;
 }
 
 interface Variant {
   id: string;
+  colorId?: string;
+  colorName?: string;
+  gender?: string;
   sizes?: VariantSize[];
-  price?: number;
-  priceFinal?: number;
-  percentDiscount?: number;
+  totalQuantity?: number;
+  // REMOVED: price, priceFinal, percentDiscount ở variant level
+  // Giá được lưu ở từng size trong sizes[]
 }
 
 interface ProductAttributes {
@@ -505,50 +515,21 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     products: ProductType[]
   ): ProductCardProduct[] => {
     return products.map((p) => {
-      // Calculate price range safely
-      const variants = Array.isArray(p.variants) ? p.variants : [];
-      const prices = variants
-        .filter(
-          (v) =>
-            v &&
-            typeof v === "object" &&
-            typeof v !== "string" &&
-            "priceFinal" in v
-        )
-        .map((v) => (v as any).priceFinal);
+      // FIXED: Backend đã tính và trả về priceRange trong product
+      // Không cần tính từ variants nữa vì variant không còn price fields
 
-      // Fallback to variantSummary if available
-      let priceRange = {
-        min: 0,
-        max: 0,
-        isSinglePrice: true,
-      };
-
-      if (prices.length > 0) {
-        priceRange = {
-          min: Math.min(...prices),
-          max: Math.max(...prices),
-          isSinglePrice: Math.min(...prices) === Math.max(...prices),
-        };
-      } else if (p.variantSummary?.priceRange) {
-        const min = p.variantSummary.priceRange.min || 0;
-        const max = p.variantSummary.priceRange.max || 0;
-        const isSinglePrice =
-          p.variantSummary.priceRange.isSinglePrice !== false;
-        priceRange = { min, max, isSinglePrice };
-      } else if (p.price !== undefined) {
-        priceRange = {
-          min: p.price,
-          max: p.price,
+      const priceRange = p.priceRange ||
+        p.variantSummary?.priceRange || {
+          min: p.price || 0,
+          max: p.price || 0,
           isSinglePrice: true,
         };
-      }
 
       // Handle images safely
       const images = Array.isArray(p.images) ? p.images : [];
-      let mainImage = "";
+      let mainImage = p.mainImage || "";
 
-      if (images.length > 0) {
+      if (!mainImage && images.length > 0) {
         const main = images.find((img) => img.isMain === true) || images[0];
         mainImage = main?.url || "";
       }
@@ -670,24 +651,45 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             </h1>
 
             <div className="mt-3">
-              <p className="text-3xl font-bold text-gray-900">
-                {getCurrentVariant()?.priceFinal?.toLocaleString() ||
-                  getCurrentVariant()?.price?.toLocaleString() ||
-                  "Liên hệ"}
-                đ
-              </p>
+              {/* FIXED: Hiển thị giá theo size được chọn */}
+              {selectedSizeInfo &&
+              (selectedSizeInfo.finalPrice || selectedSizeInfo.price) ? (
+                <>
+                  <p
+                    className={`text-3xl font-bold ${
+                      selectedSizeInfo.discountPercent &&
+                      selectedSizeInfo.discountPercent > 0
+                        ? "text-red-600"
+                        : "text-gray-900"
+                    }`}
+                  >
+                    {(
+                      selectedSizeInfo.finalPrice ||
+                      selectedSizeInfo.price ||
+                      0
+                    ).toLocaleString()}
+                    đ
+                  </p>
 
-              {getCurrentVariant()?.percentDiscount &&
-                (getCurrentVariant()?.percentDiscount ?? 0) > 0 && (
-                  <div className="flex items-center space-x-2 mt-1">
-                    <span className="text-lg text-gray-500 line-through">
-                      {getCurrentVariant()?.price?.toLocaleString()}đ
-                    </span>
-                    <span className="text-sm font-medium text-red-600 bg-red-100 px-2 py-1 rounded">
-                      -{getCurrentVariant()?.percentDiscount}%
-                    </span>
-                  </div>
-                )}
+                  {selectedSizeInfo.discountPercent &&
+                    selectedSizeInfo.discountPercent > 0 && (
+                      <div className="flex items-center space-x-2 mt-1">
+                        <span className="text-lg text-gray-500 line-through">
+                          {(selectedSizeInfo.price || 0).toLocaleString()}đ
+                        </span>
+                        <span className="text-sm font-medium text-red-600 bg-red-100 px-2 py-1 rounded">
+                          -{selectedSizeInfo.discountPercent}%
+                        </span>
+                      </div>
+                    )}
+                </>
+              ) : (
+                <p className="text-3xl font-bold text-gray-900">
+                  {selectedGender && selectedColorId
+                    ? "Vui lòng chọn size"
+                    : "Vui lòng chọn màu sắc"}
+                </p>
+              )}
             </div>
           </div>
 
@@ -812,22 +814,34 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               <div className="flex flex-wrap gap-2">
                 {getCurrentVariant()?.sizes?.map((sizeInfo) => {
                   const sizeDetails = getSizeDetails(sizeInfo.sizeId);
+                  // Sử dụng stock status từ BE
+                  const isOutOfStock =
+                    sizeInfo.isOutOfStock || sizeInfo.quantity === 0;
+                  const isLowStock = sizeInfo.isLowStock && !isOutOfStock;
+
                   return (
                     <div key={sizeInfo.sizeId} className="relative group">
                       <button
                         onClick={() => setSelectedSizeId(sizeInfo.sizeId)}
-                        disabled={sizeInfo.quantity === 0}
+                        disabled={isOutOfStock}
                         className={`px-4 py-2 border rounded-lg transition-colors ${
                           selectedSizeId === sizeInfo.sizeId
                             ? "border-blue-500 bg-blue-50 text-blue-700"
-                            : sizeInfo.quantity === 0
+                            : isOutOfStock
                             ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
+                            : isLowStock
+                            ? "border-orange-300 bg-orange-50"
                             : "border-gray-300 hover:border-gray-400"
                         }`}
                       >
                         {sizeInfo.sizeValue}
-                        {sizeInfo.quantity === 0 && (
+                        {isOutOfStock && (
                           <span className="block text-xs">Hết hàng</span>
+                        )}
+                        {isLowStock && (
+                          <span className="block text-xs text-orange-600">
+                            Sắp hết
+                          </span>
                         )}
                       </button>
 

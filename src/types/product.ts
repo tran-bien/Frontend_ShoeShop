@@ -17,21 +17,26 @@ export interface VariantSize {
   _id?: string;
   sizeId?: string;
   sizeValue?: string | number;
+  sizeDescription?: string;
   description?: string;
   sku?: string;
-  isSizeAvailable?: boolean;
+
+  // Thông tin giá từ InventoryItem (BE trả về trong variants.sizes)
+  price?: number; // sellingPrice từ InventoryItem
+  finalPrice?: number; // finalPrice từ InventoryItem
+  discountPercent?: number; // discountPercent từ InventoryItem
+
+  // Stock status
+  isAvailable?: boolean; // quantity > 0
+  isLowStock?: boolean;
+  isOutOfStock?: boolean;
+  isSizeAvailable?: boolean; // deprecated, dùng isAvailable
 }
 
 export interface Variant {
   _id: string;
   product: Product | string;
   color: Color | string;
-  price: number;
-  costPrice?: number;
-  percentDiscount?: number;
-  priceFinal?: number;
-  profit?: number;
-  profitPercentage?: number;
   gender: string;
   sizes: VariantSize[];
   isActive: boolean;
@@ -43,6 +48,35 @@ export interface Variant {
     isMain: boolean;
     displayOrder: number;
   }>;
+
+  // REMOVED: Các fields này đã bị xóa khỏi BE Variant schema
+  // price, costPrice, percentDiscount, priceFinal, profit, profitPercentage
+  // Giá giờ được lưu trong InventoryItem và trả về qua variants.sizes[]
+
+  // ADDED: Inventory summary từ BE (cho admin view)
+  inventorySummary?: {
+    totalQuantity: number;
+    availableSizes: number;
+    totalSizes: number;
+    stockStatus: "in_stock" | "low_stock" | "out_of_stock";
+    sizeInventory?: Array<{
+      sizeId: string;
+      sizeValue: string;
+      quantity: number;
+      sku: string;
+      isAvailable: boolean;
+      isLowStock?: boolean;
+      isOutOfStock?: boolean;
+    }>;
+    pricing?: {
+      minPrice: number;
+      maxPrice: number;
+      hasDiscount: boolean;
+      maxDiscountPercent: number;
+      isSinglePrice: boolean;
+    };
+  };
+
   createdAt?: string;
   updatedAt?: string;
   deletedBy?: string | { _id: string; name?: string } | null;
@@ -69,10 +103,13 @@ export interface ProductAttributes {
 export interface ProductVariants {
   [key: string]: {
     id: string;
-    sizes?: VariantSize[];
-    price?: number;
-    priceFinal?: number;
-    percentDiscount?: number;
+    colorId?: string;
+    colorName?: string;
+    gender?: string;
+    sizes?: VariantSize[]; // Mỗi size có price, finalPrice, discountPercent
+    totalQuantity?: number;
+    // REMOVED: price, priceFinal, percentDiscount ở variant level
+    // Giá được lưu ở từng size trong sizes[]
   };
 }
 
