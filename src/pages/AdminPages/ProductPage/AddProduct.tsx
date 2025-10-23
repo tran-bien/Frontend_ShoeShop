@@ -36,39 +36,37 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Lấy danh sách brand
-    const fetchBrands = async () => {
+    const fetchData = async () => {
+      setLoadingData(true);
       try {
-        const res = await brandApi.getAll();
-        setBrands(res.data.data || []);
-      } catch {
-        setBrands([]);
+        // Lấy tất cả dữ liệu song song
+        const [brandsRes, categoriesRes, tagsRes] = await Promise.all([
+          brandApi.getAll(),
+          categoryApi.getAll(),
+          tagApi.getActiveTags(),
+        ]);
+
+        setBrands(brandsRes.data.data || brandsRes.data || []);
+        setCategories(categoriesRes.data.data || categoriesRes.data || []);
+
+        // Try different response structures
+        const tagsData =
+          tagsRes.data.data || tagsRes.data.tags || tagsRes.data || [];
+        console.log("Tags loaded:", tagsData);
+        setTags(tagsData);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Không thể tải dữ liệu. Vui lòng thử lại!");
+      } finally {
+        setLoadingData(false);
       }
     };
-    // Lấy danh sách category
-    const fetchCategories = async () => {
-      try {
-        const res = await categoryApi.getAll();
-        setCategories(res.data.data || []);
-      } catch {
-        setCategories([]);
-      }
-    };
-    // Lấy danh sách tags
-    const fetchTags = async () => {
-      try {
-        const res = await tagApi.getActiveTags();
-        setTags(res.data.data || []);
-      } catch {
-        setTags([]);
-      }
-    };
-    fetchBrands();
-    fetchCategories();
-    fetchTags();
+
+    fetchData();
   }, []);
 
   const handleChange = (
@@ -93,31 +91,78 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // Frontend validation
+    if (!formData.name.trim()) {
+      setError("Tên sản phẩm không được để trống!");
+      setLoading(false);
+      return;
+    }
+    if (formData.name.trim().length < 2 || formData.name.trim().length > 200) {
+      setError("Tên sản phẩm phải có từ 2-200 ký tự!");
+      setLoading(false);
+      return;
+    }
+    if (!formData.description.trim()) {
+      setError("Mô tả sản phẩm không được để trống!");
+      setLoading(false);
+      return;
+    }
+    if (
+      formData.description.trim().length < 10 ||
+      formData.description.trim().length > 1000
+    ) {
+      setError("Mô tả sản phẩm phải có từ 10-1000 ký tự!");
+      setLoading(false);
+      return;
+    }
+    if (!formData.category) {
+      setError("Vui lòng chọn danh mục!");
+      setLoading(false);
+      return;
+    }
+    if (!formData.brand) {
+      setError("Vui lòng chọn thương hiệu!");
+      setLoading(false);
+      return;
+    }
+
     try {
+      console.log("Submitting product data:", formData);
       await productApi.create(formData);
       handleClose();
-    } catch (err: any) {
-      setError("Thêm sản phẩm thất bại!");
+      // Show success notification if available
+      if (window.location.reload) {
+        window.location.reload();
+      }
+    } catch (err: unknown) {
+      console.error("Create product error:", err);
+      const error = err as { response?: { data?: { message?: string } } };
+      const errorMessage =
+        error.response?.data?.message || "Thêm sản phẩm thất bại!";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-300 bg-opacity-75 flex justify-center items-center">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-auto relative text-black">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
+      <div className="bg-white p-6 rounded-xl shadow-2xl w-full max-w-2xl relative text-black max-h-[90vh] overflow-y-auto">
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 transition duration-300"
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all text-2xl font-bold"
         >
-          &times;
+          ×
         </button>
-        <h2 className="text-xl font-bold mb-8 text-center">Thêm Sản Phẩm</h2>
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          Thêm Sản Phẩm Mới
+        </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Tên Sản Phẩm
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tên Sản Phẩm <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -125,90 +170,150 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Nhập tên sản phẩm..."
+              className="mt-1 block w-full px-4 py-2 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Mô Tả
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mô Tả <span className="text-red-500">*</span>
             </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            ></textarea>
+            <div className="relative">
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+                rows={5}
+                placeholder="Mô tả chi tiết về sản phẩm: chất liệu, đặc điểm nổi bật, công dụng..."
+                className="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                maxLength={1000}
+              ></textarea>
+              <div className="absolute bottom-2 right-2 text-xs text-gray-400">
+                {formData.description.length}/1000
+              </div>
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              💡 Mô tả chi tiết giúp khách hàng hiểu rõ hơn về sản phẩm
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Danh Mục <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full px-4 py-2 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">-- Chọn danh mục --</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Thương Hiệu <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="brand"
+                value={formData.brand}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full px-4 py-2 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">-- Chọn thương hiệu --</option>
+                {brands.map((brand) => (
+                  <option key={brand._id} value={brand._id}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Danh Mục
-            </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="">-- Chọn danh mục --</option>
-              {categories.map((cat) => (
-                <option key={cat._id} value={cat._id}>
-                  {cat._id} - {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Thương Hiệu
-            </label>
-            <select
-              name="brand"
-              value={formData.brand}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="">-- Chọn thương hiệu --</option>
-              {brands.map((brand) => (
-                <option key={brand._id} value={brand._id}>
-                  {brand._id} - {brand.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-black mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Tags (Chọn nhiều)
             </label>
-            <div className="border border-gray-300 rounded-md p-3 max-h-48 overflow-y-auto">
-              {tags.length === 0 ? (
-                <p className="text-gray-500 text-sm">Không có tags nào</p>
+            <div className="border-2 border-gray-300 rounded-lg p-4 bg-gray-50 max-h-64 overflow-y-auto">
+              {loadingData ? (
+                <div className="flex items-center justify-center py-8">
+                  <svg
+                    className="animate-spin h-8 w-8 text-blue-500"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span className="ml-3 text-gray-600">Đang tải tags...</span>
+                </div>
+              ) : tags.length === 0 ? (
+                <div className="text-center py-8">
+                  <svg
+                    className="mx-auto h-12 w-12 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                    />
+                  </svg>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Không có tags nào
+                  </p>
+                </div>
               ) : (
-                <div className="space-y-2">
+                <div className="grid grid-cols-1 gap-2">
                   {tags.map((tag) => (
                     <label
                       key={tag._id}
-                      className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                      className="flex items-center space-x-3 cursor-pointer hover:bg-white p-3 rounded-lg border border-transparent hover:border-blue-300 transition-all"
                     >
                       <input
                         type="checkbox"
                         checked={formData.tags.includes(tag._id)}
                         onChange={() => handleTagToggle(tag._id)}
-                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       />
-                      <span className="text-sm">
+                      <span className="flex-1 text-sm font-medium text-gray-800">
                         {tag.name}
-                        <span className="ml-2 text-xs text-gray-500">
-                          (
-                          {tag.type === "MATERIAL"
-                            ? "Chất liệu"
+                      </span>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                          tag.type === "MATERIAL"
+                            ? "bg-blue-100 text-blue-700"
                             : tag.type === "USECASE"
-                            ? "Nhu cầu"
-                            : "Tùy chỉnh"}
-                          )
-                        </span>
+                            ? "bg-green-100 text-green-700"
+                            : "bg-purple-100 text-purple-700"
+                        }`}
+                      >
+                        {tag.type === "MATERIAL"
+                          ? "Chất liệu"
+                          : tag.type === "USECASE"
+                          ? "Nhu cầu"
+                          : "Tùy chỉnh"}
                       </span>
                     </label>
                   ))}
@@ -216,20 +321,83 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
               )}
             </div>
             {formData.tags.length > 0 && (
-              <p className="text-sm text-gray-600 mt-1">
-                Đã chọn: {formData.tags.length} tag(s)
-              </p>
+              <div className="mt-2 flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-700">
+                  Đã chọn: {formData.tags.length} tag(s)
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, tags: [] })}
+                  className="text-xs text-red-500 hover:text-red-700 underline"
+                >
+                  Xóa tất cả
+                </button>
+              </div>
             )}
           </div>
-          {error && <div className="text-red-500 text-sm">{error}</div>}
-          <div className="flex justify-end">
-            `
+          {error && (
+            <div className="bg-red-50 border-2 border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="text-sm font-medium">{error}</span>
+            </div>
+          )}
+          <div className="flex justify-end gap-3 pt-4 border-t">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="px-5 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-medium"
+            >
+              Hủy
+            </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {loading ? "Đang thêm..." : "Thêm"}
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Đang thêm...
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Thêm Sản Phẩm
+                </>
+              )}
             </button>
           </div>
         </form>

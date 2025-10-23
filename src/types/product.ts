@@ -238,6 +238,7 @@ export interface CreateProductData {
   description: string;
   category: string;
   brand: string;
+  tags?: string[];
   images?: ProductImage[];
   isActive?: boolean;
 }

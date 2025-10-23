@@ -2,11 +2,12 @@ import { axiosInstanceAuth } from "../utils/axiosIntance";
 
 export const variantApi = {
   // Lấy danh sách tất cả variant
-  getAllVariants: () => axiosInstanceAuth.get("/api/v1/admin/variants"),
+  getAllVariants: (params?: Record<string, string | number | boolean>) =>
+    axiosInstanceAuth.get("/api/v1/admin/variants", { params }),
 
   // Lấy danh sách variant đã xóa
-  getDeletedVariants: () =>
-    axiosInstanceAuth.get("/api/v1/admin/variants/deleted"),
+  getDeletedVariants: (params?: Record<string, string | number | boolean>) =>
+    axiosInstanceAuth.get("/api/v1/admin/variants/deleted", { params }),
 
   // Thêm variant mới
   createVariant: (data: any) =>
