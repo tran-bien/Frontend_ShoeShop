@@ -135,8 +135,15 @@ const LandingPage: React.FC = () => {
 
         // Xử lý dữ liệu banners
         if (bannersRes.data.success) {
-          const bannerData = bannersRes.data.data || [];
-          console.log("Banners:", bannerData);
+          // API trả về banners trong trường banners, không phải data
+          const response = bannersRes.data as {
+            success: boolean;
+            banners?: Banner[];
+            data?: Banner[];
+          };
+          const bannerData = response.banners || response.data || [];
+          console.log("Banners response:", bannersRes.data);
+          console.log("Banner data:", bannerData);
           setBanners(bannerData);
         }
       } catch (error) {

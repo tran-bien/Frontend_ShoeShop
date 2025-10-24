@@ -641,36 +641,94 @@ const ProductPage = () => {
                           {!showDeleted ? (
                             <>
                               <button
-                                className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm"
+                                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-1.5"
                                 onClick={() => openModal("detail", product)}
                                 title="Xem chi tiết"
                               >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                  />
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                  />
+                                </svg>
                                 Chi tiết
                               </button>
                               {canUpdate() && (
                                 <>
                                   <button
-                                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm"
+                                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-1.5"
                                     onClick={() => openModal("edit", product)}
                                     title="Sửa sản phẩm"
                                   >
+                                    <svg
+                                      className="w-3.5 h-3.5"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                      />
+                                    </svg>
                                     Sửa
                                   </button>
                                   <button
-                                    className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm"
+                                    className="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-medium rounded-lg border border-purple-200 transition-colors flex items-center gap-1.5"
                                     onClick={() => openModal("images", product)}
                                     title="Quản lý ảnh sản phẩm"
                                   >
-                                    📷 Ảnh
+                                    <svg
+                                      className="w-3.5 h-3.5"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                      />
+                                    </svg>
+                                    Ảnh
                                   </button>
                                 </>
                               )}
                               {canDelete() && (
                                 <button
-                                  className="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm"
+                                  className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-1.5"
                                   onClick={() => openModal("delete", product)}
                                   title="Xóa sản phẩm"
                                 >
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                    />
+                                  </svg>
                                   Xóa
                                 </button>
                               )}
@@ -678,10 +736,23 @@ const ProductPage = () => {
                           ) : (
                             hasAdminOnlyAccess() && (
                               <button
-                                className="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm"
+                                className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-1.5"
                                 onClick={() => handleRestore(product._id)}
                                 title="Khôi phục sản phẩm"
                               >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                  />
+                                </svg>
                                 Khôi phục
                               </button>
                             )
@@ -928,49 +999,83 @@ const ProductPage = () => {
 
       {/* Modal cập nhật trạng thái active */}
       {showActiveModal && selectedProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm relative">
-            <h2 className="text-xl font-bold mb-4">
-              Cập nhật trạng thái sản phẩm
-            </h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md relative animate-fadeIn">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Cập nhật trạng thái sản phẩm
+              </h2>
+            </div>
+
+            {/* Body */}
             <form onSubmit={handleActiveSubmit}>
-              <div className="mb-4 flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="isActive"
-                  checked={activeForm.isActive}
-                  onChange={(e) =>
-                    setActiveForm((f) => ({ ...f, isActive: e.target.checked }))
-                  }
-                />
-                <label htmlFor="isActive">
-                  {activeForm.isActive
-                    ? "Đang bán (isActive = true)"
-                    : "Ẩn (isActive = false)"}
-                </label>
+              <div className="px-6 py-5 space-y-4">
+                {/* Checkbox Ẩn/Hiện sản phẩm */}
+                <div className="flex items-start space-x-3">
+                  <div className="flex items-center h-5">
+                    <input
+                      type="checkbox"
+                      id="isActive"
+                      checked={!activeForm.isActive}
+                      onChange={(e) =>
+                        setActiveForm((f) => ({
+                          ...f,
+                          isActive: !e.target.checked,
+                        }))
+                      }
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label
+                      htmlFor="isActive"
+                      className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+                    >
+                      Ẩn
+                    </label>
+                  </div>
+                </div>
+
+                {/* Checkbox Cascade */}
+                <div className="flex items-start space-x-3">
+                  <div className="flex items-center h-5">
+                    <input
+                      type="checkbox"
+                      id="cascade"
+                      checked={activeForm.cascade}
+                      onChange={(e) =>
+                        setActiveForm((f) => ({
+                          ...f,
+                          cascade: e.target.checked,
+                        }))
+                      }
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label
+                      htmlFor="cascade"
+                      className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+                    >
+                      Cập nhật cho biến thể
+                    </label>
+                  </div>
+                </div>
               </div>
-              <div className="mb-4 flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="cascade"
-                  checked={activeForm.cascade}
-                  onChange={(e) =>
-                    setActiveForm((f) => ({ ...f, cascade: e.target.checked }))
-                  }
-                />
-                <label htmlFor="cascade">Cập nhật cho biến thể (cascade)</label>
-              </div>
-              <div className="flex justify-end gap-2">
+
+              {/* Footer */}
+              <div className="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end gap-3">
                 <button
                   type="button"
-                  className="px-4 py-2 bg-gray-300 rounded"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                   onClick={() => closeModal("active")}
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded"
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
                 >
                   Lưu
                 </button>
