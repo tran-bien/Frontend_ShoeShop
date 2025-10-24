@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaBox, FaCheckCircle, FaTimesCircle, FaClock } from "react-icons/fa";
-import ReturnService, { ReturnRequest } from "../../../services/ReturnService";
+import ReturnService from "../../../services/ReturnService";
+import type { ReturnRequest } from "../../../types/return";
 import ReturnDetailModal from "../../../components/Admin/Return/ReturnDetailModal";
 import ApproveReturnModal from "../../../components/Admin/Return/ApproveReturnModal";
 import RejectReturnModal from "../../../components/Admin/Return/RejectReturnModal";
@@ -8,7 +9,12 @@ import ProcessReturnModal from "../../../components/Admin/Return/ProcessReturnMo
 
 const ReturnPage = () => {
   const [returns, setReturns] = useState<ReturnRequest[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<{
+    totalRequests: number;
+    pendingRequests: number;
+    completedRequests: number;
+    rejectedRequests: number;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -28,6 +34,7 @@ const ReturnPage = () => {
   useEffect(() => {
     fetchReturns();
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, filter]);
 
   const fetchReturns = async () => {
@@ -37,7 +44,7 @@ const ReturnPage = () => {
         page: currentPage,
         limit: 20,
         status: filter.status || undefined,
-        type: (filter.type as any) || undefined,
+        type: (filter.type as "RETURN" | "EXCHANGE" | "") || undefined,
       });
 
       setReturns(response.data.items);
@@ -87,7 +94,10 @@ const ReturnPage = () => {
   };
 
   const getStatusBadge = (status: string) => {
-    const badges: any = {
+    const badges: Record<
+      string,
+      { color: string; label: string; icon: typeof FaClock }
+    > = {
       pending: {
         color: "bg-yellow-100 text-yellow-800",
         label: "Chờ duyệt",

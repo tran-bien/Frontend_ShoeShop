@@ -1,62 +1,11 @@
 import axios from "axios";
+import type {
+  AssignOrderData,
+  UpdateDeliveryStatusData,
+  UpdateLocationData,
+} from "../types/shipper";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
-export interface Shipper {
-  _id: string;
-  name: string;
-  email: string;
-  phone: string;
-  avatar?: string;
-  shipper: {
-    isAvailable: boolean;
-    activeOrders: number;
-    maxOrders: number;
-    currentLocation?: {
-      latitude: number;
-      longitude: number;
-      updatedAt: string;
-    };
-    deliveryStats: {
-      totalDeliveries: number;
-      successfulDeliveries: number;
-      failedDeliveries: number;
-    };
-  };
-}
-
-export interface DeliveryAttempt {
-  attemptNumber: number;
-  timestamp: string;
-  status: "out_for_delivery" | "delivery_failed" | "delivered";
-  location?: {
-    latitude: number;
-    longitude: number;
-    address?: string;
-  };
-  images?: string[];
-  note?: string;
-}
-
-export interface AssignOrderData {
-  shipperId: string;
-}
-
-export interface UpdateDeliveryStatusData {
-  status: "out_for_delivery" | "delivery_failed" | "delivered";
-  note?: string;
-  images?: string[];
-  location?: {
-    latitude: number;
-    longitude: number;
-    address?: string;
-  };
-}
-
-export interface UpdateLocationData {
-  latitude: number;
-  longitude: number;
-}
 
 class ShipperService {
   private getAuthHeader() {

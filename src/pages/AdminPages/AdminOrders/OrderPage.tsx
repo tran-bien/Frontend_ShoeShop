@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { adminOrderService } from "../../../services/OrderService";
+import { adminOrderService, orderApi } from "../../../services/OrderService";
 import CancelRequestList from "./CancelRequestList";
 import { useAuth } from "../../../hooks/useAuth";
+import type { Order } from "../../../types/order";
 
-interface Order {
+// Simplified order interface for list display
+interface OrderListItem {
   _id: string;
   orderCode: string;
   customerName: string;
@@ -21,8 +23,10 @@ const ListOrderPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [paymentFilter, setPaymentFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [orders, setOrders] = useState<OrderListItem[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<OrderListItem | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<"orders" | "cancel">("orders");
 
@@ -133,7 +137,8 @@ const ListOrderPage: React.FC = () => {
         orderStatusRaw: o.status,
       });
     } catch {
-      setSelectedOrder(order);
+      // Fallback - just use empty object to prevent crash
+      setSelectedOrder(null);
     }
   };
 
@@ -297,7 +302,16 @@ const ListOrderPage: React.FC = () => {
                         <div className="flex flex-col gap-2 min-w-[120px] items-center">
                           <button
                             className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all mb-1 w-32"
-                            onClick={() => handleViewDetails(order)}
+                            onClick={async () => {
+                              try {
+                                const res = await orderApi.getOrderById(
+                                  order._id
+                                );
+                                handleViewDetails(res.data.data);
+                              } catch (err) {
+                                console.error("Error fetching order:", err);
+                              }
+                            }}
                           >
                             Xem chi tiết
                           </button>

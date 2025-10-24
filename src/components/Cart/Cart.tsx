@@ -21,52 +21,15 @@ import {
   FiArrowLeft,
 } from "react-icons/fi";
 import { debounce } from "lodash";
-
-interface CartItem {
-  _id: string;
-  variant: {
-    _id: string;
-    color: {
-      name: string;
-      code: string;
-    };
-    price: number;
-    priceFinal: number;
-    percentDiscount?: number;
-    product?: {
-      _id: string;
-      slug?: string;
-      name?: string;
-    };
-  };
-  size: {
-    _id: string;
-    value: string | number;
-  };
-  quantity: number;
-  price: number;
-  productName: string;
-  image: string;
-  isSelected: boolean;
-  isAvailable: boolean;
-  unavailableReason?: string;
-}
-
-interface Cart {
-  _id: string;
-  user: string;
-  cartItems: CartItem[];
-  totalQuantity: number;
-  totalPrice: number;
-}
+import type { Cart as CartType, CartItem } from "../../types/cart";
 
 const Cart: React.FC = () => {
-  const [cart, setCart] = useState<Cart | null>(null);
+  const [cart, setCart] = useState<CartType | null>(null);
   const [loading, setLoading] = useState(true);
   const [couponCode, setCouponCode] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null); // TODO: Add Coupon type
   const [couponLoading, setCouponLoading] = useState(false);
-  const [previewData, setPreviewData] = useState<any>(null);
+  const [previewData, setPreviewData] = useState<any>(null); // TODO: Add OrderPreview type
 
   // Thay đổi: Sử dụng Map để track quantity chính xác hơn
   const [optimisticQuantities, setOptimisticQuantities] = useState<

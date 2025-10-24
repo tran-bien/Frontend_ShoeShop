@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import InventoryService, {
+import InventoryService from "../../../services/InventoryService";
+import type {
   InventoryItem,
   InventoryTransaction,
-} from "../../../services/InventoryService";
+} from "../../../types/inventory";
 
 interface Props {
   item: InventoryItem;

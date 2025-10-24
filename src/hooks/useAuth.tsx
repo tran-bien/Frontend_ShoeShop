@@ -9,17 +9,10 @@ import React, {
 import { toast } from "react-hot-toast";
 import authService from "../services/AuthService";
 import { AuthResponse, SessionInfo } from "../types/auth";
+import type { UserRole } from "../types/user";
+import type { User } from "../types/user";
 import { jwtDecode } from "jwt-decode";
 import { roleHelpers } from "../utils/roleHelpers";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  role: string;
-  avatar?: string;
-  isEmailVerified?: boolean;
-}
 
 interface LoginResult {
   success: boolean;
@@ -175,9 +168,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           _id: _id,
           name: name,
           email: userEmail,
-          role: role,
-          avatar: avatar,
-          isEmailVerified: isVerified,
+          role: role as UserRole,
+          avatar: avatar
+            ? typeof avatar === "string"
+              ? { url: avatar, public_id: "" }
+              : avatar
+            : undefined,
+          isVerified: isVerified,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         };
 
         // Lưu user info

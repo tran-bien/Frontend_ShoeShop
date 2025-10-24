@@ -1,32 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { sessionUserApi } from "../../../services/SessionUserService";
+import type { User } from "../../../types/user";
+import type { Session } from "../../../types/session";
 
-// Định nghĩa kiểu dữ liệu user từ API
-interface Customer {
-  _id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  avatar?: { url?: string };
-  role: string;
-  isActive: boolean;
-  isVerified: boolean;
-  blockedAt?: string | null;
-}
-
-interface Session {
-  _id: string;
-  user: string | { _id: string; name: string; email: string; role: string };
-  userAgent: string;
-  ip: string;
-  createdAt: string;
-  device?: {
-    browser?: {
-      name?: string;
-    };
-  };
-}
+// Alias cho rõ nghĩa
+type Customer = User;
 
 const ListCustomerPage: React.FC = () => {
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
@@ -37,6 +16,7 @@ const ListCustomerPage: React.FC = () => {
 
   useEffect(() => {
     fetchAll();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchAll = async () => {
@@ -77,7 +57,7 @@ const ListCustomerPage: React.FC = () => {
     setSearchQuery("");
   };
 
-  const getSessionUserId = (user: any) =>
+  const getSessionUserId = (user: string | { _id: string }) =>
     typeof user === "object" && user !== null ? user._id : user;
 
   const getStatus = (customer: Customer) => {
@@ -132,7 +112,7 @@ const ListCustomerPage: React.FC = () => {
 
   const handleBlockUser = async (customer: Customer) => {
     const isBlocked = !!customer.blockedAt;
-    let reason = "";
+    const reason = "";
     setLoadingUserId(customer._id);
     try {
       await sessionUserApi.blockUser(customer._id, !isBlocked, reason);
@@ -227,8 +207,7 @@ const ListCustomerPage: React.FC = () => {
                         .map((s) => (
                           <div key={s._id} className="mb-1">
                             <span className="text-xs">
-                              {s.device?.browser?.name || "Unknown"} - {s.ip}{" "}
-                              <br />
+                              {s.device?.browser || "Unknown"} - {s.ip} <br />
                               {new Date(s.createdAt).toLocaleString()}
                             </span>
                           </div>

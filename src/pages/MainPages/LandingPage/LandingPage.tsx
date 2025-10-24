@@ -11,6 +11,7 @@ import { Product } from "../../../types/product";
 import { publicCouponService } from "../../../services/CouponService";
 import { Coupon } from "../../../types/coupon";
 import { bannerPublicService } from "../../../services/BannerService";
+import type { Banner } from "../../../types/banner";
 import { toast } from "react-hot-toast";
 import {
   FiChevronRight,
@@ -21,17 +22,6 @@ import {
   FiCalendar,
 } from "react-icons/fi";
 import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
-
-interface Banner {
-  _id: string;
-  title: string;
-  image: {
-    url: string;
-  };
-  displayOrder: number;
-  isActive: boolean;
-  link?: string;
-}
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -145,7 +135,7 @@ const LandingPage: React.FC = () => {
 
         // Xử lý dữ liệu banners
         if (bannersRes.data.success) {
-          const bannerData = bannersRes.data.banners || [];
+          const bannerData = bannersRes.data.data || [];
           console.log("Banners:", bannerData);
           setBanners(bannerData);
         }

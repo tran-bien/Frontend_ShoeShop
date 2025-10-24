@@ -18,6 +18,7 @@ export interface CartVariant {
   product?: {
     _id: string;
     name?: string;
+    slug?: string; // Add slug for navigation
   };
 }
 

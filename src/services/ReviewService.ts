@@ -1,132 +1,28 @@
 import { axiosInstanceAuth, axiosInstance } from "../utils/axiosIntance";
+import type {
+  Review,
+  CreateReviewData,
+  UpdateReviewData,
+  ReviewQueryParams,
+  ReviewableProduct,
+} from "../types/review";
+import { ApiResponse } from "../types/api";
 
-export interface Review {
-  _id: string;
-  user: {
-    _id: string;
-    name: string;
-    avatar?: {
-      url: string;
-      public_id: string;
-    };
-  };
-  product: {
-    _id: string;
-    name: string;
-    slug: string;
-    images?: Array<{
-      url: string;
-      public_id: string;
-    }>;
-  };
-  orderItem: string;
-  rating: number;
-  content: string;
-  numberOfLikes: number;
-  isActive: boolean;
-  deletedAt: string | null;
-  deletedBy: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
+// Re-export types for convenience
+export type { Review, ReviewableProduct, UpdateReviewData, ReviewQueryParams };
 
-export interface CreateReviewData {
-  orderId: string;
-  orderItemId: string;
-  rating: number;
-  content: string;
-}
-
-export interface UpdateReviewData {
-  rating?: number;
-  content?: string;
-}
-
-export interface ReviewQuery {
-  page?: number;
-  limit?: number;
-  rating?: number;
-  sort?: string;
-}
-
-// Interface cho sản phẩm có thể đánh giá
-export interface ReviewableProduct {
-  orderItemId: string;
-  orderId: string;
-  orderCode: string;
-  product: {
-    _id: string;
-    name: string;
-    slug: string;
-    images?: Array<{
-      url: string;
-      public_id: string;
-      isMain?: boolean;
-    }>;
-  };
-  variant: {
-    _id: string;
-    color: {
-      _id: string;
-      name: string;
-      code: string;
-    };
-    price: number;
-  };
-  size: {
-    _id: string;
-    value: number;
-    description?: string;
-  };
-  price: number;
-  quantity: number;
-  image?: string;
-  deliveredAt: string;
-  reviewExpiresAt?: string;
-  daysLeftToReview: number;
-}
-
-export interface ApiResponse<T = any> {
-  success: boolean;
-  message?: string;
-  data?: T;
-  pagination?: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-  };
-  product?: {
-    _id: string;
-    name: string;
-    slug: string;
-    price: number;
-    rating: number;
-    numReviews: number;
-    image: string | null;
-  };
-  reviewStats?: {
-    totalReviews: number;
-    avgRating: number;
-    ratingDistribution: {
-      [key: number]: { count: number; percentage: number };
-    };
-  };
-}
-
+// Review Service - các chức năng quản lý đánh giá sản phẩm
 export const reviewApi = {
   // Lấy danh sách đánh giá của người dùng hiện tại
   getMyReviews: (
-    params: ReviewQuery = {}
+    params: ReviewQueryParams = {}
   ): Promise<{ data: ApiResponse<Review[]> }> =>
     axiosInstanceAuth.get("/api/v1/users/reviews/my-reviews", { params }),
 
   // Lấy đánh giá theo productId (public)
   getReviewsByProduct: (
     productId: string,
-    params: ReviewQuery = {}
+    params: ReviewQueryParams = {}
   ): Promise<{ data: ApiResponse<Review[]> }> =>
     axiosInstance.get(`/api/v1/products/${productId}/reviews`, { params }),
 

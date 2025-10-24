@@ -4,9 +4,9 @@ import { toast } from "react-hot-toast";
 import {
   ProductAttributes,
   ProductVariants,
-  ProductImages,
   Product,
 } from "../../types/product";
+import type { ProductImage } from "../../types/common";
 import ProductDetail from "../../components/ProductDetail/ProductDetail";
 import { productPublicService } from "../../services/ProductService";
 
@@ -16,7 +16,9 @@ const ProductDetailPage: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [attributes, setAttributes] = useState<ProductAttributes | null>(null);
   const [variants, setVariants] = useState<ProductVariants | null>(null);
-  const [images, setImages] = useState<ProductImages | null>(null);
+  const [images, setImages] = useState<
+    Record<string, ProductImage[]> | undefined
+  >(undefined);
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -93,7 +95,7 @@ const ProductDetailPage: React.FC = () => {
         setProduct(null);
         setAttributes(null);
         setVariants(null);
-        setImages(null);
+        setImages(undefined);
         setSimilarProducts([]);
       } finally {
         setLoading(false);

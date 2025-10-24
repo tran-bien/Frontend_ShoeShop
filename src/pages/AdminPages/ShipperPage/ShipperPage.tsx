@@ -5,7 +5,8 @@ import {
   FaUserTimes,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import ShipperService, { Shipper } from "../../../services/ShipperService";
+import ShipperService from "../../../services/ShipperService";
+import type { Shipper } from "../../../types/shipper";
 import AssignOrderModal from "../../../components/Admin/Shipper/AssignOrderModal";
 import ShipperDetailModal from "../../../components/Admin/Shipper/ShipperDetailModal";
 
@@ -21,6 +22,7 @@ const ShipperPage = () => {
 
   useEffect(() => {
     fetchShippers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterAvailable]);
 
   const fetchShippers = async () => {
@@ -44,7 +46,10 @@ const ShipperPage = () => {
     setShowAssignModal(true);
   };
 
-  const calculateSuccessRate = (stats: any) => {
+  const calculateSuccessRate = (stats: {
+    totalDeliveries: number;
+    successfulDeliveries: number;
+  }) => {
     if (stats.totalDeliveries === 0) return 0;
     return ((stats.successfulDeliveries / stats.totalDeliveries) * 100).toFixed(
       1
@@ -214,9 +219,11 @@ const ShipperPage = () => {
                     <FaMapMarkerAlt size={16} />
                     <span>
                       Cập nhật:{" "}
-                      {new Date(
-                        shipper.shipper.currentLocation.updatedAt
-                      ).toLocaleString("vi-VN")}
+                      {shipper.shipper.currentLocation.updatedAt
+                        ? new Date(
+                            shipper.shipper.currentLocation.updatedAt
+                          ).toLocaleString("vi-VN")
+                        : "N/A"}
                     </span>
                   </div>
                 )}

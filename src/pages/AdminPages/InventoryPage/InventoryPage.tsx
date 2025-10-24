@@ -8,9 +8,9 @@ import {
   FaHistory,
 } from "react-icons/fa";
 import InventoryService, {
-  InventoryItem,
   InventoryStats,
 } from "../../../services/InventoryService";
+import type { InventoryItem } from "../../../types/inventory";
 import StockInModal from "../../../components/Admin/Inventory/StockInModal";
 import TransactionHistoryModal from "../../../components/Admin/Inventory/TransactionHistoryModal";
 

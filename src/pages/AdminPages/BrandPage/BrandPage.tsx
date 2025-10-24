@@ -1,30 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
+import { Brand } from "../../../types/brand";
 import { brandApi } from "../../../services/BrandService";
 import AddBrand from "./AddBrand";
 import BrandLogoManager from "./BrandLogoManager";
 import { useAuth } from "../../../hooks/useAuth";
 import defaultImage from "../../../assets/image_df.png";
 
-interface Brand {
-  _id: string;
-  name: string;
-  slug: string;
-  description: string;
+interface BrandPageBrand extends Brand {
   logo?: {
     url: string;
     public_id: string;
   };
-  isActive: boolean;
   deletedAt: string | null;
   deletedBy: string | { _id: string; name?: string } | null;
-  createdAt: string;
-  updatedAt: string;
 }
 
 // ViewDetailModal component
 const ViewDetailModal: React.FC<{
-  brand: Brand;
+  brand: BrandPageBrand;
   onClose: () => void;
 }> = ({ brand, onClose }) => {
   return (
@@ -92,7 +86,9 @@ const ViewDetailModal: React.FC<{
             <div>
               <p className="text-sm text-gray-500 font-medium">Ngày tạo</p>
               <p className="text-gray-800 text-sm">
-                {new Date(brand.createdAt).toLocaleString("vi-VN")}
+                {brand.createdAt
+                  ? new Date(brand.createdAt).toLocaleString("vi-VN")
+                  : "N/A"}
               </p>
             </div>
             <div>
@@ -100,7 +96,9 @@ const ViewDetailModal: React.FC<{
                 Cập nhật lần cuối
               </p>
               <p className="text-gray-800 text-sm">
-                {new Date(brand.updatedAt).toLocaleString("vi-VN")}
+                {brand.updatedAt
+                  ? new Date(brand.updatedAt).toLocaleString("vi-VN")
+                  : "N/A"}
               </p>
             </div>
           </div>
@@ -211,12 +209,14 @@ const ListBrandsPage: React.FC = () => {
   const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [deletedBrands, setDeletedBrands] = useState<Brand[]>([]);
+  const [brands, setBrands] = useState<BrandPageBrand[]>([]);
+  const [deletedBrands, setDeletedBrands] = useState<BrandPageBrand[]>([]);
   const [showAddBrand, setShowAddBrand] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
-  const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
-  const [showLogoManager, setShowLogoManager] = useState<Brand | null>(null);
+  const [editingBrand, setEditingBrand] = useState<BrandPageBrand | null>(null);
+  const [showLogoManager, setShowLogoManager] = useState<BrandPageBrand | null>(
+    null
+  );
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -232,7 +232,9 @@ const ListBrandsPage: React.FC = () => {
   const [deletedCount, setDeletedCount] = useState(0);
 
   // Detail modal state
-  const [viewDetailBrand, setViewDetailBrand] = useState<Brand | null>(null);
+  const [viewDetailBrand, setViewDetailBrand] = useState<BrandPageBrand | null>(
+    null
+  );
 
   const fetchBrands = async (page: number = 1) => {
     try {
@@ -540,7 +542,9 @@ const ListBrandsPage: React.FC = () => {
                 <td className="px-4 py-3 text-sm font-semibold">{item.name}</td>
                 <td className="px-4 py-3 font-mono text-xs">{item.slug}</td>
                 <td className="px-4 py-3 text-sm">
-                  {item.description.substring(0, 50)}...
+                  {item.description && item.description.length > 50
+                    ? `${item.description.substring(0, 50)}...`
+                    : item.description || "Không có mô tả"}
                 </td>
                 <td className="px-4 py-3 text-center">
                   <img

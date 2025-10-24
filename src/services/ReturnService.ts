@@ -1,72 +1,7 @@
 import axios from "axios";
+import type { CreateReturnRequestData } from "../types/return";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
-export interface ReturnRequestItem {
-  variant: string;
-  size: string;
-  quantity: number;
-  reason: string;
-  images?: string[];
-  exchangeToVariant?: string; // Only for EXCHANGE
-  exchangeToSize?: string; // Only for EXCHANGE
-}
-
-export interface CreateReturnRequestData {
-  orderId: string;
-  type: "RETURN" | "EXCHANGE";
-  items: ReturnRequestItem[];
-  reason: string;
-  refundMethod?: "original_payment" | "store_credit" | "bank_transfer";
-  bankInfo?: {
-    bankName: string;
-    accountNumber: string;
-    accountName: string;
-  };
-}
-
-export interface ReturnRequest {
-  _id: string;
-  order: any;
-  customer: any;
-  type: "RETURN" | "EXCHANGE";
-  items: {
-    product: any;
-    variant: any;
-    size: any;
-    quantity: number;
-    priceAtPurchase: number;
-    exchangeToVariant?: any;
-    exchangeToSize?: any;
-  }[];
-  reason: string;
-  reasonDetail?: string;
-  images: string[];
-  refundMethod?: "original_payment" | "store_credit" | "bank_transfer";
-  refundAmount?: number;
-  bankInfo?: {
-    bankName: string;
-    accountNumber: string;
-    accountName: string;
-  };
-  status:
-    | "pending"
-    | "approved"
-    | "rejected"
-    | "processing"
-    | "completed"
-    | "cancelled";
-  approvedBy?: any;
-  approvedAt?: string;
-  rejectedBy?: any;
-  rejectedAt?: string;
-  rejectionReason?: string;
-  processedBy?: any;
-  processedAt?: string;
-  completedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export interface GetReturnRequestsParams {
   page?: number;

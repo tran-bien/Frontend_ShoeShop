@@ -4,6 +4,8 @@ import { toast } from "react-hot-toast";
 import { userOrderService } from "../../services/OrderService";
 import { inforApi } from "../../services/InforService";
 import { cartApi } from "../../services/CartService";
+import type { UserAddress } from "../../types/user";
+import type { CartItem } from "../../types/cart";
 import {
   FaPlus,
   FaMapMarkerAlt,
@@ -14,43 +16,8 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 
-interface Address {
-  _id: string;
-  fullName: string;
-  phone: string;
-  province: string;
-  district: string;
-  ward: string;
-  addressDetail: string;
-  isDefault: boolean;
-}
-
-interface CartItem {
-  _id: string;
-  variant: {
-    _id: string;
-    color: {
-      name: string;
-      code: string;
-    };
-    price: number;
-    priceFinal: number;
-    product?: {
-      _id: string;
-      name?: string;
-    };
-  };
-  size: {
-    _id: string;
-    value: string | number;
-  };
-  quantity: number;
-  price: number;
-  productName: string;
-  image: string;
-  isSelected: boolean;
-  isAvailable: boolean;
-}
+// Alias for better semantics
+type Address = UserAddress;
 
 interface PreviewData {
   items: number;

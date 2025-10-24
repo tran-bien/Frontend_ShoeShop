@@ -1,62 +1,6 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
 import { ApiResponse } from "../types/common";
-
-export interface InventoryItem {
-  _id: string;
-  product: {
-    _id: string;
-    name: string;
-    slug?: string;
-  };
-  variant: {
-    _id: string;
-    color?: {
-      _id: string;
-      name: string;
-    };
-    gender?: string;
-  };
-  size: {
-    _id: string;
-    value: string | number;
-    description?: string;
-  };
-  sku?: string;
-  quantity: number;
-  costPrice: number;
-  averageCostPrice: number;
-  lowStockThreshold: number;
-  isLowStock: boolean;
-  isOutOfStock: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface InventoryTransaction {
-  _id: string;
-  type: "IN" | "OUT" | "ADJUST";
-  inventoryItem: InventoryItem | string;
-  quantityBefore: number;
-  quantityChange: number;
-  quantityAfter: number;
-  costPrice: number;
-  totalCost: number;
-  targetProfitPercent?: number;
-  percentDiscount?: number;
-  calculatedPrice?: number;
-  calculatedPriceFinal?: number;
-  profitPerItem?: number;
-  margin?: number;
-  markup?: number;
-  reason: string;
-  notes?: string;
-  performedBy: {
-    _id: string;
-    name?: string;
-    email?: string;
-  };
-  createdAt: string;
-}
+import type { InventoryItem, InventoryTransaction } from "../types/inventory";
 
 export interface StockInData {
   productId: string;

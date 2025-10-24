@@ -5,6 +5,7 @@ import { categoryApi } from "../../../services/CategoryService";
 import { Product } from "../../../types/product";
 import AddProduct from "./AddProduct";
 import ProductDetail from "./ProductDetail";
+import ProductImagesManager from "./ProductImagesManager";
 import { useAuth } from "../../../hooks/useAuth";
 
 const ProductPage = () => {
@@ -24,6 +25,8 @@ const ProductPage = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
+  const [showImageManager, setShowImageManager] = useState<string | null>(null);
+  const [productImages, setProductImages] = useState<Product["images"]>([]);
 
   // Pagination & Filter & Sort States
   const [currentPage, setCurrentPage] = useState(1);
@@ -229,6 +232,12 @@ const ProductPage = () => {
       case "detail":
         setShowDetail(true);
         break;
+      case "images":
+        if (product) {
+          setShowImageManager(product._id);
+          setProductImages(product.images || []);
+        }
+        break;
     }
   };
 
@@ -248,6 +257,10 @@ const ProductPage = () => {
         break;
       case "active":
         setShowActiveModal(false);
+        break;
+      case "images":
+        setShowImageManager(null);
+        setProductImages([]);
         break;
     }
     setSelectedProduct(null);
@@ -272,7 +285,8 @@ const ProductPage = () => {
               : "text-gray-500 border-transparent hover:text-blue-600"
           }`}
         >
-          Sản phẩm ({!showDeleted && totalProducts > 0 ? totalProducts : "..."})
+          Sản phẩm
+          {!showDeleted && totalProducts > 0 ? ` (${totalProducts})` : ""}
         </button>
         {hasStaffAccess() && (
           <button
@@ -623,7 +637,7 @@ const ProductPage = () => {
                         )}
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex gap-2 justify-center">
+                        <div className="flex gap-2 justify-center flex-wrap">
                           {!showDeleted ? (
                             <>
                               <button
@@ -634,13 +648,22 @@ const ProductPage = () => {
                                 Chi tiết
                               </button>
                               {canUpdate() && (
-                                <button
-                                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm"
-                                  onClick={() => openModal("edit", product)}
-                                  title="Sửa sản phẩm"
-                                >
-                                  Sửa
-                                </button>
+                                <>
+                                  <button
+                                    className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm"
+                                    onClick={() => openModal("edit", product)}
+                                    title="Sửa sản phẩm"
+                                  >
+                                    Sửa
+                                  </button>
+                                  <button
+                                    className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm"
+                                    onClick={() => openModal("images", product)}
+                                    title="Quản lý ảnh sản phẩm"
+                                  >
+                                    📷 Ảnh
+                                  </button>
+                                </>
                               )}
                               {canDelete() && (
                                 <button
@@ -962,6 +985,31 @@ const ProductPage = () => {
           product={selectedProduct}
           handleClose={() => closeModal("detail")}
         />
+      )}
+
+      {/* Modal Quản Lý Ảnh */}
+      {showImageManager && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-4 w-full max-w-xl relative">
+            <button
+              className="absolute top-2 right-2 text-xl font-bold hover:text-red-600"
+              onClick={() => closeModal("images")}
+            >
+              ×
+            </button>
+            <ProductImagesManager
+              productId={showImageManager}
+              images={productImages}
+              reloadImages={async () => {
+                const res = await productApi.getById(showImageManager);
+                const productData = (res.data.data || res.data) as Product;
+                setProductImages(productData?.images || []);
+                // Refresh products list to update images
+                fetchProducts();
+              }}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

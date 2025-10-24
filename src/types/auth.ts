@@ -1,4 +1,9 @@
-import { ApiResponse, User, DeviceInfo, SessionInfo } from "./common";
+import { ApiResponse } from "./common";
+import type { User } from "./user";
+import type {
+  SessionDevice as DeviceInfo,
+  Session as SessionInfo,
+} from "./session";
 
 // =======================
 // AUTH REQUEST INTERFACES

@@ -1,29 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { adminOrderService } from "../../../services/OrderService";
-
-interface CancelRequest {
-  _id: string;
-  order: {
-    _id: string;
-    code: string;
-    status: string;
-    totalAfterDiscountAndShipping: number;
-    user: { name: string; email: string };
-    payment: { method: string; paymentStatus: string };
-  };
-  user: {
-    name: string;
-    email: string;
-    phone: string;
-    avatar?: { url: string };
-  };
-  reason: string;
-  status: string;
-  adminResponse?: string; // Make optional to match service interface
-  createdAt: string;
-  updatedAt: string;
-  resolvedAt?: string;
-}
+import type { CancelRequest } from "../../../types/order";
 
 const CancelRequestList: React.FC = () => {
   const [requests, setRequests] = useState<CancelRequest[]>([]);

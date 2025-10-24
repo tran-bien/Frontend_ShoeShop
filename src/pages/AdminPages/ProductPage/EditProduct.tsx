@@ -1,49 +1,80 @@
 import React, { useState, useEffect } from "react";
-import { Product } from "../../../types/product";
+import { Product, UpdateProductData } from "../../../types/product";
+import { Tag } from "../../../types/tag";
+import { Brand } from "../../../types/brand";
+import { Category } from "../../../types/category";
 import { tagApi } from "../../../services/TagService";
-
-interface Tag {
-  _id: string;
-  name: string;
-  type: "MATERIAL" | "USECASE" | "CUSTOM";
-  description?: string;
-  isActive: boolean;
-}
+import { productApi } from "../../../services/ProductService";
+import { brandApi } from "../../../services/BrandService";
+import { categoryApi } from "../../../services/CategoryService";
 
 interface EditProductProps {
   handleClose: () => void;
   product: Product;
+  onSuccess?: () => void;
 }
 
-const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
-  const [formData, setFormData] = useState({
-    ...product,
+const EditProduct: React.FC<EditProductProps> = ({
+  handleClose,
+  product,
+  onSuccess,
+}) => {
+  const [formData, setFormData] = useState<UpdateProductData>({
+    name: product.name,
+    description: product.description,
+    category:
+      typeof product.category === "object"
+        ? product.category._id
+        : product.category,
+    brand:
+      typeof product.brand === "object" ? product.brand._id : product.brand,
     tags: Array.isArray(product.tags)
       ? product.tags.map((tag: string | { _id: string }) =>
           typeof tag === "string" ? tag : tag._id
         )
       : [],
+    isActive: product.isActive,
   });
+
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
-  const [loadingTags, setLoadingTags] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchTags = async () => {
-      setLoadingTags(true);
+    const fetchData = async () => {
+      setLoadingData(true);
       try {
-        const response = await tagApi.getActiveTags();
+        const [brandsRes, categoriesRes, tagsRes] = await Promise.all([
+          brandApi.getAll(),
+          categoryApi.getAll(),
+          tagApi.getActiveTags(),
+        ]);
+
+        const brandsData =
+          brandsRes.data.data || brandsRes.data.brands || brandsRes.data || [];
+        const categoriesData =
+          categoriesRes.data.data ||
+          categoriesRes.data.categories ||
+          categoriesRes.data ||
+          [];
         const tagsData =
-          response.data.data || response.data.tags || response.data || [];
-        console.log("Tags loaded in EditProduct:", tagsData);
+          tagsRes.data.data || tagsRes.data.tags || tagsRes.data || [];
+
+        console.log("Data loaded:", { brandsData, categoriesData, tagsData });
+        setBrands(brandsData);
+        setCategories(categoriesData);
         setTags(tagsData);
       } catch (error) {
-        console.error("Error fetching tags:", error);
-        setTags([]);
+        console.error("Error fetching data:", error);
+        setError("Không thể tải dữ liệu!");
       } finally {
-        setLoadingTags(false);
+        setLoadingData(false);
       }
     };
-    fetchTags();
+    fetchData();
   }, []);
 
   const handleChange = (
@@ -51,24 +82,68 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const target = e.target as HTMLInputElement;
+      setFormData({ ...formData, [name]: target.checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleTagToggle = (tagId: string) => {
     setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.includes(tagId)
+      tags: prev.tags?.includes(tagId)
         ? prev.tags.filter((id) => id !== tagId)
-        : [...prev.tags, tagId],
+        : [...(prev.tags || []), tagId],
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Product updated:", formData);
-    handleClose();
+    setLoading(true);
+    setError(null);
+
+    // Frontend validation
+    if (!formData.name?.trim()) {
+      setError("Tên sản phẩm không được để trống!");
+      setLoading(false);
+      return;
+    }
+    if (formData.name.trim().length < 2 || formData.name.trim().length > 200) {
+      setError("Tên sản phẩm phải có từ 2-200 ký tự!");
+      setLoading(false);
+      return;
+    }
+    if (
+      formData.description &&
+      (formData.description.trim().length < 10 ||
+        formData.description.trim().length > 1000)
+    ) {
+      setError("Mô tả sản phẩm phải có từ 10-1000 ký tự!");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      console.log("Updating product:", formData);
+      await productApi.update(product._id, formData);
+      handleClose();
+      if (onSuccess) {
+        onSuccess();
+      } else if (window.location.reload) {
+        window.location.reload();
+      }
+    } catch (err: unknown) {
+      console.error("Update product error:", err);
+      const error = err as { response?: { data?: { message?: string } } };
+      const errorMessage =
+        error.response?.data?.message || "Cập nhật sản phẩm thất bại!";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -86,91 +161,94 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Tên Sản Phẩm
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tên Sản Phẩm <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              required
+              placeholder="Nhập tên sản phẩm..."
+              className="mt-1 block w-full px-4 py-2 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
+
           <div className="mb-4">
-            <label className="block text-sm font-medium text-black">Slug</label>
-            <input
-              type="text"
-              name="slug"
-              value={formData.slug}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Mô Tả <span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                required
+                rows={5}
+                placeholder="Mô tả chi tiết về sản phẩm: chất liệu, đặc điểm nổi bật, công dụng..."
+                className="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                maxLength={1000}
+              ></textarea>
+              <div className="absolute bottom-2 right-2 text-xs text-gray-400">
+                {formData.description?.length || 0}/1000
+              </div>
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              💡 Mô tả chi tiết giúp khách hàng hiểu rõ hơn về sản phẩm
+            </p>
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Mô Tả
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            ></textarea>
-          </div>{" "}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Danh Mục
-            </label>
-            <input
-              type="text"
-              name="category"
-              value={
-                typeof formData.category === "object"
-                  ? formData.category?.name || ""
-                  : formData.category || ""
-              }
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />
-          </div>{" "}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Thương Hiệu
-            </label>
-            <input
-              type="text"
-              name="brand"
-              value={
-                typeof formData.brand === "object"
-                  ? formData.brand?.name || ""
-                  : formData.brand || ""
-              }
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            />{" "}
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Danh Mục <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                disabled={loadingData}
+                className="mt-1 block w-full px-4 py-2 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">-- Chọn danh mục --</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Thương Hiệu <span className="text-red-500">*</span>
+              </label>
+              <select
+                name="brand"
+                value={formData.brand}
+                onChange={handleChange}
+                required
+                disabled={loadingData}
+                className="mt-1 block w-full px-4 py-2 border-2 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="">-- Chọn thương hiệu --</option>
+                {brands.map((brand) => (
+                  <option key={brand._id} value={brand._id}>
+                    {brand.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Trạng Thái Kho
-            </label>
-            <select
-              name="stockStatus"
-              value={formData.stockStatus}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            >
-              <option value="in_stock">Còn hàng</option>
-              <option value="low_stock">Sắp hết hàng</option>
-              <option value="out_of_stock">Hết hàng</option>
-            </select>
-          </div>
+
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Tags (Chọn nhiều)
             </label>
             <div className="border-2 border-gray-300 rounded-lg p-4 bg-gray-50 max-h-64 overflow-y-auto">
-              {loadingTags ? (
+              {loadingData ? (
                 <div className="flex items-center justify-center py-8">
                   <svg
                     className="animate-spin h-8 w-8 text-blue-500"
@@ -193,7 +271,26 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
                   </svg>
                   <span className="ml-3 text-gray-600">Đang tải tags...</span>
                 </div>
-              ) : tags.length > 0 ? (
+              ) : tags.length === 0 ? (
+                <div className="text-center py-8">
+                  <svg
+                    className="mx-auto h-12 w-12 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                    />
+                  </svg>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Không có tags nào
+                  </p>
+                </div>
+              ) : (
                 <div className="grid grid-cols-1 gap-2">
                   {tags.map((tag) => (
                     <label
@@ -202,7 +299,7 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
                     >
                       <input
                         type="checkbox"
-                        checked={formData.tags.includes(tag._id)}
+                        checked={formData.tags?.includes(tag._id) || false}
                         onChange={() => handleTagToggle(tag._id)}
                         className="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       />
@@ -227,28 +324,9 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
                     </label>
                   ))}
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                    />
-                  </svg>
-                  <p className="mt-2 text-sm text-gray-500">
-                    Không có tags nào
-                  </p>
-                </div>
               )}
             </div>
-            {formData.tags.length > 0 && (
+            {formData.tags && formData.tags.length > 0 && (
               <div className="mt-2 flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-700">
                   Đã chọn: {formData.tags.length} tag(s)
@@ -263,43 +341,95 @@ const EditProduct: React.FC<EditProductProps> = ({ handleClose, product }) => {
               </div>
             )}
           </div>
+
           <div className="mb-4">
-            <label className="block text-sm font-medium text-black">
-              Hình Ảnh
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                name="isActive"
+                checked={formData.isActive}
+                onChange={handleChange}
+                className="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Đang hoạt động
+              </span>
             </label>
-            <input
-              type="file"
-              name="images"
-              onChange={handleChange}
-              className="mt-1 block w-full text-sm text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border file:border-gray-300 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
-            />
           </div>
+
+          {error && (
+            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-2 text-red-700">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span className="text-sm font-medium">{error}</span>
+              </div>
+            </div>
+          )}
+
           <div className="flex justify-end gap-3 pt-4 border-t">
             <button
               type="button"
               onClick={handleClose}
-              className="px-5 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-medium"
+              disabled={loading}
+              className="px-5 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all font-medium flex items-center gap-2"
+              disabled={loading || loadingData}
+              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all font-medium flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              Lưu Thay Đổi
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Đang lưu...
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Lưu Thay Đổi
+                </>
+              )}
             </button>
           </div>
         </form>

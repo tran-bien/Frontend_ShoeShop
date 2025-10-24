@@ -1,80 +1,23 @@
 import { axiosInstance } from "../utils/axiosIntance";
+import type {
+  FiltersResponse,
+  SuggestionsResponse,
+  SuggestionsParams,
+  ColorFilter,
+  SizeFilter,
+  CategoryFilter,
+  BrandFilter,
+  SearchSuggestion,
+} from "../types/filter";
 
-// Filter Interfaces
-export interface ColorFilter {
-  _id: string;
-  id: string;
-  name: string;
-  type: "solid" | "half";
-  code?: string;
-  colors?: string[];
-}
-
-export interface SizeFilter {
-  _id: string;
-  id: string;
-  value: number | string;
-  description: string;
-}
-
-export interface CategoryFilter {
-  _id: string;
-  name: string;
-  slug: string;
-}
-
-export interface BrandFilter {
-  _id: string;
-  name: string;
-  slug: string;
-  logo?: {
-    url: string;
-    public_id: string;
-  };
-}
-
-export interface GenderFilter {
-  id: string;
-  name: string;
-}
-
-export interface FiltersResponse {
-  success: boolean;
-  filters: {
-    categories: CategoryFilter[];
-    brands: BrandFilter[];
-    colors: ColorFilter[];
-    sizes: SizeFilter[];
-    priceRange: {
-      min: number;
-      max: number;
-    };
-    genders: GenderFilter[];
-  };
-}
-
-export interface SearchSuggestion {
-  type: "product" | "category" | "brand";
-  id: string;
-  name: string;
-  slug: string;
-  image?: string;
-  logo?: {
-    url: string;
-    public_id: string;
-  };
-}
-
-export interface SuggestionsResponse {
-  success: boolean;
-  suggestions: SearchSuggestion[];
-  keyword: string;
-}
-
-export interface SuggestionsParams {
-  keyword: string;
-  limit?: number;
-}
+// Re-export types for convenience
+export type {
+  ColorFilter,
+  SizeFilter,
+  CategoryFilter,
+  BrandFilter,
+  SearchSuggestion,
+};
 
 // Filter Service
 export const filterService = {

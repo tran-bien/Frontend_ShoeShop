@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import ShipperService, { Shipper } from "../../../services/ShipperService";
+import ShipperService from "../../../services/ShipperService";
+import type { Shipper } from "../../../types/shipper";
 
 interface Props {
   shipper: Shipper;

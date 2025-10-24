@@ -7,8 +7,9 @@ import RepayOrderModal from "../../../components/Modal/RepayOrderModal";
 import {
   userOrderService,
   Order,
-  OrderQuery,
+  OrderQueryParams,
 } from "../../../services/OrderService";
+type OrderQuery = OrderQueryParams;
 // Thay đổi từ react-toastify sang react-hot-toast
 import toast from "react-hot-toast";
 

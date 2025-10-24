@@ -159,8 +159,9 @@ const VariantPage: React.FC = () => {
     if (variant.imagesvariant) {
       setVariantImages(variant.imagesvariant);
     } else {
-      const res = await variantApi.getAllVariants();
-      setVariantImages(res.data.variant.imagesvariant || []);
+      const res = await variantApi.getVariantById(variant._id);
+      const variantData = res.data.variant || res.data.data?.variant;
+      setVariantImages(variantData?.imagesvariant || []);
     }
   };
 
@@ -183,8 +184,8 @@ const VariantPage: React.FC = () => {
               : "text-gray-500 border-transparent hover:text-blue-600"
           }`}
         >
-          Biến thể hoạt động (
-          {!showDeleted && totalVariants > 0 ? totalVariants : "..."})
+          Biến thể hoạt động
+          {!showDeleted && totalVariants > 0 ? ` (${totalVariants})` : ""}
         </button>
         {hasStaffAccess() && (
           <button
@@ -752,7 +753,8 @@ const VariantPage: React.FC = () => {
               reloadImages={async () => {
                 // Gọi lại API lấy variant theo id
                 const res = await variantApi.getVariantById(showImageManager);
-                setVariantImages(res.data.variant.imagesvariant || []);
+                const variantData = res.data.variant || res.data.data?.variant;
+                setVariantImages(variantData?.imagesvariant || []);
               }}
             />
           </div>

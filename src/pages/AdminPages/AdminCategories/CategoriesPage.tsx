@@ -1,25 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
+import { Category } from "../../../types/category";
 import { categoryApi } from "../../../services/CategoryService";
 import AddCategoryPage from "./AddCategories";
 import { useAuth } from "../../../hooks/useAuth";
 
-// Định nghĩa lại interface cho đúng với dữ liệu backend trả về
-interface Category {
-  _id: string;
-  name: string;
-  slug: string;
-  description: string;
-  isActive: boolean;
+interface CategoryPageCategory extends Category {
   deletedAt: string | null;
   deletedBy: string | { _id: string; name?: string } | null;
-  createdAt: string;
-  updatedAt: string;
 }
 
 // ViewDetailModal component
 const ViewDetailModal: React.FC<{
-  category: Category;
+  category: CategoryPageCategory;
   onClose: () => void;
 }> = ({ category, onClose }) => {
   return (
@@ -75,7 +68,9 @@ const ViewDetailModal: React.FC<{
             <div>
               <p className="text-sm text-gray-500 font-medium">Ngày tạo</p>
               <p className="text-gray-800 text-sm">
-                {new Date(category.createdAt).toLocaleString("vi-VN")}
+                {category.createdAt
+                  ? new Date(category.createdAt).toLocaleString("vi-VN")
+                  : "N/A"}
               </p>
             </div>
             <div>
@@ -83,7 +78,9 @@ const ViewDetailModal: React.FC<{
                 Cập nhật lần cuối
               </p>
               <p className="text-gray-800 text-sm">
-                {new Date(category.updatedAt).toLocaleString("vi-VN")}
+                {category.updatedAt
+                  ? new Date(category.updatedAt).toLocaleString("vi-VN")
+                  : "N/A"}
               </p>
             </div>
           </div>
@@ -201,11 +198,14 @@ const ListCategoriesPage: React.FC = () => {
   } = useAuth();
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [deletedCategories, setDeletedCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CategoryPageCategory[]>([]);
+  const [deletedCategories, setDeletedCategories] = useState<
+    CategoryPageCategory[]
+  >([]);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingCategory, setEditingCategory] =
+    useState<CategoryPageCategory | null>(null);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -220,9 +220,8 @@ const ListCategoriesPage: React.FC = () => {
   const [inactiveCount, setInactiveCount] = useState(0);
 
   // Detail modal state
-  const [viewDetailCategory, setViewDetailCategory] = useState<Category | null>(
-    null
-  );
+  const [viewDetailCategory, setViewDetailCategory] =
+    useState<CategoryPageCategory | null>(null);
 
   const fetchCategories = async (page: number = 1) => {
     try {
@@ -511,7 +510,9 @@ const ListCategoriesPage: React.FC = () => {
                 <td className="px-4 py-3 text-sm font-semibold">{item.name}</td>
                 <td className="px-4 py-3 font-mono text-xs">{item.slug}</td>
                 <td className="px-4 py-3 text-sm">
-                  {item.description.substring(0, 50)}...
+                  {item.description && item.description.length > 50
+                    ? `${item.description.substring(0, 50)}...`
+                    : item.description || "Không có mô tả"}
                 </td>
                 <td className="px-4 py-3 text-center">
                   {item.deletedAt ? (

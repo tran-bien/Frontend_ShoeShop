@@ -7,8 +7,12 @@ import { productPublicService } from "../../services/ProductService";
 import {
   Product as ProductType,
   ProductCardProduct,
+  VariantSize,
+  Variant,
+  ProductAttributes,
 } from "../../types/product";
-import { Color, Size } from "../../types/common";
+import type { Size } from "../../types/size";
+import type { ProductImage } from "../../types/common";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   FiMinus,
@@ -23,65 +27,13 @@ import ProductCard from "../ProductCard/ProductCard";
 import toast from "react-hot-toast";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
-interface Gender {
-  id: string;
-  name: string;
-}
-
-interface ProductImage {
-  url: string;
-  alt?: string;
-  isMain?: boolean;
-  public_id?: string;
-  displayOrder?: number;
-}
-
+// ApiError interface for error handling - specific to this component
 interface ApiError {
   response?: {
     status?: number;
     data?: {
       message?: string;
       error?: string;
-    };
-  };
-}
-
-interface VariantSize {
-  sizeId: string;
-  sizeValue?: string | number;
-  quantity: number;
-  description?: string;
-  // Thông tin giá từ InventoryItem (BE trả về)
-  price?: number; // sellingPrice
-  finalPrice?: number; // finalPrice after discount
-  discountPercent?: number;
-  isAvailable?: boolean;
-  isLowStock?: boolean;
-  isOutOfStock?: boolean;
-}
-
-interface Variant {
-  id: string;
-  colorId?: string;
-  colorName?: string;
-  gender?: string;
-  sizes?: VariantSize[];
-  totalQuantity?: number;
-  // REMOVED: price, priceFinal, percentDiscount ở variant level
-  // Giá được lưu ở từng size trong sizes[]
-}
-
-interface ProductAttributes {
-  genders?: Gender[];
-  colors?: Color[];
-  sizes?: Size[];
-  priceRange?: {
-    min: number;
-    max: number;
-  };
-  inventoryMatrix?: {
-    summary?: {
-      total: number;
     };
   };
 }
@@ -302,7 +254,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const getVariantId = () => {
     if (!variants || !selectedGender || !selectedColorId) return null;
     const variantKey = `${selectedGender}-${selectedColorId}`;
-    return variants[variantKey]?.id || null;
+    return variants[variantKey]?._id || null;
   };
 
   // Tìm variant hiện tại
@@ -813,6 +765,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
               <div className="flex flex-wrap gap-2">
                 {getCurrentVariant()?.sizes?.map((sizeInfo) => {
+                  if (!sizeInfo.sizeId) return null;
                   const sizeDetails = getSizeDetails(sizeInfo.sizeId);
                   // Sử dụng stock status từ BE
                   const isOutOfStock =
@@ -822,7 +775,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                   return (
                     <div key={sizeInfo.sizeId} className="relative group">
                       <button
-                        onClick={() => setSelectedSizeId(sizeInfo.sizeId)}
+                        onClick={() => setSelectedSizeId(sizeInfo.sizeId!)}
                         disabled={isOutOfStock}
                         className={`px-4 py-2 border rounded-lg transition-colors ${
                           selectedSizeId === sizeInfo.sizeId
@@ -859,6 +812,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
               {/* Selected size description */}
               {selectedSizeInfo &&
+                selectedSizeInfo.sizeId &&
                 getSizeDetails(selectedSizeInfo.sizeId)?.description && (
                   <div className="mt-3 p-3 bg-blue-50 rounded-lg">
                     <div className="flex items-center gap-2">

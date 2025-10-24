@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { Tag } from "../../../types/tag";
+import { Brand } from "../../../types/brand";
+import { Category } from "../../../types/category";
 import { productApi } from "../../../services/ProductService";
 import { brandApi } from "../../../services/BrandService";
 import { categoryApi } from "../../../services/CategoryService";
@@ -6,22 +9,6 @@ import { tagApi } from "../../../services/TagService";
 
 interface AddProductProps {
   handleClose: () => void;
-}
-
-interface Brand {
-  _id: string;
-  name: string;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-}
-
-interface Tag {
-  _id: string;
-  name: string;
-  type: "MATERIAL" | "USECASE" | "CUSTOM";
 }
 
 const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {

@@ -3,18 +3,7 @@ import { IoIosSearch } from "react-icons/io";
 import { colorApi } from "../../../services/ColorService";
 import AddColor from "./AddColor";
 import { useAuth } from "../../../hooks/useAuth";
-
-interface Color {
-  _id: string;
-  name: string;
-  code: string | null;
-  colors: string[];
-  type: "solid" | "half";
-  deletedAt: string | null;
-  deletedBy: string | { _id: string; name?: string } | null;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { Color } from "../../../types/color";
 
 // ViewDetailModal component
 const ViewDetailModal: React.FC<{
@@ -69,7 +58,7 @@ const ViewDetailModal: React.FC<{
                 <div className="w-16 h-16 rounded-lg border-2 border-gray-300 shadow relative overflow-hidden">
                   <div
                     style={{
-                      backgroundColor: color.colors[0] || "#fff",
+                      backgroundColor: color.colors?.[0] || "#fff",
                       width: "100%",
                       height: "100%",
                       position: "absolute",
@@ -80,7 +69,7 @@ const ViewDetailModal: React.FC<{
                   />
                   <div
                     style={{
-                      backgroundColor: color.colors[1] || "#fff",
+                      backgroundColor: color.colors?.[1] || "#fff",
                       width: "100%",
                       height: "100%",
                       position: "absolute",
@@ -91,8 +80,8 @@ const ViewDetailModal: React.FC<{
                   />
                 </div>
                 <div className="flex flex-col text-sm font-mono text-gray-700">
-                  <span>{color.colors[0]}</span>
-                  <span>{color.colors[1]}</span>
+                  <span>{color.colors?.[0]}</span>
+                  <span>{color.colors?.[1]}</span>
                 </div>
               </div>
             )}
@@ -101,7 +90,9 @@ const ViewDetailModal: React.FC<{
             <div>
               <p className="text-sm text-gray-500 font-medium">Ngày tạo</p>
               <p className="text-gray-800 text-sm">
-                {new Date(color.createdAt).toLocaleString("vi-VN")}
+                {color.createdAt
+                  ? new Date(color.createdAt).toLocaleString("vi-VN")
+                  : "N/A"}
               </p>
             </div>
             <div>
@@ -109,7 +100,9 @@ const ViewDetailModal: React.FC<{
                 Cập nhật lần cuối
               </p>
               <p className="text-gray-800 text-sm">
-                {new Date(color.updatedAt).toLocaleString("vi-VN")}
+                {color.updatedAt
+                  ? new Date(color.updatedAt).toLocaleString("vi-VN")
+                  : "N/A"}
               </p>
             </div>
           </div>
@@ -133,10 +126,12 @@ const EditColorModal: React.FC<{
   onSuccess: () => void;
 }> = ({ color, onClose, onSuccess }) => {
   const [name, setName] = useState(color.name);
-  const [type, setType] = useState<"solid" | "half">(color.type);
+  const [type, setType] = useState<"solid" | "half" | "gradient">(
+    color.type as "solid" | "half" | "gradient"
+  );
   const [code, setCode] = useState(color.code || "");
-  const [color1, setColor1] = useState(color.colors[0] || "");
-  const [color2, setColor2] = useState(color.colors[1] || "");
+  const [color1, setColor1] = useState(color.colors?.[0] || "");
+  const [color2, setColor2] = useState(color.colors?.[1] || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -582,7 +577,7 @@ const ColorPage: React.FC = () => {
                     <div className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm relative overflow-hidden">
                       <div
                         style={{
-                          backgroundColor: item.colors[0] || "#fff",
+                          backgroundColor: item.colors?.[0] || "#fff",
                           width: "100%",
                           height: "100%",
                           position: "absolute",
@@ -593,7 +588,7 @@ const ColorPage: React.FC = () => {
                       />
                       <div
                         style={{
-                          backgroundColor: item.colors[1] || "#fff",
+                          backgroundColor: item.colors?.[1] || "#fff",
                           width: "100%",
                           height: "100%",
                           position: "absolute",

@@ -3,24 +3,26 @@ import { IoIosSearch } from "react-icons/io";
 import { couponApi } from "../../../services/CouponService";
 import AddDiscount from "./AddDiscount";
 import { useAuth } from "../../../hooks/useAuth";
+import type { Coupon } from "../../../types/coupon";
 
-interface Discount {
+// Alias for better semantics
+type Discount = Coupon & {
   id: string;
-  code: string;
-  description: string;
-  type: string;
-  value: number;
-  maxDiscount?: number;
-  minOrderValue: number;
-  startDate: string;
-  endDate: string;
-  maxUses: number;
   currentUses: number;
   status: string;
-  isPublic: boolean;
-}
+};
 
-const initialForm: Omit<Discount, "id" | "currentUses" | "status"> = {
+const initialForm: Omit<
+  Discount,
+  | "id"
+  | "currentUses"
+  | "status"
+  | "_id"
+  | "usedBy"
+  | "isActive"
+  | "createdAt"
+  | "updatedAt"
+> = {
   code: "",
   description: "",
   type: "percent",
@@ -52,7 +54,8 @@ const DiscountPage = () => {
       const res = await couponApi.adminGetCoupons();
       const coupons = res.data.data || [];
       setDiscounts(
-        coupons.map((c: any) => ({
+        coupons.map((c: Coupon) => ({
+          _id: c._id,
           id: c._id,
           code: c.code,
           description: c.description,
@@ -66,6 +69,8 @@ const DiscountPage = () => {
           currentUses: c.currentUses,
           status: c.status,
           isPublic: c.isPublic,
+          createdAt: c.createdAt || "",
+          updatedAt: c.updatedAt || "",
         }))
       );
     } catch {
@@ -94,7 +99,7 @@ const DiscountPage = () => {
   const handleUpdateDiscount = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editDiscount) return;
-    const data: any = {
+    const data: Partial<Coupon> = {
       code: form.code,
       description: form.description,
       type: form.type,

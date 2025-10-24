@@ -1,70 +1,15 @@
 import { axiosInstanceAuth, axiosInstance } from "../utils/axiosIntance";
+import type {
+  Banner,
+  CreateBannerData,
+  UpdateBannerData,
+  BannerQueryParams,
+  ReorderBannerData,
+} from "../types/banner";
+import { ApiResponse } from "../types/api";
 
-// Interfaces
-export interface Banner {
-  _id: string;
-  title: string;
-  image: {
-    url: string;
-    public_id: string;
-  };
-  displayOrder: number;
-  isActive: boolean;
-  link?: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string;
-  deletedBy?: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-}
-
-export interface CreateBannerData {
-  title: string;
-  displayOrder: number;
-  link?: string;
-  isActive?: boolean;
-  banner: File; // File for upload
-}
-
-export interface UpdateBannerData {
-  title?: string;
-  displayOrder?: number;
-  link?: string;
-  isActive?: boolean;
-}
-
-export interface BannerQueryParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  isActive?: boolean;
-  includeDeleted?: boolean;
-  sort?: string;
-}
-
-export interface ReorderBannerData {
-  bannerId: string;
-  newOrder: number;
-}
-
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  message?: string;
-  data?: T;
-  banners?: T;
-  banner?: T;
-  pagination?: {
-    currentPage: number;
-    totalPages: number;
-    totalItems: number;
-    itemsPerPage: number;
-    hasNextPage: boolean;
-    hasPrevPage: boolean;
-  };
-}
+// Re-export types for convenience
+export type { Banner, CreateBannerData, UpdateBannerData };
 
 // Admin API endpoints
 const ADMIN_API_PREFIX = "/api/v1/admin/banners";

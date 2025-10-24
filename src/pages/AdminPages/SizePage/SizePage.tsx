@@ -3,17 +3,7 @@ import { IoIosSearch } from "react-icons/io";
 import { sizeApi } from "../../../services/SizeService";
 import AddSize from "./AddSixe";
 import { useAuth } from "../../../hooks/useAuth";
-
-interface Size {
-  _id: string;
-  value: number;
-  type: "EU" | "US" | "UK" | "VN" | "CM" | "INCHES";
-  description: string;
-  deletedAt: string | null;
-  deletedBy: string | { _id: string; name?: string } | null;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { Size } from "../../../types/size";
 
 // ViewDetailModal component
 const ViewDetailModal: React.FC<{
@@ -75,7 +65,9 @@ const ViewDetailModal: React.FC<{
             <div>
               <p className="text-sm text-gray-500 font-medium">Ngày tạo</p>
               <p className="text-gray-800 text-sm">
-                {new Date(size.createdAt).toLocaleString("vi-VN")}
+                {size.createdAt
+                  ? new Date(size.createdAt).toLocaleString("vi-VN")
+                  : "N/A"}
               </p>
             </div>
             <div>
@@ -83,7 +75,9 @@ const ViewDetailModal: React.FC<{
                 Cập nhật lần cuối
               </p>
               <p className="text-gray-800 text-sm">
-                {new Date(size.updatedAt).toLocaleString("vi-VN")}
+                {size.updatedAt
+                  ? new Date(size.updatedAt).toLocaleString("vi-VN")
+                  : "N/A"}
               </p>
             </div>
           </div>
@@ -106,7 +100,7 @@ const EditSizeModal: React.FC<{
   onClose: () => void;
   onSuccess: () => void;
 }> = ({ size, onClose, onSuccess }) => {
-  const [value, setValue] = useState<number>(size.value);
+  const [value, setValue] = useState<string | number>(size.value);
   const [type, setType] = useState<string>(size.type);
   const [description, setDescription] = useState(size.description);
   const [loading, setLoading] = useState(false);

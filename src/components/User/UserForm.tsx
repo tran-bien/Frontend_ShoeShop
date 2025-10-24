@@ -2,24 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { inforApi } from "../../services/InforService";
 import Cookie from "js-cookie";
+import type { User, UserAddress } from "../../types/user";
 
-interface Address {
-  fullName: string;
-  phone: string;
-  province: string;
-  district: string;
-  ward: string;
-  addressDetail: string;
-  isDefault: boolean;
-  _id: string;
-}
-
-interface User {
-  avatar?: { url: string };
-  name: string;
-  email: string;
-  addresses: Address[];
-}
+// Alias for better semantics
+type Address = UserAddress;
 
 const UserForm: React.FC = () => {
   const navigate = useNavigate();
@@ -28,11 +14,13 @@ const UserForm: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newAddress, setNewAddress] = useState<Address>({
+    name: "",
     fullName: "",
     phone: "",
     province: "",
     district: "",
     ward: "",
+    detail: "",
     addressDetail: "",
     isDefault: false,
     _id: "",
@@ -89,6 +77,7 @@ const UserForm: React.FC = () => {
   };
 
   const handleUpdateAddress = async (addr: Address) => {
+    if (!addr._id) return;
     await inforApi.updateAddress(addr._id, {
       fullName: addr.fullName,
       phone: addr.phone,
@@ -116,11 +105,13 @@ const UserForm: React.FC = () => {
     });
     setIsAddModalOpen(false);
     setNewAddress({
+      name: "",
       fullName: "",
       phone: "",
       province: "",
       district: "",
       ward: "",
+      detail: "",
       addressDetail: "",
       isDefault: false,
       _id: "",
@@ -261,7 +252,7 @@ const UserForm: React.FC = () => {
                 </button>
                 <button
                   className="ml-2 text-red-500 text-xs"
-                  onClick={() => handleDeleteAddress(addr._id)}
+                  onClick={() => addr._id && handleDeleteAddress(addr._id)}
                 >
                   Xóa
                 </button>
@@ -300,7 +291,9 @@ const UserForm: React.FC = () => {
                   key={field}
                   type="text"
                   placeholder={field}
-                  value={(editingAddress as any)[field]}
+                  value={String(
+                    (editingAddress as Address)[field as keyof Address] || ""
+                  )}
                   onChange={(e) =>
                     setEditingAddress({
                       ...editingAddress!,
@@ -361,7 +354,9 @@ const UserForm: React.FC = () => {
                   key={field}
                   type="text"
                   placeholder={field}
-                  value={(newAddress as any)[field]}
+                  value={String(
+                    (newAddress as Address)[field as keyof Address] || ""
+                  )}
                   onChange={(e) =>
                     setNewAddress({
                       ...newAddress,

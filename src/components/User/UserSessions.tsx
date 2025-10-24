@@ -119,7 +119,7 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
     }
   };
 
-  const formatLastActive = (dateString: string) => {
+  const formatLastActive = (dateString: string | Date) => {
     const date = new Date(dateString);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -239,10 +239,9 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
 
                   {session.device && (
                     <Text type="secondary" style={{ fontSize: "12px" }}>
-                      <strong>Thiết bị:</strong> {session.device.os?.name}{" "}
-                      {session.device.os?.version} -
-                      {session.device.browser?.name}{" "}
-                      {session.device.browser?.version}
+                      <strong>Thiết bị:</strong>{" "}
+                      {session.device.os || "Unknown"} -{" "}
+                      {session.device.browser || "Unknown"}
                     </Text>
                   )}
                 </Space>

@@ -1,152 +1,14 @@
 import { axiosInstanceAuth, axiosInstance } from "../utils/axiosIntance";
+import type {
+  Order,
+  CreateOrderData,
+  CancelOrderData,
+  OrderQueryParams,
+  OrdersResponse,
+} from "../types/order";
 
-export interface OrderItem {
-  _id: string;
-  variant: {
-    _id: string;
-    color: {
-      _id: string;
-      name: string;
-      code: string;
-      type?: string;
-    };
-    product: {
-      _id: string;
-      name: string;
-      slug: string;
-      images: Array<{
-        url: string;
-        public_id: string;
-        isMain: boolean;
-        displayOrder: number;
-      }>;
-    };
-    price: number;
-  };
-  size: {
-    _id: string;
-    value: number;
-    description?: string;
-  };
-  productName: string;
-  quantity: number;
-  price: number;
-  image: string;
-}
-
-export interface Order {
-  _id: string;
-  code: string;
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-    avatar?: {
-      url: string;
-      public_id: string;
-    };
-  };
-  orderItems: OrderItem[];
-  shippingAddress: {
-    name: string;
-    phone: string;
-    province: string;
-    district: string;
-    ward: string;
-    detail: string;
-  };
-  note: string;
-  subTotal: number;
-  status: "pending" | "confirmed" | "shipping" | "delivered" | "cancelled";
-  inventoryDeducted: boolean;
-  statusHistory: Array<{
-    status: string;
-    updatedAt: string;
-    updatedBy?: string;
-    note?: string;
-  }>;
-  payment: {
-    method: "COD" | "VNPAY";
-    paymentStatus: "pending" | "paid" | "failed";
-    transactionId?: string;
-    paidAt?: string;
-  };
-  paymentHistory: Array<{
-    status: string;
-    transactionId?: string;
-    amount?: number;
-    method?: string;
-    updatedAt: string;
-    responseData?: Record<string, unknown>;
-  }>;
-  coupon?: {
-    _id: string;
-    code: string;
-    type: "percent" | "fixed";
-    value: number;
-    maxDiscount?: number;
-  };
-  couponDetail?: {
-    code: string;
-    type: "percent" | "fixed";
-    value: number;
-    maxDiscount?: number;
-  };
-  shippingFee: number;
-  discount: number;
-  totalAfterDiscountAndShipping: number;
-  cancelRequestId?: string;
-  hasCancelRequest: boolean;
-  cancelReason: string;
-  cancelledAt?: string;
-  deliveredAt?: string;
-  confirmedAt?: string;
-  shippingAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateOrderData {
-  addressId: string;
-  paymentMethod: "COD" | "VNPAY";
-  note?: string;
-  couponCode?: string;
-}
-
-export interface OrderQuery {
-  page?: number;
-  limit?: number;
-  status?: "pending" | "confirmed" | "shipping" | "delivered" | "cancelled";
-  search?: string;
-  sort?: string;
-}
-
-export interface CancelOrderData {
-  reason: string;
-  description?: string;
-}
-
-export interface OrdersResponse {
-  success: boolean;
-  message: string;
-  orders: Order[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-  };
-  stats: {
-    pending: number;
-    confirmed: number;
-    shipping: number;
-    delivered: number;
-    cancelled: number;
-    total: number;
-  };
-}
+// Re-export types for convenience
+export type { Order, OrderQueryParams };
 
 export interface CreateOrderResponse {
   success: boolean;
@@ -266,7 +128,9 @@ export interface VnpayResponse {
 // User Order Service - các chức năng cho người dùng thường
 export const userOrderService = {
   // Lấy danh sách đơn hàng của người dùng với phân trang và filter
-  getOrders: (params: OrderQuery = {}): Promise<{ data: OrdersResponse }> =>
+  getOrders: (
+    params: OrderQueryParams = {}
+  ): Promise<{ data: OrdersResponse }> =>
     axiosInstanceAuth.get("/api/v1/orders", { params }),
 
   // Tạo đơn hàng mới
@@ -301,7 +165,9 @@ export const userOrderService = {
 // Admin Order Service - các chức năng quản lý đơn hàng cho admin
 export const adminOrderService = {
   // Lấy danh sách tất cả đơn hàng (admin)
-  getAllOrders: (params: OrderQuery = {}): Promise<{ data: OrdersResponse }> =>
+  getAllOrders: (
+    params: OrderQueryParams = {}
+  ): Promise<{ data: OrdersResponse }> =>
     axiosInstanceAuth.get("/api/v1/admin/orders", { params }),
 
   // Lấy chi tiết đơn hàng (admin)

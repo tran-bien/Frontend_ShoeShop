@@ -22,18 +22,22 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
   useEffect(() => {
     setLoading(true);
     productApi
-      .getProductById(product._id)
+      .getById(product._id) // Use admin API method
       .then((res) => {
-        setDetail(res.data.product);
+        // BE trả về: { success: true, data: Product }
+        const productData = (res.data.data || res.data) as Product;
+        console.log("Product detail loaded:", productData);
+        setDetail(productData);
         // Set first image as selected
-        if (res.data.product.images?.length > 0) {
-          const mainImg = res.data.product.images.find(
+        if (productData.images?.length > 0) {
+          const mainImg = productData.images.find(
             (img: { isMain: boolean }) => img.isMain
           );
-          setSelectedImage(
-            mainImg?.url || res.data.product.images[0]?.url || ""
-          );
+          setSelectedImage(mainImg?.url || productData.images[0]?.url || "");
         }
+      })
+      .catch((err) => {
+        console.error("Error loading product detail:", err);
       })
       .finally(() => setLoading(false));
   }, [product._id]);
@@ -321,7 +325,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         : "bg-gray-100 text-gray-600"
                     }`}
                   >
-                    {detail.isActive ? "✓ Đang bán" : "✕ Ẩn"}
+                    {detail.isActive ? "Đang hoạt động" : "Ngừng hoạt động"}
                   </span>
                 </div>
                 <div className="bg-white border border-gray-200 rounded-xl p-4">
@@ -660,8 +664,9 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                 productId={detail._id}
                 images={detail.images}
                 reloadImages={async () => {
-                  const res = await productApi.getProductById(detail._id);
-                  setDetail(res.data.product);
+                  const res = await productApi.getById(detail._id); // Use admin API
+                  const productData = (res.data.data || res.data) as Product;
+                  setDetail(productData);
                 }}
               />
             </div>

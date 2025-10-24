@@ -1,67 +1,8 @@
 import React from "react";
-
-interface Brand {
-  _id: string;
-  name: string;
-  logo?:
-    | {
-        url: string;
-      }
-    | string;
-}
-
-interface Category {
-  _id: string;
-  name: string;
-}
-
-interface Color {
-  _id: string;
-  name: string;
-  code: string;
-  type: "solid" | "gradient";
-  colors?: string[];
-}
-
-interface Size {
-  _id: string;
-  value: string | number;
-  description?: string;
-}
-
-interface Gender {
-  id: string;
-  name: string;
-}
-
-interface PriceRange {
-  min: number;
-  max: number;
-}
-
-interface ProductAttributes {
-  genders?: Gender[];
-  colors?: Color[];
-  sizes?: Size[];
-  priceRange?: PriceRange;
-  inventoryMatrix?: {
-    summary?: {
-      total: number;
-    };
-  };
-}
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  category?: Category | string;
-  brand?: Brand | string;
-  stockStatus: "in_stock" | "low_stock" | "out_of_stock";
-  totalQuantity?: number;
-  rating?: number;
-  numReviews?: number;
-}
+import type { Color } from "../../types/color";
+import type { Size } from "../../types/size";
+import type { Gender } from "../../types/common";
+import type { Product, ProductAttributes } from "../../types/product";
 
 interface ProductInfoProps {
   product: Product;

@@ -1,4 +1,4 @@
-import { ReturnRequest } from "../../../services/ReturnService";
+import type { ReturnRequest } from "../../../types/return";
 
 interface Props {
   returnRequest: ReturnRequest;

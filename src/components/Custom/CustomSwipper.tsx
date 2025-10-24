@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-interface images {
-  url:string,
-  link?:string
+
+interface BannerImage {
+  url: string;
+  link?: string;
 }
+
 interface CustomSwipperProps {
-  images: images[];
+  images: BannerImage[];
   height: number;
   width: string; // Changed to string to accept Tailwind classes
   autoPlay: boolean;
@@ -65,9 +67,9 @@ const CustomSwipper = ({
             className="w-full h-full object-cover flex-shrink-0
             hover:cursor-pointer 
             "
-            style={{ minWidth: '100%', height: `${height}px` }}
-            onClick={()=>{
-              image.link && navigate(image.url)
+            style={{ minWidth: "100%", height: `${height}px` }}
+            onClick={() => {
+              image.link && navigate(image.url);
             }}
           />
         ))}
@@ -101,8 +103,10 @@ const CustomSwipper = ({
               className={`w-3 h-3 rounded-full 
                 border-2 
                 ${
-                index === currentIndex ? "border-blue-500 bg-green-500" : "bg-none border-gray-100"
-              }`}
+                  index === currentIndex
+                    ? "border-blue-500 bg-green-500"
+                    : "bg-none border-gray-100"
+                }`}
             ></button>
           ))}
         </div>

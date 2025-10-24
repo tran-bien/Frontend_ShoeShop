@@ -77,10 +77,11 @@ const UserReviewPage: React.FC = () => {
 
       if (response.data.success) {
         setReviews(response.data.data || []);
+        const paginationData = response.data.pagination;
         setPagination({
-          current: response.data.pagination?.page || 1,
-          pageSize: response.data.pagination?.limit || 10,
-          total: response.data.pagination?.total || 0,
+          current: paginationData?.page || 1,
+          pageSize: paginationData?.limit || 10,
+          total: paginationData?.totalItems || 0,
         });
       }
     } catch (error: unknown) {

@@ -1,12 +1,8 @@
-import {
-  Color,
-  Size,
-  PriceRange,
-  ProductImage,
-  Brand,
-  Category,
-  StockStatus,
-} from "./common";
+import { PriceRange, ProductImage, StockStatus } from "./common";
+import type { Color } from "./color";
+import type { Size } from "./size";
+import type { Brand } from "./brand";
+import type { Category } from "./category";
 
 // =======================
 // VARIANT TYPES
@@ -35,6 +31,7 @@ export interface VariantSize {
 
 export interface Variant {
   _id: string;
+  id?: string; // Alias for _id (for backward compatibility)
   product: Product | string;
   color: Color | string;
   gender: string;

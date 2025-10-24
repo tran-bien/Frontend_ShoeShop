@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import wishlistService, {
-  WishlistProduct,
-} from "../../services/WishlistService";
+import wishlistService from "../../services/WishlistService";
+import type { WishlistProduct } from "../../types/wishlist";
 import { toast } from "react-hot-toast";
 
 const LikeProduct = () => {
@@ -120,11 +119,12 @@ const LikeProduct = () => {
                   <p className="text-red-500 font-semibold">
                     {item.variant.priceFinal?.toLocaleString()}đ
                   </p>
-                  {item.variant.percentDiscount > 0 && (
-                    <span className="text-xs text-gray-500 line-through">
-                      {item.variant.price?.toLocaleString()}đ
-                    </span>
-                  )}
+                  {item.variant.percentDiscount &&
+                    item.variant.percentDiscount > 0 && (
+                      <span className="text-xs text-gray-500 line-through">
+                        {item.variant.price?.toLocaleString()}đ
+                      </span>
+                    )}
                 </>
               ) : (
                 <p className="text-red-500 font-semibold">

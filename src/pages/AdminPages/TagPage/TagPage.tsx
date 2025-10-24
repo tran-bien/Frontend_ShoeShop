@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
+import { Tag } from "../../../types/tag";
 import { tagApi } from "../../../services/TagService";
 import { useAuth } from "../../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 
-interface Tag {
-  _id: string;
-  name: string;
-  type: "MATERIAL" | "USECASE" | "CUSTOM";
-  description: string;
-  isActive: boolean;
+interface TagPageTag extends Tag {
   deletedAt: string | null;
   deletedBy: string | { _id: string; name?: string } | null;
-  createdAt: string;
-  updatedAt: string;
 }
 
 const TAG_TYPES = {
@@ -30,14 +24,14 @@ const TAG_TYPE_LABELS = {
 
 const TagPage: React.FC = () => {
   const { canDelete, canCreate, canUpdate, canToggleStatus } = useAuth();
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [deletedTags, setDeletedTags] = useState<Tag[]>([]);
+  const [tags, setTags] = useState<TagPageTag[]>([]);
+  const [deletedTags, setDeletedTags] = useState<TagPageTag[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
-  const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
+  const [selectedTag, setSelectedTag] = useState<TagPageTag | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [showDeleted, setShowDeleted] = useState<boolean>(false);
 
@@ -196,7 +190,7 @@ const TagPage: React.FC = () => {
   };
 
   const handleDeleteTag = (tag: Tag) => {
-    setSelectedTag(tag);
+    setSelectedTag(tag as TagPageTag);
     setShowDeleteModal(true);
   };
 
@@ -395,7 +389,7 @@ const TagPage: React.FC = () => {
         setFormData({
           name: selectedTag.name,
           type: selectedTag.type,
-          description: selectedTag.description,
+          description: selectedTag.description || "",
         });
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -628,7 +622,9 @@ const TagPage: React.FC = () => {
                   Ngày Tạo
                 </h4>
                 <p className="text-gray-900">
-                  {new Date(selectedTag.createdAt).toLocaleString("vi-VN")}
+                  {selectedTag.createdAt
+                    ? new Date(selectedTag.createdAt).toLocaleString("vi-VN")
+                    : "N/A"}
                 </p>
               </div>
               <div className="border rounded-lg p-4">
@@ -636,7 +632,9 @@ const TagPage: React.FC = () => {
                   Cập Nhật Lần Cuối
                 </h4>
                 <p className="text-gray-900">
-                  {new Date(selectedTag.updatedAt).toLocaleString("vi-VN")}
+                  {selectedTag.updatedAt
+                    ? new Date(selectedTag.updatedAt).toLocaleString("vi-VN")
+                    : "N/A"}
                 </p>
               </div>
             </div>
