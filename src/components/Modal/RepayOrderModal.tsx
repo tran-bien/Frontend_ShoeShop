@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { FaTimes, FaCreditCard, FaExclamationCircle } from "react-icons/fa";
 
 interface RepayOrderModalProps {
@@ -37,15 +37,15 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center gap-3">
-            <FaCreditCard className="text-blue-500 text-xl" />
-            <h2 className="text-xl font-semibold text-gray-800">
+            <FaCreditCard className="text-mono-500 text-xl" />
+            <h2 className="text-xl font-semibold text-mono-800">
               Thanh toán lại đơn hàng
             </h2>
           </div>
           <button
             onClick={handleClose}
             disabled={loading}
-            className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+            className="text-mono-400 hover:text-mono-600 disabled:opacity-50"
           >
             <FaTimes className="text-xl" />
           </button>
@@ -57,14 +57,14 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
             <div className="flex items-start gap-3 mb-4">
               <FaExclamationCircle className="text-yellow-500 text-lg mt-0.5" />
               <div>
-                <p className="text-gray-700 mb-2">
+                <p className="text-mono-700 mb-2">
                   Bạn có chắc chắn muốn thanh toán lại đơn hàng{" "}
-                  <span className="font-semibold text-blue-600">
+                  <span className="font-semibold text-mono-black">
                     {orderCode}
                   </span>
                   ?
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-mono-500">
                   Bạn sẽ được chuyển hướng đến trang thanh toán VNPAY để hoàn
                   tất giao dịch.
                 </p>
@@ -72,23 +72,23 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
             </div>
 
             {/* Thông tin đơn hàng */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-mono-50 border border-mono-200 rounded-lg p-4">
               <h3 className="font-semibold text-blue-800 mb-2">
                 Thông tin thanh toán
               </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Mã đơn hàng:</span>
+                  <span className="text-mono-600">Mã đơn hàng:</span>
                   <span className="font-medium">{orderCode}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Phương thức:</span>
+                  <span className="text-mono-600">Phương thức:</span>
                   <span className="font-medium">VNPAY</span>
                 </div>
-                <hr className="border-blue-200" />
+                <hr className="border-mono-200" />
                 <div className="flex justify-between">
-                  <span className="text-gray-600 font-medium">Số tiền:</span>
-                  <span className="font-bold text-red-600">
+                  <span className="text-mono-600 font-medium">Số tiền:</span>
+                  <span className="font-bold text-mono-900">
                     {orderAmount.toLocaleString()}đ
                   </span>
                 </div>
@@ -114,14 +114,14 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
               type="button"
               onClick={handleClose}
               disabled={loading}
-              className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 px-4 py-2 text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Hủy bỏ
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 px-4 py-2 bg-mono-500 text-white rounded-lg hover:bg-mono-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "Đang xử lý..." : "Thanh toán ngay"}
             </button>

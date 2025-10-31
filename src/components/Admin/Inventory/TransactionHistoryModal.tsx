@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import InventoryService from "../../../services/InventoryService";
 import type {
   InventoryItem,
@@ -52,7 +52,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
     return (
       labels[type as keyof typeof labels] || {
         text: type,
-        color: "bg-gray-100 text-gray-800",
+        color: "bg-mono-100 text-mono-800",
       }
     );
   };
@@ -85,69 +85,69 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
       <div className="bg-white rounded-lg p-6 w-full max-w-4xl m-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-mono-800">
             📜 Lịch sử giao dịch
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+            className="text-mono-500 hover:text-mono-700 text-2xl font-bold"
           >
             ×
           </button>
         </div>
 
         {/* Product Info */}
-        <div className="bg-gray-50 rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-gray-800 mb-2">
+        <div className="bg-mono-50 rounded-lg p-4 mb-6">
+          <h3 className="font-semibold text-mono-800 mb-2">
             {item.product?.name}
           </h3>
           <div className="grid grid-cols-3 gap-4 text-sm">
             <div>
-              <span className="text-gray-600">Màu sắc:</span>{" "}
+              <span className="text-mono-600">Màu sắc:</span>{" "}
               <strong>{item.variant?.color?.name || "N/A"}</strong>
             </div>
             <div>
-              <span className="text-gray-600">Size:</span>{" "}
+              <span className="text-mono-600">Size:</span>{" "}
               <strong>{item.size?.value || "N/A"}</strong>
             </div>
             <div>
-              <span className="text-gray-600">Tồn hiện tại:</span>{" "}
-              <strong className="text-blue-600">{item.quantity}</strong>
+              <span className="text-mono-600">Tồn hiện tại:</span>{" "}
+              <strong className="text-mono-black">{item.quantity}</strong>
             </div>
           </div>
         </div>
 
         {/* Transactions Table */}
         {loading ? (
-          <div className="text-center py-10 text-gray-500">Đang tải...</div>
+          <div className="text-center py-10 text-mono-500">Đang tải...</div>
         ) : transactions.length === 0 ? (
-          <div className="text-center py-10 text-gray-500">
+          <div className="text-center py-10 text-mono-500">
             Chưa có giao dịch nào
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-mono-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Thời gian
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Loại
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Lý do
                   </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Số lượng
                   </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Giá vốn
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Người thực hiện
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Ghi chú
                   </th>
                 </tr>
@@ -156,8 +156,8 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                 {transactions.map((transaction) => {
                   const typeInfo = getTypeLabel(transaction.type);
                   return (
-                    <tr key={transaction._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    <tr key={transaction._id} className="hover:bg-mono-50">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
                         {formatDate(transaction.createdAt)}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
@@ -167,7 +167,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                           {typeInfo.text}
                         </span>
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-700">
                         {getReasonLabel(transaction.reason)}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-right">
@@ -176,7 +176,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                           {transaction.type === "OUT" && "-"}
                           {transaction.quantityChange}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-mono-500">
                           {transaction.quantityBefore} →{" "}
                           {transaction.quantityAfter}
                         </div>
@@ -186,10 +186,10 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                           ? `${transaction.costPrice.toLocaleString("vi-VN")}₫`
                           : "-"}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
                         {transaction.performedBy?.name || "N/A"}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
+                      <td className="px-4 py-3 text-sm text-mono-600 max-w-xs truncate">
                         {transaction.notes || "-"}
                       </td>
                     </tr>
@@ -206,17 +206,17 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 hover:bg-gray-300"
+              className="px-4 py-2 bg-mono-200 rounded disabled:opacity-50 hover:bg-mono-300"
             >
               ← Trước
             </button>
-            <span className="px-4 py-2 text-sm text-gray-700">
+            <span className="px-4 py-2 text-sm text-mono-700">
               Trang {currentPage} / {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50 hover:bg-gray-300"
+              className="px-4 py-2 bg-mono-200 rounded disabled:opacity-50 hover:bg-mono-300"
             >
               Sau →
             </button>
@@ -227,7 +227,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 font-medium"
+            className="px-6 py-2 bg-mono-200 rounded-lg hover:bg-mono-300 font-medium"
           >
             Đóng
           </button>

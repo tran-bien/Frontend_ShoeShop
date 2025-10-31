@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import {
   FaTruck,
   FaUserCheck,
@@ -60,10 +60,10 @@ const ShipperPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Quản lý Shipper</h1>
+        <h1 className="text-3xl font-bold text-mono-800">Quản lý Shipper</h1>
         <button
           onClick={handleAssignOrder}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          className="bg-mono-black hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
         >
           <FaTruck size={20} />
           Gán đơn hàng
@@ -77,8 +77,8 @@ const ShipperPage = () => {
             onClick={() => setFilterAvailable(undefined)}
             className={`px-4 py-2 rounded ${
               filterAvailable === undefined
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700"
+                ? "bg-mono-black text-white"
+                : "bg-mono-200 text-mono-700"
             }`}
           >
             Tất cả
@@ -87,8 +87,8 @@ const ShipperPage = () => {
             onClick={() => setFilterAvailable(true)}
             className={`px-4 py-2 rounded ${
               filterAvailable === true
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-gray-700"
+                ? "bg-mono-800 text-white"
+                : "bg-mono-200 text-mono-700"
             }`}
           >
             Đang hoạt động
@@ -97,8 +97,8 @@ const ShipperPage = () => {
             onClick={() => setFilterAvailable(false)}
             className={`px-4 py-2 rounded ${
               filterAvailable === false
-                ? "bg-gray-600 text-white"
-                : "bg-gray-200 text-gray-700"
+                ? "bg-mono-600 text-white"
+                : "bg-mono-200 text-mono-700"
             }`}
           >
             Không hoạt động
@@ -109,11 +109,11 @@ const ShipperPage = () => {
       {/* Shipper Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
-          <div className="col-span-full text-center py-8 text-gray-500">
+          <div className="col-span-full text-center py-8 text-mono-500">
             Đang tải...
           </div>
         ) : shippers.length === 0 ? (
-          <div className="col-span-full text-center py-8 text-gray-500">
+          <div className="col-span-full text-center py-8 text-mono-500">
             Không có shipper nào
           </div>
         ) : (
@@ -123,7 +123,7 @@ const ShipperPage = () => {
               className="bg-white rounded-lg shadow-md overflow-hidden"
             >
               {/* Shipper Header */}
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
+              <div className="bg-gradient-to-r from-mono-500 to-mono-black p-6 text-white">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
                     {shipper.avatar ? (
@@ -133,12 +133,12 @@ const ShipperPage = () => {
                         className="w-full h-full rounded-full object-cover"
                       />
                     ) : (
-                      <FaTruck size={32} className="text-blue-600" />
+                      <FaTruck size={32} className="text-mono-black" />
                     )}
                   </div>
                   <div>
                     <h3 className="text-lg font-bold">{shipper.name}</h3>
-                    <p className="text-sm text-blue-100">{shipper.phone}</p>
+                    <p className="text-sm text-mono-100">{shipper.phone}</p>
                   </div>
                 </div>
               </div>
@@ -147,14 +147,14 @@ const ShipperPage = () => {
               <div className="p-6 space-y-4">
                 {/* Status */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Trạng thái</span>
+                  <span className="text-sm text-mono-600">Trạng thái</span>
                   {shipper.shipper.isAvailable ? (
-                    <span className="flex items-center gap-1 text-green-600 font-medium">
+                    <span className="flex items-center gap-1 text-mono-800 font-medium">
                       <FaUserCheck size={16} />
                       Đang hoạt động
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-gray-600 font-medium">
+                    <span className="flex items-center gap-1 text-mono-600 font-medium">
                       <FaUserTimes size={16} />
                       Không hoạt động
                     </span>
@@ -163,8 +163,8 @@ const ShipperPage = () => {
 
                 {/* Active Orders */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Đơn đang giao</span>
-                  <span className="font-bold text-gray-900">
+                  <span className="text-sm text-mono-600">Đơn đang giao</span>
+                  <span className="font-bold text-mono-900">
                     {shipper.shipper.activeOrders} / {shipper.shipper.maxOrders}
                   </span>
                 </div>
@@ -172,20 +172,20 @@ const ShipperPage = () => {
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-2 pt-4 border-t">
                   <div className="text-center">
-                    <div className="text-xs text-gray-500">Tổng</div>
-                    <div className="text-lg font-bold text-gray-900">
+                    <div className="text-xs text-mono-500">Tổng</div>
+                    <div className="text-lg font-bold text-mono-900">
                       {shipper.shipper.deliveryStats.totalDeliveries}
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xs text-gray-500">Thành công</div>
-                    <div className="text-lg font-bold text-green-600">
+                    <div className="text-xs text-mono-500">Thành công</div>
+                    <div className="text-lg font-bold text-mono-800">
                       {shipper.shipper.deliveryStats.successfulDeliveries}
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xs text-gray-500">Thất bại</div>
-                    <div className="text-lg font-bold text-red-600">
+                    <div className="text-xs text-mono-500">Thất bại</div>
+                    <div className="text-lg font-bold text-mono-900">
                       {shipper.shipper.deliveryStats.failedDeliveries}
                     </div>
                   </div>
@@ -194,16 +194,16 @@ const ShipperPage = () => {
                 {/* Success Rate */}
                 <div className="pt-4 border-t">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-mono-600">
                       Tỷ lệ thành công
                     </span>
-                    <span className="text-sm font-bold text-blue-600">
+                    <span className="text-sm font-bold text-mono-black">
                       {calculateSuccessRate(shipper.shipper.deliveryStats)}%
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-mono-200 rounded-full h-2">
                     <div
-                      className="bg-blue-600 h-2 rounded-full"
+                      className="bg-mono-black h-2 rounded-full"
                       style={{
                         width: `${calculateSuccessRate(
                           shipper.shipper.deliveryStats
@@ -215,7 +215,7 @@ const ShipperPage = () => {
 
                 {/* Location */}
                 {shipper.shipper.currentLocation && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600 pt-2">
+                  <div className="flex items-center gap-2 text-sm text-mono-600 pt-2">
                     <FaMapMarkerAlt size={16} />
                     <span>
                       Cập nhật:{" "}
@@ -231,7 +231,7 @@ const ShipperPage = () => {
                 {/* Actions */}
                 <button
                   onClick={() => handleViewDetail(shipper)}
-                  className="w-full mt-4 bg-blue-50 hover:bg-blue-100 text-blue-600 py-2 rounded-lg font-medium transition"
+                  className="w-full mt-4 bg-mono-50 hover:bg-mono-100 text-mono-black py-2 rounded-lg font-medium transition"
                 >
                   Xem chi tiết
                 </button>

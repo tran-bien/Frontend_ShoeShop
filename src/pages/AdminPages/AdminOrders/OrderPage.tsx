@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { adminOrderService, orderApi } from "../../../services/OrderService";
 import CancelRequestList from "./CancelRequestList";
 import { useAuth } from "../../../hooks/useAuth";
@@ -173,7 +173,7 @@ const ListOrderPage: React.FC = () => {
 
   return (
     <div className="p-6 w-full font-sans">
-      <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug mb-4">
+      <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug mb-4">
         Quản Lý Đơn Hàng
       </h2>
 
@@ -183,8 +183,8 @@ const ListOrderPage: React.FC = () => {
           onClick={() => setTab("orders")}
           className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
             tab === "orders"
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
+              ? "text-mono-black border-mono-black"
+              : "text-mono-500 border-transparent hover:text-mono-black"
           }`}
         >
           Danh sách đơn hàng
@@ -193,8 +193,8 @@ const ListOrderPage: React.FC = () => {
           onClick={() => setTab("cancel")}
           className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
             tab === "cancel"
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
+              ? "text-mono-black border-mono-black"
+              : "text-mono-500 border-transparent hover:text-mono-black"
           }`}
         >
           Yêu cầu hủy đơn
@@ -210,12 +210,12 @@ const ListOrderPage: React.FC = () => {
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder="Tìm mã đơn hàng hoặc tên khách hàng"
-              className="px-4 py-2 w-1/3 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-4 py-2 w-1/3 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
           <div className="overflow-x-auto shadow rounded-lg">
             <table className="min-w-full bg-white rounded-md overflow-hidden border">
-              <thead className="bg-gray-50 text-gray-700 text-sm font-semibold uppercase">
+              <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
                 <tr>
                   <th className="py-3 px-4 text-left border-b">Mã đơn hàng</th>
                   <th className="py-3 px-4 text-left border-b">Khách hàng</th>
@@ -273,7 +273,7 @@ const ListOrderPage: React.FC = () => {
                   </tr>
                 ) : (
                   filteredOrders.map((order) => (
-                    <tr key={order._id} className="hover:bg-gray-50 border-t">
+                    <tr key={order._id} className="hover:bg-mono-50 border-t">
                       <td className="py-2 px-4 border-b text-sm">
                         {order.orderCode}
                       </td>
@@ -301,7 +301,7 @@ const ListOrderPage: React.FC = () => {
                       <td className="py-2 px-4 border-b text-center text-sm">
                         <div className="flex flex-col gap-2 min-w-[120px] items-center">
                           <button
-                            className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all mb-1 w-32"
+                            className="inline-flex items-center justify-center bg-mono-500 hover:bg-mono-black text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all mb-1 w-32"
                             onClick={async () => {
                               try {
                                 const res = await orderApi.getOrderById(
@@ -339,7 +339,7 @@ const ListOrderPage: React.FC = () => {
                               )}
                             </select>
                           ) : (
-                            <span className="py-1 px-2 text-xs text-gray-600">
+                            <span className="py-1 px-2 text-xs text-mono-600">
                               Chỉ xem
                             </span>
                           )}
@@ -363,11 +363,11 @@ const ListOrderPage: React.FC = () => {
 
       {/* Modal for Order Details */}
       {selectedOrder && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-mono-500 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-8 shadow-2xl rounded-2xl w-full max-w-lg relative">
             <button
               onClick={handleCloseModal}
-              className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-gray-700"
+              className="absolute top-3 right-4 text-2xl text-mono-400 hover:text-mono-700"
               title="Đóng"
             >
               &times;
@@ -377,54 +377,54 @@ const ListOrderPage: React.FC = () => {
             </h3>
             <div className="grid grid-cols-1 gap-y-3">
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">
+                <span className="font-semibold text-mono-600">
                   Mã đơn hàng:
                 </span>
-                <span className="text-gray-900">{selectedOrder.orderCode}</span>
+                <span className="text-mono-900">{selectedOrder.orderCode}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Khách hàng:</span>
-                <span className="text-gray-900">
+                <span className="font-semibold text-mono-600">Khách hàng:</span>
+                <span className="text-mono-900">
                   {selectedOrder.customerName}
                 </span>
               </div>
               <div className="flex justify-between items-start gap-4">
-                <span className="font-semibold text-gray-600 min-w-max">
+                <span className="font-semibold text-mono-600 min-w-max">
                   Địa chỉ:
                 </span>
-                <span className="text-gray-900 text-right break-words max-w-[60%]">
+                <span className="text-mono-900 text-right break-words max-w-[60%]">
                   {selectedOrder.address}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">
+                <span className="font-semibold text-mono-600">
                   Số điện thoại:
                 </span>
-                <span className="text-gray-900">{selectedOrder.phone}</span>
+                <span className="text-mono-900">{selectedOrder.phone}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Giá:</span>
-                <span className="text-blue-600 font-bold">
+                <span className="font-semibold text-mono-600">Giá:</span>
+                <span className="text-mono-black font-bold">
                   {selectedOrder.price}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Thanh toán:</span>
-                <span className="text-gray-900">
+                <span className="font-semibold text-mono-600">Thanh toán:</span>
+                <span className="text-mono-900">
                   {selectedOrder.paymentStatus}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">
+                <span className="font-semibold text-mono-600">
                   Phương thức thanh toán:
                 </span>
-                <span className="text-gray-900">
+                <span className="text-mono-900">
                   {selectedOrder.paymentMethod}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-gray-600">Trạng thái:</span>
-                <span className="text-gray-900">
+                <span className="font-semibold text-mono-600">Trạng thái:</span>
+                <span className="text-mono-900">
                   {selectedOrder.orderStatus}
                 </span>
               </div>
@@ -432,7 +432,7 @@ const ListOrderPage: React.FC = () => {
             <div className="mt-8 flex justify-end">
               <button
                 onClick={handleCloseModal}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium shadow"
+                className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-lg font-medium shadow"
               >
                 Đóng
               </button>

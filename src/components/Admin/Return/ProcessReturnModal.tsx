@@ -1,4 +1,4 @@
-import type { ReturnRequest } from "../../../types/return";
+﻿import type { ReturnRequest } from "../../../types/return";
 
 interface Props {
   returnRequest: ReturnRequest;
@@ -13,9 +13,9 @@ const ProcessReturnModal = ({ returnRequest, onClose }: Props) => {
         <h2 className="text-xl font-bold mb-4">
           Xử lý {returnRequest.type === "RETURN" ? "hoàn trả" : "đổi hàng"}
         </h2>
-        <p className="text-gray-600 mb-4">Mã: #{returnRequest._id.slice(-8)}</p>
-        <p className="text-gray-600 mb-4">Chức năng đang phát triển...</p>
-        <button onClick={onClose} className="bg-gray-200 px-4 py-2 rounded">
+        <p className="text-mono-600 mb-4">Mã: #{returnRequest._id.slice(-8)}</p>
+        <p className="text-mono-600 mb-4">Chức năng đang phát triển...</p>
+        <button onClick={onClose} className="bg-mono-200 px-4 py-2 rounded">
           Đóng
         </button>
       </div>

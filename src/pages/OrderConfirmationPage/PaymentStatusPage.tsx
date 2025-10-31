@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaCheckCircle,
@@ -230,16 +230,16 @@ const PaymentStatusPage: React.FC = () => {
       case "loading":
         return (
           <div className="text-center py-12">
-            <FaSpinner className="animate-spin text-6xl text-blue-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-700 mb-2">
+            <FaSpinner className="animate-spin text-6xl text-mono-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-mono-700 mb-2">
               Đang xử lý thanh toán...
             </h2>
-            <p className="text-gray-500">Vui lòng đợi trong giây lát</p>
-            <div className="mt-4 text-sm text-gray-400">
+            <p className="text-mono-500">Vui lòng đợi trong giây lát</p>
+            <div className="mt-4 text-sm text-mono-400">
               <p>Đang xác thực kết quả thanh toán với VNPAY...</p>
               <p>Đang cập nhật trạng thái đơn hàng...</p>
               {paymentStatus.responseCode === "00" && (
-                <p className="text-green-500 font-medium mt-2">
+                <p className="text-mono-700 font-medium mt-2">
                   Mã phản hồi từ VNPAY cho thấy giao dịch đã thành công! Đang
                   cập nhật dữ liệu...
                 </p>
@@ -251,8 +251,8 @@ const PaymentStatusPage: React.FC = () => {
       case "success":
         return (
           <div className="text-center py-12">
-            <FaCheckCircle className="text-6xl text-green-500 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold text-green-600 mb-4">
+            <FaCheckCircle className="text-6xl text-mono-700 mx-auto mb-4" />
+            <h2 className="text-3xl font-bold text-mono-800 mb-4">
               Thanh toán thành công!
             </h2>
             <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6 max-w-md mx-auto">
@@ -260,22 +260,22 @@ const PaymentStatusPage: React.FC = () => {
                 <strong>Thông báo:</strong> {paymentStatus.message}
               </p>
               {paymentStatus.orderCode && (
-                <p className="text-gray-600 text-sm mb-1">
+                <p className="text-mono-600 text-sm mb-1">
                   <strong>Mã đơn hàng:</strong> {paymentStatus.orderCode}
                 </p>
               )}
               {paymentStatus.transactionId && (
-                <p className="text-gray-600 text-sm mb-1">
+                <p className="text-mono-600 text-sm mb-1">
                   <strong>Mã giao dịch:</strong> {paymentStatus.transactionId}
                 </p>
               )}
               {paymentStatus.amount && (
-                <p className="text-gray-600 text-sm">
+                <p className="text-mono-600 text-sm">
                   <strong>Số tiền:</strong> {paymentStatus.amount} VNĐ
                 </p>
               )}
             </div>
-            <p className="text-gray-600 mb-6">
+            <p className="text-mono-600 mb-6">
               Cảm ơn bạn đã mua hàng. Đơn hàng của bạn đã được xác nhận và đang
               được xử lý.
             </p>
@@ -285,8 +285,8 @@ const PaymentStatusPage: React.FC = () => {
       case "failed":
         return (
           <div className="text-center py-12">
-            <FaTimesCircle className="text-6xl text-red-500 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold text-red-600 mb-4">
+            <FaTimesCircle className="text-6xl text-mono-800 mx-auto mb-4" />
+            <h2 className="text-3xl font-bold text-mono-900 mb-4">
               Thanh toán thất bại!
             </h2>
             <div className="bg-red-50 border border-red-200 rounded-lg p-6 mb-6 max-w-md mx-auto">
@@ -294,12 +294,12 @@ const PaymentStatusPage: React.FC = () => {
                 <strong>Lý do:</strong> {paymentStatus.message}
               </p>
               {paymentStatus.orderCode && (
-                <p className="text-gray-600 text-sm mb-1">
+                <p className="text-mono-600 text-sm mb-1">
                   <strong>Mã đơn hàng:</strong> {paymentStatus.orderCode}
                 </p>
               )}
               {paymentStatus.transactionId && (
-                <p className="text-gray-600 text-sm">
+                <p className="text-mono-600 text-sm">
                   <strong>Mã giao dịch:</strong> {paymentStatus.transactionId}
                 </p>
               )}
@@ -313,7 +313,7 @@ const PaymentStatusPage: React.FC = () => {
                 ℹ️ Tồn kho chưa bị trừ do thanh toán thất bại
               </p>
             </div>
-            <p className="text-gray-600 mb-6">
+            <p className="text-mono-600 mb-6">
               Đã có lỗi xảy ra trong quá trình thanh toán. Bạn có thể thử thanh
               toán lại trong danh sách đơn hàng.
             </p>
@@ -323,7 +323,7 @@ const PaymentStatusPage: React.FC = () => {
       case "error":
         return (
           <div className="text-center py-12">
-            <FaExclamationTriangle className="text-6xl text-orange-500 mx-auto mb-4" />
+            <FaExclamationTriangle className="text-6xl text-mono-600 mx-auto mb-4" />
             <h2 className="text-3xl font-bold text-orange-600 mb-4">
               Có lỗi xảy ra!
             </h2>
@@ -332,17 +332,17 @@ const PaymentStatusPage: React.FC = () => {
                 <strong>Thông báo:</strong> {paymentStatus.message}
               </p>
               {paymentStatus.errorDetails && (
-                <p className="text-gray-600 text-sm">
+                <p className="text-mono-600 text-sm">
                   <strong>Chi tiết:</strong> {paymentStatus.errorDetails}
                 </p>
               )}
               {paymentStatus.transactionId && (
-                <p className="text-gray-600 text-sm mt-2">
+                <p className="text-mono-600 text-sm mt-2">
                   <strong>Mã giao dịch:</strong> {paymentStatus.transactionId}
                 </p>
               )}
             </div>
-            <p className="text-gray-600 mb-6">
+            <p className="text-mono-600 mb-6">
               Vui lòng kiểm tra lại trạng thái đơn hàng hoặc liên hệ hỗ trợ
               khách hàng.
             </p>
@@ -355,7 +355,7 @@ const PaymentStatusPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-mono-50 flex items-center justify-center px-4">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg">
         <div className="p-8">
           {renderContent()}
@@ -364,7 +364,7 @@ const PaymentStatusPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
             <Link
               to="/"
-              className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 bg-mono-black text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
             >
               <FaHome className="mr-2" />
               Về trang chủ
@@ -372,7 +372,7 @@ const PaymentStatusPage: React.FC = () => {
 
             <Link
               to="/user-manage-order"
-              className="inline-flex items-center justify-center px-6 py-3 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors"
+              className="inline-flex items-center justify-center px-6 py-3 bg-mono-600 text-white font-medium rounded-lg hover:bg-mono-700 transition-colors"
             >
               <FaList className="mr-2" />
               Xem đơn hàng

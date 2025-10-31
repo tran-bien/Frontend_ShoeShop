@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import {
   uploadVariantImages,
   removeVariantImages,
@@ -73,11 +73,11 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
             name="images"
             multiple
             onChange={(e) => setSelectedFiles(e.target.files)}
-            className="block border border-gray-300 rounded px-2 py-1"
+            className="block border border-mono-300 rounded px-2 py-1"
           />
           <button
             onClick={handleUpload}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+            className="bg-mono-500 text-white px-4 py-2 rounded hover:bg-mono-black transition"
           >
             Tải ảnh lên
           </button>
@@ -87,7 +87,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
         {localImages.map((img: any, idx: number) => (
           <div
             key={img._id}
-            className="relative flex flex-col items-center bg-gray-50 rounded-lg p-2 shadow border"
+            className="relative flex flex-col items-center bg-mono-50 rounded-lg p-2 shadow border"
           >
             <img
               src={img.url}
@@ -98,7 +98,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
               <div className="flex gap-1 mb-1">
                 <button
                   disabled={idx === 0}
-                  className="px-2 py-1 bg-gray-200 rounded text-xs"
+                  className="px-2 py-1 bg-mono-200 rounded text-xs"
                   onClick={() => moveImage(idx, idx - 1)}
                   title="Lên"
                 >
@@ -106,7 +106,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
                 </button>
                 <button
                   disabled={idx === localImages.length - 1}
-                  className="px-2 py-1 bg-gray-200 rounded text-xs"
+                  className="px-2 py-1 bg-mono-200 rounded text-xs"
                   onClick={() => moveImage(idx, idx + 1)}
                   title="Xuống"
                 >
@@ -116,7 +116,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
             )}
             {canManageImages() && (
               <button
-                className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs mb-1"
+                className="bg-mono-800 hover:bg-mono-900 text-white px-2 py-1 rounded text-xs mb-1"
                 onClick={() => handleRemove(img._id)}
               >
                 Xóa
@@ -131,14 +131,14 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
               </button>
             )}
             {img.isMain && (
-              <span className="text-green-600 font-semibold text-xs">Main</span>
+              <span className="text-mono-800 font-semibold text-xs">Main</span>
             )}
           </div>
         ))}
       </div>
       {canManageImages() && (
         <button
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+          className="mt-4 px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-black transition"
           onClick={handleReorder}
           disabled={localImages.length < 2}
         >

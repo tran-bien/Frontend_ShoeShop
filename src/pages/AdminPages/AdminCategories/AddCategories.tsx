@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { categoryApi } from "../../../services/CategoryService";
 
 interface AddCategoryProps {
@@ -44,12 +44,12 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-300 bg-opacity-75 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md relative text-black">
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+          className="absolute top-2 right-2 text-mono-500 hover:text-mono-700 text-2xl"
         >
           &times;
         </button>
@@ -58,7 +58,7 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
           <div className="mb-4">
             <label
               htmlFor="categoryName"
-              className="block text-sm font-bold text-gray-600"
+              className="block text-sm font-bold text-mono-600"
             >
               Tên Danh Mục
             </label>
@@ -68,14 +68,14 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
               value={categoryName}
               onChange={handleCategoryNameChange}
               placeholder="Nhập tên danh mục"
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
             <label
               htmlFor="categoryDescription"
-              className="block text-sm font-bold text-gray-600"
+              className="block text-sm font-bold text-mono-600"
             >
               Mô tả
             </label>
@@ -84,11 +84,11 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
               value={categoryDescription}
               onChange={handleCategoryDescriptionChange}
               placeholder="Nhập mô tả danh mục"
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
-          {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
+          {error && <div className="text-mono-800 text-sm mb-2">{error}</div>}
           <div className="flex justify-end gap-4">
             <button
               type="submit"
@@ -100,7 +100,7 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
             <button
               type="button"
               onClick={handleClose}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md"
+              className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
               Hủy
             </button>

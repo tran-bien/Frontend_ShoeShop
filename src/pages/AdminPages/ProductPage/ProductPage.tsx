@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { productApi } from "../../../services/ProductService";
 import { brandApi } from "../../../services/BrandService";
 import { categoryApi } from "../../../services/CategoryService";
@@ -267,8 +267,8 @@ const ProductPage = () => {
   };
 
   return (
-    <div className="p-6 w-full font-sans bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug mb-6">
+    <div className="p-6 w-full font-sans bg-mono-50 min-h-screen">
+      <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug mb-6">
         Quản Lý Sản Phẩm
       </h2>
 
@@ -281,8 +281,8 @@ const ProductPage = () => {
           }}
           className={`px-6 py-3 font-medium transition border-b-2 -mb-px ${
             !showDeleted
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
+              ? "text-mono-black border-mono-black"
+              : "text-mono-500 border-transparent hover:text-mono-black"
           }`}
         >
           Sản phẩm
@@ -296,8 +296,8 @@ const ProductPage = () => {
             }}
             className={`px-6 py-3 font-medium transition border-b-2 -mb-px ${
               showDeleted
-                ? "text-blue-600 border-blue-600"
-                : "text-gray-500 border-transparent hover:text-blue-600"
+                ? "text-mono-black border-mono-black"
+                : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
             Sản phẩm đã xóa
@@ -305,7 +305,7 @@ const ProductPage = () => {
         )}
         {!showDeleted && canCreate() && (
           <button
-            className="ml-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium mr-3 my-2 transition-colors shadow-sm"
+            className="ml-auto px-6 py-3 bg-mono-black hover:bg-blue-700 text-white rounded-lg font-medium mr-3 my-2 transition-colors shadow-sm"
             onClick={() => openModal("add")}
           >
             + Thêm Sản Phẩm
@@ -327,7 +327,7 @@ const ProductPage = () => {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+                className="w-full px-4 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-600 transition-all"
               />
             </div>
           </div>
@@ -341,7 +341,7 @@ const ProductPage = () => {
                 setCategoryFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="all">Tất cả danh mục</option>
               {categories.map((cat) => (
@@ -358,7 +358,7 @@ const ProductPage = () => {
                 setBrandFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="all">Tất cả thương hiệu</option>
               {brands.map((brand) => (
@@ -375,7 +375,7 @@ const ProductPage = () => {
                 setStockStatusFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="all">Tất cả tồn kho</option>
               <option value="in_stock">Còn hàng</option>
@@ -390,7 +390,7 @@ const ProductPage = () => {
                 setIsActiveFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="all">Tất cả trạng thái</option>
               <option value="true">Đang bán</option>
@@ -404,7 +404,7 @@ const ProductPage = () => {
                 setSortOption(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="created_at_desc">Mới nhất</option>
               <option value="created_at_asc">Cũ nhất</option>
@@ -430,7 +430,7 @@ const ProductPage = () => {
                 setSortOption("created_at_desc");
                 setCurrentPage(1);
               }}
-              className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+              className="text-sm text-mono-black hover:text-blue-800 font-medium"
             >
               ✕ Xóa bộ lọc
             </button>
@@ -440,13 +440,13 @@ const ProductPage = () => {
 
       {loading ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-mono-black"></div>
+          <p className="mt-4 text-mono-600">Đang tải dữ liệu...</p>
         </div>
       ) : products.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
           <svg
-            className="mx-auto h-16 w-16 text-gray-400 mb-4"
+            className="mx-auto h-16 w-16 text-mono-400 mb-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -458,12 +458,12 @@ const ProductPage = () => {
               d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
             />
           </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-mono-900 mb-2">
             {showDeleted
               ? "Không có sản phẩm nào đã xóa"
               : "Không tìm thấy sản phẩm"}
           </h3>
-          <p className="text-gray-500">
+          <p className="text-mono-500">
             {showDeleted
               ? "Chưa có sản phẩm nào bị xóa trong hệ thống"
               : searchQuery || categoryFilter !== "all" || brandFilter !== "all"
@@ -475,27 +475,27 @@ const ProductPage = () => {
         <>
           <div className="overflow-x-auto shadow-md rounded-lg bg-white">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+              <thead className="bg-gradient-to-r from-mono-50 to-mono-100">
                 <tr>
-                  <th className="py-4 px-6 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Sản phẩm
                   </th>
-                  <th className="py-4 px-6 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Danh mục
                   </th>
-                  <th className="py-4 px-6 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Thương hiệu
                   </th>
-                  <th className="py-4 px-6 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Giá bán
                   </th>
-                  <th className="py-4 px-6 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Tồn kho
                   </th>
-                  <th className="py-4 px-6 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Trạng thái
                   </th>
-                  <th className="py-4 px-6 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Hành động
                   </th>
                 </tr>
@@ -525,7 +525,7 @@ const ProductPage = () => {
                   return (
                     <tr
                       key={_id}
-                      className="hover:bg-blue-50 transition-colors"
+                      className="hover:bg-mono-50 transition-colors"
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-3">
@@ -533,15 +533,15 @@ const ProductPage = () => {
                             <img
                               src={mainImage}
                               alt={name}
-                              className="h-14 w-14 rounded-lg object-cover border border-gray-200 shadow-sm"
+                              className="h-14 w-14 rounded-lg object-cover border border-mono-200 shadow-sm"
                             />
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-gray-900 truncate">
+                            <p className="text-sm font-semibold text-mono-900 truncate">
                               {name}
                             </p>
                             <p
-                              className="text-xs text-gray-500 font-mono truncate"
+                              className="text-xs text-mono-500 font-mono truncate"
                               title={_id}
                             >
                               ID: {_id.slice(-8)}
@@ -550,19 +550,19 @@ const ProductPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm text-mono-700">
                           {typeof category === "string"
                             ? category
                             : category?.name}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm text-mono-700">
                           {typeof brand === "string" ? brand : brand?.name}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-mono-900">
                           {priceRange?.min === priceRange?.max
                             ? `${(priceRange?.min || 0).toLocaleString()}đ`
                             : `${(priceRange?.min || 0).toLocaleString()}đ - ${(
@@ -604,7 +604,7 @@ const ProductPage = () => {
                               ),
                             }[stockStatus || "out_of_stock"]
                           }
-                          <span className="text-xs text-gray-500 font-medium">
+                          <span className="text-xs text-mono-500 font-medium">
                             SL: {totalQuantity || 0}
                           </span>
                         </div>
@@ -616,7 +616,7 @@ const ProductPage = () => {
                             className={`inline-block px-3 py-1.5 rounded-full text-xs font-semibold focus:outline-none transition-all transform hover:scale-105 ${
                               isActive
                                 ? "bg-green-100 text-green-700 hover:bg-green-200"
-                                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                                : "bg-mono-100 text-mono-700 hover:bg-mono-200"
                             }`}
                             onClick={() => openActiveModal(product)}
                             title="Cập nhật trạng thái"
@@ -629,7 +629,7 @@ const ProductPage = () => {
                             className={`inline-block px-3 py-1.5 rounded-full text-xs font-semibold ${
                               isActive
                                 ? "bg-green-100 text-green-700"
-                                : "bg-gray-100 text-gray-700"
+                                : "bg-mono-100 text-mono-700"
                             }`}
                           >
                             {isActive ? "✓ Đang bán" : "✕ Ẩn"}
@@ -641,7 +641,7 @@ const ProductPage = () => {
                           {!showDeleted ? (
                             <>
                               <button
-                                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-1.5"
+                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                 onClick={() => openModal("detail", product)}
                                 title="Xem chi tiết"
                               >
@@ -669,7 +669,7 @@ const ProductPage = () => {
                               {canUpdate() && (
                                 <>
                                   <button
-                                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-1.5"
+                                    className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                     onClick={() => openModal("edit", product)}
                                     title="Sửa sản phẩm"
                                   >
@@ -768,14 +768,14 @@ const ProductPage = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="bg-white px-4 py-4 flex items-center justify-between border-t border-gray-200 rounded-b-lg shadow-sm mt-0">
+            <div className="bg-white px-4 py-4 flex items-center justify-between border-t border-mono-200 rounded-b-lg shadow-sm mt-0">
               <div className="flex-1 flex justify-between sm:hidden">
                 <button
                   onClick={() =>
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
                   disabled={currentPage === 1}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-4 py-2 border border-mono-300 text-sm font-medium rounded-md text-mono-700 bg-white hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Trước
                 </button>
@@ -784,14 +784,14 @@ const ProductPage = () => {
                     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                   }
                   disabled={currentPage === totalPages}
-                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-mono-300 text-sm font-medium rounded-md text-mono-700 bg-white hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Sau
                 </button>
               </div>
               <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-mono-700">
                     Hiển thị{" "}
                     <span className="font-medium">
                       {(currentPage - 1) * limit + 1}
@@ -812,7 +812,7 @@ const ProductPage = () => {
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
                       }
                       disabled={currentPage === 1}
-                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-mono-300 bg-white text-sm font-medium text-mono-500 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       ←
                     </button>
@@ -829,8 +829,8 @@ const ProductPage = () => {
                             onClick={() => setCurrentPage(page)}
                             className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                               currentPage === page
-                                ? "z-10 bg-blue-600 border-blue-600 text-white"
-                                : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                                ? "z-10 bg-mono-black border-mono-black text-white"
+                                : "bg-white border-mono-300 text-mono-700 hover:bg-mono-50"
                             }`}
                           >
                             {page}
@@ -843,7 +843,7 @@ const ProductPage = () => {
                         return (
                           <span
                             key={page}
-                            className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                            className="relative inline-flex items-center px-4 py-2 border border-mono-300 bg-white text-sm font-medium text-mono-700"
                           >
                             ...
                           </span>
@@ -856,7 +856,7 @@ const ProductPage = () => {
                         setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                       }
                       disabled={currentPage === totalPages}
-                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-mono-300 bg-white text-sm font-medium text-mono-500 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       →
                     </button>
@@ -871,19 +871,19 @@ const ProductPage = () => {
       {showAdd && <AddProduct handleClose={handleAddSuccess} />}
 
       {showEdit && selectedProduct && (
-        <div className="fixed inset-0 bg-gray-300 bg-opacity-75 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-2xl shadow-lg w-auto relative text-black">
             <button
               type="button"
               onClick={() => closeModal("edit")}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 transition duration-300"
+              className="absolute top-2 right-2 text-mono-500 hover:text-mono-700 transition duration-300"
             >
               &times;
             </button>
             <h2 className="text-xl font-bold mb-8 text-center">Sửa Sản Phẩm</h2>
             <form className="space-y-4" onSubmit={handleEditSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Tên sản phẩm
                 </label>
                 <input
@@ -892,12 +892,12 @@ const ProductPage = () => {
                   value={editForm.name}
                   onChange={handleEditChange}
                   placeholder="Nhập tên sản phẩm"
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Mô tả
                 </label>
                 <textarea
@@ -905,20 +905,20 @@ const ProductPage = () => {
                   value={editForm.description}
                   onChange={handleEditChange}
                   placeholder="Nhập mô tả"
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   rows={3}
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Danh mục
                 </label>
                 <select
                   name="category"
                   value={editForm.category}
                   onChange={handleEditChange}
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   required
                 >
                   <option value="">Chọn danh mục</option>
@@ -930,14 +930,14 @@ const ProductPage = () => {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Thương hiệu
                 </label>
                 <select
                   name="brand"
                   value={editForm.brand}
                   onChange={handleEditChange}
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   required
                 >
                   <option value="">Chọn thương hiệu</option>
@@ -949,20 +949,20 @@ const ProductPage = () => {
                 </select>
               </div>
               {editError && (
-                <div className="text-red-500 text-sm mb-2">{editError}</div>
+                <div className="text-mono-800 text-sm mb-2">{editError}</div>
               )}
               <div className="flex justify-end gap-4">
                 <button
                   type="button"
                   onClick={() => closeModal("edit")}
-                  className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md"
+                  className="bg-mono-500 hover:bg-mono-600 text-white px-6 py-2 rounded-md"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={editLoading}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md"
+                  className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-md"
                 >
                   {editLoading ? "Đang cập nhật..." : "Cập nhật"}
                 </button>
@@ -973,7 +973,7 @@ const ProductPage = () => {
       )}
 
       {showDelete && selectedProduct && (
-        <div className="fixed inset-0 bg-gray-300 bg-opacity-75 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-2xl shadow-lg w-auto relative text-black">
             <h2 className="text-xl font-bold mb-4 text-center">Xác nhận xóa</h2>
             <p className="text-center mb-6">
@@ -982,13 +982,13 @@ const ProductPage = () => {
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => closeModal("delete")}
-                className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-md"
+                className="bg-mono-500 hover:bg-mono-600 text-white px-6 py-2 rounded-md"
               >
                 Hủy
               </button>
               <button
                 onClick={handleDelete}
-                className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md"
+                className="bg-mono-800 hover:bg-mono-900 text-white px-6 py-2 rounded-md"
               >
                 Xóa
               </button>
@@ -1002,8 +1002,8 @@ const ProductPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md relative animate-fadeIn">
             {/* Header */}
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
+            <div className="px-6 py-4 border-b border-mono-200">
+              <h2 className="text-lg font-semibold text-mono-900">
                 Cập nhật trạng thái sản phẩm
               </h2>
             </div>
@@ -1024,13 +1024,13 @@ const ProductPage = () => {
                           isActive: !e.target.checked,
                         }))
                       }
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                      className="w-4 h-4 text-mono-black bg-mono-100 border-mono-300 rounded focus:ring-mono-500 focus:ring-2 cursor-pointer"
                     />
                   </div>
                   <div className="flex-1">
                     <label
                       htmlFor="isActive"
-                      className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+                      className="text-sm font-medium text-mono-700 cursor-pointer select-none"
                     >
                       Ẩn
                     </label>
@@ -1050,13 +1050,13 @@ const ProductPage = () => {
                           cascade: e.target.checked,
                         }))
                       }
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                      className="w-4 h-4 text-mono-black bg-mono-100 border-mono-300 rounded focus:ring-mono-500 focus:ring-2 cursor-pointer"
                     />
                   </div>
                   <div className="flex-1">
                     <label
                       htmlFor="cascade"
-                      className="text-sm font-medium text-gray-700 cursor-pointer select-none"
+                      className="text-sm font-medium text-mono-700 cursor-pointer select-none"
                     >
                       Cập nhật cho biến thể
                     </label>
@@ -1065,17 +1065,17 @@ const ProductPage = () => {
               </div>
 
               {/* Footer */}
-              <div className="px-6 py-4 bg-gray-50 rounded-b-xl flex justify-end gap-3">
+              <div className="px-6 py-4 bg-mono-50 rounded-b-xl flex justify-end gap-3">
                 <button
                   type="button"
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-mono-700 bg-white border border-mono-300 rounded-lg hover:bg-mono-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mono-500 transition-colors"
                   onClick={() => closeModal("active")}
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white bg-mono-black rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mono-500 transition-colors"
                 >
                   Lưu
                 </button>
@@ -1097,7 +1097,7 @@ const ProductPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-4 w-full max-w-xl relative">
             <button
-              className="absolute top-2 right-2 text-xl font-bold hover:text-red-600"
+              className="absolute top-2 right-2 text-xl font-bold hover:text-mono-900"
               onClick={() => closeModal("images")}
             >
               ×

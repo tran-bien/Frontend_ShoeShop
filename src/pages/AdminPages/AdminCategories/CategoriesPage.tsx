@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { Category } from "../../../types/category";
 import { categoryApi } from "../../../services/CategoryService";
@@ -18,12 +18,12 @@ const ViewDetailModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-t-xl">
+        <div className="sticky top-0 bg-gradient-to-r from-mono-black to-purple-600 text-white p-6 rounded-t-xl">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold">Chi tiết Danh mục</h2>
             <button
               onClick={onClose}
-              className="text-white hover:text-gray-200 text-3xl font-bold leading-none"
+              className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
             >
               ×
             </button>
@@ -32,19 +32,19 @@ const ViewDetailModal: React.FC<{
         <div className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-500 font-medium">ID</p>
-              <p className="text-gray-800 font-mono text-sm">{category._id}</p>
+              <p className="text-sm text-mono-500 font-medium">ID</p>
+              <p className="text-mono-800 font-mono text-sm">{category._id}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">Tên danh mục</p>
-              <p className="text-gray-800 font-semibold">{category.name}</p>
+              <p className="text-sm text-mono-500 font-medium">Tên danh mục</p>
+              <p className="text-mono-800 font-semibold">{category.name}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">Slug</p>
-              <p className="text-gray-800 font-mono text-sm">{category.slug}</p>
+              <p className="text-sm text-mono-500 font-medium">Slug</p>
+              <p className="text-mono-800 font-mono text-sm">{category.slug}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">Trạng thái</p>
+              <p className="text-sm text-mono-500 font-medium">Trạng thái</p>
               <div className="mt-1">
                 {category.isActive ? (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
@@ -59,25 +59,25 @@ const ViewDetailModal: React.FC<{
             </div>
           </div>
           <div>
-            <p className="text-sm text-gray-500 font-medium">Mô tả</p>
-            <p className="text-gray-800 mt-1">
+            <p className="text-sm text-mono-500 font-medium">Mô tả</p>
+            <p className="text-mono-800 mt-1">
               {category.description || "Không có mô tả"}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-gray-500 font-medium">Ngày tạo</p>
-              <p className="text-gray-800 text-sm">
+              <p className="text-sm text-mono-500 font-medium">Ngày tạo</p>
+              <p className="text-mono-800 text-sm">
                 {category.createdAt
                   ? new Date(category.createdAt).toLocaleString("vi-VN")
                   : "N/A"}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 font-medium">
+              <p className="text-sm text-mono-500 font-medium">
                 Cập nhật lần cuối
               </p>
-              <p className="text-gray-800 text-sm">
+              <p className="text-mono-800 text-sm">
                 {category.updatedAt
                   ? new Date(category.updatedAt).toLocaleString("vi-VN")
                   : "N/A"}
@@ -86,8 +86,8 @@ const ViewDetailModal: React.FC<{
           </div>
           {category.deletedAt && (
             <div className="pt-4 border-t">
-              <p className="text-sm text-gray-500 font-medium">Ngày xóa</p>
-              <p className="text-gray-800 text-sm">
+              <p className="text-sm text-mono-500 font-medium">Ngày xóa</p>
+              <p className="text-mono-800 text-sm">
                 {new Date(category.deletedAt).toLocaleString("vi-VN")}
               </p>
             </div>
@@ -133,12 +133,12 @@ const EditCategoryModal: React.FC<{
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-300 bg-opacity-75 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md relative text-black">
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+          className="absolute top-2 right-2 text-mono-500 hover:text-mono-700 text-2xl"
         >
           &times;
         </button>
@@ -156,7 +156,7 @@ const EditCategoryModal: React.FC<{
               value={formData.name}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
           </div>
           <div>
@@ -168,15 +168,15 @@ const EditCategoryModal: React.FC<{
               value={formData.description}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
           </div>
-          {error && <div className="text-red-500 text-sm">{error}</div>}
+          {error && <div className="text-mono-800 text-sm">{error}</div>}
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+              className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
               {loading ? "Đang cập nhật..." : "Cập nhật"}
             </button>
@@ -359,29 +359,29 @@ const ListCategoriesPage: React.FC = () => {
   return (
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug">
+        <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
           Danh Sách Danh Mục
         </h2>
         {!isSearchVisible ? (
           <button
             onClick={toggleSearchVisibility}
-            className="flex items-center gap-2 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-300 active:bg-gray-200"
+            className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
-            <IoIosSearch className="text-xl text-gray-500" />
+            <IoIosSearch className="text-xl text-mono-500" />
             <span className="font-medium">Tìm kiếm</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
             <IoIosSearch
               onClick={handleBack}
-              className="text-gray-400 cursor-pointer text-xl"
+              className="text-mono-400 cursor-pointer text-xl"
             />
             <input
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder="Tìm theo tên danh mục..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
         )}
@@ -390,14 +390,14 @@ const ListCategoriesPage: React.FC = () => {
       {/* Stats Cards */}
       {!showDeleted && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200">
-            <h3 className="text-sm font-medium text-blue-600 mb-1">
+          <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
+            <h3 className="text-sm font-medium text-mono-black mb-1">
               Tổng số danh mục
             </h3>
             <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
-            <h3 className="text-sm font-medium text-green-600 mb-1">
+            <h3 className="text-sm font-medium text-mono-800 mb-1">
               Đang hoạt động
             </h3>
             <p className="text-3xl font-bold text-green-900">{activeCount}</p>
@@ -423,8 +423,8 @@ const ListCategoriesPage: React.FC = () => {
             }}
             className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
               !showDeleted
-                ? "text-blue-600 border-blue-600"
-                : "text-gray-500 border-transparent hover:text-blue-600"
+                ? "text-mono-black border-mono-black"
+                : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
             Danh mục đang hoạt động
@@ -437,8 +437,8 @@ const ListCategoriesPage: React.FC = () => {
               }}
               className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
                 showDeleted
-                  ? "text-blue-600 border-blue-600"
-                  : "text-gray-500 border-transparent hover:text-blue-600"
+                  ? "text-mono-black border-mono-black"
+                  : "text-mono-500 border-transparent hover:text-mono-black"
               }`}
             >
               Danh mục đã xóa
@@ -453,7 +453,7 @@ const ListCategoriesPage: React.FC = () => {
               setSortOption(e.target.value);
               setCurrentPage(1);
             }}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
             <option value="created_at_desc">Mới nhất</option>
             <option value="created_at_asc">Cũ nhất</option>
@@ -462,7 +462,7 @@ const ListCategoriesPage: React.FC = () => {
           </select>
           {!showDeleted && canCreate() && (
             <button
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              className="px-4 py-2 bg-gradient-to-r from-mono-black to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
               onClick={() => setShowAddCategory(true)}
             >
               + Thêm Danh Mục
@@ -490,7 +490,7 @@ const ListCategoriesPage: React.FC = () => {
       {/* Categories Table */}
       <div className="overflow-x-auto shadow rounded-lg">
         <table className="min-w-full bg-white rounded-md overflow-hidden border">
-          <thead className="bg-gray-50 text-gray-700 text-sm font-semibold uppercase">
+          <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
               <th className="py-3 px-4 text-left border-b">Tên Danh Mục</th>
@@ -503,7 +503,7 @@ const ListCategoriesPage: React.FC = () => {
           </thead>
           <tbody>
             {displayedCategories.map((item) => (
-              <tr key={item._id} className="hover:bg-gray-50 border-t">
+              <tr key={item._id} className="hover:bg-mono-50 border-t">
                 <td className="px-4 py-3 font-mono text-xs">
                   {item._id.slice(-8)}
                 </td>
@@ -534,7 +534,7 @@ const ListCategoriesPage: React.FC = () => {
                   <div className="flex flex-wrap gap-1.5 justify-center min-w-[140px]">
                     <button
                       onClick={() => setViewDetailCategory(item)}
-                      className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-medium rounded-lg border border-blue-200 transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                     >
                       <svg
                         className="w-3.5 h-3.5"
@@ -562,7 +562,7 @@ const ListCategoriesPage: React.FC = () => {
                         {canUpdate() && (
                           <button
                             onClick={() => setEditingCategory(item)}
-                            className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -662,7 +662,7 @@ const ListCategoriesPage: React.FC = () => {
 
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-mono-600">
           Trang {currentPage} / {totalPages} • Tổng: {totalCount} danh mục
         </div>
         <div className="flex gap-2">
@@ -671,8 +671,8 @@ const ListCategoriesPage: React.FC = () => {
             disabled={currentPage === 1}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
               currentPage === 1
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
             Trước
@@ -699,14 +699,14 @@ const ListCategoriesPage: React.FC = () => {
                 <button
                   key={1}
                   onClick={() => setCurrentPage(1)}
-                  className="px-3 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                  className="px-3 py-2 rounded-lg font-medium bg-mono-200 text-mono-700 hover:bg-mono-300 transition-all"
                 >
                   1
                 </button>
               );
               if (startPage > 2) {
                 pages.push(
-                  <span key="ellipsis1" className="px-2 text-gray-500">
+                  <span key="ellipsis1" className="px-2 text-mono-500">
                     ...
                   </span>
                 );
@@ -721,8 +721,8 @@ const ListCategoriesPage: React.FC = () => {
                   onClick={() => setCurrentPage(i)}
                   className={`px-3 py-2 rounded-lg font-medium transition-all ${
                     i === currentPage
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      ? "bg-mono-black text-white"
+                      : "bg-mono-200 text-mono-700 hover:bg-mono-300"
                   }`}
                 >
                   {i}
@@ -734,7 +734,7 @@ const ListCategoriesPage: React.FC = () => {
             if (endPage < totalPages) {
               if (endPage < totalPages - 1) {
                 pages.push(
-                  <span key="ellipsis2" className="px-2 text-gray-500">
+                  <span key="ellipsis2" className="px-2 text-mono-500">
                     ...
                   </span>
                 );
@@ -743,7 +743,7 @@ const ListCategoriesPage: React.FC = () => {
                 <button
                   key={totalPages}
                   onClick={() => setCurrentPage(totalPages)}
-                  className="px-3 py-2 rounded-lg font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all"
+                  className="px-3 py-2 rounded-lg font-medium bg-mono-200 text-mono-700 hover:bg-mono-300 transition-all"
                 >
                   {totalPages}
                 </button>
@@ -760,8 +760,8 @@ const ListCategoriesPage: React.FC = () => {
             disabled={currentPage === totalPages}
             className={`px-4 py-2 rounded-lg font-medium transition-all ${
               currentPage === totalPages
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
             Tiếp

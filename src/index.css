@@ -1,7 +1,157 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: "Nunito", sans-serif;
+@layer base {
+  * {
+    @apply antialiased;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply font-sans bg-mono-white text-mono-700;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display font-semibold text-mono-black;
+  }
+
+  button {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-mono-black focus-visible:ring-offset-2;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-mono-black focus-visible:border-mono-black;
+  }
+}
+
+@layer components {
+  /* Primary Button - Luxury Black */
+  .btn-primary {
+    @apply bg-mono-black text-mono-white px-6 py-3 font-medium tracking-wide;
+    @apply hover:bg-mono-900 active:bg-mono-800;
+    @apply transition-all duration-300 ease-out;
+    @apply disabled:bg-mono-300 disabled:text-mono-500 disabled:cursor-not-allowed;
+  }
+
+  /* Secondary Button - Outlined */
+  .btn-secondary {
+    @apply bg-transparent border-2 border-mono-black text-mono-black px-6 py-3 font-medium tracking-wide;
+    @apply hover:bg-mono-black hover:text-mono-white;
+    @apply transition-all duration-300 ease-out;
+    @apply disabled:border-mono-300 disabled:text-mono-300 disabled:cursor-not-allowed;
+  }
+
+  /* Ghost Button */
+  .btn-ghost {
+    @apply bg-transparent text-mono-700 px-6 py-3 font-medium;
+    @apply hover:bg-mono-100 hover:text-mono-black;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  /* Input Field - Minimalist */
+  .input-field {
+    @apply w-full px-4 py-3 bg-mono-50 border border-mono-200 text-mono-700;
+    @apply placeholder:text-mono-400;
+    @apply focus:bg-mono-white focus:border-mono-black;
+    @apply transition-all duration-200 ease-out;
+  }
+
+  /* Card - Subtle Shadow */
+  .card {
+    @apply bg-mono-white border border-mono-200 shadow-soft;
+    @apply hover:shadow-medium transition-shadow duration-300;
+  }
+
+  /* Luxury Card - Premium Feel */
+  .card-luxury {
+    @apply bg-mono-white border border-mono-200 shadow-luxury;
+    @apply hover:shadow-hard transition-all duration-500;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 text-xs font-medium tracking-wider uppercase;
+    @apply bg-mono-black text-mono-white;
+  }
+
+  .badge-outline {
+    @apply inline-flex items-center px-3 py-1 text-xs font-medium tracking-wider uppercase;
+    @apply border border-mono-black text-mono-black bg-transparent;
+  }
+
+  /* Divider */
+  .divider {
+    @apply border-t border-mono-200;
+  }
+
+  /* Link - Underline on hover */
+  .link {
+    @apply text-mono-700 hover:text-mono-black;
+    @apply border-b border-transparent hover:border-mono-black;
+    @apply transition-all duration-200;
+  }
+
+  /* Section Heading */
+  .section-heading {
+    @apply text-3xl md:text-4xl font-display font-semibold text-mono-black tracking-tight;
+  }
+
+  /* Product Grid */
+  .product-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+
+  /* Container */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  /* Text Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Animation Utilities */
+  .animate-in {
+    @apply animate-fade-in;
+  }
+
+  /* Backdrop Blur */
+  .backdrop-blur-luxury {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  /* Smooth Transitions */
+  .transition-luxury {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-mono-black to-mono-600 bg-clip-text text-transparent;
+  }
+
+  /* Hover Lift Effect */
+  .hover-lift {
+    @apply transition-transform duration-300 ease-out hover:-translate-y-1;
+  }
 }

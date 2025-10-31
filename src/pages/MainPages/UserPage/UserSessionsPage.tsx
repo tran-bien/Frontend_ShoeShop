@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { Button, Card, Typography, Space, Divider } from "antd";
 import {
   DesktopOutlined,
@@ -22,7 +22,7 @@ const UserSessionsPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-mono-100">
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 p-8">

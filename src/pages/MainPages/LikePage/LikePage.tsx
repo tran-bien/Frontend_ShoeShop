@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { FaHeart, FaTrash } from "react-icons/fa";
@@ -94,7 +94,7 @@ const LikePage: React.FC = () => {
     if (loading) {
       return (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mono-black"></div>
         </div>
       );
     }
@@ -105,15 +105,15 @@ const LikePage: React.FC = () => {
           <div className="text-6xl text-red-200 mb-4 flex justify-center">
             <FaHeart />
           </div>
-          <h2 className="text-2xl font-semibold text-gray-700 mb-3">
+          <h2 className="text-2xl font-semibold text-mono-700 mb-3">
             Danh sách yêu thích trống
           </h2>
-          <p className="text-gray-500 mb-6">
+          <p className="text-mono-500 mb-6">
             Bạn chưa thêm sản phẩm nào vào danh sách yêu thích
           </p>
           <button
             onClick={() => navigate("/products")}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-3 bg-mono-black text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             Khám phá sản phẩm ngay
           </button>
@@ -144,9 +144,9 @@ const LikePage: React.FC = () => {
               title="Xóa khỏi yêu thích"
             >
               {removingItems.has(item._id) ? (
-                <div className="h-6 w-6 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="h-6 w-6 border-2 border-mono-800 border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                <FaTrash className="text-red-500" size={20} />
+                <FaTrash className="text-mono-800" size={20} />
               )}
             </button>
           </div>
@@ -156,7 +156,7 @@ const LikePage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-mono-100">
       <div className="flex flex-1">
         {/* Sidebar */}
         <Sidebar />
@@ -164,7 +164,7 @@ const LikePage: React.FC = () => {
         {/* Main content */}
         <div className="flex-1 p-8">
           <h1 className="text-3xl font-bold mb-6 flex items-center gap-3">
-            <FaHeart className="text-red-500" />
+            <FaHeart className="text-mono-800" />
             <span>Sản phẩm yêu thích</span>
           </h1>
 

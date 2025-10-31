@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import {
   FaTruck,
   FaCheckCircle,
@@ -74,7 +74,7 @@ const ShipperDashboardPage = () => {
     const statusMap: any = {
       assigned_to_shipper: {
         label: "Đã gán",
-        color: "bg-blue-100 text-blue-800",
+        color: "bg-mono-100 text-blue-800",
         icon: <FaHourglassHalf />,
       },
       out_for_delivery: {
@@ -96,7 +96,7 @@ const ShipperDashboardPage = () => {
 
     const statusInfo = statusMap[status] || {
       label: status,
-      color: "bg-gray-100 text-gray-800",
+      color: "bg-mono-100 text-mono-800",
       icon: null,
     };
 
@@ -113,7 +113,7 @@ const ShipperDashboardPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-gray-500">Đang tải...</div>
+        <div className="text-mono-500">Đang tải...</div>
       </div>
     );
   }
@@ -126,13 +126,13 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm mb-1">Tổng đơn hàng</p>
-              <p className="text-3xl font-bold text-gray-800">
+              <p className="text-mono-600 text-sm mb-1">Tổng đơn hàng</p>
+              <p className="text-3xl font-bold text-mono-800">
                 {stats?.totalOrders || 0}
               </p>
             </div>
-            <div className="bg-blue-100 p-4 rounded-full">
-              <FaTruck size={24} className="text-blue-600" />
+            <div className="bg-mono-100 p-4 rounded-full">
+              <FaTruck size={24} className="text-mono-black" />
             </div>
           </div>
         </div>
@@ -141,13 +141,13 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm mb-1">Đã giao</p>
-              <p className="text-3xl font-bold text-green-600">
+              <p className="text-mono-600 text-sm mb-1">Đã giao</p>
+              <p className="text-3xl font-bold text-mono-800">
                 {stats?.completed || 0}
               </p>
             </div>
             <div className="bg-green-100 p-4 rounded-full">
-              <FaCheckCircle size={24} className="text-green-600" />
+              <FaCheckCircle size={24} className="text-mono-800" />
             </div>
           </div>
         </div>
@@ -156,13 +156,13 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm mb-1">Thất bại</p>
-              <p className="text-3xl font-bold text-red-600">
+              <p className="text-mono-600 text-sm mb-1">Thất bại</p>
+              <p className="text-3xl font-bold text-mono-900">
                 {stats?.failed || 0}
               </p>
             </div>
             <div className="bg-red-100 p-4 rounded-full">
-              <FaTimesCircle size={24} className="text-red-600" />
+              <FaTimesCircle size={24} className="text-mono-900" />
             </div>
           </div>
         </div>
@@ -171,7 +171,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-600 text-sm mb-1">Tỷ lệ thành công</p>
+              <p className="text-mono-600 text-sm mb-1">Tỷ lệ thành công</p>
               <p className="text-3xl font-bold text-purple-600">
                 {stats?.successRate}%
               </p>
@@ -185,15 +185,15 @@ const ShipperDashboardPage = () => {
 
       {/* Active Orders */}
       <div className="bg-white rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <FaTruck className="text-blue-600" />
+        <div className="px-6 py-4 border-b border-mono-200">
+          <h2 className="text-xl font-bold text-mono-800 flex items-center gap-2">
+            <FaTruck className="text-mono-black" />
             Đơn hàng đang giao ({activeOrders.length})
           </h2>
         </div>
         <div className="p-6">
           {activeOrders.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-mono-500">
               Không có đơn hàng nào đang giao
             </div>
           ) : (
@@ -201,14 +201,14 @@ const ShipperDashboardPage = () => {
               {activeOrders.map((order) => (
                 <div
                   key={order._id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="border border-mono-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <p className="font-semibold text-gray-800">
+                      <p className="font-semibold text-mono-800">
                         #{order.orderNumber || order._id.slice(-8)}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-mono-600">
                         {order.user?.name || "N/A"}
                       </p>
                     </div>
@@ -216,14 +216,14 @@ const ShipperDashboardPage = () => {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <FaMapMarkerAlt className="text-red-500" />
+                    <div className="flex items-center gap-2 text-mono-600">
+                      <FaMapMarkerAlt className="text-mono-800" />
                       <span className="truncate">
                         {order.shippingAddress?.address || "N/A"}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <FaClock className="text-blue-500" />
+                    <div className="flex items-center gap-2 text-mono-600">
+                      <FaClock className="text-mono-500" />
                       <span>
                         {new Date(order.createdAt).toLocaleString("vi-VN")}
                       </span>
@@ -231,14 +231,14 @@ const ShipperDashboardPage = () => {
                   </div>
 
                   <div className="mt-3 flex items-center justify-between">
-                    <p className="font-bold text-blue-600">
+                    <p className="font-bold text-mono-black">
                       {order.finalTotal?.toLocaleString("vi-VN")}₫
                     </p>
                     <button
                       onClick={() =>
                         (window.location.href = `/shipper/orders/${order._id}`)
                       }
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+                      className="px-4 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
                     >
                       Xem chi tiết
                     </button>
@@ -252,52 +252,52 @@ const ShipperDashboardPage = () => {
 
       {/* Today's Orders */}
       <div className="bg-white rounded-lg shadow">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <FaClock className="text-green-600" />
+        <div className="px-6 py-4 border-b border-mono-200">
+          <h2 className="text-xl font-bold text-mono-800 flex items-center gap-2">
+            <FaClock className="text-mono-800" />
             Đơn hàng hôm nay ({todayOrders.length})
           </h2>
         </div>
         <div className="p-6">
           {todayOrders.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-mono-500">
               Không có đơn hàng nào hôm nay
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-mono-50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                       Mã đơn
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                       Khách hàng
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                       Địa chỉ
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                       Tổng tiền
                     </th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                       Trạng thái
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {todayOrders.map((order) => (
-                    <tr key={order._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                    <tr key={order._id} className="hover:bg-mono-50">
+                      <td className="px-4 py-3 text-sm font-medium text-mono-900">
                         #{order.orderNumber || order._id.slice(-8)}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
+                      <td className="px-4 py-3 text-sm text-mono-600">
                         {order.user?.name || "N/A"}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">
+                      <td className="px-4 py-3 text-sm text-mono-600 max-w-xs truncate">
                         {order.shippingAddress?.address || "N/A"}
                       </td>
-                      <td className="px-4 py-3 text-sm font-semibold text-blue-600">
+                      <td className="px-4 py-3 text-sm font-semibold text-mono-black">
                         {order.finalTotal?.toLocaleString("vi-VN")}₫
                       </td>
                       <td className="px-4 py-3 text-sm">

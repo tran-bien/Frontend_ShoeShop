@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicCouponService } from "../../../services/CouponService";
 import { Coupon } from "../../../types/coupon";
@@ -102,30 +102,30 @@ const CouponsPage: React.FC = () => {
 
   // Component hiển thị mã giảm giá
   const CouponCard = ({ coupon }: { coupon: Coupon }) => (
-    <div className="bg-white border-2 border-gray-200 rounded-lg p-4 hover:border-gray-800 hover:shadow-md transition-all duration-300 relative overflow-hidden">
+    <div className="bg-white border-2 border-mono-200 rounded-lg p-4 hover:border-mono-800 hover:shadow-md transition-all duration-300 relative overflow-hidden">
       {/* Badge góc trên bên phải */}
-      <div className="absolute top-0 right-0 bg-gray-800 text-white text-xs px-2 py-1">
+      <div className="absolute top-0 right-0 bg-mono-800 text-white text-xs px-2 py-1">
         {coupon.type === "percent" ? "GIẢM %" : "GIẢM TIỀN"}
       </div>
 
       <div className="flex flex-col h-full">
         {/* Giá trị giảm giá */}
         <div className="mb-3">
-          <div className="text-2xl font-bold text-gray-900 flex items-center">
+          <div className="text-2xl font-bold text-mono-900 flex items-center">
             {coupon.type === "percent" ? (
               <>
-                <FiPercent className="mr-1 text-blue-600" />
+                <FiPercent className="mr-1 text-mono-black" />
                 <span>{coupon.value}%</span>
               </>
             ) : (
               <>
-                <FiDollarSign className="mr-1 text-green-600" />
+                <FiDollarSign className="mr-1 text-mono-800" />
                 <span>{formatCurrency(coupon.value)}</span>
               </>
             )}
           </div>
           {coupon.maxDiscount && coupon.type === "percent" && (
-            <div className="text-sm text-gray-600 mt-1">
+            <div className="text-sm text-mono-600 mt-1">
               Tối đa {formatCurrency(coupon.maxDiscount)}
             </div>
           )}
@@ -133,10 +133,10 @@ const CouponsPage: React.FC = () => {
 
         {/* Mô tả */}
         <div className="mb-3 flex-grow">
-          <p className="text-sm text-gray-700 line-clamp-2 leading-relaxed">
+          <p className="text-sm text-mono-700 line-clamp-2 leading-relaxed">
             {coupon.description}
           </p>
-          <p className="text-xs text-gray-500 mt-2 flex items-center">
+          <p className="text-xs text-mono-500 mt-2 flex items-center">
             <FiTag className="mr-1" />
             Đơn tối thiểu {formatCurrency(coupon.minOrderValue)}
           </p>
@@ -144,7 +144,7 @@ const CouponsPage: React.FC = () => {
 
         {/* Ngày hết hạn */}
         <div className="mt-auto">
-          <div className="flex items-center space-x-1 text-sm text-gray-600 mb-3">
+          <div className="flex items-center space-x-1 text-sm text-mono-600 mb-3">
             <FiCalendar size={14} />
             <span>HSD: {formatDate(coupon.endDate)}</span>
           </div>
@@ -152,7 +152,7 @@ const CouponsPage: React.FC = () => {
           {/* Copy button */}
           <button
             onClick={() => copyCouponCode(coupon.code)}
-            className="w-full flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            className="w-full flex items-center justify-center space-x-2 bg-mono-black hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
           >
             <span className="font-mono">{coupon.code}</span>
             <FiCopy size={14} />
@@ -163,18 +163,18 @@ const CouponsPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10">
+    <div className="min-h-screen bg-mono-50 py-10">
       <div className="container mx-auto px-4">
         {/* Tiêu đề trang và nút quay về trang chủ */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">Mã giảm giá</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h1 className="text-4xl font-bold text-mono-900 mb-3">Mã giảm giá</h1>
+          <p className="text-mono-600 max-w-2xl mx-auto">
             Khám phá các mã giảm giá hấp dẫn và áp dụng cho đơn hàng của bạn để
             nhận ưu đãi tốt nhất
           </p>
           <button
             onClick={() => navigate("/")}
-            className="mt-4 text-blue-600 hover:text-blue-800 flex items-center mx-auto"
+            className="mt-4 text-mono-black hover:text-blue-800 flex items-center mx-auto"
           >
             <span>&larr; Quay về trang chủ</span>
           </button>
@@ -188,24 +188,24 @@ const CouponsPage: React.FC = () => {
               <input
                 type="text"
                 placeholder="Tìm mã giảm giá..."
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 pr-4 py-2 border border-mono-300 rounded-lg w-full focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-mono-400" />
             </div>
 
             {/* Bộ lọc */}
             <div className="flex items-center gap-4 w-full md:w-auto">
-              <FiFilter className="text-gray-600" />
-              <span className="text-gray-600">Loại:</span>
+              <FiFilter className="text-mono-600" />
+              <span className="text-mono-600">Loại:</span>
               <div className="flex gap-2">
                 <button
                   onClick={() => setFilterType("all")}
                   className={`px-3 py-1 rounded-md text-sm font-medium ${
                     filterType === "all"
-                      ? "bg-gray-800 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      ? "bg-mono-800 text-white"
+                      : "bg-mono-100 text-mono-600 hover:bg-mono-200"
                   }`}
                 >
                   Tất cả
@@ -214,8 +214,8 @@ const CouponsPage: React.FC = () => {
                   onClick={() => setFilterType("percent")}
                   className={`px-3 py-1 rounded-md text-sm font-medium ${
                     filterType === "percent"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      ? "bg-mono-black text-white"
+                      : "bg-mono-100 text-mono-600 hover:bg-mono-200"
                   }`}
                 >
                   Giảm %
@@ -224,8 +224,8 @@ const CouponsPage: React.FC = () => {
                   onClick={() => setFilterType("fixed")}
                   className={`px-3 py-1 rounded-md text-sm font-medium ${
                     filterType === "fixed"
-                      ? "bg-green-600 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      ? "bg-mono-800 text-white"
+                      : "bg-mono-100 text-mono-600 hover:bg-mono-200"
                   }`}
                 >
                   Giảm tiền
@@ -238,23 +238,23 @@ const CouponsPage: React.FC = () => {
         {/* Danh sách mã giảm giá */}
         {loading ? (
           <div className="flex items-center justify-center h-60">
-            <FiLoader className="animate-spin text-3xl text-blue-600" />
+            <FiLoader className="animate-spin text-3xl text-mono-black" />
             <span className="ml-2 text-lg">Đang tải mã giảm giá...</span>
           </div>
         ) : error ? (
           <div className="text-center py-10">
-            <div className="text-red-600 text-lg mb-2">{error}</div>
+            <div className="text-mono-900 text-lg mb-2">{error}</div>
             <button
               onClick={fetchCoupons}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Thử lại
             </button>
           </div>
         ) : filteredCoupons.length === 0 ? (
-          <div className="text-center py-10 bg-gray-100 rounded-lg">
-            <FiTag className="mx-auto text-5xl text-gray-400 mb-3" />
-            <p className="text-gray-600 text-lg">
+          <div className="text-center py-10 bg-mono-100 rounded-lg">
+            <FiTag className="mx-auto text-5xl text-mono-400 mb-3" />
+            <p className="text-mono-600 text-lg">
               {searchTerm
                 ? "Không tìm thấy mã giảm giá phù hợp"
                 : "Hiện không có mã giảm giá nào"}
@@ -277,7 +277,7 @@ const CouponsPage: React.FC = () => {
                       setCurrentPage((prev) => Math.max(prev - 1, 1))
                     }
                     disabled={currentPage === 1}
-                    className="px-3 py-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+                    className="px-3 py-2 rounded-md border border-mono-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mono-100"
                   >
                     Trước
                   </button>
@@ -289,8 +289,8 @@ const CouponsPage: React.FC = () => {
                         onClick={() => setCurrentPage(page)}
                         className={`px-3 py-2 rounded-md ${
                           currentPage === page
-                            ? "bg-blue-600 text-white"
-                            : "border border-gray-300 hover:bg-gray-100"
+                            ? "bg-mono-black text-white"
+                            : "border border-mono-300 hover:bg-mono-100"
                         }`}
                       >
                         {page}
@@ -303,7 +303,7 @@ const CouponsPage: React.FC = () => {
                       setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                     }
                     disabled={currentPage === totalPages}
-                    className="px-3 py-2 rounded-md border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+                    className="px-3 py-2 rounded-md border border-mono-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mono-100"
                   >
                     Tiếp
                   </button>
@@ -315,19 +315,19 @@ const CouponsPage: React.FC = () => {
 
         {/* Hướng dẫn sử dụng - Simplify this section */}
         <div className="mt-16 bg-white p-6 rounded-lg shadow-sm">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-mono-900 mb-4">
             Hướng dẫn sử dụng mã giảm giá
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-start space-x-4">
-              <div className="bg-blue-100 text-blue-600 p-3 rounded-full">
+              <div className="bg-mono-100 text-mono-black p-3 rounded-full">
                 <FiCopy className="text-xl" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="font-semibold text-mono-900 mb-2">
                   Sao chép mã
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-mono-600">
                   Nhấn vào nút dưới mỗi mã giảm giá để sao chép mã vào bộ nhớ
                   tạm
                 </p>
@@ -335,14 +335,14 @@ const CouponsPage: React.FC = () => {
             </div>
 
             <div className="flex items-start space-x-4">
-              <div className="bg-blue-100 text-blue-600 p-3 rounded-full">
+              <div className="bg-mono-100 text-mono-black p-3 rounded-full">
                 <FiShoppingCart className="text-xl" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">
+                <h3 className="font-semibold text-mono-900 mb-2">
                   Thêm sản phẩm vào giỏ
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-mono-600">
                   Thêm sản phẩm bạn muốn mua vào giỏ hàng với giá trị đơn tối
                   thiểu
                 </p>
@@ -350,12 +350,12 @@ const CouponsPage: React.FC = () => {
             </div>
 
             <div className="flex items-start space-x-4">
-              <div className="bg-blue-100 text-blue-600 p-3 rounded-full">
+              <div className="bg-mono-100 text-mono-black p-3 rounded-full">
                 <FiTag className="text-xl" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900 mb-2">Áp dụng mã</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-semibold text-mono-900 mb-2">Áp dụng mã</h3>
+                <p className="text-sm text-mono-600">
                   Dán mã giảm giá vào ô nhập mã trong trang giỏ hàng và bấm áp
                   dụng
                 </p>

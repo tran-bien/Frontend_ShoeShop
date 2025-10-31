@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import cartService from "../../services/CartService";
@@ -242,7 +242,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
   if (!product) {
     return (
-      <div className="text-center text-gray-500 mt-10">
+      <div className="text-center text-mono-500 mt-10">
         Không tìm thấy sản phẩm.
       </div>
     );
@@ -552,7 +552,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         {/* Product Images */}
         <div className="space-y-4">
           {/* Main image */}
-          <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
+          <div className="aspect-square overflow-hidden rounded-lg bg-mono-100">
             <img
               src={currentImage?.url || "/placeholder.jpg"}
               alt={product.name}
@@ -574,8 +574,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                   onClick={() => setCurrentImageIndex(index)}
                   className={`aspect-square overflow-hidden rounded-md border-2 ${
                     currentImageIndex === index
-                      ? "border-blue-500"
-                      : "border-gray-200"
+                      ? "border-mono-500"
+                      : "border-mono-200"
                   }`}
                 >
                   <img
@@ -598,7 +598,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         <div className="space-y-6">
           {/* Title and price */}
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+            <h1 className="text-2xl font-bold text-mono-900 sm:text-3xl">
               {product.name}
             </h1>
 
@@ -611,8 +611,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                     className={`text-3xl font-bold ${
                       selectedSizeInfo.discountPercent &&
                       selectedSizeInfo.discountPercent > 0
-                        ? "text-red-600"
-                        : "text-gray-900"
+                        ? "text-mono-900"
+                        : "text-mono-900"
                     }`}
                   >
                     {(
@@ -626,17 +626,17 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                   {selectedSizeInfo.discountPercent &&
                     selectedSizeInfo.discountPercent > 0 && (
                       <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-lg text-gray-500 line-through">
+                        <span className="text-lg text-mono-500 line-through">
                           {(selectedSizeInfo.price || 0).toLocaleString()}đ
                         </span>
-                        <span className="text-sm font-medium text-red-600 bg-red-100 px-2 py-1 rounded">
+                        <span className="text-sm font-medium text-mono-900 bg-red-100 px-2 py-1 rounded">
                           -{selectedSizeInfo.discountPercent}%
                         </span>
                       </div>
                     )}
                 </>
               ) : (
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-3xl font-bold text-mono-900">
                   {selectedGender && selectedColorId
                     ? "Vui lòng chọn size"
                     : "Vui lòng chọn màu sắc"}
@@ -656,7 +656,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 )
               )}
             </div>
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-mono-600">
               {Number(product.averageRating || 0).toFixed(1)} (
               {product.reviewCount || 0} đánh giá)
             </span>
@@ -677,8 +677,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                     }}
                     className={`px-4 py-2 border rounded-lg transition-colors ${
                       selectedGender === gender.id
-                        ? "border-blue-500 bg-blue-50 text-blue-700"
-                        : "border-gray-300 hover:border-gray-400"
+                        ? "border-mono-500 bg-mono-50 text-blue-700"
+                        : "border-mono-300 hover:border-mono-400"
                     }`}
                   >
                     {gender.name}
@@ -707,8 +707,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                       }}
                       className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition-colors ${
                         selectedColorId === color._id
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-300 hover:border-gray-400"
+                          ? "border-mono-500 bg-mono-50"
+                          : "border-mono-300 hover:border-mono-400"
                       }`}
                     >
                       {color.type === "solid" ? (
@@ -756,7 +756,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 <h3 className="text-lg font-medium">Kích thước:</h3>
                 <button
                   onClick={() => setShowSizeGuide(!showSizeGuide)}
-                  className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                  className="text-sm text-mono-black hover:text-blue-800 flex items-center gap-1"
                 >
                   <FiInfo size={14} />
                   Hướng dẫn chọn size
@@ -779,12 +779,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                         disabled={isOutOfStock}
                         className={`px-4 py-2 border rounded-lg transition-colors ${
                           selectedSizeId === sizeInfo.sizeId
-                            ? "border-blue-500 bg-blue-50 text-blue-700"
+                            ? "border-mono-500 bg-mono-50 text-blue-700"
                             : isOutOfStock
-                            ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
+                            ? "border-mono-200 bg-mono-100 text-mono-400 cursor-not-allowed"
                             : isLowStock
                             ? "border-orange-300 bg-orange-50"
-                            : "border-gray-300 hover:border-gray-400"
+                            : "border-mono-300 hover:border-mono-400"
                         }`}
                       >
                         {sizeInfo.sizeValue}
@@ -800,7 +800,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
                       {/* Size description tooltip */}
                       {sizeDetails?.description && (
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-mono-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                           {sizeDetails.description}
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                         </div>
@@ -814,9 +814,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               {selectedSizeInfo &&
                 selectedSizeInfo.sizeId &&
                 getSizeDetails(selectedSizeInfo.sizeId)?.description && (
-                  <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                  <div className="mt-3 p-3 bg-mono-50 rounded-lg">
                     <div className="flex items-center gap-2">
-                      <FiInfo className="text-blue-600" size={16} />
+                      <FiInfo className="text-mono-black" size={16} />
                       <span className="text-sm font-medium text-blue-900">
                         Size {selectedSizeInfo.sizeValue}:
                       </span>
@@ -829,9 +829,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
               {/* Size guide */}
               {showSizeGuide && (
-                <div className="mt-4 p-4 border rounded-lg bg-gray-50">
+                <div className="mt-4 p-4 border rounded-lg bg-mono-50">
                   <h4 className="font-medium mb-2">Hướng dẫn chọn size giày</h4>
-                  <div className="text-sm text-gray-600 space-y-1">
+                  <div className="text-sm text-mono-600 space-y-1">
                     <p>• Đo chiều dài bàn chân từ gót đến ngón cái dài nhất</p>
                     <p>• Nên đo vào buổi chiều khi bàn chân hơi phù</p>
                     <p>• Chọn size lớn hơn 0.5-1cm so với chiều dài bàn chân</p>
@@ -853,7 +853,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                     setSelectedQuantity(newQty);
                     setQuantityInput(newQty.toString());
                   }}
-                  className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="p-2 border border-mono-300 rounded-lg hover:bg-mono-50"
                 >
                   <FiMinus />
                 </button>
@@ -863,7 +863,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                   value={quantityInput}
                   onChange={(e) => handleQuantityChange(e.target.value)}
                   onBlur={handleQuantityBlur}
-                  className="px-4 py-2 border border-gray-300 rounded-lg w-[60px] text-center"
+                  className="px-4 py-2 border border-mono-300 rounded-lg w-[60px] text-center"
                 />
 
                 <button
@@ -875,11 +875,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                     setSelectedQuantity(newQty);
                     setQuantityInput(newQty.toString());
                   }}
-                  className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="p-2 border border-mono-300 rounded-lg hover:bg-mono-50"
                 >
                   <FiPlus />
                 </button>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-mono-500">
                   Còn {availableStock} sản phẩm
                 </span>
               </div>
@@ -899,8 +899,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 loadingAdd ||
                 !selectedSizeId ||
                 availableStock < selectedQuantity
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700 transform hover:scale-105 transition-all duration-200"
+                  ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                  : "bg-mono-black text-white hover:bg-blue-700 transform hover:scale-105 transition-all duration-200"
               }`}
             >
               {loadingAdd ? (
@@ -924,8 +924,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 loadingBuyNow ||
                 !selectedSizeId ||
                 availableStock < selectedQuantity
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-red-600 text-white hover:bg-red-700 transform hover:scale-105 transition-all duration-200"
+                  ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                  : "bg-mono-900 text-white hover:bg-red-700 transform hover:scale-105 transition-all duration-200"
               }`}
             >
               {loadingBuyNow ? (
@@ -943,16 +943,16 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               disabled={likeLoading || !selectedColorId}
               className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg border font-medium ${
                 likeLoading || !selectedColorId
-                  ? "border-gray-300 text-gray-400 cursor-not-allowed"
+                  ? "border-mono-300 text-mono-400 cursor-not-allowed"
                   : isLiked
-                  ? "border-red-500 text-red-500 bg-red-50 hover:bg-red-100"
-                  : "border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50"
+                  ? "border-mono-800 text-mono-800 bg-red-50 hover:bg-red-100"
+                  : "border-mono-300 text-mono-700 hover:border-mono-400 hover:bg-mono-50"
               }`}
             >
               {likeLoading ? (
-                <div className="animate-spin h-5 w-5 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+                <div className="animate-spin h-5 w-5 border-2 border-mono-500 border-t-transparent rounded-full"></div>
               ) : isLiked ? (
-                <AiFillHeart size={20} className="text-red-500" />
+                <AiFillHeart size={20} className="text-mono-800" />
               ) : (
                 <AiOutlineHeart size={20} />
               )}
@@ -966,8 +966,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 onClick={() => setActiveTab("details")}
                 className={`px-4 py-2 font-medium ${
                   activeTab === "details"
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? "text-mono-black border-b-2 border-mono-black"
+                    : "text-mono-500 hover:text-mono-700"
                 }`}
               >
                 Chi tiết sản phẩm
@@ -976,8 +976,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 onClick={() => setActiveTab("reviews")}
                 className={`px-4 py-2 font-medium ${
                   activeTab === "reviews"
-                    ? "text-blue-600 border-b-2 border-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? "text-mono-black border-b-2 border-mono-black"
+                    : "text-mono-500 hover:text-mono-700"
                 }`}
               >
                 Đánh giá
@@ -998,10 +998,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         (similarProducts && similarProducts.length > 0)) && (
         <div className="mt-16 border-t pt-12">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold text-mono-900">
               Sản phẩm liên quan
             </h2>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-mono-500">
               {loadingRelated
                 ? "Đang tải..."
                 : `${
@@ -1014,11 +1014,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               {[...Array(5)].map((_, index) => (
                 <div key={index} className="animate-pulse">
-                  <div className="aspect-square bg-gray-200 rounded-t-lg"></div>
+                  <div className="aspect-square bg-mono-200 rounded-t-lg"></div>
                   <div className="p-3 md:p-4 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-4 bg-mono-200 rounded"></div>
+                    <div className="h-4 bg-mono-200 rounded w-3/4"></div>
+                    <div className="h-4 bg-mono-200 rounded w-1/2"></div>
                   </div>
                 </div>
               ))}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -68,7 +68,7 @@ const RegisterForm: React.FC = () => {
           type="text"
           name="name"
           placeholder="Nhập tên người dùng"
-          className="w-full border border-gray-300 p-3 text-lg rounded outline-none"
+          className="w-full border border-mono-300 p-3 text-lg rounded outline-none"
           value={formData.name}
           onChange={handleChange}
         />
@@ -79,7 +79,7 @@ const RegisterForm: React.FC = () => {
           type="email"
           name="email"
           placeholder="Nhập email"
-          className="w-full border border-gray-300 p-3 text-lg rounded outline-none"
+          className="w-full border border-mono-300 p-3 text-lg rounded outline-none"
           value={formData.email}
           onChange={handleChange}
         />
@@ -90,7 +90,7 @@ const RegisterForm: React.FC = () => {
           type="password"
           name="password"
           placeholder="Nhập mật khẩu"
-          className="w-full border border-gray-300 p-3 text-lg rounded outline-none"
+          className="w-full border border-mono-300 p-3 text-lg rounded outline-none"
           value={formData.password}
           onChange={handleChange}
         />
@@ -101,14 +101,14 @@ const RegisterForm: React.FC = () => {
           type="password"
           name="confirmPassword"
           placeholder="Nhập lại mật khẩu"
-          className="w-full border border-gray-300 p-3 text-lg rounded outline-none"
+          className="w-full border border-mono-300 p-3 text-lg rounded outline-none"
           value={formData.confirmPassword}
           onChange={handleChange}
         />
       </div>
 
       <button
-        className="w-full bg-green-500 text-white py-3 text-xl font-bold rounded"
+        className="w-full bg-mono-700 text-white py-3 text-xl font-bold rounded"
         onClick={handleRegister}
         disabled={loading}
       >

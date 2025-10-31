@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import InventoryService from "../../../services/InventoryService";
 import type { InventoryItem } from "../../../types/inventory";
 
@@ -61,39 +61,39 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
 
   const getDifferenceColor = () => {
     const diff = getDifference();
-    if (diff > 0) return "text-green-600";
-    if (diff < 0) return "text-red-600";
-    return "text-gray-600";
+    if (diff > 0) return "text-mono-800";
+    if (diff < 0) return "text-mono-900";
+    return "text-mono-600";
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">
+        <h2 className="text-xl font-bold mb-4 text-mono-800">
           🔧 Điều chỉnh tồn kho - {item.product?.name}
         </h2>
 
         {/* Product Info */}
-        <div className="bg-gray-50 rounded-lg p-4 mb-4 space-y-2 text-sm">
+        <div className="bg-mono-50 rounded-lg p-4 mb-4 space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-600">Màu sắc:</span>
+            <span className="text-mono-600">Màu sắc:</span>
             <strong>{item.variant?.colorName || "N/A"}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Kích thước:</span>
+            <span className="text-mono-600">Kích thước:</span>
             <strong>{item.size?.name || "N/A"}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Tồn kho hiện tại:</span>
-            <strong className="text-blue-600">{item.quantity}</strong>
+            <span className="text-mono-600">Tồn kho hiện tại:</span>
+            <strong className="text-mono-black">{item.quantity}</strong>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* New Quantity */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
-              Số lượng mới <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Số lượng mới <span className="text-mono-800">*</span>
             </label>
             <input
               type="number"
@@ -104,7 +104,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
                   newQuantity: parseInt(e.target.value) || 0,
                 })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               min="0"
               required
             />
@@ -117,22 +117,22 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
           </div>
 
           {/* Comparison */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <div className="bg-mono-50 border border-mono-200 rounded-lg p-3">
             <div className="grid grid-cols-3 gap-2 text-center text-sm">
               <div>
-                <p className="text-gray-600 text-xs mb-1">Hiện tại</p>
-                <p className="font-bold text-gray-800">{item.quantity}</p>
+                <p className="text-mono-600 text-xs mb-1">Hiện tại</p>
+                <p className="font-bold text-mono-800">{item.quantity}</p>
               </div>
               <div>
-                <p className="text-gray-600 text-xs mb-1">Thay đổi</p>
+                <p className="text-mono-600 text-xs mb-1">Thay đổi</p>
                 <p className={`font-bold ${getDifferenceColor()}`}>
                   {getDifference() > 0 ? "+" : ""}
                   {getDifference()}
                 </p>
               </div>
               <div>
-                <p className="text-gray-600 text-xs mb-1">Mới</p>
-                <p className="font-bold text-blue-600">
+                <p className="text-mono-600 text-xs mb-1">Mới</p>
+                <p className="font-bold text-mono-black">
                   {formData.newQuantity}
                 </p>
               </div>
@@ -141,20 +141,20 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
 
           {/* Reason */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
-              Lý do điều chỉnh <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Lý do điều chỉnh <span className="text-mono-800">*</span>
             </label>
             <textarea
               value={formData.reason}
               onChange={(e) =>
                 setFormData({ ...formData, reason: e.target.value })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               rows={3}
               placeholder="Ví dụ: Kiểm kê phát hiện sai lệch, hàng hỏng, mất mát..."
               required
             />
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-mono-500">
               Tối thiểu 10 ký tự ({formData.reason.length}/10)
             </p>
           </div>
@@ -178,7 +178,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+              className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
               ❌ Hủy
             </button>

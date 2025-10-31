@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { couponApi } from "../../../services/CouponService";
 
 interface AddDiscountProps {
@@ -81,19 +81,19 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-300 bg-opacity-75 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md relative text-black overflow-y-auto max-h-[90vh]">
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+          className="absolute top-2 right-2 text-mono-500 hover:text-mono-700 text-2xl"
         >
           &times;
         </button>
         <h2 className="text-xl font-bold mb-6 text-center">Thêm Coupon</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Mã coupon
             </label>
             <input
@@ -102,12 +102,12 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               value={form.code}
               onChange={handleChange}
               placeholder="Nhập mã coupon"
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Mô tả
             </label>
             <textarea
@@ -115,26 +115,26 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               value={form.description}
               onChange={handleChange}
               placeholder="Nhập mô tả"
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Loại giảm giá
             </label>
             <select
               name="type"
               value={form.type}
               onChange={handleChange}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
             >
               <option value="percent">Phần trăm (%)</option>
               <option value="fixed">Số tiền cố định</option>
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Giá trị
             </label>
             <input
@@ -145,14 +145,14 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               placeholder={
                 form.type === "percent" ? "Giá trị (%)" : "Số tiền giảm"
               }
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
               min={1}
             />
           </div>
           {form.type === "percent" && (
             <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-600">
+              <label className="block text-sm font-bold text-mono-600">
                 Giảm tối đa (VND)
               </label>
               <input
@@ -161,13 +161,13 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
                 value={form.maxDiscount}
                 onChange={handleChange}
                 placeholder="Giảm tối đa"
-                className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                 min={0}
               />
             </div>
           )}
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Đơn tối thiểu (VND)
             </label>
             <input
@@ -176,12 +176,12 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               value={form.minOrderValue}
               onChange={handleChange}
               placeholder="Đơn tối thiểu"
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               min={0}
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Ngày bắt đầu
             </label>
             <input
@@ -189,12 +189,12 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               name="startDate"
               value={form.startDate}
               onChange={handleChange}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Ngày kết thúc
             </label>
             <input
@@ -202,12 +202,12 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               name="endDate"
               value={form.endDate}
               onChange={handleChange}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Số lượt sử dụng tối đa
             </label>
             <input
@@ -216,7 +216,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               value={form.maxUses}
               onChange={handleChange}
               placeholder="Số lượt sử dụng tối đa"
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               min={1}
             />
           </div>
@@ -228,21 +228,21 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               onChange={handleChange}
               className="mr-2"
             />
-            <span className="text-sm text-gray-700">Công khai</span>
+            <span className="text-sm text-mono-700">Công khai</span>
           </div>
-          {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
+          {error && <div className="text-mono-800 text-sm mb-2">{error}</div>}
           <div className="flex justify-end gap-4">
             <button
               type="submit"
               disabled={loading}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-md"
+              className="bg-mono-700 hover:bg-mono-800 text-white px-6 py-2 rounded-md"
             >
               {loading ? "Đang thêm..." : "Thêm"}
             </button>
             <button
               type="button"
               onClick={handleClose}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md"
+              className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
               Hủy
             </button>

@@ -1,4 +1,4 @@
-import type { ReturnRequest } from "../../../types/return";
+﻿import type { ReturnRequest } from "../../../types/return";
 
 interface Props {
   returnRequest: ReturnRequest;
@@ -28,7 +28,7 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
             <strong>Sản phẩm ({returnRequest.items.length}):</strong>
             <ul className="mt-2 space-y-2">
               {returnRequest.items.map((item, idx) => (
-                <li key={idx} className="bg-gray-50 p-2 rounded">
+                <li key={idx} className="bg-mono-50 p-2 rounded">
                   Số lượng: {item.quantity} - Giá:{" "}
                   {item.priceAtPurchase?.toLocaleString()}₫
                 </li>
@@ -38,7 +38,7 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
         </div>
         <button
           onClick={onClose}
-          className="mt-4 bg-gray-200 px-4 py-2 rounded"
+          className="mt-4 bg-mono-200 px-4 py-2 rounded"
         >
           Đóng
         </button>

@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import Sidebar from "../../../components/User/Sidebar";
 import UserForm from "../../../components/User/UserForm";
 // import banner from "../../../assets/banner.jpg";
@@ -8,7 +8,7 @@ const UserInformation: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       {/* Header */}
 
-      <div className="flex flex-1 bg-gray-100">
+      <div className="flex flex-1 bg-mono-100">
         {/* Sidebar */}
         <Sidebar />
 

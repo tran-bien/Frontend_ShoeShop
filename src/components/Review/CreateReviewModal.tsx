@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import Modal from "react-modal";
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { toast } from "react-hot-toast";
@@ -117,8 +117,8 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
     >
       <h2 className="text-lg font-bold mb-3">Đánh giá sản phẩm</h2>
 
-      <div className="flex items-center space-x-3 mb-3 p-2 bg-gray-50 rounded-lg">
-        <div className="w-12 h-12 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+      <div className="flex items-center space-x-3 mb-3 p-2 bg-mono-50 rounded-lg">
+        <div className="w-12 h-12 bg-mono-100 rounded-md overflow-hidden flex-shrink-0">
           {productImage ? (
             <img
               src={productImage}
@@ -126,7 +126,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+            <div className="w-full h-full flex items-center justify-center text-xs text-mono-400">
               No image
             </div>
           )}
@@ -154,12 +154,12 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
                 {star <= (hoverRating || rating) ? (
                   <FaStar className="text-yellow-400" />
                 ) : (
-                  <FaRegStar className="text-gray-300" />
+                  <FaRegStar className="text-mono-300" />
                 )}
               </button>
             ))}
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-mono-600">
             {ratingText[hoverRating || rating]}
           </p>
         </div>
@@ -172,11 +172,11 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm... (ít nhất 10 ký tự)"
-            className="w-full p-2 border border-gray-300 rounded-md resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-2 border border-mono-300 rounded-md resize-none focus:ring-2 focus:ring-mono-500 focus:border-transparent"
             rows={4}
             maxLength={500}
           />
-          <div className="text-xs text-gray-500 mt-1">
+          <div className="text-xs text-mono-500 mt-1">
             {content.length}/500 ký tự
           </div>
         </div>
@@ -186,14 +186,14 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
             type="button"
             onClick={onClose}
             disabled={loading}
-            className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+            className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-md hover:bg-mono-50 disabled:opacity-50"
           >
             Hủy
           </button>
           <button
             type="submit"
             disabled={loading || content.trim().length < 10}
-            className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 px-4 py-2 bg-mono-black text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Đang gửi..." : "Gửi đánh giá"}
           </button>

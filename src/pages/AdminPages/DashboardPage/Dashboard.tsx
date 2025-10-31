@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+﻿import { useState, useEffect, useMemo, useCallback } from "react";
 import {
   FiDollarSign,
   FiPackage,
@@ -372,15 +372,15 @@ const Dashboard = () => {
         {/* Total Products */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <FiPackage className="h-6 w-6 text-blue-600" />
+            <div className="p-2 bg-mono-100 rounded-lg">
+              <FiPackage className="h-6 w-6 text-mono-black" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Tổng sản phẩm</p>
+              <p className="text-sm font-medium text-mono-600">Tổng sản phẩm</p>
               {loading.dashboard ? (
-                <div className="h-8 bg-gray-200 rounded w-20 animate-pulse"></div>
+                <div className="h-8 bg-mono-200 rounded w-20 animate-pulse"></div>
               ) : (
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-2xl font-semibold text-mono-900">
                   {dashboardData?.totalProducts.toLocaleString() || 0}
                 </p>
               )}
@@ -392,16 +392,16 @@ const Dashboard = () => {
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
             <div className="p-2 bg-green-100 rounded-lg">
-              <FiUsers className="h-6 w-6 text-green-600" />
+              <FiUsers className="h-6 w-6 text-mono-800" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-mono-600">
                 Tổng người dùng
               </p>
               {loading.dashboard ? (
-                <div className="h-8 bg-gray-200 rounded w-20 animate-pulse"></div>
+                <div className="h-8 bg-mono-200 rounded w-20 animate-pulse"></div>
               ) : (
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-2xl font-semibold text-mono-900">
                   {dashboardData?.totalUsers.toLocaleString() || 0}
                 </p>
               )}
@@ -416,11 +416,11 @@ const Dashboard = () => {
               <FiShoppingBag className="h-6 w-6 text-yellow-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Tổng đơn hàng</p>
+              <p className="text-sm font-medium text-mono-600">Tổng đơn hàng</p>
               {loading.dashboard ? (
-                <div className="h-8 bg-gray-200 rounded w-20 animate-pulse"></div>
+                <div className="h-8 bg-mono-200 rounded w-20 animate-pulse"></div>
               ) : (
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-2xl font-semibold text-mono-900">
                   {dashboardData?.totalOrders.toLocaleString() || 0}
                 </p>
               )}
@@ -435,13 +435,13 @@ const Dashboard = () => {
               <FiDollarSign className="h-6 w-6 text-purple-600" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-mono-600">
                 Tổng doanh thu
               </p>
               {loading.dashboard ? (
-                <div className="h-8 bg-gray-200 rounded w-32 animate-pulse"></div>
+                <div className="h-8 bg-mono-200 rounded w-32 animate-pulse"></div>
               ) : (
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-2xl font-semibold text-mono-900">
                   {formatCurrency(dashboardData?.totalRevenue || 0)}
                 </p>
               )}
@@ -461,21 +461,21 @@ const Dashboard = () => {
                 type="date"
                 value={dailyStartDate}
                 onChange={(e) => setDailyStartDate(e.target.value)}
-                className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+                className="px-3 py-1 border border-mono-300 rounded-md text-sm"
               />
               <input
                 type="date"
                 value={dailyEndDate}
                 onChange={(e) => setDailyEndDate(e.target.value)}
-                className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+                className="px-3 py-1 border border-mono-300 rounded-md text-sm"
               />
             </div>
           </div>
 
           {loading.dailyRevenue ? (
-            <div className="h-80 bg-gray-100 rounded animate-pulse"></div>
+            <div className="h-80 bg-mono-100 rounded animate-pulse"></div>
           ) : dailyRevenue.length === 0 ? (
-            <div className="flex items-center justify-center h-80 text-gray-500">
+            <div className="flex items-center justify-center h-80 text-mono-500">
               Không có dữ liệu doanh thu
             </div>
           ) : (
@@ -492,7 +492,7 @@ const Dashboard = () => {
             <select
               value={selectedYear}
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+              className="px-3 py-1 border border-mono-300 rounded-md text-sm"
             >
               {Array.from(
                 { length: 5 },
@@ -506,7 +506,7 @@ const Dashboard = () => {
           </div>
 
           {loading.monthlyRevenue ? (
-            <div className="h-80 bg-gray-100 rounded animate-pulse"></div>
+            <div className="h-80 bg-mono-100 rounded animate-pulse"></div>
           ) : (
             <div className="h-80">
               <Bar data={monthlyRevenueChartData} options={barChartOptions} />
@@ -524,7 +524,7 @@ const Dashboard = () => {
             <select
               value={topProductPeriod}
               onChange={(e) => setTopProductPeriod(e.target.value)}
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm"
+              className="px-3 py-1 border border-mono-300 rounded-md text-sm"
             >
               {periods.map((period) => (
                 <option key={period.value} value={period.value}>
@@ -535,9 +535,9 @@ const Dashboard = () => {
           </div>
 
           {loading.topProducts ? (
-            <div className="h-80 bg-gray-100 rounded animate-pulse"></div>
+            <div className="h-80 bg-mono-100 rounded animate-pulse"></div>
           ) : topProducts.length === 0 ? (
-            <div className="flex items-center justify-center h-80 text-gray-500">
+            <div className="flex items-center justify-center h-80 text-mono-500">
               Không có dữ liệu sản phẩm bán chạy
             </div>
           ) : (
@@ -562,20 +562,20 @@ const Dashboard = () => {
             <div className="animate-pulse space-y-4">
               {[...Array(5)].map((_, index) => (
                 <div key={index} className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gray-200 rounded-md"></div>
+                  <div className="w-12 h-12 bg-mono-200 rounded-md"></div>
                   <div className="flex-1">
-                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    <div className="h-4 bg-mono-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-mono-200 rounded w-1/2"></div>
                   </div>
                   <div className="w-20">
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-3 bg-gray-200 rounded"></div>
+                    <div className="h-4 bg-mono-200 rounded mb-2"></div>
+                    <div className="h-3 bg-mono-200 rounded"></div>
                   </div>
                 </div>
               ))}
             </div>
           ) : topProducts.length === 0 ? (
-            <div className="flex items-center justify-center h-80 text-gray-500">
+            <div className="flex items-center justify-center h-80 text-mono-500">
               Không có dữ liệu sản phẩm bán chạy
             </div>
           ) : (
@@ -583,19 +583,19 @@ const Dashboard = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead>
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                       Sản phẩm
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
                       Số lượng
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
                       Doanh thu
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
                       Lợi nhuận
                     </th>
-                    <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
                       Tỷ suất
                     </th>
                   </tr>
@@ -604,7 +604,7 @@ const Dashboard = () => {
                   {topProducts.map((product, index) => (
                     <tr
                       key={product.productId}
-                      className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                      className={index % 2 === 0 ? "bg-white" : "bg-mono-50"}
                     >
                       <td className="px-4 py-3 whitespace-nowrap">
                         <div className="flex items-center">
@@ -617,7 +617,7 @@ const Dashboard = () => {
                           </div>
                           <div className="ml-4">
                             <div
-                              className="text-sm font-medium text-gray-900 line-clamp-1"
+                              className="text-sm font-medium text-mono-900 line-clamp-1"
                               title={product.productName}
                             >
                               {product.productName}
@@ -625,13 +625,13 @@ const Dashboard = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-900">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-right text-mono-900">
                         {product.totalQuantity.toLocaleString()}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-900">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-right text-mono-900">
                         {formatCurrency(product.totalRevenue)}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-900">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-right text-mono-900">
                         {formatCurrency(product.totalProfit)}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-right">
@@ -640,7 +640,7 @@ const Dashboard = () => {
                             product.profitMargin >= 15
                               ? "bg-green-100 text-green-800"
                               : product.profitMargin >= 10
-                              ? "bg-blue-100 text-blue-800"
+                              ? "bg-mono-100 text-blue-800"
                               : "bg-yellow-100 text-yellow-800"
                           }`}
                         >

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import {
   FaPlus,
   FaBox,
@@ -111,10 +111,10 @@ const InventoryPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Quản lý Kho hàng</h1>
+        <h1 className="text-3xl font-bold text-mono-800">Quản lý Kho hàng</h1>
         <button
           onClick={handleStockIn}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          className="bg-mono-black hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
         >
           <FaPlus size={20} />
           Nhập kho
@@ -127,48 +127,48 @@ const InventoryPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Tổng sản phẩm</p>
-                <p className="text-2xl font-bold text-gray-800">
+                <p className="text-mono-500 text-sm">Tổng sản phẩm</p>
+                <p className="text-2xl font-bold text-mono-800">
                   {stats.totalItems}
                 </p>
               </div>
-              <FaBox className="text-blue-500" size={40} />
+              <FaBox className="text-mono-500" size={40} />
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Tồn kho thấp</p>
+                <p className="text-mono-500 text-sm">Tồn kho thấp</p>
                 <p className="text-2xl font-bold text-orange-600">
                   {stats.lowStockItems?.length || 0}
                 </p>
               </div>
-              <FaChartLine className="text-orange-500" size={40} />
+              <FaChartLine className="text-mono-600" size={40} />
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Hết hàng</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-mono-500 text-sm">Hết hàng</p>
+                <p className="text-2xl font-bold text-mono-900">
                   {stats.outOfStockItems?.length || 0}
                 </p>
               </div>
-              <FaExclamationTriangle className="text-red-500" size={40} />
+              <FaExclamationTriangle className="text-mono-800" size={40} />
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Giá trị tồn kho</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-mono-500 text-sm">Giá trị tồn kho</p>
+                <p className="text-2xl font-bold text-mono-800">
                   {stats.totalValue?.toLocaleString("vi-VN")}₫
                 </p>
               </div>
-              <FaDollarSign className="text-green-500" size={40} />
+              <FaDollarSign className="text-mono-700" size={40} />
             </div>
           </div>
         </div>
@@ -186,7 +186,7 @@ const InventoryPage = () => {
               }
               className="w-4 h-4"
             />
-            <span className="text-sm text-gray-700">Tồn kho thấp</span>
+            <span className="text-sm text-mono-700">Tồn kho thấp</span>
           </label>
 
           <label className="flex items-center gap-2 cursor-pointer">
@@ -198,7 +198,7 @@ const InventoryPage = () => {
               }
               className="w-4 h-4"
             />
-            <span className="text-sm text-gray-700">Hết hàng</span>
+            <span className="text-sm text-mono-700">Hết hàng</span>
           </label>
         </div>
       </div>
@@ -206,24 +206,24 @@ const InventoryPage = () => {
       {/* Inventory Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-mono-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Sản phẩm
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Biến thể / Size
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Tồn kho
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Giá vốn TB
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Trạng thái
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Hành động
               </th>
             </tr>
@@ -231,37 +231,37 @@ const InventoryPage = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {loading ? (
               <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-4 text-center text-mono-500">
                   Đang tải...
                 </td>
               </tr>
             ) : inventoryList.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={6} className="px-6 py-4 text-center text-mono-500">
                   Không có dữ liệu
                 </td>
               </tr>
             ) : (
               inventoryList.map((item) => (
-                <tr key={item._id} className="hover:bg-gray-50">
+                <tr key={item._id} className="hover:bg-mono-50">
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-mono-900">
                       {item.product?.name || "N/A"}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-mono-900">
                       {item.variant?.color?.name || "N/A"} /{" "}
                       {item.size?.value || "N/A"}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm font-bold text-gray-900">
+                    <div className="text-sm font-bold text-mono-900">
                       {item.quantity}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-mono-900">
                       {item.averageCostPrice?.toLocaleString("vi-VN")}₫
                     </div>
                   </td>
@@ -283,7 +283,7 @@ const InventoryPage = () => {
                   <td className="px-6 py-4 text-sm">
                     <button
                       onClick={() => handleViewTransactions(item)}
-                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                      className="flex items-center gap-1 text-mono-black hover:text-blue-800"
                     >
                       <FaHistory size={16} />
                       Xem lịch sử
@@ -302,7 +302,7 @@ const InventoryPage = () => {
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            className="px-4 py-2 bg-mono-200 rounded disabled:opacity-50"
           >
             Trước
           </button>
@@ -312,7 +312,7 @@ const InventoryPage = () => {
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            className="px-4 py-2 bg-mono-200 rounded disabled:opacity-50"
           >
             Sau
           </button>

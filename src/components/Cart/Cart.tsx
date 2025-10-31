@@ -1,4 +1,4 @@
-import React, {
+﻿import React, {
   useEffect,
   useState,
   useRef,
@@ -528,9 +528,9 @@ const Cart: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-mono-50 flex items-center justify-center">
         <div className="flex items-center space-x-2">
-          <FiLoader className="animate-spin text-2xl text-blue-600" />
+          <FiLoader className="animate-spin text-2xl text-mono-black" />
           <span className="text-lg">Đang tải giỏ hàng...</span>
         </div>
       </div>
@@ -538,20 +538,20 @@ const Cart: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-mono-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
             <button
               onClick={() => navigate("/")}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center space-x-2 text-mono-600 hover:text-mono-900 transition-colors"
             >
               <FiArrowLeft />
               <span>Tiếp tục mua sắm</span>
             </button>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-2">
+          <h1 className="text-3xl font-bold text-mono-900 flex items-center space-x-2">
             <FiShoppingCart />
             <span>Giỏ hàng ({cart?.cartItems?.length || 0})</span>
           </h1>
@@ -560,16 +560,16 @@ const Cart: React.FC = () => {
         {!cart?.cartItems?.length ? (
           // Empty cart
           <div className="text-center py-16">
-            <FiShoppingBag className="mx-auto text-6xl text-gray-300 mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+            <FiShoppingBag className="mx-auto text-6xl text-mono-300 mb-4" />
+            <h2 className="text-2xl font-semibold text-mono-900 mb-2">
               Giỏ hàng của bạn đang trống
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-mono-600 mb-6">
               Hãy thêm một số sản phẩm vào giỏ hàng của bạn
             </p>
             <button
               onClick={() => navigate("/")}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-mono-black text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Bắt đầu mua sắm
             </button>
@@ -580,7 +580,7 @@ const Cart: React.FC = () => {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-xl shadow-sm">
                 {/* Cart Header */}
-                <div className="p-6 border-b border-gray-200">
+                <div className="p-6 border-b border-mono-200">
                   <div className="flex items-center justify-between">
                     <label className="flex items-center space-x-3">
                       <input
@@ -592,16 +592,16 @@ const Cart: React.FC = () => {
                           )
                         }
                         onChange={selectAllItems}
-                        className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                        className="w-5 h-5 text-mono-black rounded focus:ring-mono-500"
                       />
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-mono-900">
                         Chọn tất cả ({availableItems.length} sản phẩm)
                       </span>
                     </label>
                     {selectedItems.length > 0 && (
                       <button
                         onClick={removeSelectedItems}
-                        className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors"
+                        className="flex items-center space-x-2 text-mono-900 hover:text-red-700 transition-colors"
                       >
                         <FiTrash2 />
                         <span>Xóa đã chọn</span>
@@ -621,7 +621,7 @@ const Cart: React.FC = () => {
                           checked={item.isSelected || false}
                           onChange={() => toggleItemSelection(item._id)}
                           disabled={!item.isAvailable}
-                          className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 mt-2"
+                          className="w-5 h-5 text-mono-black rounded focus:ring-mono-500 mt-2"
                         />
 
                         {/* Product Image */}
@@ -653,7 +653,7 @@ const Cart: React.FC = () => {
                           <div className="flex items-start justify-between">
                             <div>
                               <h3
-                                className="text-lg font-medium text-gray-900 truncate cursor-pointer hover:text-blue-600"
+                                className="text-lg font-medium text-mono-900 truncate cursor-pointer hover:text-mono-black"
                                 onClick={() =>
                                   navigate(
                                     `/product/${
@@ -666,14 +666,14 @@ const Cart: React.FC = () => {
                               >
                                 {item.productName || "Tên sản phẩm"}
                               </h3>
-                              <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                              <div className="mt-1 flex items-center space-x-4 text-sm text-mono-500">
                                 <span>
                                   Màu: {item.variant?.color?.name || "N/A"}
                                 </span>
                                 <span>Size: {item.size?.value || "N/A"}</span>
                               </div>
                               {!item.isAvailable && (
-                                <p className="mt-1 text-sm text-red-600">
+                                <p className="mt-1 text-sm text-mono-900">
                                   {item.unavailableReason ||
                                     "Sản phẩm không có sẵn"}
                                 </p>
@@ -681,12 +681,12 @@ const Cart: React.FC = () => {
                             </div>
 
                             <div className="flex flex-col items-end space-y-2">
-                              <div className="text-lg font-semibold text-gray-900">
+                              <div className="text-lg font-semibold text-mono-900">
                                 {(item.price || 0).toLocaleString()}đ
                               </div>
                               {item.variant?.price !==
                                 item.variant?.priceFinal && (
-                                <div className="text-sm text-gray-500 line-through">
+                                <div className="text-sm text-mono-500 line-through">
                                   {(item.variant?.price || 0).toLocaleString()}đ
                                 </div>
                               )}
@@ -704,7 +704,7 @@ const Cart: React.FC = () => {
                                   parseInt(getDisplayQuantity(item)) <= 1 ||
                                   !item.isAvailable
                                 }
-                                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="p-2 rounded-lg border border-mono-300 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               >
                                 <FiMinus className="w-4 h-4" />
                               </button>
@@ -722,7 +722,7 @@ const Cart: React.FC = () => {
                                   onFocus={() => handleInputFocus(item._id)}
                                   onBlur={() => handleInputBlur(item._id)}
                                   disabled={!item.isAvailable}
-                                  className="px-2 py-1 border border-gray-300 rounded-lg w-[60px] text-center disabled:bg-gray-100 disabled:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  className="px-2 py-1 border border-mono-300 rounded-lg w-[60px] text-center disabled:bg-mono-100 disabled:text-mono-500 focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                                   min="1"
                                   max="99"
                                 />
@@ -737,13 +737,13 @@ const Cart: React.FC = () => {
                                   parseInt(getDisplayQuantity(item)) >= 99 ||
                                   !item.isAvailable
                                 }
-                                className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="p-2 rounded-lg border border-mono-300 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                               >
                                 <FiPlus className="w-4 h-4" />
                               </button>
                             </div>
 
-                            <div className="text-lg font-semibold text-blue-600">
+                            <div className="text-lg font-semibold text-mono-black">
                               {getItemTotalPrice(item).toLocaleString()}đ
                             </div>
                           </div>
@@ -759,15 +759,15 @@ const Cart: React.FC = () => {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-sm sticky top-8">
                 <div className="p-6">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  <h2 className="text-xl font-semibold text-mono-900 mb-4">
                     Tóm tắt đơn hàng
                   </h2>
 
                   {/* Coupon Section */}
-                  <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                  <div className="mb-6 p-4 bg-mono-50 rounded-lg">
                     <div className="flex items-center space-x-2 mb-3">
-                      <FiTag className="text-green-600" />
-                      <span className="font-medium text-gray-900">
+                      <FiTag className="text-mono-800" />
+                      <span className="font-medium text-mono-900">
                         Mã giảm giá
                       </span>
                     </div>
@@ -778,7 +778,7 @@ const Cart: React.FC = () => {
                           <div className="font-medium text-green-800">
                             {appliedCoupon.code}
                           </div>
-                          <div className="text-sm text-green-600">
+                          <div className="text-sm text-mono-800">
                             Giảm{" "}
                             {appliedCoupon.type === "percentage"
                               ? `${appliedCoupon.value}%`
@@ -787,7 +787,7 @@ const Cart: React.FC = () => {
                         </div>
                         <button
                           onClick={removeCoupon}
-                          className="text-red-600 hover:text-red-700"
+                          className="text-mono-900 hover:text-red-700"
                         >
                           <FiTrash2 />
                         </button>
@@ -799,12 +799,12 @@ const Cart: React.FC = () => {
                           value={couponCode}
                           onChange={(e) => setCouponCode(e.target.value)}
                           placeholder="Nhập mã giảm giá"
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="flex-1 px-3 py-2 border border-mono-300 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                         />
                         <button
                           onClick={applyCoupon}
                           disabled={couponLoading}
-                          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                          className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
                         >
                           {couponLoading ? (
                             <FiLoader className="animate-spin" />
@@ -818,7 +818,7 @@ const Cart: React.FC = () => {
 
                   {/* Order Details với optimistic totals */}
                   <div className="space-y-3 mb-6">
-                    <div className="flex justify-between text-gray-600">
+                    <div className="flex justify-between text-mono-600">
                       <span>
                         Tạm tính ({optimisticTotals.totalQuantity} sản phẩm)
                       </span>
@@ -826,7 +826,7 @@ const Cart: React.FC = () => {
                     </div>
 
                     {selectedItems.length > 0 && previewData?.discount > 0 && (
-                      <div className="flex justify-between text-green-600">
+                      <div className="flex justify-between text-mono-800">
                         <span>Giảm giá</span>
                         <span>
                           -{(previewData.discount || 0).toLocaleString()}đ
@@ -834,7 +834,7 @@ const Cart: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="flex justify-between text-gray-600">
+                    <div className="flex justify-between text-mono-600">
                       <span className="flex items-center space-x-1">
                         <FiTruck />
                         <span>Phí vận chuyển</span>
@@ -851,9 +851,9 @@ const Cart: React.FC = () => {
 
                   {/* Total với optimistic calculation */}
                   <div className="border-t pt-3">
-                    <div className="flex justify-between text-lg font-semibold text-gray-900">
+                    <div className="flex justify-between text-lg font-semibold text-mono-900">
                       <span>Tổng cộng</span>
-                      <span className="text-blue-600">
+                      <span className="text-mono-black">
                         {selectedItems.length > 0
                           ? (
                               optimisticTotals.subTotal +
@@ -870,12 +870,12 @@ const Cart: React.FC = () => {
                   <button
                     onClick={proceedToCheckout}
                     disabled={selectedItems.length === 0}
-                    className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full mt-6 bg-mono-black text-white py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Thanh toán ({selectedItems.length} sản phẩm)
                   </button>
 
-                  <div className="mt-4 text-center text-sm text-gray-500">
+                  <div className="mt-4 text-center text-sm text-mono-500">
                     <div className="flex items-center justify-center space-x-1">
                       <span>🛡️</span>
                       <span>Thanh toán an toàn và bảo mật</span>

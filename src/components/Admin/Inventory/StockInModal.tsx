@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import InventoryService from "../../../services/InventoryService";
 import { productApi } from "../../../services/ProductService";
 
@@ -109,17 +109,17 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
       <div className="bg-white rounded-lg p-6 w-full max-w-2xl m-4 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">📦 Nhập kho</h2>
+        <h2 className="text-2xl font-bold mb-6 text-mono-800">📦 Nhập kho</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Product Selection */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
-              Sản phẩm <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Sản phẩm <span className="text-mono-800">*</span>
             </label>
             <select
               value={formData.productId}
               onChange={(e) => handleProductChange(e.target.value)}
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               required
             >
               <option value="">-- Chọn sản phẩm --</option>
@@ -133,8 +133,8 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
           {/* Variant (Color) Selection */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
-              Màu sắc <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Màu sắc <span className="text-mono-800">*</span>
             </label>
             <select
               value={formData.variantId}
@@ -145,7 +145,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   sizeId: "",
                 })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               required
               disabled={!formData.productId}
             >
@@ -160,15 +160,15 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
           {/* Size Selection */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
-              Kích thước <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Kích thước <span className="text-mono-800">*</span>
             </label>
             <select
               value={formData.sizeId}
               onChange={(e) =>
                 setFormData({ ...formData, sizeId: e.target.value })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               required
               disabled={!formData.variantId}
             >
@@ -186,8 +186,8 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
           {/* Quantity and Cost Price */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700">
-                Số lượng <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2 text-mono-700">
+                Số lượng <span className="text-mono-800">*</span>
               </label>
               <input
                 type="number"
@@ -198,14 +198,14 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                     quantity: parseInt(e.target.value) || 0,
                   })
                 }
-                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                 min="1"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700">
-                Giá vốn (₫) <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2 text-mono-700">
+                Giá vốn (₫) <span className="text-mono-800">*</span>
               </label>
               <input
                 type="number"
@@ -216,7 +216,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                     costPrice: parseInt(e.target.value) || 0,
                   })
                 }
-                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                 min="0"
                 required
               />
@@ -226,7 +226,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
           {/* Profit and Discount */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700">
+              <label className="block text-sm font-medium mb-2 text-mono-700">
                 Mục tiêu lãi (%)
               </label>
               <input
@@ -238,12 +238,12 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                     targetProfitPercent: parseInt(e.target.value) || 0,
                   })
                 }
-                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                 min="0"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-gray-700">
+              <label className="block text-sm font-medium mb-2 text-mono-700">
                 Giảm giá (%)
               </label>
               <input
@@ -255,7 +255,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                     percentDiscount: parseInt(e.target.value) || 0,
                   })
                 }
-                className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                 min="0"
                 max="100"
               />
@@ -263,23 +263,23 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
           </div>
 
           {/* Pricing Formula Display */}
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4">
+          <div className="bg-gradient-to-r from-purple-50 to-mono-50 border border-purple-200 rounded-lg p-4">
             <h3 className="font-bold text-sm text-purple-800 mb-3 flex items-center gap-2">
               🧮 Công thức tính giá
             </h3>
             <div className="space-y-2 text-sm">
               <div className="bg-white rounded p-2 border border-purple-100">
-                <code className="text-xs font-mono text-gray-700">
+                <code className="text-xs font-mono text-mono-700">
                   Giá gốc = Giá vốn × (1 + Mục tiêu lãi / 100)
                 </code>
               </div>
               <div className="bg-white rounded p-2 border border-purple-100">
-                <code className="text-xs font-mono text-gray-700">
+                <code className="text-xs font-mono text-mono-700">
                   Giá bán = Giá gốc × (1 - Giảm giá / 100)
                 </code>
               </div>
               <div className="bg-white rounded p-2 border border-purple-100">
-                <code className="text-xs font-mono text-gray-700">
+                <code className="text-xs font-mono text-mono-700">
                   Lãi thực = Giá bán - Giá vốn
                 </code>
               </div>
@@ -294,30 +294,30 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-white rounded-lg p-3 border border-green-100">
-                  <span className="text-xs text-gray-500 block mb-1">
+                  <span className="text-xs text-mono-500 block mb-1">
                     Giá vốn
                   </span>
-                  <strong className="text-lg text-gray-800">
+                  <strong className="text-lg text-mono-800">
                     {formData.costPrice?.toLocaleString("vi-VN")}₫
                   </strong>
                 </div>
                 <div className="bg-white rounded-lg p-3 border border-green-100">
-                  <span className="text-xs text-gray-500 block mb-1">
+                  <span className="text-xs text-mono-500 block mb-1">
                     Giá gốc
                   </span>
-                  <strong className="text-lg text-blue-600">
+                  <strong className="text-lg text-mono-black">
                     {pricePreview.basePrice?.toLocaleString("vi-VN")}₫
                   </strong>
                 </div>
                 <div className="bg-white rounded-lg p-3 border border-green-100">
-                  <span className="text-xs text-gray-500 block mb-1">
+                  <span className="text-xs text-mono-500 block mb-1">
                     Giảm giá
                   </span>
                   <strong className="text-lg text-orange-600">
                     -{formData.percentDiscount}%
                   </strong>
                 </div>
-                <div className="bg-green-100 rounded-lg p-3 border-2 border-green-400">
+                <div className="bg-green-100 rounded-lg p-3 border-2 border-mono-600">
                   <span className="text-xs text-green-700 block mb-1 font-semibold">
                     💵 Giá bán cuối
                   </span>
@@ -330,19 +330,19 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
               {/* Profit Details */}
               <div className="mt-3 pt-3 border-t border-green-200 grid grid-cols-3 gap-2">
                 <div className="text-center">
-                  <span className="text-xs text-gray-600 block">Lãi/SP</span>
+                  <span className="text-xs text-mono-600 block">Lãi/SP</span>
                   <strong className="text-sm text-green-700">
                     {pricePreview.profit?.toLocaleString("vi-VN")}₫
                   </strong>
                 </div>
                 <div className="text-center">
-                  <span className="text-xs text-gray-600 block">Biên lãi</span>
+                  <span className="text-xs text-mono-600 block">Biên lãi</span>
                   <strong className="text-sm text-green-700">
                     {pricePreview.margin?.toFixed(2)}%
                   </strong>
                 </div>
                 <div className="text-center">
-                  <span className="text-xs text-gray-600 block">Markup</span>
+                  <span className="text-xs text-mono-600 block">Markup</span>
                   <strong className="text-sm text-green-700">
                     {pricePreview.markup?.toFixed(2)}%
                   </strong>
@@ -354,10 +354,10 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                 <div className="mt-3 pt-3 border-t border-green-200">
                   <div className="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
                     <div className="flex justify-between items-center mb-1">
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium text-mono-700">
                         Tổng vốn ({formData.quantity} sản phẩm):
                       </span>
-                      <strong className="text-base text-red-600">
+                      <strong className="text-base text-mono-900">
                         {(
                           formData.costPrice * formData.quantity
                         ).toLocaleString("vi-VN")}
@@ -365,10 +365,10 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                       </strong>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium text-mono-700">
                         Tổng lãi dự kiến:
                       </span>
-                      <strong className="text-base text-green-600">
+                      <strong className="text-base text-mono-800">
                         +
                         {(
                           pricePreview.profit * formData.quantity
@@ -384,7 +384,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
           {/* Note */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
+            <label className="block text-sm font-medium mb-2 text-mono-700">
               Ghi chú
             </label>
             <textarea
@@ -392,7 +392,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
               onChange={(e) =>
                 setFormData({ ...formData, note: e.target.value })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               rows={3}
               placeholder="Nhập ghi chú (tùy chọn)"
             />
@@ -403,14 +403,14 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+              className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
               {loading ? "Đang xử lý..." : "✅ Nhập kho"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+              className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
               ❌ Hủy
             </button>

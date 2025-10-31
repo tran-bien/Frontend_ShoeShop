@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -104,13 +104,13 @@ const OTPVerificationForm: React.FC = () => {
 
         {/* Email */}
         <div className="w-full mb-4">
-          <label className="block text-left mb-1 text-base text-gray-500 font-light pl-2">
+          <label className="block text-left mb-1 text-base text-mono-500 font-light pl-2">
             Email
           </label>
           <input
             type="email"
             className={`border ${
-              error && !otp ? "border-red-500" : "border-black"
+              error && !otp ? "border-mono-800" : "border-black"
             } rounded-md p-2 w-full`}
             value={email}
             onChange={(e) => {
@@ -123,13 +123,13 @@ const OTPVerificationForm: React.FC = () => {
 
         {/* Mã xác nhận */}
         <div className="w-full mb-4">
-          <label className="block text-left mb-1 text-base text-gray-500 font-light pl-2">
+          <label className="block text-left mb-1 text-base text-mono-500 font-light pl-2">
             Mã xác nhận
           </label>
           <input
             type="text"
             className={`border ${
-              error && !email ? "border-red-500" : "border-black"
+              error && !email ? "border-mono-800" : "border-black"
             } rounded-md p-2 w-full`}
             value={otp}
             onChange={handleOtpChange}
@@ -141,7 +141,7 @@ const OTPVerificationForm: React.FC = () => {
         {/* Hiển thị thông báo lỗi */}
         {error && (
           <div className="w-full mb-4">
-            <p className="text-red-500 text-sm">{error}</p>
+            <p className="text-mono-800 text-sm">{error}</p>
           </div>
         )}
 
@@ -155,7 +155,7 @@ const OTPVerificationForm: React.FC = () => {
             {loading ? "Đang xác thực..." : "Xác nhận"}
           </button>
           <button
-            className="text-black text-base transition-all duration-300 hover:text-gray-600 hover:scale-105"
+            className="text-black text-base transition-all duration-300 hover:text-mono-600 hover:scale-105"
             onClick={() => navigate("/login")}
             disabled={loading}
           >

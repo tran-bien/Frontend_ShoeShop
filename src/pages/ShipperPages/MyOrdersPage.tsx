@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaTruck,
@@ -51,7 +51,7 @@ const MyOrdersPage = () => {
     > = {
       assigned_to_shipper: {
         label: "Đã gán",
-        color: "bg-blue-100 text-blue-800",
+        color: "bg-mono-100 text-blue-800",
         icon: <FaHourglassHalf />,
       },
       out_for_delivery: {
@@ -73,7 +73,7 @@ const MyOrdersPage = () => {
 
     const statusInfo = statusMap[status] || {
       label: status,
-      color: "bg-gray-100 text-gray-800",
+      color: "bg-mono-100 text-mono-800",
       icon: <FaHourglassHalf />,
     };
 
@@ -94,7 +94,7 @@ const MyOrdersPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-gray-500">Đang tải đơn hàng...</div>
+        <div className="text-mono-500">Đang tải đơn hàng...</div>
       </div>
     );
   }
@@ -103,7 +103,7 @@ const MyOrdersPage = () => {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-2xl font-bold text-mono-800">
           Đơn hàng của tôi ({filteredOrders.length})
         </h1>
       </div>
@@ -111,7 +111,7 @@ const MyOrdersPage = () => {
       {/* Filter */}
       <div className="bg-white rounded-lg shadow p-4">
         <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2 text-gray-700 font-medium">
+          <div className="flex items-center gap-2 text-mono-700 font-medium">
             <FaFilter />
             <span>Lọc theo trạng thái:</span>
           </div>
@@ -119,8 +119,8 @@ const MyOrdersPage = () => {
             onClick={() => setFilterStatus("")}
             className={`px-4 py-2 rounded-lg ${
               filterStatus === ""
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? "bg-mono-black text-white"
+                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
             Tất cả ({orders.length})
@@ -129,8 +129,8 @@ const MyOrdersPage = () => {
             onClick={() => setFilterStatus("assigned_to_shipper")}
             className={`px-4 py-2 rounded-lg ${
               filterStatus === "assigned_to_shipper"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? "bg-mono-black text-white"
+                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
             Đã gán (
@@ -141,7 +141,7 @@ const MyOrdersPage = () => {
             className={`px-4 py-2 rounded-lg ${
               filterStatus === "out_for_delivery"
                 ? "bg-yellow-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
             Đang giao (
@@ -151,8 +151,8 @@ const MyOrdersPage = () => {
             onClick={() => setFilterStatus("delivered")}
             className={`px-4 py-2 rounded-lg ${
               filterStatus === "delivered"
-                ? "bg-green-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? "bg-mono-800 text-white"
+                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
             Đã giao ({orders.filter((o) => o.status === "delivered").length})
@@ -161,8 +161,8 @@ const MyOrdersPage = () => {
             onClick={() => setFilterStatus("delivery_failed")}
             className={`px-4 py-2 rounded-lg ${
               filterStatus === "delivery_failed"
-                ? "bg-red-600 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                ? "bg-mono-900 text-white"
+                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
             Thất bại (
@@ -174,8 +174,8 @@ const MyOrdersPage = () => {
       {/* Orders List */}
       {filteredOrders.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
-          <FaTruck size={48} className="mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-500 text-lg">Không có đơn hàng nào</p>
+          <FaTruck size={48} className="mx-auto text-mono-400 mb-4" />
+          <p className="text-mono-500 text-lg">Không có đơn hàng nào</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -185,13 +185,13 @@ const MyOrdersPage = () => {
               className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
             >
               {/* Order Header */}
-              <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-t-lg">
+              <div className="bg-gradient-to-r from-mono-500 to-mono-black text-white px-6 py-4 rounded-t-lg">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-bold text-lg">
                       #{order.orderNumber || order._id.slice(-8)}
                     </p>
-                    <p className="text-sm text-blue-100">
+                    <p className="text-sm text-mono-100">
                       {new Date(order.createdAt).toLocaleString("vi-VN")}
                     </p>
                   </div>
@@ -203,13 +203,13 @@ const MyOrdersPage = () => {
               <div className="p-6 space-y-4">
                 {/* Customer Info */}
                 <div>
-                  <p className="text-sm text-gray-600 mb-1">Khách hàng</p>
+                  <p className="text-sm text-mono-600 mb-1">Khách hàng</p>
                   <div className="flex items-center gap-2">
-                    <p className="font-semibold text-gray-800">
+                    <p className="font-semibold text-mono-800">
                       {order.user?.name || "N/A"}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-600 text-sm mt-1">
+                  <div className="flex items-center gap-2 text-mono-600 text-sm mt-1">
                     <FaPhone size={12} />
                     <span>
                       {order.user?.phone ||
@@ -221,15 +221,15 @@ const MyOrdersPage = () => {
 
                 {/* Shipping Address */}
                 <div>
-                  <p className="text-sm text-gray-600 mb-1 flex items-center gap-1">
-                    <FaMapMarkerAlt className="text-red-500" />
+                  <p className="text-sm text-mono-600 mb-1 flex items-center gap-1">
+                    <FaMapMarkerAlt className="text-mono-800" />
                     Địa chỉ giao hàng
                   </p>
-                  <p className="text-gray-800">
+                  <p className="text-mono-800">
                     {order.shippingAddress?.address || "N/A"}
                   </p>
                   {order.shippingAddress?.ward && (
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-mono-600">
                       {order.shippingAddress.ward},{" "}
                       {order.shippingAddress.district},{" "}
                       {order.shippingAddress.province}
@@ -238,16 +238,16 @@ const MyOrdersPage = () => {
                 </div>
 
                 {/* Order Items Count */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between pt-4 border-t border-mono-200">
                   <div>
-                    <p className="text-sm text-gray-600">Số lượng sản phẩm</p>
-                    <p className="font-semibold text-gray-800">
+                    <p className="text-sm text-mono-600">Số lượng sản phẩm</p>
+                    <p className="font-semibold text-mono-800">
                       {order.items?.length || 0} mặt hàng
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600">Tổng tiền</p>
-                    <p className="font-bold text-blue-600 text-lg">
+                    <p className="text-sm text-mono-600">Tổng tiền</p>
+                    <p className="font-bold text-mono-black text-lg">
                       {order.finalTotal?.toLocaleString("vi-VN")}₫
                     </p>
                   </div>
@@ -256,12 +256,12 @@ const MyOrdersPage = () => {
                 {/* Delivery Attempts */}
                 {order.deliveryAttempts &&
                   order.deliveryAttempts.length > 0 && (
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-sm text-gray-600 mb-2 flex items-center gap-1">
+                    <div className="bg-mono-50 rounded-lg p-3">
+                      <p className="text-sm text-mono-600 mb-2 flex items-center gap-1">
                         <FaClock />
                         Lần giao gần nhất
                       </p>
-                      <p className="text-sm text-gray-800">
+                      <p className="text-sm text-mono-800">
                         {new Date(
                           order.deliveryAttempts[
                             order.deliveryAttempts.length - 1
@@ -270,7 +270,7 @@ const MyOrdersPage = () => {
                       </p>
                       {order.deliveryAttempts[order.deliveryAttempts.length - 1]
                         .note && (
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-sm text-mono-600 mt-1">
                           Ghi chú:{" "}
                           {
                             order.deliveryAttempts[
@@ -285,7 +285,7 @@ const MyOrdersPage = () => {
                 {/* Action Button */}
                 <button
                   onClick={() => handleViewDetail(order._id)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
+                  className="w-full bg-mono-black hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
                 >
                   Xem chi tiết & Cập nhật
                 </button>

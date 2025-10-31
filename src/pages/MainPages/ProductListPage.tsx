@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import { FiFilter, FiX } from "react-icons/fi";
@@ -390,13 +390,13 @@ const ProductListPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-mono-50">
       {/* Page header */}
-      <div className="bg-gray-100 py-8">
+      <div className="bg-mono-100 py-8">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">Sản phẩm</h1>
+          <h1 className="text-3xl font-bold text-mono-800 mb-4">Sản phẩm</h1>
           <div className="flex justify-between items-center">
-            <p className="text-gray-600">
+            <p className="text-mono-600">
               {loading ? (
                 "Đang tải sản phẩm..."
               ) : (
@@ -407,7 +407,7 @@ const ProductListPage: React.FC = () => {
             </p>
             <button
               onClick={() => setShowMobileFilter(!showMobileFilter)}
-              className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 md:hidden"
+              className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-mono-200 md:hidden"
             >
               <FiFilter size={18} />
               <span>Bộ lọc</span>
@@ -427,7 +427,7 @@ const ProductListPage: React.FC = () => {
                 {hasActiveFilters() && (
                   <button
                     onClick={resetFilters}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-sm text-mono-black hover:text-blue-800"
                   >
                     Đặt lại
                   </button>
@@ -436,13 +436,13 @@ const ProductListPage: React.FC = () => {
 
               {/* Sort filter */}
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-700">Sắp xếp</h3>
+                <h3 className="font-medium text-mono-700">Sắp xếp</h3>
                 <select
                   value={filtersState.sort}
                   onChange={(e) =>
                     setFiltersState({ ...filtersState, sort: e.target.value })
                   }
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 border border-mono-300 rounded-md"
                 >
                   <option value="newest">Mới nhất</option>
                   <option value="price-asc">Giá: Thấp đến cao</option>
@@ -454,7 +454,7 @@ const ProductListPage: React.FC = () => {
 
               {/* Gender filter */}
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-700">Giới tính</h3>
+                <h3 className="font-medium text-mono-700">Giới tính</h3>
                 <div className="flex gap-2">
                   <button
                     onClick={() =>
@@ -466,8 +466,8 @@ const ProductListPage: React.FC = () => {
                     }
                     className={`px-3 py-1 border rounded-md ${
                       filtersState.gender === "male"
-                        ? "bg-blue-50 border-blue-500 text-blue-700"
-                        : "border-gray-300"
+                        ? "bg-mono-50 border-mono-500 text-blue-700"
+                        : "border-mono-300"
                     }`}
                   >
                     Nam
@@ -484,8 +484,8 @@ const ProductListPage: React.FC = () => {
                     }
                     className={`px-3 py-1 border rounded-md ${
                       filtersState.gender === "female"
-                        ? "bg-blue-50 border-blue-500 text-blue-700"
-                        : "border-gray-300"
+                        ? "bg-mono-50 border-mono-500 text-blue-700"
+                        : "border-mono-300"
                     }`}
                   >
                     Nữ
@@ -495,17 +495,17 @@ const ProductListPage: React.FC = () => {
 
               {/* Price filter with slider */}
               <div className="space-y-6">
-                <h3 className="font-medium text-gray-700">Khoảng giá</h3>
+                <h3 className="font-medium text-mono-700">Khoảng giá</h3>
 
                 {/* Thanh trượt khoảng giá - Thêm mb-8 để tăng khoảng cách */}
                 <div className="px-2 mb-8">
                   <div className="relative">
                     {/* Track cho thanh trượt */}
-                    <div className="absolute h-1 bg-gray-200 rounded w-full top-1/2 -translate-y-1/2"></div>
+                    <div className="absolute h-1 bg-mono-200 rounded w-full top-1/2 -translate-y-1/2"></div>
 
                     {/* Track đã chọn */}
                     <div
-                      className="absolute h-1 bg-blue-500 rounded top-1/2 -translate-y-1/2"
+                      className="absolute h-1 bg-mono-500 rounded top-1/2 -translate-y-1/2"
                       style={{
                         left: `${
                           (((filtersState.minPrice ||
@@ -614,7 +614,7 @@ const ProductListPage: React.FC = () => {
                     onChange={(e) => handlePriceInput("min", e.target.value)}
                     placeholder={`${filters.priceRange?.min || 0}`}
                   />
-                  <span className="text-gray-500">đến</span>
+                  <span className="text-mono-500">đến</span>
                   <input
                     type="number"
                     className="border rounded-md px-3 py-2 bg-white w-[45%] text-sm"
@@ -662,7 +662,7 @@ const ProductListPage: React.FC = () => {
 
               {/* Category filter */}
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-700">Danh mục</h3>
+                <h3 className="font-medium text-mono-700">Danh mục</h3>
                 <div className="space-y-1 max-h-40 overflow-y-auto">
                   {filters.categories.map((category) => (
                     <div key={category._id} className="flex items-center">
@@ -677,11 +677,11 @@ const ProductListPage: React.FC = () => {
                         onChange={() =>
                           handleCheckboxFilter("category", category._id)
                         }
-                        className="h-4 w-4 text-blue-600 rounded"
+                        className="h-4 w-4 text-mono-black rounded"
                       />
                       <label
                         htmlFor={`category-${category._id}`}
-                        className="ml-2 text-sm text-gray-700"
+                        className="ml-2 text-sm text-mono-700"
                       >
                         {category.name}
                       </label>
@@ -692,7 +692,7 @@ const ProductListPage: React.FC = () => {
 
               {/* Brand filter */}
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-700">Thương hiệu</h3>
+                <h3 className="font-medium text-mono-700">Thương hiệu</h3>
                 <div className="space-y-1 max-h-40 overflow-y-auto">
                   {filters.brands.map((brand) => (
                     <div key={brand._id} className="flex items-center">
@@ -706,11 +706,11 @@ const ProductListPage: React.FC = () => {
                         onChange={() =>
                           handleCheckboxFilter("brand", brand._id)
                         }
-                        className="h-4 w-4 text-blue-600 rounded"
+                        className="h-4 w-4 text-mono-black rounded"
                       />
                       <label
                         htmlFor={`brand-${brand._id}`}
-                        className="ml-2 text-sm text-gray-700"
+                        className="ml-2 text-sm text-mono-700"
                       >
                         {brand.name}
                       </label>
@@ -721,7 +721,7 @@ const ProductListPage: React.FC = () => {
 
               {/* Color filter */}
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-700">Màu sắc</h3>{" "}
+                <h3 className="font-medium text-mono-700">Màu sắc</h3>{" "}
                 <div className="flex flex-wrap gap-2">
                   {filters.colors.map((color) => (
                     <button
@@ -731,18 +731,18 @@ const ProductListPage: React.FC = () => {
                         safeStringToArray(filtersState.colors).includes(
                           color._id
                         )
-                          ? "ring-2 ring-blue-500 ring-offset-2"
+                          ? "ring-2 ring-mono-500 ring-offset-2"
                           : ""
                       }`}
                       title={color.name}
                     >
                       {color.type === "solid" ? (
                         <div
-                          className="w-6 h-6 rounded-full border border-gray-300"
+                          className="w-6 h-6 rounded-full border border-mono-300"
                           style={{ backgroundColor: color.code }}
                         />
                       ) : (
-                        <div className="w-6 h-6 rounded-full border border-gray-300 relative overflow-hidden">
+                        <div className="w-6 h-6 rounded-full border border-mono-300 relative overflow-hidden">
                           <div
                             style={{
                               backgroundColor: color.colors?.[0] || "#fff",
@@ -774,7 +774,7 @@ const ProductListPage: React.FC = () => {
 
               {/* Size filter */}
               <div className="space-y-2">
-                <h3 className="font-medium text-gray-700">Kích thước</h3>
+                <h3 className="font-medium text-mono-700">Kích thước</h3>
                 <div className="flex flex-wrap gap-2">
                   {filters.sizes.map((size) => (
                     <button
@@ -782,8 +782,8 @@ const ProductListPage: React.FC = () => {
                       onClick={() => handleCheckboxFilter("sizes", size._id)}
                       className={`relative w-10 h-10 flex items-center justify-center border rounded-md ${
                         safeStringToArray(filtersState.sizes).includes(size._id)
-                          ? "bg-blue-50 border-blue-500 text-blue-700"
-                          : "border-gray-300"
+                          ? "bg-mono-50 border-mono-500 text-blue-700"
+                          : "border-mono-300"
                       } group`}
                       title={size.description || `Size ${size.value}`}
                     >
@@ -792,7 +792,7 @@ const ProductListPage: React.FC = () => {
 
                       {/* Tooltip hiển thị description */}
                       {size.description && (
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-max z-10 pointer-events-none">
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-mono-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-max z-10 pointer-events-none">
                           {size.description}
                           {/* Mũi tên nhỏ phía dưới tooltip */}
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
@@ -806,7 +806,7 @@ const ProductListPage: React.FC = () => {
               {/* Apply filters button */}
               <button
                 onClick={applyFilters}
-                className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="w-full py-2 bg-mono-black text-white rounded-md hover:bg-blue-700 transition-colors"
               >
                 Áp dụng
               </button>
@@ -828,7 +828,7 @@ const ProductListPage: React.FC = () => {
                 <div className="space-y-6">
                   {/* Sort filter */}
                   <div className="space-y-2">
-                    <h3 className="font-medium text-gray-700">Sắp xếp</h3>
+                    <h3 className="font-medium text-mono-700">Sắp xếp</h3>
                     <select
                       value={filtersState.sort}
                       onChange={(e) =>
@@ -837,7 +837,7 @@ const ProductListPage: React.FC = () => {
                           sort: e.target.value,
                         })
                       }
-                      className="w-full p-2 border border-gray-300 rounded-md"
+                      className="w-full p-2 border border-mono-300 rounded-md"
                     >
                       <option value="newest">Mới nhất</option>
                       <option value="price-asc">Giá: Thấp đến cao</option>
@@ -849,7 +849,7 @@ const ProductListPage: React.FC = () => {
 
                   {/* Gender filter */}
                   <div className="space-y-2">
-                    <h3 className="font-medium text-gray-700">Giới tính</h3>
+                    <h3 className="font-medium text-mono-700">Giới tính</h3>
                     <div className="flex gap-2">
                       <button
                         onClick={() =>
@@ -863,8 +863,8 @@ const ProductListPage: React.FC = () => {
                         }
                         className={`px-3 py-1 border rounded-md ${
                           filtersState.gender === "male"
-                            ? "bg-blue-50 border-blue-500 text-blue-700"
-                            : "border-gray-300"
+                            ? "bg-mono-50 border-mono-500 text-blue-700"
+                            : "border-mono-300"
                         }`}
                       >
                         Nam
@@ -881,8 +881,8 @@ const ProductListPage: React.FC = () => {
                         }
                         className={`px-3 py-1 border rounded-md ${
                           filtersState.gender === "female"
-                            ? "bg-blue-50 border-blue-500 text-blue-700"
-                            : "border-gray-300"
+                            ? "bg-mono-50 border-mono-500 text-blue-700"
+                            : "border-mono-300"
                         }`}
                       >
                         Nữ
@@ -892,17 +892,17 @@ const ProductListPage: React.FC = () => {
 
                   {/* Price filter with slider - Mobile */}
                   <div className="space-y-6">
-                    <h3 className="font-medium text-gray-700">Khoảng giá</h3>
+                    <h3 className="font-medium text-mono-700">Khoảng giá</h3>
 
                     {/* Thanh trượt khoảng giá - Thêm mb-8 để tăng khoảng cách */}
                     <div className="px-2 mb-8">
                       <div className="relative">
                         {/* Track cho thanh trượt */}
-                        <div className="absolute h-1 bg-gray-200 rounded w-full top-1/2 -translate-y-1/2"></div>
+                        <div className="absolute h-1 bg-mono-200 rounded w-full top-1/2 -translate-y-1/2"></div>
 
                         {/* Track đã chọn */}
                         <div
-                          className="absolute h-1 bg-blue-500 rounded top-1/2 -translate-y-1/2"
+                          className="absolute h-1 bg-mono-500 rounded top-1/2 -translate-y-1/2"
                           style={{
                             left: `${
                               (((filtersState.minPrice ||
@@ -1015,7 +1015,7 @@ const ProductListPage: React.FC = () => {
                         }
                         placeholder={`${filters.priceRange?.min || 0}`}
                       />
-                      <span className="text-gray-500">đến</span>
+                      <span className="text-mono-500">đến</span>
                       <input
                         type="number"
                         className="border rounded-md px-3 py-2 bg-white w-[45%] text-sm"
@@ -1038,7 +1038,7 @@ const ProductListPage: React.FC = () => {
 
                   {/* Other filters same as desktop */}
                   <div className="space-y-2">
-                    <h3 className="font-medium text-gray-700">Danh mục</h3>
+                    <h3 className="font-medium text-mono-700">Danh mục</h3>
                     <div className="space-y-1 max-h-40 overflow-y-auto">
                       {filters.categories.map((category) => (
                         <div key={category._id} className="flex items-center">
@@ -1053,11 +1053,11 @@ const ProductListPage: React.FC = () => {
                             onChange={() =>
                               handleCheckboxFilter("category", category._id)
                             }
-                            className="h-4 w-4 text-blue-600 rounded"
+                            className="h-4 w-4 text-mono-black rounded"
                           />
                           <label
                             htmlFor={`category-mobile-${category._id}`}
-                            className="ml-2 text-sm text-gray-700"
+                            className="ml-2 text-sm text-mono-700"
                           >
                             {category.name}
                           </label>
@@ -1068,7 +1068,7 @@ const ProductListPage: React.FC = () => {
 
                   {/* Brand filter */}
                   <div className="space-y-2">
-                    <h3 className="font-medium text-gray-700">Thương hiệu</h3>
+                    <h3 className="font-medium text-mono-700">Thương hiệu</h3>
                     <div className="space-y-1 max-h-40 overflow-y-auto">
                       {filters.brands.map((brand) => (
                         <div key={brand._id} className="flex items-center">
@@ -1083,11 +1083,11 @@ const ProductListPage: React.FC = () => {
                             onChange={() =>
                               handleCheckboxFilter("brand", brand._id)
                             }
-                            className="h-4 w-4 text-blue-600 rounded"
+                            className="h-4 w-4 text-mono-black rounded"
                           />
                           <label
                             htmlFor={`brand-mobile-${brand._id}`}
-                            className="ml-2 text-sm text-gray-700"
+                            className="ml-2 text-sm text-mono-700"
                           >
                             {brand.name}
                           </label>
@@ -1098,7 +1098,7 @@ const ProductListPage: React.FC = () => {
 
                   {/* Color filter */}
                   <div className="space-y-2">
-                    <h3 className="font-medium text-gray-700">Màu sắc</h3>{" "}
+                    <h3 className="font-medium text-mono-700">Màu sắc</h3>{" "}
                     <div className="flex flex-wrap gap-2">
                       {filters.colors.map((color) => (
                         <button
@@ -1110,18 +1110,18 @@ const ProductListPage: React.FC = () => {
                             safeStringToArray(filtersState.colors).includes(
                               color._id
                             )
-                              ? "ring-2 ring-blue-500 ring-offset-2"
+                              ? "ring-2 ring-mono-500 ring-offset-2"
                               : ""
                           }`}
                           title={color.name}
                         >
                           {color.type === "solid" ? (
                             <div
-                              className="w-6 h-6 rounded-full border border-gray-300"
+                              className="w-6 h-6 rounded-full border border-mono-300"
                               style={{ backgroundColor: color.code }}
                             />
                           ) : (
-                            <div className="w-6 h-6 rounded-full border border-gray-300 relative overflow-hidden">
+                            <div className="w-6 h-6 rounded-full border border-mono-300 relative overflow-hidden">
                               <div
                                 style={{
                                   backgroundColor: color.colors?.[0] || "#fff",
@@ -1153,7 +1153,7 @@ const ProductListPage: React.FC = () => {
 
                   {/* Size filter */}
                   <div className="space-y-2">
-                    <h3 className="font-medium text-gray-700">Kích thước</h3>{" "}
+                    <h3 className="font-medium text-mono-700">Kích thước</h3>{" "}
                     <div className="flex flex-wrap gap-2">
                       {filters.sizes.map((size) => (
                         <button
@@ -1165,8 +1165,8 @@ const ProductListPage: React.FC = () => {
                             safeStringToArray(filtersState.sizes).includes(
                               size._id
                             )
-                              ? "bg-blue-50 border-blue-500 text-blue-700"
-                              : "border-gray-300"
+                              ? "bg-mono-50 border-mono-500 text-blue-700"
+                              : "border-mono-300"
                           }`}
                         >
                           {size.value}
@@ -1179,13 +1179,13 @@ const ProductListPage: React.FC = () => {
                   <div className="flex gap-2 pt-4">
                     <button
                       onClick={resetFilters}
-                      className="flex-1 py-2 border border-gray-300 rounded-md"
+                      className="flex-1 py-2 border border-mono-300 rounded-md"
                     >
                       Đặt lại
                     </button>
                     <button
                       onClick={applyFilters}
-                      className="flex-1 py-2 bg-blue-600 text-white rounded-md"
+                      className="flex-1 py-2 bg-mono-black text-white rounded-md"
                     >
                       Áp dụng
                     </button>
@@ -1202,30 +1202,30 @@ const ProductListPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {[...Array(12)].map((_, i) => (
                   <div key={i} className="animate-pulse">
-                    <div className="bg-gray-200 aspect-square rounded-lg mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div className="bg-mono-200 aspect-square rounded-lg mb-4"></div>
+                    <div className="h-4 bg-mono-200 rounded mb-2"></div>
+                    <div className="h-4 bg-mono-200 rounded w-3/4"></div>
                   </div>
                 ))}
               </div>
             ) : error ? (
               <div className="text-center py-12">
-                <p className="text-red-500 mb-4">{error}</p>
+                <p className="text-mono-800 mb-4">{error}</p>
                 <button
                   onClick={fetchProducts}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-black"
                 >
                   Thử lại
                 </button>
               </div>
             ) : products.length === 0 ? (
               <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">
+                <p className="text-mono-500 text-lg">
                   Không tìm thấy sản phẩm nào phù hợp với bộ lọc
                 </p>
                 <button
                   onClick={resetFilters}
-                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="mt-4 px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-black"
                 >
                   Xóa tất cả bộ lọc
                 </button>
@@ -1253,8 +1253,8 @@ const ProductListPage: React.FC = () => {
                       disabled={!pagination.hasPrev}
                       className={`px-3 py-2 text-sm font-medium rounded-md ${
                         pagination.hasPrev
-                          ? "text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
-                          : "text-gray-300 bg-gray-100 border border-gray-200 cursor-not-allowed"
+                          ? "text-mono-500 bg-white border border-mono-300 hover:bg-mono-50"
+                          : "text-mono-300 bg-mono-100 border border-mono-200 cursor-not-allowed"
                       }`}
                     >
                       Trước
@@ -1271,10 +1271,10 @@ const ProductListPage: React.FC = () => {
                         className={`px-3 py-2 text-sm font-medium rounded-md 
                         ${
                           page === "..."
-                            ? "text-gray-500 cursor-default"
+                            ? "text-mono-500 cursor-default"
                             : page === pagination.currentPage
-                            ? "text-white bg-blue-600 border border-blue-600"
-                            : "text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
+                            ? "text-white bg-mono-black border border-mono-black"
+                            : "text-mono-500 bg-white border border-mono-300 hover:bg-mono-50"
                         }`}
                       >
                         {page}
@@ -1289,8 +1289,8 @@ const ProductListPage: React.FC = () => {
                       disabled={!pagination.hasNext}
                       className={`px-3 py-2 text-sm font-medium rounded-md ${
                         pagination.hasNext
-                          ? "text-gray-500 bg-white border border-gray-300 hover:bg-gray-50"
-                          : "text-gray-300 bg-gray-100 border border-gray-200 cursor-not-allowed"
+                          ? "text-mono-500 bg-white border border-mono-300 hover:bg-mono-50"
+                          : "text-mono-300 bg-mono-100 border border-mono-200 cursor-not-allowed"
                       }`}
                     >
                       Tiếp

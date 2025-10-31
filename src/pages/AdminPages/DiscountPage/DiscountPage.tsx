@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { couponApi } from "../../../services/CouponService";
 import AddDiscount from "./AddDiscount";
@@ -188,15 +188,15 @@ const DiscountPage = () => {
   return (
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug">
+        <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
           Danh Sách Coupon
         </h2>
         {!isSearchVisible ? (
           <button
             onClick={() => setIsSearchVisible(true)}
-            className="flex items-center gap-2 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-300 active:bg-gray-200"
+            className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
-            <IoIosSearch className="text-xl text-gray-500" />
+            <IoIosSearch className="text-xl text-mono-500" />
             <span className="font-medium">Tìm kiếm</span>
           </button>
         ) : (
@@ -206,14 +206,14 @@ const DiscountPage = () => {
                 setIsSearchVisible(false);
                 setSearchQuery("");
               }}
-              className="text-gray-400 cursor-pointer text-xl"
+              className="text-mono-400 cursor-pointer text-xl"
             />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm theo mã hoặc mô tả..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
         )}
@@ -233,7 +233,7 @@ const DiscountPage = () => {
       </div>
       <div className="overflow-x-auto shadow rounded-lg">
         <table className="min-w-full bg-white rounded-md overflow-hidden border">
-          <thead className="bg-gray-50 text-gray-700 text-sm font-semibold uppercase">
+          <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-center border-b">Mã</th>
               <th className="py-3 px-4 text-center border-b">Mô tả</th>
@@ -252,7 +252,7 @@ const DiscountPage = () => {
           </thead>
           <tbody>
             {filteredDiscounts.map((discount) => (
-              <tr key={discount.id} className="hover:bg-gray-50 border-t">
+              <tr key={discount.id} className="hover:bg-mono-50 border-t">
                 <td className="py-2 px-4 border-b text-center">
                   {discount.code}
                 </td>
@@ -293,7 +293,7 @@ const DiscountPage = () => {
                       Đang hoạt động
                     </span>
                   ) : (
-                    <span className="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">
+                    <span className="bg-mono-200 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
                       Ngừng
                     </span>
                   )}
@@ -306,7 +306,7 @@ const DiscountPage = () => {
                     {canUpdate() && (
                       <button
                         onClick={() => handleEditDiscount(discount)}
-                        className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                        className="inline-flex items-center justify-center bg-mono-500 hover:bg-mono-black text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                       >
                         Sửa
                       </button>
@@ -314,7 +314,7 @@ const DiscountPage = () => {
                     {canDelete() && (
                       <button
                         onClick={() => handleDeleteDiscount(discount)}
-                        className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                        className="inline-flex items-center justify-center bg-mono-800 hover:bg-mono-900 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                       >
                         Xóa
                       </button>
@@ -324,7 +324,7 @@ const DiscountPage = () => {
                         className={`text-xs px-2 py-1 rounded-full ${
                           discount.status === "active"
                             ? "bg-yellow-400 hover:bg-yellow-500 text-white"
-                            : "bg-green-500 hover:bg-green-600 text-white"
+                            : "bg-mono-700 hover:bg-mono-800 text-white"
                         }`}
                         onClick={() =>
                           handleUpdateStatus(
@@ -361,18 +361,18 @@ const DiscountPage = () => {
             <button
               type="button"
               onClick={() => setShowEdit(false)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+              className="absolute top-2 right-2 text-mono-500 hover:text-mono-700 text-2xl"
             >
               &times;
             </button>
             <h3 className="text-xl font-bold mb-6 text-center">Sửa Coupon</h3>
             <form onSubmit={handleUpdateDiscount}>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Mã coupon
                 </label>
                 <input
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="code"
                   placeholder="Mã coupon"
                   value={form.code}
@@ -381,11 +381,11 @@ const DiscountPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Mô tả
                 </label>
                 <textarea
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="description"
                   placeholder="Mô tả"
                   value={form.description}
@@ -394,11 +394,11 @@ const DiscountPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Loại giảm giá
                 </label>
                 <select
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="type"
                   value={form.type}
                   onChange={handleChange}
@@ -408,11 +408,11 @@ const DiscountPage = () => {
                 </select>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Giá trị
                 </label>
                 <input
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="value"
                   type="number"
                   placeholder={
@@ -426,11 +426,11 @@ const DiscountPage = () => {
               </div>
               {form.type === "percent" && (
                 <div className="mb-4">
-                  <label className="block text-sm font-bold text-gray-600">
+                  <label className="block text-sm font-bold text-mono-600">
                     Giảm tối đa (VND)
                   </label>
                   <input
-                    className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                    className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                     name="maxDiscount"
                     type="number"
                     placeholder="Giảm tối đa"
@@ -441,11 +441,11 @@ const DiscountPage = () => {
                 </div>
               )}
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Đơn tối thiểu (VND)
                 </label>
                 <input
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="minOrderValue"
                   type="number"
                   placeholder="Đơn tối thiểu"
@@ -455,11 +455,11 @@ const DiscountPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Ngày bắt đầu
                 </label>
                 <input
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="startDate"
                   type="date"
                   value={form.startDate}
@@ -468,11 +468,11 @@ const DiscountPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Ngày kết thúc
                 </label>
                 <input
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="endDate"
                   type="date"
                   value={form.endDate}
@@ -481,11 +481,11 @@ const DiscountPage = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold text-gray-600">
+                <label className="block text-sm font-bold text-mono-600">
                   Số lượt sử dụng tối đa
                 </label>
                 <input
-                  className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="maxUses"
                   type="number"
                   placeholder="Số lượt sử dụng tối đa"
@@ -502,19 +502,19 @@ const DiscountPage = () => {
                   onChange={handleChange}
                   className="mr-2"
                 />
-                <span className="text-sm text-gray-700">Công khai</span>
+                <span className="text-sm text-mono-700">Công khai</span>
               </div>
               <div className="flex justify-end gap-4">
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md"
+                  className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-md"
                 >
                   Lưu
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowEdit(false)}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md"
+                  className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
                 >
                   Hủy
                 </button>

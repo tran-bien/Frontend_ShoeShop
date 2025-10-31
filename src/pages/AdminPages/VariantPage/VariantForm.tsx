@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { variantApi } from "../../../services/VariantService";
 import { productApi } from "../../../services/ProductService";
 import { colorApi } from "../../../services/ColorService";
@@ -126,7 +126,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
           value={form.product}
           onChange={handleChange}
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
         >
           <option value="">-- Chọn sản phẩm --</option>
           {products.map((p) => (
@@ -143,7 +143,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
           value={form.color}
           onChange={handleChange}
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
         >
           <option value="">-- Chọn màu --</option>
           {colors.map((c) => (
@@ -155,7 +155,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
       </div>
       {/* REMOVED: price, costPrice, percentDiscount fields */}
       {/* Giá và số lượng sẽ được quản lý qua tính năng Stock In */}
-      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+      <div className="mb-4 p-3 bg-mono-50 border border-mono-200 rounded-md">
         <p className="text-sm text-blue-700">
           💡 <strong>Lưu ý:</strong> Giá bán và số lượng sẽ được thêm khi bạn sử
           dụng tính năng <strong>Nhập kho (Stock In)</strong>
@@ -170,7 +170,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
           value={form.gender}
           onChange={handleChange}
           required
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
         >
           <option value="">-- Chọn giới tính --</option>
           <option value="male">Nam</option>
@@ -181,7 +181,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
         <label className="block text-sm font-medium text-black">
           Kích thước (Size)
         </label>
-        <p className="text-xs text-gray-500 mt-1 mb-2">
+        <p className="text-xs text-mono-500 mt-1 mb-2">
           Chọn các size có sẵn cho variant này. Số lượng sẽ được quản lý qua
           Stock In.
         </p>
@@ -192,7 +192,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
                 name="sizes.size"
                 value={s.size}
                 onChange={(e) => handleChange(e, idx)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
                 required
               >
                 <option value="">Chọn size</option>
@@ -206,7 +206,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
               {form.sizes.length > 1 && (
                 <button
                   type="button"
-                  className="bg-red-400 text-white px-3 rounded hover:bg-red-500 transition"
+                  className="bg-mono-600 text-white px-3 rounded hover:bg-mono-800 transition"
                   onClick={() => handleRemoveSize(idx)}
                   title="Xóa size"
                 >
@@ -217,19 +217,19 @@ const VariantForm: React.FC<VariantFormProps> = ({
           ))}
           <button
             type="button"
-            className="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+            className="mt-2 bg-mono-500 text-white px-3 py-1 rounded hover:bg-mono-black transition"
             onClick={handleAddSize}
           >
             + Thêm size
           </button>
         </div>
       </div>
-      {error && <div className="text-red-500 text-sm">{error}</div>}
+      {error && <div className="text-mono-800 text-sm">{error}</div>}
       <div className="flex justify-end">
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+          className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition duration-300"
         >
           {loading ? "Đang lưu..." : editingVariant ? "Cập nhật" : "Thêm"}
         </button>

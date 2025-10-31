@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../../components/User/Sidebar";
 import OrderCard from "../../../components/User/OrderCard";
@@ -159,15 +159,15 @@ const UserManageOrder: React.FC = () => {
       case "pending":
         return "text-yellow-600 bg-yellow-100";
       case "confirmed":
-        return "text-blue-600 bg-blue-100";
+        return "text-mono-black bg-mono-100";
       case "shipping":
         return "text-purple-600 bg-purple-100";
       case "delivered":
-        return "text-green-600 bg-green-100";
+        return "text-mono-800 bg-green-100";
       case "cancelled":
-        return "text-red-600 bg-red-100";
+        return "text-mono-900 bg-red-100";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-mono-600 bg-mono-100";
     }
   };
 
@@ -216,7 +216,7 @@ const UserManageOrder: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-mono-100">
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 p-10">
@@ -231,8 +231,8 @@ const UserManageOrder: React.FC = () => {
                   onClick={() => setActiveTab(tab.key)}
                   className={`px-6 py-4 font-medium transition-colors ${
                     activeTab === tab.key
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-600 hover:text-blue-600"
+                      ? "text-mono-black border-b-2 border-mono-black"
+                      : "text-mono-600 hover:text-mono-black"
                   }`}
                 >
                   {tab.label} ({tab.count})
@@ -243,12 +243,12 @@ const UserManageOrder: React.FC = () => {
 
           {loading ? (
             <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-mono-black"></div>
               <p className="mt-2">Đang tải...</p>
             </div>
           ) : orders.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-gray-500">Không có đơn hàng nào.</p>
+              <p className="text-mono-500">Không có đơn hàng nào.</p>
             </div>
           ) : (
             orders.map((order) => (
@@ -275,7 +275,7 @@ const UserManageOrder: React.FC = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleViewDetail(order._id)}
-                      className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                      className="px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-600"
                     >
                       Xem chi tiết
                     </button>
@@ -284,7 +284,7 @@ const UserManageOrder: React.FC = () => {
                       <button
                         onClick={() => handleCancelOrder(order._id)}
                         disabled={cancelLoading === order._id}
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {cancelLoading === order._id
                           ? "Đang xử lý..."
@@ -296,7 +296,7 @@ const UserManageOrder: React.FC = () => {
                       <button
                         onClick={() => handleRepayOrder(order._id)}
                         disabled={repayLoading === order._id}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-black disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {repayLoading === order._id
                           ? "Đang xử lý..."
@@ -309,13 +309,13 @@ const UserManageOrder: React.FC = () => {
                 {/* Thông tin đơn hàng */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
-                    <p className="text-gray-700">
+                    <p className="text-mono-700">
                       <strong>Người đặt:</strong> {order.shippingAddress?.name}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-mono-700">
                       <strong>SĐT:</strong> {order.shippingAddress?.phone}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-mono-700">
                       <strong>Địa chỉ:</strong> {order.shippingAddress?.detail},{" "}
                       {order.shippingAddress?.ward},{" "}
                       {order.shippingAddress?.district},{" "}
@@ -323,10 +323,10 @@ const UserManageOrder: React.FC = () => {
                     </p>
                   </div>
                   <div>
-                    <p className="text-gray-700">
+                    <p className="text-mono-700">
                       <strong>Thanh toán:</strong> {order.payment?.method}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-mono-700">
                       <strong>Khuyến mãi:</strong>{" "}
                       {order.couponDetail?.code
                         ? `${
@@ -334,7 +334,7 @@ const UserManageOrder: React.FC = () => {
                           } (-${order.discount?.toLocaleString()}đ)`
                         : "Không"}
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-mono-700">
                       <strong>Thời gian:</strong>{" "}
                       {new Date(order.createdAt).toLocaleString()}
                     </p>
@@ -359,7 +359,7 @@ const UserManageOrder: React.FC = () => {
                         color={item.variant?.color?.name}
                       />
                       {idx < order.orderItems.length - 1 && (
-                        <hr className="my-4 border-gray-300" />
+                        <hr className="my-4 border-mono-300" />
                       )}
                     </div>
                   ))}
@@ -367,7 +367,7 @@ const UserManageOrder: React.FC = () => {
 
                 {/* Tổng cộng */}
                 <div className="flex justify-end mt-4 pt-4 border-t">
-                  <p className="text-lg font-bold text-red-600">
+                  <p className="text-lg font-bold text-mono-900">
                     Tổng cộng:{" "}
                     {order.totalAfterDiscountAndShipping?.toLocaleString()}đ
                   </p>

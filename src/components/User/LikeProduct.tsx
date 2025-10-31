@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import wishlistService from "../../services/WishlistService";
@@ -70,16 +70,16 @@ const LikeProduct = () => {
     <div className="flex flex-col items-center space-y-4">
       {loading ? (
         <div className="py-10 text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-blue-500 border-r-transparent"></div>
-          <p className="mt-4 text-gray-600">Đang tải danh sách yêu thích...</p>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-mono-500 border-r-transparent"></div>
+          <p className="mt-4 text-mono-600">Đang tải danh sách yêu thích...</p>
         </div>
       ) : wishlist.length === 0 ? (
         <div className="py-10 text-center">
-          <div className="text-5xl text-gray-300 mb-4">❤️</div>
-          <p className="text-gray-600">Bạn chưa có sản phẩm yêu thích nào.</p>
+          <div className="text-5xl text-mono-300 mb-4">❤️</div>
+          <p className="text-mono-600">Bạn chưa có sản phẩm yêu thích nào.</p>
           <button
             onClick={() => navigate("/products")}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            className="mt-4 px-4 py-2 bg-mono-black text-white rounded hover:bg-blue-700 transition-colors"
           >
             Khám phá sản phẩm
           </button>
@@ -92,7 +92,7 @@ const LikeProduct = () => {
           >
             {/* Ảnh sản phẩm */}
             <div
-              className="w-16 h-16 bg-gray-100 flex items-center justify-center rounded-md font-bold text-lg overflow-hidden cursor-pointer"
+              className="w-16 h-16 bg-mono-100 flex items-center justify-center rounded-md font-bold text-lg overflow-hidden cursor-pointer"
               onClick={() => navigateToProduct(item.product._id)}
             >
               {item.product.images && item.product.images[0]?.url ? (
@@ -102,7 +102,7 @@ const LikeProduct = () => {
                   className="w-full h-full object-cover rounded-md"
                 />
               ) : (
-                <span className="text-gray-400">No Image</span>
+                <span className="text-mono-400">No Image</span>
               )}
             </div>
 
@@ -111,23 +111,23 @@ const LikeProduct = () => {
               className="flex-1 ml-4 cursor-pointer"
               onClick={() => navigateToProduct(item.product._id)}
             >
-              <p className="text-lg font-medium hover:text-blue-600 transition-colors">
+              <p className="text-lg font-medium hover:text-mono-black transition-colors">
                 {item.product.name}
               </p>
               {item.variant ? (
                 <>
-                  <p className="text-red-500 font-semibold">
+                  <p className="text-mono-800 font-semibold">
                     {item.variant.priceFinal?.toLocaleString()}đ
                   </p>
                   {item.variant.percentDiscount &&
                     item.variant.percentDiscount > 0 && (
-                      <span className="text-xs text-gray-500 line-through">
+                      <span className="text-xs text-mono-500 line-through">
                         {item.variant.price?.toLocaleString()}đ
                       </span>
                     )}
                 </>
               ) : (
-                <p className="text-red-500 font-semibold">
+                <p className="text-mono-800 font-semibold">
                   {item.product.price?.toLocaleString() || "Liên hệ"}đ
                 </p>
               )}
@@ -136,12 +136,12 @@ const LikeProduct = () => {
             {/* Icon thùng rác */}
             <button
               onClick={() => removeProduct(item._id)}
-              className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
+              className="text-mono-800 hover:text-red-700 p-2 rounded-full hover:bg-mono-100 transition-colors"
               title="Xóa khỏi yêu thích"
               disabled={removingItems.has(item._id)}
             >
               {removingItems.has(item._id) ? (
-                <div className="h-5 w-5 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                <div className="h-5 w-5 border-2 border-mono-800 border-t-transparent rounded-full animate-spin"></div>
               ) : (
                 <FaTrash size={18} />
               )}

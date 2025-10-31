@@ -1,6 +1,8 @@
-/* App.css */
+/* App.css - Modern Monochrome Design System */
 .App {
   min-height: 100vh;
+  background-color: #ffffff;
+  color: #404040;
 }
 
 /* Global styles for the application */
@@ -8,4 +10,160 @@
   box-sizing: border-box;
 }
 
-/* Additional app-specific styles can be added here */
+/* Scrollbar Styling - Minimal & Elegant */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+
+/* Selection Color */
+::selection {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Loading States */
+.loading-skeleton {
+  background: linear-gradient(90deg, #f5f5f5 0%, #e5e5e5 50%, #f5f5f5 100%);
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Smooth Image Loading */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Typography Enhancements */
+.text-luxury {
+  font-feature-settings: "ss01", "cv11", "liga";
+  letter-spacing: -0.02em;
+}
+
+/* Card Hover Effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Ripple Effect */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Focus States - Accessibility */
+.focus-luxury:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 4px;
+}
+
+/* Premium Borders */
+.border-luxury {
+  border: 1px solid #e5e5e5;
+  transition: border-color 0.2s ease;
+}
+
+.border-luxury:hover {
+  border-color: #000000;
+}
+
+/* Text Gradients for Premium Feel */
+.text-gradient-mono {
+  background: linear-gradient(135deg, #000000 0%, #525252 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Navbar Shadow on Scroll */
+.navbar-shadow {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Product Image Container */
+.product-image-container {
+  background-color: #fafafa;
+  transition: background-color 0.3s ease;
+}
+
+.product-image-container:hover {
+  background-color: #f5f5f5;
+}
+
+/* Price Tag Styling */
+.price-tag {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Luxury Spacing */
+.section-spacing {
+  padding-top: 6rem;
+  padding-bottom: 6rem;
+}
+
+@media (max-width: 768px) {
+  .section-spacing {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import Sidebar from "../../../components/User/Sidebar";
 import { useAuth } from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
@@ -126,13 +126,13 @@ const UserChangePasswordPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-mono-100">
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 p-8">
           <div className="max-w-2xl mx-auto">
             <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
-              <FaKey className="text-blue-600" />
+              <FaKey className="text-mono-black" />
               Đổi mật khẩu
             </h1>
 
@@ -142,7 +142,7 @@ const UserChangePasswordPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="currentPassword"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-mono-700 mb-1"
                   >
                     Mật khẩu hiện tại
                   </label>
@@ -153,10 +153,10 @@ const UserChangePasswordPage: React.FC = () => {
                       name="currentPassword"
                       value={formData.currentPassword}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent ${
                         errors.currentPassword
-                          ? "border-red-500"
-                          : "border-gray-300"
+                          ? "border-mono-800"
+                          : "border-mono-300"
                       }`}
                     />
                     <button
@@ -167,14 +167,14 @@ const UserChangePasswordPage: React.FC = () => {
                       className="absolute inset-y-0 right-0 flex items-center pr-3"
                     >
                       {showCurrentPassword ? (
-                        <FaEyeSlash className="text-gray-500" />
+                        <FaEyeSlash className="text-mono-500" />
                       ) : (
-                        <FaEye className="text-gray-500" />
+                        <FaEye className="text-mono-500" />
                       )}
                     </button>
                   </div>
                   {errors.currentPassword && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p className="mt-1 text-sm text-mono-900">
                       {errors.currentPassword}
                     </p>
                   )}
@@ -184,7 +184,7 @@ const UserChangePasswordPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="newPassword"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-mono-700 mb-1"
                   >
                     Mật khẩu mới
                   </label>
@@ -195,10 +195,10 @@ const UserChangePasswordPage: React.FC = () => {
                       name="newPassword"
                       value={formData.newPassword}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent ${
                         errors.newPassword
-                          ? "border-red-500"
-                          : "border-gray-300"
+                          ? "border-mono-800"
+                          : "border-mono-300"
                       }`}
                     />
                     <button
@@ -207,14 +207,14 @@ const UserChangePasswordPage: React.FC = () => {
                       className="absolute inset-y-0 right-0 flex items-center pr-3"
                     >
                       {showNewPassword ? (
-                        <FaEyeSlash className="text-gray-500" />
+                        <FaEyeSlash className="text-mono-500" />
                       ) : (
-                        <FaEye className="text-gray-500" />
+                        <FaEye className="text-mono-500" />
                       )}
                     </button>
                   </div>
                   {errors.newPassword && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p className="mt-1 text-sm text-mono-900">
                       {errors.newPassword}
                     </p>
                   )}
@@ -224,7 +224,7 @@ const UserChangePasswordPage: React.FC = () => {
                 <div>
                   <label
                     htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700 mb-1"
+                    className="block text-sm font-medium text-mono-700 mb-1"
                   >
                     Xác nhận mật khẩu mới
                   </label>
@@ -235,10 +235,10 @@ const UserChangePasswordPage: React.FC = () => {
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent ${
                         errors.confirmPassword
-                          ? "border-red-500"
-                          : "border-gray-300"
+                          ? "border-mono-800"
+                          : "border-mono-300"
                       }`}
                     />
                     <button
@@ -249,21 +249,21 @@ const UserChangePasswordPage: React.FC = () => {
                       className="absolute inset-y-0 right-0 flex items-center pr-3"
                     >
                       {showConfirmPassword ? (
-                        <FaEyeSlash className="text-gray-500" />
+                        <FaEyeSlash className="text-mono-500" />
                       ) : (
-                        <FaEye className="text-gray-500" />
+                        <FaEye className="text-mono-500" />
                       )}
                     </button>
                   </div>
                   {errors.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p className="mt-1 text-sm text-mono-900">
                       {errors.confirmPassword}
                     </p>
                   )}
                 </div>
 
                 {/* Hướng dẫn mật khẩu */}
-                <div className="bg-blue-50 p-4 rounded-lg">
+                <div className="bg-mono-50 p-4 rounded-lg">
                   <h3 className="text-sm font-medium text-blue-800 mb-2">
                     Yêu cầu mật khẩu:
                   </h3>
@@ -283,7 +283,7 @@ const UserChangePasswordPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 bg-mono-black text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? "Đang xử lý..." : "Đổi mật khẩu"}
                   </button>

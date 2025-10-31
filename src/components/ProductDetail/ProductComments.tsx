@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { reviewApi, Review } from "../../services/ReviewService";
 import { FaHeart, FaRegHeart, FaStar, FaRegStar, FaUser } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
@@ -83,11 +83,11 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
 
   if (loading) {
     return (
-      <div className="p-6 bg-gray-50 rounded-lg shadow-sm">
+      <div className="p-6 bg-mono-50 rounded-lg shadow-sm">
         <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-mono-black"></div>
         </div>
-        <p className="text-center mt-3 text-gray-500 font-medium">
+        <p className="text-center mt-3 text-mono-500 font-medium">
           Đang tải đánh giá...
         </p>
       </div>
@@ -98,12 +98,12 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
       {/* Header Section */}
-      <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center">
+      <div className="px-8 py-6 border-b border-mono-100 flex justify-between items-center">
         <div>
-          <h3 className="text-2xl font-bold text-gray-800">
+          <h3 className="text-2xl font-bold text-mono-800">
             Đánh giá sản phẩm
           </h3>
-          <p className="text-gray-500 mt-1 font-medium">
+          <p className="text-mono-500 mt-1 font-medium">
             {reviews.length} đánh giá từ khách hàng
           </p>
         </div>
@@ -128,11 +128,11 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
       {/* Review List */}
       {reviews.length === 0 ? (
         <div className="p-8 text-center">
-          <FaRegStar className="mx-auto text-4xl text-gray-300 mb-3" />
-          <h3 className="text-xl font-medium text-gray-700 mb-2">
+          <FaRegStar className="mx-auto text-4xl text-mono-300 mb-3" />
+          <h3 className="text-xl font-medium text-mono-700 mb-2">
             Chưa có đánh giá nào
           </h3>
-          <p className="text-gray-500">
+          <p className="text-mono-500">
             Hãy là người đầu tiên đánh giá sản phẩm này
           </p>
         </div>
@@ -147,7 +147,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                     <img
                       src={review.user.avatar.url}
                       alt={review.user.name}
-                      className="w-12 h-12 rounded-full object-cover border border-gray-200"
+                      className="w-12 h-12 rounded-full object-cover border border-mono-200"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.onerror = null;
@@ -155,8 +155,8 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                       }}
                     />
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
-                      <FaUser className="text-gray-500" />
+                    <div className="w-12 h-12 rounded-full bg-mono-200 flex items-center justify-center">
+                      <FaUser className="text-mono-500" />
                     </div>
                   )}
                 </div>
@@ -164,10 +164,10 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                 {/* Review Content */}
                 <div className="flex-grow">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-medium text-gray-800">
+                    <h4 className="font-medium text-mono-800">
                       {review.user.name}
                     </h4>
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-mono-500 text-sm">
                       {new Date(review.createdAt).toLocaleDateString("vi-VN")}
                     </span>
                   </div>
@@ -177,7 +177,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                     {renderStars(review.rating)}
                   </div>
 
-                  <p className="text-gray-700 whitespace-pre-line">
+                  <p className="text-mono-700 whitespace-pre-line">
                     {review.content}
                   </p>
 
@@ -188,8 +188,8 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                       disabled={likeLoading[review._id]}
                       className={`flex items-center space-x-1 ${
                         likedReviews[review._id]
-                          ? "text-red-500"
-                          : "text-gray-500 hover:text-red-500"
+                          ? "text-mono-800"
+                          : "text-mono-500 hover:text-mono-800"
                       } transition-colors disabled:opacity-50`}
                     >
                       {likedReviews[review._id] ? <FaHeart /> : <FaRegHeart />}

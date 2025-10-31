@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { sessionUserApi } from "../../../services/SessionUserService";
 import type { User } from "../../../types/user";
@@ -69,7 +69,7 @@ const ListCustomerPage: React.FC = () => {
       );
     if (!customer.isActive)
       return (
-        <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">
+        <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
           Ngừng hoạt động
         </span>
       );
@@ -89,12 +89,12 @@ const ListCustomerPage: React.FC = () => {
   const getRoleBadge = (role: string) => {
     if (role === "admin")
       return (
-        <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs font-semibold">
+        <span className="bg-mono-100 text-blue-700 px-2 py-1 rounded-full text-xs font-semibold">
           Admin
         </span>
       );
     return (
-      <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">
+      <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
         User
       </span>
     );
@@ -125,30 +125,30 @@ const ListCustomerPage: React.FC = () => {
   return (
     <div className="p-6 w-full ">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug font-sans">
+        <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug font-sans">
           Danh Sách Khách Hàng
         </h2>
 
         {!isSearchVisible ? (
           <button
             onClick={toggleSearchVisibility}
-            className="flex items-center gap-2 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-blue-300 active:bg-gray-200"
+            className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
-            <IoIosSearch className="text-xl text-gray-500" />
+            <IoIosSearch className="text-xl text-mono-500" />
             <span className="font-medium">Tìm kiếm</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
             <IoIosSearch
               onClick={handleBack}
-              className="text-gray-400 cursor-pointer text-xl"
+              className="text-mono-400 cursor-pointer text-xl"
             />
             <input
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
               placeholder="Tìm theo tên hoặc email..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
         )}
@@ -156,7 +156,7 @@ const ListCustomerPage: React.FC = () => {
 
       <div className="overflow-x-auto shadow rounded-lg">
         <table className="min-w-full bg-white rounded-md overflow-hidden border">
-          <thead className="bg-gray-50 text-gray-700 text-sm font-semibold uppercase">
+          <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
               <th className="py-3 px-4 text-left border-b">Avatar</th>
@@ -171,7 +171,7 @@ const ListCustomerPage: React.FC = () => {
           </thead>
           <tbody>
             {filteredCustomers.map((customer) => (
-              <tr key={customer._id} className="hover:bg-gray-50 border-t">
+              <tr key={customer._id} className="hover:bg-mono-50 border-t">
                 <td className="px-4 py-3 text-sm">{customer._id}</td>
                 <td className="px-4 py-3">
                   <div className="flex justify-center">
@@ -182,20 +182,20 @@ const ListCustomerPage: React.FC = () => {
                         className="h-10 w-10 rounded-full object-cover border"
                       />
                     ) : (
-                      <div className="h-10 w-10 flex items-center justify-center bg-gray-200 rounded-full text-gray-500">
+                      <div className="h-10 w-10 flex items-center justify-center bg-mono-200 rounded-full text-mono-500">
                         ?
                       </div>
                     )}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-sm font-medium text-gray-800">
+                <td className="px-4 py-3 text-sm font-medium text-mono-800">
                   {customer.name}
                 </td>
                 <td className="px-4 py-3 text-sm">{customer.email}</td>
                 <td className="px-4 py-3 text-sm">{customer.phone || "-"}</td>
                 <td className="px-4 py-3">{getStatus(customer)}</td>
                 <td className="px-4 py-3">{getRoleBadge(customer.role)}</td>
-                <td className="px-4 py-3 text-xs text-gray-600">
+                <td className="px-4 py-3 text-xs text-mono-600">
                   {sessions.filter(
                     (s) => getSessionUserId(s.user) === customer._id
                   ).length > 0 ? (
@@ -214,7 +214,7 @@ const ListCustomerPage: React.FC = () => {
                         ))}
                     </>
                   ) : (
-                    <span className="text-gray-400">Không có session</span>
+                    <span className="text-mono-400">Không có session</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
@@ -223,7 +223,7 @@ const ListCustomerPage: React.FC = () => {
                       (s) => getSessionUserId(s.user) === customer._id
                     ) && (
                       <button
-                        className="inline-flex items-center justify-center bg-blue-400 hover:bg-blue-400 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="inline-flex items-center justify-center bg-mono-600 hover:bg-mono-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                         disabled={loadingUserId === customer._id}
                         onClick={() => handleLogoutUser(customer._id)}
                       >
@@ -241,7 +241,7 @@ const ListCustomerPage: React.FC = () => {
                       className={`inline-flex items-center justify-center text-xs px-3 py-1 rounded-full shadow-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
                         customer.blockedAt
                           ? "bg-green-300 hover:bg-green-300 text-white"
-                          : "bg-gray-400 hover:bg-gray-400 text-white"
+                          : "bg-mono-400 hover:bg-mono-400 text-white"
                       }`}
                       disabled={loadingUserId === customer._id}
                       onClick={() => handleBlockUser(customer)}

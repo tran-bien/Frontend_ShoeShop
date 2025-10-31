@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface BannerImage {
@@ -104,8 +104,8 @@ const CustomSwipper = ({
                 border-2 
                 ${
                   index === currentIndex
-                    ? "border-blue-500 bg-green-500"
-                    : "bg-none border-gray-100"
+                    ? "border-mono-500 bg-mono-700"
+                    : "bg-none border-mono-100"
                 }`}
             ></button>
           ))}

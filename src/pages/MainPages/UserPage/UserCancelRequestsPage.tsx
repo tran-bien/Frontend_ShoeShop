@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import Sidebar from "../../../components/User/Sidebar";
 import {
   userOrderService,
@@ -44,11 +44,11 @@ const UserCancelRequestsPage: React.FC = () => {
       case "pending":
         return "text-yellow-600 bg-yellow-100";
       case "approved":
-        return "text-green-600 bg-green-100";
+        return "text-mono-800 bg-green-100";
       case "rejected":
-        return "text-red-600 bg-red-100";
+        return "text-mono-900 bg-red-100";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-mono-600 bg-mono-100";
     }
   };
 
@@ -73,7 +73,7 @@ const UserCancelRequestsPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-mono-100">
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 p-10">
@@ -88,8 +88,8 @@ const UserCancelRequestsPage: React.FC = () => {
                   onClick={() => setStatusFilter(tab.key)}
                   className={`px-6 py-4 font-medium transition-colors ${
                     statusFilter === tab.key
-                      ? "text-blue-600 border-b-2 border-blue-600"
-                      : "text-gray-600 hover:text-blue-600"
+                      ? "text-mono-black border-b-2 border-mono-black"
+                      : "text-mono-600 hover:text-mono-black"
                   }`}
                 >
                   {tab.label}
@@ -99,9 +99,9 @@ const UserCancelRequestsPage: React.FC = () => {
           </div>
 
           {/* Info banner */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="bg-mono-50 border border-mono-200 rounded-lg p-4 mb-6">
             <div className="flex items-start gap-3">
-              <FaInfoCircle className="text-blue-500 text-lg mt-0.5" />
+              <FaInfoCircle className="text-mono-500 text-lg mt-0.5" />
               <div>
                 <h3 className="font-semibold text-blue-800 mb-1">
                   Thông tin về yêu cầu hủy đơn hàng
@@ -117,13 +117,13 @@ const UserCancelRequestsPage: React.FC = () => {
 
           {loading ? (
             <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-mono-black"></div>
               <p className="mt-2">Đang tải...</p>
             </div>
           ) : cancelRequests.length === 0 ? (
             <div className="text-center py-8">
-              <FaClipboardList className="text-gray-400 text-6xl mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">
+              <FaClipboardList className="text-mono-400 text-6xl mx-auto mb-4" />
+              <p className="text-mono-500 text-lg">
                 {statusFilter === "all"
                   ? "Bạn chưa có yêu cầu hủy đơn hàng nào."
                   : `Không có yêu cầu nào ở trạng thái "${
@@ -141,7 +141,7 @@ const UserCancelRequestsPage: React.FC = () => {
                   {/* Header */}
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h2 className="text-lg font-semibold text-gray-800">
+                      <h2 className="text-lg font-semibold text-mono-800">
                         Đơn hàng: {request.order.code}
                       </h2>
                       <span
@@ -152,7 +152,7 @@ const UserCancelRequestsPage: React.FC = () => {
                         {getStatusText(request.status)}
                       </span>
                     </div>
-                    <div className="text-right text-sm text-gray-500">
+                    <div className="text-right text-sm text-mono-500">
                       <div className="flex items-center gap-1 mb-1">
                         <FaCalendarAlt />
                         <span>Gửi yêu cầu:</span>
@@ -166,10 +166,10 @@ const UserCancelRequestsPage: React.FC = () => {
                   {/* Request details */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h3 className="font-semibold text-gray-700 mb-2">
+                      <h3 className="font-semibold text-mono-700 mb-2">
                         Thông tin đơn hàng
                       </h3>
-                      <div className="space-y-1 text-sm text-gray-600">
+                      <div className="space-y-1 text-sm text-mono-600">
                         <p>
                           <strong>Trạng thái đơn:</strong>{" "}
                           {request.order.status}
@@ -193,10 +193,10 @@ const UserCancelRequestsPage: React.FC = () => {
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-gray-700 mb-2">
+                      <h3 className="font-semibold text-mono-700 mb-2">
                         Lý do hủy đơn
                       </h3>
-                      <div className="bg-gray-50 p-3 rounded border text-sm text-gray-700">
+                      <div className="bg-mono-50 p-3 rounded border text-sm text-mono-700">
                         {request.reason}
                       </div>
                     </div>
@@ -205,14 +205,14 @@ const UserCancelRequestsPage: React.FC = () => {
                   {/* Admin response */}
                   {request.adminResponse && (
                     <div className="mt-4 pt-4 border-t">
-                      <h3 className="font-semibold text-gray-700 mb-2">
+                      <h3 className="font-semibold text-mono-700 mb-2">
                         Phản hồi từ Admin
                       </h3>
-                      <div className="bg-blue-50 border border-blue-200 p-3 rounded text-sm text-blue-800">
+                      <div className="bg-mono-50 border border-mono-200 p-3 rounded text-sm text-blue-800">
                         {request.adminResponse}
                       </div>
                       {request.resolvedAt && (
-                        <p className="text-xs text-gray-500 mt-2">
+                        <p className="text-xs text-mono-500 mt-2">
                           Xử lý vào:{" "}
                           {new Date(request.resolvedAt).toLocaleString()}
                         </p>

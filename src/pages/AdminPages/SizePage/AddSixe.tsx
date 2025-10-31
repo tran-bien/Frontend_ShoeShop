@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { sizeApi } from "../../../services/SizeService";
 
 interface AddSizeProps {
@@ -29,19 +29,19 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-300 bg-opacity-75 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md relative text-black">
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+          className="absolute top-2 right-2 text-mono-500 hover:text-mono-700 text-2xl"
         >
           &times;
         </button>
         <h2 className="text-xl font-bold mb-6 text-center">Thêm Size</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Giá trị size
             </label>
             <input
@@ -52,18 +52,18 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
                 setValue(e.target.value === "" ? "" : Number(e.target.value))
               }
               placeholder="Nhập giá trị size (VD: 41.5)"
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Loại size
             </label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md focus:outline-none focus:ring-2 focus:ring-mono-600"
               required
             >
               <option value="EU">EU (European)</option>
@@ -75,7 +75,7 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
             </select>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-bold text-gray-600">
+            <label className="block text-sm font-bold text-mono-600">
               Mô tả
             </label>
             <input
@@ -83,23 +83,23 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Nhập mô tả"
-              className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md"
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
-          {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
+          {error && <div className="text-mono-800 text-sm mb-2">{error}</div>}
           <div className="flex justify-end gap-4">
             <button
               type="submit"
               disabled={loading}
-              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-md"
+              className="bg-mono-700 hover:bg-mono-800 text-white px-6 py-2 rounded-md"
             >
               {loading ? "Đang thêm..." : "Thêm Size"}
             </button>
             <button
               type="button"
               onClick={handleClose}
-              className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-md"
+              className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
               Hủy
             </button>

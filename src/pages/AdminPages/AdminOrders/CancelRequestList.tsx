@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { adminOrderService } from "../../../services/OrderService";
 import type { CancelRequest } from "../../../types/order";
 
@@ -57,7 +57,7 @@ const CancelRequestList: React.FC = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Tìm mã đơn hoặc tên khách hàng"
-          className="px-4 py-2 w-1/3 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="px-4 py-2 w-1/3 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
         />
         <div className="flex items-center gap-2">
           <span className="text-sm">Trạng thái</span>
@@ -75,7 +75,7 @@ const CancelRequestList: React.FC = () => {
       </div>
       <div className="overflow-x-auto shadow rounded-lg">
         <table className="min-w-full bg-white rounded-md overflow-hidden border">
-          <thead className="bg-gray-50 text-gray-700 text-sm font-semibold uppercase">
+          <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">Mã đơn</th>
               <th className="py-3 px-4 text-left border-b">Khách hàng</th>
@@ -100,14 +100,14 @@ const CancelRequestList: React.FC = () => {
               </tr>
             ) : (
               filteredRequests.map((req) => (
-                <tr key={req._id} className="hover:bg-gray-50">
+                <tr key={req._id} className="hover:bg-mono-50">
                   <td className="py-2 px-4 border-b text-sm">
                     {req.order.code}
                   </td>
                   <td className="py-2 px-4 border-b text-sm">
                     {req.user.name}
                     <br />
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-mono-500">
                       {req.user.phone}
                     </span>
                   </td>
@@ -129,13 +129,13 @@ const CancelRequestList: React.FC = () => {
                       {req.status === "pending" ? (
                         <>
                           <button
-                            className="inline-flex items-center justify-center bg-green-500 hover:bg-green-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                            className="inline-flex items-center justify-center bg-mono-700 hover:bg-mono-800 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                             onClick={() => handleApprove(req._id)}
                           >
                             Duyệt
                           </button>
                           <button
-                            className="inline-flex items-center justify-center bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
+                            className="inline-flex items-center justify-center bg-mono-800 hover:bg-mono-900 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                             onClick={() => handleReject(req._id)}
                           >
                             Từ chối

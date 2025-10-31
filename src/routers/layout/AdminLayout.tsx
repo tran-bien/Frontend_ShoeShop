@@ -1,4 +1,4 @@
-
+﻿
 import { Outlet } from 'react-router-dom'
 import AdminSidebar from '../../components/Sidebar/AdminSidebar'
 import AdminNavbar from '../../components/Navbar/AdminNavbar'
@@ -6,7 +6,7 @@ import AdminNavbar from '../../components/Navbar/AdminNavbar'
 const AdminLayout = () => {
     return (
         <>
-            <div className='flex flex-row bg-gray-100'>
+            <div className='flex flex-row bg-mono-100'>
                 <div>
                     <AdminSidebar />
                 </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -205,8 +205,8 @@ const LandingPage: React.FC = () => {
       <div className="min-h-screen bg-white">
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Đang tải...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mono-800 mx-auto"></div>
+            <p className="mt-4 text-mono-600">Đang tải...</p>
           </div>
         </div>
       </div>
@@ -220,7 +220,7 @@ const LandingPage: React.FC = () => {
           <div className="text-center max-w-md mx-auto">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-16 w-16 text-red-500 mx-auto mb-4"
+              className="h-16 w-16 text-mono-800 mx-auto mb-4"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -232,13 +232,13 @@ const LandingPage: React.FC = () => {
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <p className="text-xl font-semibold text-gray-800">
+            <p className="text-xl font-semibold text-mono-800">
               Không thể tải dữ liệu
             </p>
-            <p className="text-gray-600 mt-2">{error}</p>
+            <p className="text-mono-600 mt-2">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="mt-4 px-6 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Thử lại
             </button>
@@ -262,7 +262,7 @@ const LandingPage: React.FC = () => {
       <h2 className="text-3xl font-bold">{title}</h2>
       <Link
         to={linkTo}
-        className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+        className="px-4 py-2 bg-mono-800 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
       >
         <span>{linkText}</span>
         <FiChevronRight className="ml-1" />
@@ -294,8 +294,8 @@ const LandingPage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-10 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">{emptyMessage}</p>
+        <div className="text-center py-10 bg-mono-50 rounded-lg">
+          <p className="text-mono-500">{emptyMessage}</p>
         </div>
       )}
     </>
@@ -303,35 +303,35 @@ const LandingPage: React.FC = () => {
 
   // Coupon Card Component - Thiết kế với height đồng đều và màu copy nhạt
   const CouponCard = ({ coupon }: { coupon: Coupon }) => (
-    <div className="bg-white border-2 border-gray-200 rounded-lg p-3 hover:border-gray-800 hover:shadow-md transition-all duration-300 relative overflow-hidden min-w-0 h-full flex flex-col">
+    <div className="bg-white border-2 border-mono-200 rounded-lg p-3 hover:border-mono-800 hover:shadow-md transition-all duration-300 relative overflow-hidden min-w-0 h-full flex flex-col">
       {/* Decorative corner */}
-      <div className="absolute top-0 right-0 w-4 h-4 bg-gray-800 transform rotate-45 translate-x-2 -translate-y-2"></div>
+      <div className="absolute top-0 right-0 w-4 h-4 bg-mono-800 transform rotate-45 translate-x-2 -translate-y-2"></div>
 
       <div className="relative flex flex-col h-full">
         {/* Header với icon và type */}
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-1">
             {coupon.type === "percent" ? (
-              <FiPercent className="text-gray-800 w-3 h-3" />
+              <FiPercent className="text-mono-800 w-3 h-3" />
             ) : (
-              <FiDollarSign className="text-gray-800 w-3 h-3" />
+              <FiDollarSign className="text-mono-800 w-3 h-3" />
             )}
-            <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+            <span className="text-xs font-medium text-mono-600 uppercase tracking-wide">
               {coupon.type === "percent" ? "Giảm %" : "Giảm tiền"}
             </span>
           </div>
-          <FiTag className="text-gray-400 w-3 h-3" />
+          <FiTag className="text-mono-400 w-3 h-3" />
         </div>
 
         {/* Giá trị giảm giá */}
         <div className="mb-2">
-          <div className="text-lg font-bold text-gray-900 mb-1">
+          <div className="text-lg font-bold text-mono-900 mb-1">
             {coupon.type === "percent"
               ? `${coupon.value}%`
               : formatCurrency(coupon.value)}
           </div>
           {coupon.maxDiscount && coupon.type === "percent" && (
-            <div className="text-xs text-gray-600">
+            <div className="text-xs text-mono-600">
               Tối đa {formatCurrency(coupon.maxDiscount)}
             </div>
           )}
@@ -339,17 +339,17 @@ const LandingPage: React.FC = () => {
 
         {/* Mô tả */}
         <div className="mb-3 flex-grow">
-          <p className="text-xs text-gray-700 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-mono-700 line-clamp-2 leading-relaxed">
             {coupon.description}
           </p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-mono-500 mt-1">
             Đơn tối thiểu {formatCurrency(coupon.minOrderValue)}
           </p>
         </div>
 
         {/* Footer với ngày hết hạn */}
         <div className="mb-2">
-          <div className="flex items-center space-x-1 text-xs text-gray-500">
+          <div className="flex items-center space-x-1 text-xs text-mono-500">
             <FiCalendar size={10} />
             <span>HSD: {formatDate(coupon.endDate)}</span>
           </div>
@@ -358,7 +358,7 @@ const LandingPage: React.FC = () => {
         {/* Copy button - với màu nhạt hơn */}
         <button
           onClick={() => copyCouponCode(coupon.code)}
-          className="w-full flex items-center justify-center space-x-2 bg-gray-600 hover:bg-gray-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors mt-auto"
+          className="w-full flex items-center justify-center space-x-2 bg-mono-600 hover:bg-mono-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors mt-auto"
         >
           <span className="font-mono">{coupon.code}</span>
           <FiCopy size={10} />
@@ -443,13 +443,13 @@ const LandingPage: React.FC = () => {
 
       {/* Mã giảm giá - Layout ngang với height đồng đều */}
       {publicCoupons && publicCoupons.length > 0 && (
-        <section className="py-12 bg-gray-50">
+        <section className="py-12 bg-mono-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold text-gray-900 mb-2">
+              <h2 className="text-4xl font-bold text-mono-900 mb-2">
                 Mã giảm giá hấp dẫn
               </h2>
-              <p className="text-gray-600 max-w-xl mx-auto text-sm">
+              <p className="text-mono-600 max-w-xl mx-auto text-sm">
                 Sử dụng các mã giảm giá dưới đây để nhận ưu đãi tốt nhất cho đơn
                 hàng của bạn
               </p>
@@ -467,7 +467,7 @@ const LandingPage: React.FC = () => {
             <div className="text-center mt-8">
               <Link
                 to="/coupons"
-                className="inline-flex items-center px-6 py-2.5 bg-gray-800 text-white rounded-lg hover:bg-black transition-colors font-medium text-sm"
+                className="inline-flex items-center px-6 py-2.5 bg-mono-800 text-white rounded-lg hover:bg-black transition-colors font-medium text-sm"
               >
                 <span>Xem tất cả mã giảm giá</span>
                 <FiChevronRight className="ml-1 w-4 h-4" />
@@ -493,7 +493,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Sản phẩm nổi bật */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-mono-50">
         <div className="container mx-auto px-4">
           <SectionTitle
             title="Sản phẩm nổi bật"
@@ -529,7 +529,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Sản phẩm mới nhất */}
-      <section className="bg-gray-50 py-16">
+      <section className="bg-mono-50 py-16">
         <div className="container mx-auto px-4">
           <SectionTitle
             title="Sản phẩm mới nhất"
@@ -544,21 +544,21 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white pt-14 pb-8">
+      <footer className="bg-mono-800 text-white pt-14 pb-8">
         <div className="container mx-auto px-4">
           {/* Footer Main Content */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             {/* Column 1: About */}
             <div>
               <h3 className="text-xl font-bold mb-4">ShoeShop</h3>
-              <p className="text-gray-300 mb-4">
+              <p className="text-mono-300 mb-4">
                 Cửa hàng giày chính hãng với nhiều mẫu mã đa dạng, phù hợp với
                 mọi nhu cầu và phong cách.
               </p>
               <div className="flex space-x-4 mt-4">
                 <a
                   href="#"
-                  className="text-white hover:text-gray-300 transition-colors"
+                  className="text-white hover:text-mono-300 transition-colors"
                 >
                   <svg
                     className="h-6 w-6"
@@ -570,7 +570,7 @@ const LandingPage: React.FC = () => {
                 </a>
                 <a
                   href="#"
-                  className="text-white hover:text-gray-300 transition-colors"
+                  className="text-white hover:text-mono-300 transition-colors"
                 >
                   <svg
                     className="h-6 w-6"
@@ -582,7 +582,7 @@ const LandingPage: React.FC = () => {
                 </a>
                 <a
                   href="#"
-                  className="text-white hover:text-gray-300 transition-colors"
+                  className="text-white hover:text-mono-300 transition-colors"
                 >
                   <svg
                     className="h-6 w-6"
@@ -602,7 +602,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <Link
                     to="products?gender=male"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-mono-300 hover:text-white transition-colors"
                   >
                     Giày Nam
                   </Link>
@@ -610,7 +610,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <Link
                     to="products?gender=female"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-mono-300 hover:text-white transition-colors"
                   >
                     Giày Nữ
                   </Link>
@@ -625,7 +625,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <Link
                     to="/contact"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-mono-300 hover:text-white transition-colors"
                   >
                     Liên hệ
                   </Link>
@@ -633,7 +633,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <Link
                     to="/returns"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-mono-300 hover:text-white transition-colors"
                   >
                     Chính sách đổi trả
                   </Link>
@@ -641,7 +641,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <Link
                     to="/shipping"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-mono-300 hover:text-white transition-colors"
                   >
                     Thông tin vận chuyển
                   </Link>
@@ -649,7 +649,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <Link
                     to="/faq"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-mono-300 hover:text-white transition-colors"
                   >
                     Câu hỏi thường gặp
                   </Link>
@@ -657,7 +657,7 @@ const LandingPage: React.FC = () => {
                 <li>
                   <Link
                     to="/size-guide"
-                    className="text-gray-300 hover:text-white transition-colors"
+                    className="text-mono-300 hover:text-white transition-colors"
                   >
                     Hướng dẫn chọn size
                   </Link>
@@ -668,18 +668,18 @@ const LandingPage: React.FC = () => {
             {/* Column 4: Newsletter */}
             <div>
               <h3 className="text-xl font-bold mb-4">Đăng ký nhận tin</h3>
-              <p className="text-gray-300 mb-4">
+              <p className="text-mono-300 mb-4">
                 Đăng ký để nhận thông tin về sản phẩm mới và khuyến mãi đặc biệt
               </p>
               <form className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="email"
                   placeholder="Email của bạn"
-                  className="px-4 py-2 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-4 py-2 rounded-md text-mono-800 focus:outline-none focus:ring-2 focus:ring-mono-500"
                 />
                 <button
                   type="submit"
-                  className="bg-blue-600 hover:bg-blue-700 transition-colors px-4 py-2 rounded-md font-medium"
+                  className="bg-mono-black hover:bg-blue-700 transition-colors px-4 py-2 rounded-md font-medium"
                 >
                   Đăng ký
                 </button>
@@ -688,7 +688,7 @@ const LandingPage: React.FC = () => {
           </div>
 
           {/* Payment Methods */}
-          <div className="border-t border-gray-700 pt-8 pb-6">
+          <div className="border-t border-mono-700 pt-8 pb-6">
             <p className="text-sm font-medium mb-4 text-center">
               Chấp nhận thanh toán
             </p>
@@ -702,12 +702,12 @@ const LandingPage: React.FC = () => {
           </div>
 
           {/* Copyright */}
-          <div className="border-t border-gray-700 pt-6 mt-2 text-center">
+          <div className="border-t border-mono-700 pt-6 mt-2 text-center">
             <p className="text-sm">
               © {new Date().getFullYear()} ShoeShop. Tất cả các quyền được bảo
               lưu.
             </p>
-            <div className="flex justify-center space-x-6 mt-4 text-sm text-gray-400">
+            <div className="flex justify-center space-x-6 mt-4 text-sm text-mono-400">
               <Link
                 to="/privacy-policy"
                 className="hover:text-white transition-colors"

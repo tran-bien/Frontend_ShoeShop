@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import InventoryService from "../../../services/InventoryService";
 import type { InventoryItem } from "../../../types/inventory";
 
@@ -55,31 +55,31 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">
+        <h2 className="text-xl font-bold mb-4 text-mono-800">
           📤 Xuất kho - {item.product?.name}
         </h2>
 
         {/* Product Info */}
-        <div className="bg-gray-50 rounded-lg p-4 mb-4 space-y-2 text-sm">
+        <div className="bg-mono-50 rounded-lg p-4 mb-4 space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-600">Màu sắc:</span>
+            <span className="text-mono-600">Màu sắc:</span>
             <strong>{item.variant?.colorName || "N/A"}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Kích thước:</span>
+            <span className="text-mono-600">Kích thước:</span>
             <strong>{item.size?.name || "N/A"}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-600">Tồn kho hiện tại:</span>
-            <strong className="text-blue-600">{item.quantity}</strong>
+            <span className="text-mono-600">Tồn kho hiện tại:</span>
+            <strong className="text-mono-black">{item.quantity}</strong>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Quantity */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
-              Số lượng xuất <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Số lượng xuất <span className="text-mono-800">*</span>
             </label>
             <input
               type="number"
@@ -90,13 +90,13 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
                   quantity: parseInt(e.target.value) || 0,
                 })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               min="1"
               max={item.quantity}
               required
             />
             {formData.quantity > 0 && (
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-mono-500">
                 Tồn sau xuất:{" "}
                 <strong>{item.quantity - formData.quantity}</strong>
               </p>
@@ -105,7 +105,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
 
           {/* Order ID (optional) */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
+            <label className="block text-sm font-medium mb-2 text-mono-700">
               Mã đơn hàng (nếu có)
             </label>
             <input
@@ -114,14 +114,14 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
               onChange={(e) =>
                 setFormData({ ...formData, orderId: e.target.value })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               placeholder="Nhập mã đơn hàng"
             />
           </div>
 
           {/* Note */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
+            <label className="block text-sm font-medium mb-2 text-mono-700">
               Ghi chú
             </label>
             <textarea
@@ -129,7 +129,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
               onChange={(e) =>
                 setFormData({ ...formData, note: e.target.value })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               rows={3}
               placeholder="Lý do xuất kho (tùy chọn)"
             />
@@ -147,14 +147,14 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+              className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
               {loading ? "Đang xử lý..." : "✅ Xuất kho"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+              className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
               ❌ Hủy
             </button>

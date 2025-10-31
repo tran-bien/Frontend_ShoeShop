@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { variantApi } from "../../../services/VariantService";
 import { Variant } from "../../../types/product";
 import VariantForm from "./VariantForm";
@@ -166,8 +166,8 @@ const VariantPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 w-full font-sans bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug mb-6">
+    <div className="p-6 w-full font-sans bg-mono-50 min-h-screen">
+      <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug mb-6">
         Quản Lý Biến Thể Sản Phẩm
       </h2>
 
@@ -180,8 +180,8 @@ const VariantPage: React.FC = () => {
           }}
           className={`px-6 py-3 font-medium transition border-b-2 -mb-px ${
             !showDeleted
-              ? "text-blue-600 border-blue-600"
-              : "text-gray-500 border-transparent hover:text-blue-600"
+              ? "text-mono-black border-mono-black"
+              : "text-mono-500 border-transparent hover:text-mono-black"
           }`}
         >
           Biến thể hoạt động
@@ -195,8 +195,8 @@ const VariantPage: React.FC = () => {
             }}
             className={`px-6 py-3 font-medium transition border-b-2 -mb-px ${
               showDeleted
-                ? "text-blue-600 border-blue-600"
-                : "text-gray-500 border-transparent hover:text-blue-600"
+                ? "text-mono-black border-mono-black"
+                : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
             Biến thể đã xóa
@@ -204,7 +204,7 @@ const VariantPage: React.FC = () => {
         )}
         {!showDeleted && canCreate() && (
           <button
-            className="ml-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium mr-3 my-2 transition-colors shadow-sm"
+            className="ml-auto px-6 py-3 bg-mono-black hover:bg-blue-700 text-white rounded-lg font-medium mr-3 my-2 transition-colors shadow-sm"
             onClick={handleAddNew}
           >
             + Thêm Biến Thể
@@ -226,7 +226,7 @@ const VariantPage: React.FC = () => {
                   setSearchQuery(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
+                className="w-full px-4 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-600 transition-all"
               />
             </div>
           </div>
@@ -240,7 +240,7 @@ const VariantPage: React.FC = () => {
                 setGenderFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="all">Tất cả giới tính</option>
               <option value="male">Nam</option>
@@ -255,7 +255,7 @@ const VariantPage: React.FC = () => {
                 setIsActiveFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="all">Tất cả trạng thái</option>
               <option value="true">Hoạt động</option>
@@ -269,7 +269,7 @@ const VariantPage: React.FC = () => {
                 setSortOption(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value='{"createdAt":-1}'>Mới nhất</option>
               <option value='{"createdAt":1}'>Cũ nhất</option>
@@ -289,7 +289,7 @@ const VariantPage: React.FC = () => {
                   setSortOption('{"createdAt":-1}');
                   setCurrentPage(1);
                 }}
-                className="px-3 py-2 text-sm text-blue-600 hover:text-blue-800 font-medium border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+                className="px-3 py-2 text-sm text-mono-black hover:text-blue-800 font-medium border border-mono-200 rounded-lg hover:bg-mono-50 transition-colors"
               >
                 ✕ Xóa bộ lọc
               </button>
@@ -302,7 +302,7 @@ const VariantPage: React.FC = () => {
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl relative">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-xl"
+              className="absolute top-2 right-2 text-mono-500 hover:text-mono-800 text-xl"
               onClick={handleCloseForm}
               title="Đóng"
             >
@@ -317,13 +317,13 @@ const VariantPage: React.FC = () => {
       )}
       {loading ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Đang tải dữ liệu...</p>
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-mono-black"></div>
+          <p className="mt-4 text-mono-600">Đang tải dữ liệu...</p>
         </div>
       ) : (showDeleted ? deletedVariants : variants).length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
           <svg
-            className="mx-auto h-16 w-16 text-gray-400 mb-4"
+            className="mx-auto h-16 w-16 text-mono-400 mb-4"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -335,12 +335,12 @@ const VariantPage: React.FC = () => {
               d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
             />
           </svg>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-mono-900 mb-2">
             {showDeleted
               ? "Không có biến thể nào đã xóa"
               : "Không tìm thấy biến thể"}
           </h3>
-          <p className="text-gray-500">
+          <p className="text-mono-500">
             {showDeleted
               ? "Chưa có biến thể nào bị xóa trong hệ thống"
               : searchQuery || genderFilter !== "all"
@@ -352,27 +352,27 @@ const VariantPage: React.FC = () => {
         <>
           <div className="overflow-x-auto shadow-md rounded-lg bg-white">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
+              <thead className="bg-gradient-to-r from-mono-50 to-mono-100">
                 <tr>
-                  <th className="py-4 px-6 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Biến thể
                   </th>
-                  <th className="py-4 px-6 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Màu sắc
                   </th>
-                  <th className="py-4 px-6 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Giới tính
                   </th>
-                  <th className="py-4 px-6 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Size & SKU
                   </th>
-                  <th className="py-4 px-6 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Tồn kho
                   </th>
-                  <th className="py-4 px-6 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Trạng thái
                   </th>
-                  <th className="py-4 px-6 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Hành động
                   </th>
                 </tr>
@@ -394,17 +394,17 @@ const VariantPage: React.FC = () => {
                   return (
                     <tr
                       key={v._id}
-                      className="hover:bg-blue-50 transition-colors"
+                      className="hover:bg-mono-50 transition-colors"
                     >
                       <td className="px-6 py-4">
                         <div className="flex flex-col space-y-1">
-                          <p className="text-sm font-semibold text-gray-900">
+                          <p className="text-sm font-semibold text-mono-900">
                             {typeof v.product === "object"
                               ? v.product.name
                               : v.product}
                           </p>
                           <p
-                            className="text-xs text-gray-500 font-mono"
+                            className="text-xs text-mono-500 font-mono"
                             title={v._id}
                           >
                             ID: {v._id.slice(-8)}
@@ -418,7 +418,7 @@ const VariantPage: React.FC = () => {
                               <>
                                 {v.color.type === "solid" && v.color.code ? (
                                   <div
-                                    className="w-9 h-9 rounded-full border-2 border-gray-300 shadow-sm"
+                                    className="w-9 h-9 rounded-full border-2 border-mono-300 shadow-sm"
                                     style={{
                                       background: v.color.code || "#e5e7eb",
                                     }}
@@ -427,7 +427,7 @@ const VariantPage: React.FC = () => {
                                 ) : v.color.type === "half" &&
                                   v.color.colors?.length === 2 ? (
                                   <div
-                                    className="w-9 h-9 rounded-full border-2 border-gray-300 shadow-sm relative overflow-hidden"
+                                    className="w-9 h-9 rounded-full border-2 border-mono-300 shadow-sm relative overflow-hidden"
                                     title={`Half: ${v.color.colors.join(
                                       " / "
                                     )}`}
@@ -442,7 +442,7 @@ const VariantPage: React.FC = () => {
                                 ) : v.color.colors &&
                                   v.color.colors.length > 0 ? (
                                   <div
-                                    className="w-9 h-9 rounded-full border-2 border-gray-300 shadow-sm relative overflow-hidden"
+                                    className="w-9 h-9 rounded-full border-2 border-mono-300 shadow-sm relative overflow-hidden"
                                     title={v.color.colors.join(" / ")}
                                   >
                                     <div
@@ -469,7 +469,7 @@ const VariantPage: React.FC = () => {
                               </>
                             )}
                           </div>
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-mono-700">
                             {typeof v.color === "object"
                               ? v.color.name
                               : v.color}
@@ -480,7 +480,7 @@ const VariantPage: React.FC = () => {
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                             v.gender === "male"
-                              ? "bg-blue-100 text-blue-800"
+                              ? "bg-mono-100 text-blue-800"
                               : v.gender === "female"
                               ? "bg-pink-100 text-pink-800"
                               : "bg-purple-100 text-purple-800"
@@ -498,16 +498,16 @@ const VariantPage: React.FC = () => {
                           {v.sizes?.slice(0, 3).map((s, idx) => (
                             <div
                               key={idx}
-                              className="text-xs text-gray-600 flex items-center gap-2"
+                              className="text-xs text-mono-600 flex items-center gap-2"
                             >
-                              <span className="font-semibold bg-gray-100 px-2 py-0.5 rounded">
+                              <span className="font-semibold bg-mono-100 px-2 py-0.5 rounded">
                                 {typeof s.size === "object"
                                   ? s.size.value
                                   : s.size}
                               </span>
                               {s.sku && (
                                 <span
-                                  className="font-mono text-gray-500"
+                                  className="font-mono text-mono-500"
                                   title="SKU"
                                 >
                                   {s.sku}
@@ -516,7 +516,7 @@ const VariantPage: React.FC = () => {
                             </div>
                           ))}
                           {v.sizes && v.sizes.length > 3 && (
-                            <span className="text-xs text-blue-600 font-medium">
+                            <span className="text-xs text-mono-black font-medium">
                               +{v.sizes.length - 3} size khác
                             </span>
                           )}
@@ -543,7 +543,7 @@ const VariantPage: React.FC = () => {
                               ),
                             }[stockStatus]
                           }
-                          <span className="text-xs text-gray-500 font-medium">
+                          <span className="text-xs text-mono-500 font-medium">
                             SL: {totalQuantity}
                           </span>
                         </div>
@@ -558,7 +558,7 @@ const VariantPage: React.FC = () => {
                             className={`inline-block px-3 py-1.5 rounded-full text-xs font-semibold ${
                               v.isActive
                                 ? "bg-green-100 text-green-700"
-                                : "bg-gray-100 text-gray-700"
+                                : "bg-mono-100 text-mono-700"
                             }`}
                           >
                             {v.isActive ? "✓ Hoạt động" : "✕ Ngừng"}
@@ -591,7 +591,7 @@ const VariantPage: React.FC = () => {
                               </button>
                               {canUpdate() && (
                                 <button
-                                  className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-1.5"
+                                  className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                   onClick={() => handleEdit(v)}
                                   title="Sửa biến thể"
                                 >
@@ -703,14 +703,14 @@ const VariantPage: React.FC = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="bg-white px-4 py-4 flex items-center justify-between border-t border-gray-200 rounded-b-lg shadow-sm mt-0">
+            <div className="bg-white px-4 py-4 flex items-center justify-between border-t border-mono-200 rounded-b-lg shadow-sm mt-0">
               <div className="flex-1 flex justify-between sm:hidden">
                 <button
                   onClick={() =>
                     setCurrentPage((prev) => Math.max(prev - 1, 1))
                   }
                   disabled={currentPage === 1}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-4 py-2 border border-mono-300 text-sm font-medium rounded-md text-mono-700 bg-white hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Trước
                 </button>
@@ -719,14 +719,14 @@ const VariantPage: React.FC = () => {
                     setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                   }
                   disabled={currentPage === totalPages}
-                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-mono-300 text-sm font-medium rounded-md text-mono-700 bg-white hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Sau
                 </button>
               </div>
               <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-mono-700">
                     Hiển thị{" "}
                     <span className="font-medium">
                       {(currentPage - 1) * limit + 1}
@@ -747,7 +747,7 @@ const VariantPage: React.FC = () => {
                         setCurrentPage((prev) => Math.max(prev - 1, 1))
                       }
                       disabled={currentPage === 1}
-                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-mono-300 bg-white text-sm font-medium text-mono-500 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       ←
                     </button>
@@ -764,8 +764,8 @@ const VariantPage: React.FC = () => {
                             onClick={() => setCurrentPage(page)}
                             className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                               currentPage === page
-                                ? "z-10 bg-blue-600 border-blue-600 text-white"
-                                : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                                ? "z-10 bg-mono-black border-mono-black text-white"
+                                : "bg-white border-mono-300 text-mono-700 hover:bg-mono-50"
                             }`}
                           >
                             {page}
@@ -778,7 +778,7 @@ const VariantPage: React.FC = () => {
                         return (
                           <span
                             key={page}
-                            className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                            className="relative inline-flex items-center px-4 py-2 border border-mono-300 bg-white text-sm font-medium text-mono-700"
                           >
                             ...
                           </span>
@@ -791,7 +791,7 @@ const VariantPage: React.FC = () => {
                         setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                       }
                       disabled={currentPage === totalPages}
-                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-mono-300 bg-white text-sm font-medium text-mono-500 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       →
                     </button>

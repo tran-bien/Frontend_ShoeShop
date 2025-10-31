@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import {
@@ -112,8 +112,8 @@ const ProductDetailPage: React.FC = () => {
       <div className="min-h-screen bg-white">
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-800 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Đang tải...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mono-800 mx-auto"></div>
+            <p className="mt-4 text-mono-600">Đang tải...</p>
           </div>
         </div>
       </div>
@@ -126,7 +126,7 @@ const ProductDetailPage: React.FC = () => {
       <div className="min-h-screen bg-white">
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
-            <p className="text-red-600">{error}</p>
+            <p className="text-mono-900">{error}</p>
           </div>
         </div>
       </div>
@@ -139,7 +139,7 @@ const ProductDetailPage: React.FC = () => {
       <div className="min-h-screen bg-white">
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
-            <p className="text-gray-600">Không tìm thấy sản phẩm</p>
+            <p className="text-mono-600">Không tìm thấy sản phẩm</p>
           </div>
         </div>
       </div>

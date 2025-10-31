@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import {
   FaUser,
   FaClipboardList,
@@ -78,8 +78,8 @@ const Sidebar: React.FC = () => {
   return (
     <div className="w-64 bg-white shadow-lg rounded-lg p-5 self-start sticky top-24">
       <div className="flex flex-col items-center mb-6 pt-3">
-        <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center mb-3">
-          <FaUser className="text-4xl text-blue-500" />
+        <div className="w-24 h-24 rounded-full bg-mono-100 flex items-center justify-center mb-3">
+          <FaUser className="text-4xl text-mono-500" />
         </div>
         <h3 className="text-lg font-bold">Tài khoản của tôi</h3>
       </div>
@@ -91,8 +91,8 @@ const Sidebar: React.FC = () => {
               <button
                 className={`flex items-center w-full p-3 rounded-lg transition-colors duration-200 ${
                   location.pathname === item.path
-                    ? "bg-blue-500 text-white font-medium shadow-md"
-                    : "text-gray-700 hover:bg-blue-50"
+                    ? "bg-mono-500 text-white font-medium shadow-md"
+                    : "text-mono-700 hover:bg-mono-50"
                 }`}
                 onClick={item.onClick || (() => navigate(item.path))}
               >

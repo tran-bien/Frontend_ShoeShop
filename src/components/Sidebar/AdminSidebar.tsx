@@ -1,4 +1,4 @@
-import {
+﻿import {
   GrDashboard,
   GrUser,
   GrCube,
@@ -31,7 +31,7 @@ interface LinkProps {
 }
 
 const AdminSidebar = () => {
-  const activeClass = "bg-[#1E304B] border-l-[6px] border-red-500";
+  const activeClass = "bg-[#1E304B] border-l-[6px] border-mono-800";
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const [isExpanded, setIsExpanded] = useState(window.innerWidth >= 768);
   const { hasAdminOnlyAccess } = useAuth();

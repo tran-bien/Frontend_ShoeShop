@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import {
   uploadBrandLogo,
   removeBrandLogo,
@@ -48,11 +48,11 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
           onChange={(e) =>
             setSelectedFile(e.target.files ? e.target.files[0] : null)
           }
-          className="block border border-gray-300 rounded px-2 py-1 text-sm"
+          className="block border border-mono-300 rounded px-2 py-1 text-sm"
         />
         <button
           onClick={handleUpload}
-          className="bg-blue-500 text-white px-3 py-1 rounded-full hover:bg-blue-600 transition text-xs"
+          className="bg-mono-500 text-white px-3 py-1 rounded-full hover:bg-mono-black transition text-xs"
         >
           Tải Lên
         </button>
@@ -66,14 +66,14 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
           />
           <button
             onClick={handleRemove}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full transition text-xs"
+            className="bg-mono-800 hover:bg-mono-900 text-white px-3 py-1 rounded-full transition text-xs"
           >
             Xóa
           </button>
         </div>
       )}
       {!logo?.url && (
-        <div className="text-gray-400 text-sm text-center mt-2">
+        <div className="text-mono-400 text-sm text-center mt-2">
           Chưa có logo
         </div>
       )}

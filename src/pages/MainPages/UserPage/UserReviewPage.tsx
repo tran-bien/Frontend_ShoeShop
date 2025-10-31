@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import {
   message,
   Empty,
@@ -374,7 +374,7 @@ const UserReviewPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-mono-50">
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 p-6">
@@ -382,7 +382,7 @@ const UserReviewPage: React.FC = () => {
             {/* Header */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
-                <h1 className="text-3xl font-bold text-gray-900">
+                <h1 className="text-3xl font-bold text-mono-900">
                   Đánh giá của tôi
                 </h1>
                 <Button
@@ -394,7 +394,7 @@ const UserReviewPage: React.FC = () => {
                   Làm mới tất cả
                 </Button>
               </div>
-              <p className="text-gray-600">
+              <p className="text-mono-600">
                 Quản lý và viết đánh giá cho các sản phẩm bạn đã mua
               </p>
             </div>
@@ -404,17 +404,17 @@ const UserReviewPage: React.FC = () => {
               <div className="flex justify-center items-center py-20">
                 <div className="text-center">
                   <Spin size="large" />
-                  <div className="mt-4 text-gray-600">Đang tải dữ liệu...</div>
+                  <div className="mt-4 text-mono-600">Đang tải dữ liệu...</div>
                 </div>
               </div>
             ) : (
               <>
                 {/* Reviewable Products Section */}
                 <div className="mb-8">
-                  <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                  <div className="bg-white p-6 rounded-xl shadow-sm border border-mono-100">
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-xl font-semibold flex items-center">
-                        <span className="bg-blue-500 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
+                        <span className="bg-mono-500 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
                           <CheckCircleOutlined />
                         </span>
                         Sản phẩm chờ đánh giá
@@ -451,7 +451,7 @@ const UserReviewPage: React.FC = () => {
                       <Empty
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
                         description={
-                          <div className="text-gray-500">
+                          <div className="text-mono-500">
                             <div className="font-medium mb-1">
                               Không có sản phẩm nào cần đánh giá
                             </div>
@@ -510,11 +510,11 @@ const UserReviewPage: React.FC = () => {
                                         {product.product.name}
                                       </div>
                                       <div className="flex items-center justify-between mt-1">
-                                        <div className="text-gray-500 text-xs">
+                                        <div className="text-mono-500 text-xs">
                                           {product.variant.color.name} / Size{" "}
                                           {product.size.value}
                                         </div>
-                                        <div className="text-sm font-medium text-blue-600">
+                                        <div className="text-sm font-medium text-mono-black">
                                           {new Intl.NumberFormat(
                                             "vi-VN"
                                           ).format(product.price)}
@@ -526,7 +526,7 @@ const UserReviewPage: React.FC = () => {
                                 }
                                 description={
                                   <div className="mt-2">
-                                    <div className="text-xs text-gray-500 flex items-center justify-between">
+                                    <div className="text-xs text-mono-500 flex items-center justify-between">
                                       <div>
                                         <Tooltip title="Ngày nhận hàng">
                                           <span className="flex items-center">
@@ -544,7 +544,7 @@ const UserReviewPage: React.FC = () => {
                                             : "Không giới hạn"
                                         }`}
                                       >
-                                        <InfoCircleOutlined className="text-blue-500" />
+                                        <InfoCircleOutlined className="text-mono-500" />
                                       </Tooltip>
                                     </div>
                                   </div>
@@ -560,10 +560,10 @@ const UserReviewPage: React.FC = () => {
 
                 {/* Reviews List */}
                 <div className="mb-6">
-                  <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                  <div className="bg-white p-6 rounded-xl shadow-sm border border-mono-100">
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-xl font-semibold flex items-center">
-                        <span className="bg-green-500 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
+                        <span className="bg-mono-700 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
                           <StarFilled />
                         </span>
                         Đánh giá đã viết
@@ -608,7 +608,7 @@ const UserReviewPage: React.FC = () => {
                       <Empty
                         image={Empty.PRESENTED_IMAGE_SIMPLE}
                         description={
-                          <div className="text-gray-500">
+                          <div className="text-mono-500">
                             <div className="font-medium mb-1">
                               Bạn chưa có đánh giá nào
                             </div>
@@ -624,7 +624,7 @@ const UserReviewPage: React.FC = () => {
                         {reviews.map((review) => (
                           <Card
                             key={review._id}
-                            className="hover:shadow-md transition-shadow border border-gray-100"
+                            className="hover:shadow-md transition-shadow border border-mono-100"
                           >
                             <div className="flex flex-col sm:flex-row gap-4">
                               <div className="flex-shrink-0">
@@ -634,7 +634,7 @@ const UserReviewPage: React.FC = () => {
                                     "/placeholder-image.jpg"
                                   }
                                   alt={review.product.name}
-                                  className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                                  className="w-20 h-20 object-cover rounded-lg border border-mono-200"
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
                                     target.onerror = null;
@@ -648,7 +648,7 @@ const UserReviewPage: React.FC = () => {
                                   <h3 className="font-medium text-lg">
                                     {review.product.name}
                                   </h3>
-                                  <div className="text-xs text-gray-500 whitespace-nowrap">
+                                  <div className="text-xs text-mono-500 whitespace-nowrap">
                                     {format(
                                       new Date(review.createdAt),
                                       "dd/MM/yyyy HH:mm",
@@ -665,17 +665,17 @@ const UserReviewPage: React.FC = () => {
                                         className={
                                           index < review.rating
                                             ? "text-yellow-400"
-                                            : "text-gray-300"
+                                            : "text-mono-300"
                                         }
                                       />
                                     ))}
                                   </div>
-                                  <span className="text-sm text-gray-600 font-medium">
+                                  <span className="text-sm text-mono-600 font-medium">
                                     {review.rating}/5
                                   </span>
                                 </div>
 
-                                <p className="text-gray-700 mb-2 break-words">
+                                <p className="text-mono-700 mb-2 break-words">
                                   {review.content}
                                 </p>
 
@@ -688,7 +688,7 @@ const UserReviewPage: React.FC = () => {
                                       ? "Hiển thị công khai"
                                       : "Đã ẩn"}
                                   </Tag>
-                                  <span className="text-xs text-gray-500 flex items-center">
+                                  <span className="text-xs text-mono-500 flex items-center">
                                     <StarFilled className="text-yellow-400 mr-1" />
                                     {review.numberOfLikes} lượt thích
                                   </span>
@@ -700,7 +700,7 @@ const UserReviewPage: React.FC = () => {
                                     size="small"
                                     icon={<EditOutlined />}
                                     onClick={() => openEditModal(review)}
-                                    className="text-blue-500"
+                                    className="text-mono-500"
                                   >
                                     Sửa
                                   </Button>
@@ -756,22 +756,22 @@ const UserReviewPage: React.FC = () => {
               width={500}
             >
               {selectedProduct && (
-                <div className="mb-5 bg-gray-50 p-4 rounded-lg">
+                <div className="mb-5 bg-mono-50 p-4 rounded-lg">
                   <div className="flex gap-4">
                     <img
                       src={getProductImage(selectedProduct)}
                       alt={selectedProduct.product.name}
-                      className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                      className="w-16 h-16 object-cover rounded-lg border border-mono-200"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "/placeholder-image.jpg";
                       }}
                     />
                     <div>
-                      <h4 className="font-medium text-gray-800">
+                      <h4 className="font-medium text-mono-800">
                         {selectedProduct.product.name}
                       </h4>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-mono-500">
                         {selectedProduct.variant.color.name} - Size{" "}
                         {selectedProduct.size.value}
                       </p>
@@ -779,15 +779,15 @@ const UserReviewPage: React.FC = () => {
                         <Tag color="blue" className="rounded-full text-xs">
                           {selectedProduct.orderCode}
                         </Tag>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-mono-500">
                           Ngày giao: {formatDate(selectedProduct.deliveredAt)}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-3 border-t border-gray-200 pt-3">
-                    <div className="text-xs text-gray-500 flex items-center justify-between">
+                  <div className="mt-3 border-t border-mono-200 pt-3">
+                    <div className="text-xs text-mono-500 flex items-center justify-between">
                       <span>
                         Thời hạn đánh giá còn:{" "}
                         {selectedProduct.daysLeftToReview} ngày
@@ -843,7 +843,7 @@ const UserReviewPage: React.FC = () => {
                   }
                 />
                 {content.trim().length > 0 && content.trim().length < 10 && (
-                  <div className="text-red-500 text-xs mt-1">
+                  <div className="text-mono-800 text-xs mt-1">
                     Nội dung đánh giá phải có ít nhất 10 ký tự
                   </div>
                 )}
@@ -864,7 +864,7 @@ const UserReviewPage: React.FC = () => {
               width={500}
             >
               {selectedReview && (
-                <div className="mb-4 bg-gray-50 p-4 rounded-lg">
+                <div className="mb-4 bg-mono-50 p-4 rounded-lg">
                   <div className="flex gap-3">
                     <img
                       src={
@@ -872,17 +872,17 @@ const UserReviewPage: React.FC = () => {
                         "/placeholder-image.jpg"
                       }
                       alt={selectedReview.product.name}
-                      className="w-16 h-16 object-cover rounded-lg border border-gray-200"
+                      className="w-16 h-16 object-cover rounded-lg border border-mono-200"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "/placeholder-image.jpg";
                       }}
                     />
                     <div>
-                      <h4 className="font-medium text-gray-800">
+                      <h4 className="font-medium text-mono-800">
                         {selectedReview.product.name}
                       </h4>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-mono-500 mt-1">
                         Ngày đánh giá:{" "}
                         {format(
                           new Date(selectedReview.createdAt),
@@ -925,7 +925,7 @@ const UserReviewPage: React.FC = () => {
                   }
                 />
                 {content.trim().length > 0 && content.trim().length < 10 && (
-                  <div className="text-red-500 text-xs mt-1">
+                  <div className="text-mono-800 text-xs mt-1">
                     Nội dung đánh giá phải có ít nhất 10 ký tự
                   </div>
                 )}

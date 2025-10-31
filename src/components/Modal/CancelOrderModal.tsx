@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { FaTimes, FaExclamationTriangle } from "react-icons/fa";
 // Thay đổi từ react-toastify sang react-hot-toast
 import toast from "react-hot-toast";
@@ -82,15 +82,15 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center gap-3">
-            <FaExclamationTriangle className="text-red-500 text-xl" />
-            <h2 className="text-xl font-semibold text-gray-800">
+            <FaExclamationTriangle className="text-mono-800 text-xl" />
+            <h2 className="text-xl font-semibold text-mono-800">
               Hủy đơn hàng
             </h2>
           </div>
           <button
             onClick={handleClose}
             disabled={loading}
-            className="text-gray-400 hover:text-gray-600 disabled:opacity-50"
+            className="text-mono-400 hover:text-mono-600 disabled:opacity-50"
           >
             <FaTimes className="text-xl" />
           </button>
@@ -99,25 +99,25 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
         {/* Content */}
         <form onSubmit={handleSubmit} className="p-6">
           <div className="mb-4">
-            <p className="text-gray-700 mb-2">
+            <p className="text-mono-700 mb-2">
               Bạn có chắc chắn muốn hủy đơn hàng{" "}
-              <span className="font-semibold text-blue-600">{orderCode}</span>?
+              <span className="font-semibold text-mono-black">{orderCode}</span>?
             </p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-mono-500">
               Vui lòng cho biết lý do để shop có thể cải thiện dịch vụ.
             </p>
           </div>
 
           {/* Predefined reasons */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Chọn lý do có sẵn:
             </label>
             <div className="space-y-2">
               {predefinedReasons.map((predefinedReason, index) => (
                 <label
                   key={index}
-                  className="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded"
+                  className="flex items-center cursor-pointer hover:bg-mono-50 p-2 rounded"
                 >
                   <input
                     type="radio"
@@ -129,9 +129,9 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                       setError("");
                     }}
                     disabled={loading}
-                    className="mr-2 text-blue-600 focus:ring-blue-500"
+                    className="mr-2 text-mono-black focus:ring-mono-500"
                   />
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-mono-700">
                     {predefinedReason}
                   </span>
                 </label>
@@ -141,7 +141,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 
           {/* Custom reason input */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Hoặc nhập lý do cụ thể:
             </label>
             <textarea
@@ -151,16 +151,16 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 setError("");
               }}
               placeholder="Nhập lý do hủy đơn hàng của bạn..."
-              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full p-3 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent resize-none"
               rows={4}
               maxLength={500}
               disabled={loading}
             />
             <div className="flex justify-between items-center mt-1">
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-mono-500">
                 {reason.length}/500 ký tự
               </span>
-              {error && <span className="text-xs text-red-500">{error}</span>}
+              {error && <span className="text-xs text-mono-800">{error}</span>}
             </div>
           </div>
 
@@ -182,14 +182,14 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
               type="button"
               onClick={handleClose}
               disabled={loading}
-              className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 px-4 py-2 text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Hủy bỏ
             </button>
             <button
               type="submit"
               disabled={loading || !reason.trim()}
-              className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 px-4 py-2 bg-mono-800 text-white rounded-lg hover:bg-mono-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? "Đang xử lý..." : "Xác nhận hủy đơn"}
             </button>

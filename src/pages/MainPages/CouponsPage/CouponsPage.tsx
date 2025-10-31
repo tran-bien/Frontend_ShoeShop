@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import {
   publicCouponService,
@@ -78,20 +78,20 @@ const CouponsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-mono-black"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-mono-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold text-mono-900 mb-4">
             Mã Giảm Giá Dành Cho Bạn
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-mono-600">
             Thu thập các mã giảm giá hấp dẫn để tiết kiệm cho đơn hàng tiếp theo
           </p>
         </div>
@@ -107,32 +107,32 @@ const CouponsPage: React.FC = () => {
                 <div className="p-6">
                   {/* Coupon Header */}
                   <div className="flex items-center justify-between mb-4">
-                    <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-semibold">
+                    <div className="bg-red-100 text-mono-900 px-3 py-1 rounded-full text-sm font-semibold">
                       {formatDiscount(coupon)}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-mono-500">
                       Mã: {coupon.code}
                     </div>
                   </div>
 
                   {/* Coupon Description */}
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg font-semibold text-mono-900 mb-2">
                     {coupon.description}
                   </h3>
 
                   {/* Coupon Details */}
                   <div className="space-y-2 mb-4">
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-mono-600">
                       <span className="font-medium">Đơn tối thiểu:</span>{" "}
                       {coupon.minOrderValue.toLocaleString("vi-VN")}₫
                     </div>
                     {coupon.maxDiscount && (
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-mono-600">
                         <span className="font-medium">Giảm tối đa:</span>{" "}
                         {coupon.maxDiscount.toLocaleString("vi-VN")}₫
                       </div>
                     )}
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-mono-600">
                       <span className="font-medium">Có hiệu lực:</span>{" "}
                       {formatDate(coupon.startDate)} -{" "}
                       {formatDate(coupon.endDate)}
@@ -147,10 +147,10 @@ const CouponsPage: React.FC = () => {
                     }
                     className={`w-full py-2 px-4 rounded-lg font-medium transition-colors duration-200 ${
                       collectingCouponId === coupon._id
-                        ? "bg-gray-400 text-white cursor-not-allowed"
+                        ? "bg-mono-400 text-white cursor-not-allowed"
                         : isAuthenticated
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        ? "bg-mono-black text-white hover:bg-blue-700"
+                        : "bg-mono-300 text-mono-500 cursor-not-allowed"
                     }`}
                   >
                     {collectingCouponId === coupon._id
@@ -165,11 +165,11 @@ const CouponsPage: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">🎫</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <div className="text-mono-400 text-6xl mb-4">🎫</div>
+            <h3 className="text-xl font-semibold text-mono-900 mb-2">
               Hiện tại chưa có mã giảm giá nào
             </h3>
-            <p className="text-gray-600">
+            <p className="text-mono-600">
               Hãy quay lại sau để không bỏ lỡ những ưu đãi hấp dẫn!
             </p>
           </div>

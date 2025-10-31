@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { Tag } from "../../../types/tag";
 import { tagApi } from "../../../services/TagService";
@@ -295,7 +295,7 @@ const TagPage: React.FC = () => {
           <h3 className="text-xl font-bold mb-4">Thêm Tag Mới</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Tên tag
               </label>
               <input
@@ -304,12 +304,12 @@ const TagPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Loại tag
               </label>
               <select
@@ -320,7 +320,7 @@ const TagPage: React.FC = () => {
                     type: e.target.value as "MATERIAL" | "USECASE" | "CUSTOM",
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
               >
                 {Object.entries(TAG_TYPE_LABELS).map(([key, label]) => (
                   <option key={key} value={key}>
@@ -330,7 +330,7 @@ const TagPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Mô tả
               </label>
               <textarea
@@ -338,7 +338,7 @@ const TagPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 rows={3}
               />
             </div>
@@ -354,14 +354,14 @@ const TagPage: React.FC = () => {
                     isActive: true,
                   });
                 }}
-                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-gray-400"
+                className="flex-1 px-4 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-mono-400"
               >
                 {submitting ? "Đang thêm..." : "Thêm"}
               </button>
@@ -432,7 +432,7 @@ const TagPage: React.FC = () => {
           <h3 className="text-xl font-bold mb-4">Chỉnh Sửa Tag</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Tên tag
               </label>
               <input
@@ -441,12 +441,12 @@ const TagPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Loại tag
               </label>
               <select
@@ -457,7 +457,7 @@ const TagPage: React.FC = () => {
                     type: e.target.value as "MATERIAL" | "USECASE" | "CUSTOM",
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
               >
                 {Object.entries(TAG_TYPE_LABELS).map(([key, label]) => (
                   <option key={key} value={key}>
@@ -467,7 +467,7 @@ const TagPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Mô tả
               </label>
               <textarea
@@ -475,7 +475,7 @@ const TagPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 rows={3}
               />
             </div>
@@ -486,14 +486,14 @@ const TagPage: React.FC = () => {
                   setShowEditModal(false);
                   setSelectedTag(null);
                 }}
-                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
               >
                 Hủy
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-gray-400"
+                className="flex-1 px-4 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-mono-400"
               >
                 {submitting ? "Đang cập nhật..." : "Cập nhật"}
               </button>
@@ -511,8 +511,8 @@ const TagPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4 text-red-600">Xác Nhận Xóa</h3>
-          <p className="text-gray-700 mb-6">
+          <h3 className="text-xl font-bold mb-4 text-mono-900">Xác Nhận Xóa</h3>
+          <p className="text-mono-700 mb-6">
             Bạn có chắc chắn muốn xóa tag <strong>"{selectedTag.name}"</strong>?
           </p>
           <div className="flex gap-3">
@@ -522,14 +522,14 @@ const TagPage: React.FC = () => {
                 setSelectedTag(null);
               }}
               disabled={submitting}
-              className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
             >
               Hủy
             </button>
             <button
               onClick={confirmDeleteTag}
               disabled={submitting}
-              className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:bg-gray-400"
+              className="flex-1 px-4 py-2 bg-mono-900 hover:bg-red-700 text-white rounded-lg transition-colors disabled:bg-mono-400"
             >
               {submitting ? "Đang xóa..." : "Xóa"}
             </button>
@@ -547,13 +547,13 @@ const TagPage: React.FC = () => {
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-2xl w-full p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-2xl font-bold text-gray-900">Chi Tiết Tag</h3>
+            <h3 className="text-2xl font-bold text-mono-900">Chi Tiết Tag</h3>
             <button
               onClick={() => {
                 setShowDetailModal(false);
                 setSelectedTag(null);
               }}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-mono-400 hover:text-mono-600 transition-colors"
             >
               <svg
                 className="w-6 h-6"
@@ -573,16 +573,16 @@ const TagPage: React.FC = () => {
 
           <div className="space-y-6">
             {/* Tên và Trạng thái */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4">
+            <div className="bg-gradient-to-r from-mono-50 to-purple-50 rounded-lg p-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h4 className="text-sm font-medium text-gray-500 mb-1">
+                  <h4 className="text-sm font-medium text-mono-500 mb-1">
                     Tên Tag
                   </h4>
-                  <p className="text-xl font-bold text-gray-900">
+                  <p className="text-xl font-bold text-mono-900">
                     {selectedTag.name}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-mono-600 mt-1">
                     Loại:{" "}
                     <span className="font-semibold">
                       {TAG_TYPE_LABELS[selectedTag.type]}
@@ -609,8 +609,8 @@ const TagPage: React.FC = () => {
 
             {/* Mô tả */}
             <div className="border rounded-lg p-4">
-              <h4 className="text-sm font-medium text-gray-500 mb-2">Mô Tả</h4>
-              <p className="text-gray-900">
+              <h4 className="text-sm font-medium text-mono-500 mb-2">Mô Tả</h4>
+              <p className="text-mono-900">
                 {selectedTag.description || "Không có mô tả"}
               </p>
             </div>
@@ -618,20 +618,20 @@ const TagPage: React.FC = () => {
             {/* Thông tin chi tiết */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="border rounded-lg p-4">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                <h4 className="text-sm font-medium text-mono-500 mb-2">
                   Ngày Tạo
                 </h4>
-                <p className="text-gray-900">
+                <p className="text-mono-900">
                   {selectedTag.createdAt
                     ? new Date(selectedTag.createdAt).toLocaleString("vi-VN")
                     : "N/A"}
                 </p>
               </div>
               <div className="border rounded-lg p-4">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">
+                <h4 className="text-sm font-medium text-mono-500 mb-2">
                   Cập Nhật Lần Cuối
                 </h4>
-                <p className="text-gray-900">
+                <p className="text-mono-900">
                   {selectedTag.updatedAt
                     ? new Date(selectedTag.updatedAt).toLocaleString("vi-VN")
                     : "N/A"}
@@ -671,7 +671,7 @@ const TagPage: React.FC = () => {
                         setShowDetailModal(false);
                         setShowEditModal(true);
                       }}
-                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                      className="px-6 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg transition-colors"
                     >
                       Chỉnh Sửa
                     </button>
@@ -689,7 +689,7 @@ const TagPage: React.FC = () => {
                       className={`px-6 py-2 rounded-lg transition-colors ${
                         selectedTag.isActive
                           ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                          : "bg-green-500 hover:bg-green-600 text-white"
+                          : "bg-mono-700 hover:bg-mono-800 text-white"
                       }`}
                     >
                       {selectedTag.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
@@ -702,7 +702,7 @@ const TagPage: React.FC = () => {
                   setShowDetailModal(false);
                   setSelectedTag(null);
                 }}
-                className="px-6 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-6 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
               >
                 Đóng
               </button>
@@ -716,7 +716,7 @@ const TagPage: React.FC = () => {
   if (loading && currentPage === 1) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mono-400"></div>
       </div>
     );
   }
@@ -727,14 +727,14 @@ const TagPage: React.FC = () => {
     <div className="p-6 w-full font-sans">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-gray-800 tracking-tight leading-snug">
+        <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
           Quản Lý Tags
         </h2>
         {!isSearchVisible ? (
           <div className="flex gap-3">
             <button
               onClick={toggleSearchVisibility}
-              className="flex items-center gap-2 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium"
+              className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium"
             >
               <IoIosSearch className="text-xl" />
               <span>Tìm kiếm</span>
@@ -742,7 +742,7 @@ const TagPage: React.FC = () => {
             {canCreate() && !showDeleted && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-3xl shadow transition-colors font-medium"
+                className="px-5 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-3xl shadow transition-colors font-medium"
               >
                 + Thêm Tag
               </button>
@@ -752,14 +752,14 @@ const TagPage: React.FC = () => {
           <div className="flex items-center space-x-2 w-full max-w-md">
             <IoIosSearch
               onClick={handleBack}
-              className="text-gray-400 cursor-pointer text-xl"
+              className="text-mono-400 cursor-pointer text-xl"
             />
             <input
               type="text"
               value={searchInput}
               onChange={handleSearchChange}
               placeholder="Tìm theo tên tag..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
         )}
@@ -768,14 +768,14 @@ const TagPage: React.FC = () => {
       {/* Stats Cards */}
       {!showDeleted ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-sm border border-blue-200">
-            <h3 className="text-sm font-medium text-blue-600 mb-1">
+          <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
+            <h3 className="text-sm font-medium text-mono-black mb-1">
               Tổng số tags
             </h3>
             <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
-            <h3 className="text-sm font-medium text-green-600 mb-1">
+            <h3 className="text-sm font-medium text-mono-800 mb-1">
               Tags hoạt động
             </h3>
             <p className="text-3xl font-bold text-green-900">{activeCount}</p>
@@ -791,7 +791,7 @@ const TagPage: React.FC = () => {
         </div>
       ) : (
         <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200 mb-6">
-          <h3 className="text-sm font-medium text-red-600 mb-1">Tags đã xóa</h3>
+          <h3 className="text-sm font-medium text-mono-900 mb-1">Tags đã xóa</h3>
           <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
         </div>
       )}
@@ -806,8 +806,8 @@ const TagPage: React.FC = () => {
             }}
             className={`px-4 py-2 font-medium transition border-b-2 -mb-4 ${
               !showDeleted
-                ? "text-blue-600 border-blue-600"
-                : "text-gray-500 border-transparent hover:text-blue-600"
+                ? "text-mono-black border-mono-black"
+                : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
             Tags đang hoạt động
@@ -819,8 +819,8 @@ const TagPage: React.FC = () => {
             }}
             className={`px-4 py-2 font-medium transition border-b-2 -mb-4 ${
               showDeleted
-                ? "text-blue-600 border-blue-600"
-                : "text-gray-500 border-transparent hover:text-blue-600"
+                ? "text-mono-black border-mono-black"
+                : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
             Tags đã xóa
@@ -830,7 +830,7 @@ const TagPage: React.FC = () => {
         {/* Type Filter */}
         {!showDeleted && (
           <div className="flex gap-4 items-center">
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-mono-700">
               Lọc theo loại:
             </label>
             <select
@@ -839,7 +839,7 @@ const TagPage: React.FC = () => {
                 setTypeFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-4 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="">Tất cả</option>
               {Object.entries(TAG_TYPE_LABELS).map(([key, label]) => (
@@ -849,13 +849,13 @@ const TagPage: React.FC = () => {
               ))}
             </select>
 
-            <label className="text-sm font-medium text-gray-700">
+            <label className="text-sm font-medium text-mono-700">
               Sắp xếp:
             </label>
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="px-4 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
               <option value="created_at_desc">Mới nhất</option>
               <option value="created_at_asc">Cũ nhất</option>
@@ -870,7 +870,7 @@ const TagPage: React.FC = () => {
       {displayTags.length === 0 ? (
         <div className="text-center py-16">
           <svg
-            className="mx-auto h-16 w-16 text-gray-300 mb-4"
+            className="mx-auto h-16 w-16 text-mono-300 mb-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -882,13 +882,13 @@ const TagPage: React.FC = () => {
               d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
             />
           </svg>
-          <p className="text-gray-500 text-lg mb-4">
+          <p className="text-mono-500 text-lg mb-4">
             {showDeleted ? "Không có tags đã xóa" : "Chưa có tags nào"}
           </p>
           {canCreate() && !showDeleted && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center gap-2"
+              className="px-6 py-3 bg-mono-black hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center gap-2"
             >
               <svg
                 className="w-5 h-5"
@@ -912,7 +912,7 @@ const TagPage: React.FC = () => {
           {/* Tags Table */}
           <div className="overflow-x-auto shadow rounded-lg">
             <table className="min-w-full bg-white rounded-md overflow-hidden border">
-              <thead className="bg-gray-50 text-gray-700 text-sm font-semibold uppercase">
+              <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
                 <tr>
                   <th className="py-3 px-4 text-left border-b">ID</th>
                   <th className="py-3 px-4 text-left border-b">Tên Tag</th>
@@ -924,7 +924,7 @@ const TagPage: React.FC = () => {
               </thead>
               <tbody>
                 {displayTags.map((tag) => (
-                  <tr key={tag._id} className="hover:bg-gray-50 border-t">
+                  <tr key={tag._id} className="hover:bg-mono-50 border-t">
                     <td className="py-2 px-4 border-b font-mono text-xs">
                       {tag._id.slice(-8)}
                     </td>
@@ -936,7 +936,7 @@ const TagPage: React.FC = () => {
                         {TAG_TYPE_LABELS[tag.type]}
                       </span>
                     </td>
-                    <td className="py-2 px-4 border-b text-sm text-gray-600">
+                    <td className="py-2 px-4 border-b text-sm text-mono-600">
                       {tag.description?.substring(0, 50) || "—"}
                       {tag.description && tag.description.length > 50 && "..."}
                     </td>
@@ -960,7 +960,7 @@ const TagPage: React.FC = () => {
                                 setSelectedTag(tag);
                                 setShowDetailModal(true);
                               }}
-                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs rounded-lg border border-blue-200"
+                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs rounded-lg border border-mono-200"
                             >
                               Xem
                             </button>
@@ -1005,7 +1005,7 @@ const TagPage: React.FC = () => {
                                 setSelectedTag(tag);
                                 setShowDetailModal(true);
                               }}
-                              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs rounded-lg border border-blue-200"
+                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs rounded-lg border border-mono-200"
                             >
                               Xem
                             </button>
@@ -1029,7 +1029,7 @@ const TagPage: React.FC = () => {
 
           {/* Pagination */}
           <div className="flex items-center justify-between mt-6">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-mono-600">
               Trang {currentPage} / {totalPages} • Tổng: {totalCount} tags
             </div>
             <div className="flex gap-2">
@@ -1038,8 +1038,8 @@ const TagPage: React.FC = () => {
                 disabled={currentPage === 1}
                 className={`px-4 py-2 rounded-lg font-medium ${
                   currentPage === 1
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                    : "bg-mono-200 text-mono-700 hover:bg-mono-300"
                 }`}
               >
                 Trước
@@ -1051,8 +1051,8 @@ const TagPage: React.FC = () => {
                 disabled={currentPage === totalPages}
                 className={`px-4 py-2 rounded-lg font-medium ${
                   currentPage === totalPages
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                    : "bg-mono-200 text-mono-700 hover:bg-mono-300"
                 }`}
               >
                 Tiếp

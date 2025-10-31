@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+﻿import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-hot-toast";
@@ -116,7 +116,7 @@ const LoginForm: React.FC = () => {
 
           {/* Email */}
           <div className="w-3/4 mb-4">
-            <label className="block text-left mb-1 text-base text-gray-500 font-light pl-2">
+            <label className="block text-left mb-1 text-base text-mono-500 font-light pl-2">
               Email
             </label>
             <input
@@ -129,7 +129,7 @@ const LoginForm: React.FC = () => {
 
           {/* Mật khẩu */}
           <div className="w-3/4 mb-4">
-            <label className="block text-left mb-1 text-base text-gray-500 font-light pl-2">
+            <label className="block text-left mb-1 text-base text-mono-500 font-light pl-2">
               Mật khẩu
             </label>
             <input
@@ -194,7 +194,7 @@ const LoginForm: React.FC = () => {
 
           {/* Tên người dùng */}
           <div className="w-3/4 mb-4">
-            <label className="block text-left mb-1 text-base text-gray-500 font-light pl-2">
+            <label className="block text-left mb-1 text-base text-mono-500 font-light pl-2">
               Tên người dùng
             </label>
             <input
@@ -207,7 +207,7 @@ const LoginForm: React.FC = () => {
 
           {/* Email */}
           <div className="w-3/4 mb-4">
-            <label className="block text-left mb-1 text-base text-gray-500 font-light pl-2">
+            <label className="block text-left mb-1 text-base text-mono-500 font-light pl-2">
               Email
             </label>
             <input
@@ -220,7 +220,7 @@ const LoginForm: React.FC = () => {
 
           {/* Mật khẩu */}
           <div className="w-3/4 mb-4">
-            <label className="block text-left mb-1 text-base text-gray-500 font-light pl-2">
+            <label className="block text-left mb-1 text-base text-mono-500 font-light pl-2">
               Mật khẩu
             </label>
             <input

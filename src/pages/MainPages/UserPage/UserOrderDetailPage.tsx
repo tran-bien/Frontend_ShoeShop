@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../../components/User/Sidebar";
 import OrderCard from "../../../components/User/OrderCard";
@@ -127,15 +127,15 @@ const UserOrderDetailPage: React.FC = () => {
       case "pending":
         return "text-yellow-600 bg-yellow-100";
       case "confirmed":
-        return "text-blue-600 bg-blue-100";
+        return "text-mono-black bg-mono-100";
       case "shipping":
         return "text-purple-600 bg-purple-100";
       case "delivered":
-        return "text-green-600 bg-green-100";
+        return "text-mono-800 bg-green-100";
       case "cancelled":
-        return "text-red-600 bg-red-100";
+        return "text-mono-900 bg-red-100";
       default:
-        return "text-gray-600 bg-gray-100";
+        return "text-mono-600 bg-mono-100";
     }
   };
 
@@ -172,12 +172,12 @@ const UserOrderDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col min-h-screen bg-gray-100">
+      <div className="flex flex-col min-h-screen bg-mono-100">
         <div className="flex flex-1">
           <Sidebar />
           <div className="flex-1 p-10">
             <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-mono-black"></div>
               <p className="mt-2">Đang tải...</p>
             </div>
           </div>
@@ -188,12 +188,12 @@ const UserOrderDetailPage: React.FC = () => {
 
   if (!order) {
     return (
-      <div className="flex flex-col min-h-screen bg-gray-100">
+      <div className="flex flex-col min-h-screen bg-mono-100">
         <div className="flex flex-1">
           <Sidebar />
           <div className="flex-1 p-10">
             <div className="text-center py-8">
-              <p className="text-gray-500">Không tìm thấy đơn hàng.</p>
+              <p className="text-mono-500">Không tìm thấy đơn hàng.</p>
             </div>
           </div>
         </div>
@@ -202,7 +202,7 @@ const UserOrderDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-mono-100">
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 p-10">
@@ -210,7 +210,7 @@ const UserOrderDetailPage: React.FC = () => {
           <div className="flex items-center gap-4 mb-6">
             <button
               onClick={() => navigate("/user-manage-order")}
-              className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-mono-black hover:bg-mono-50 rounded-lg transition-colors"
             >
               <FaArrowLeft />
               <span>Quay lại</span>
@@ -220,7 +220,7 @@ const UserOrderDetailPage: React.FC = () => {
 
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
             {/* Header đơn hàng */}
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6">
+            <div className="bg-gradient-to-r from-mono-500 to-mono-black text-white p-6">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">
@@ -252,7 +252,7 @@ const UserOrderDetailPage: React.FC = () => {
                     <button
                       onClick={handleCancelOrder}
                       disabled={cancelLoading}
-                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {cancelLoading ? "Đang xử lý..." : "Hủy đơn"}
                     </button>
@@ -262,7 +262,7 @@ const UserOrderDetailPage: React.FC = () => {
                     <button
                       onClick={handleRepayOrder}
                       disabled={repayLoading}
-                      className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-2 bg-mono-700 text-white rounded hover:bg-mono-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {repayLoading ? "Đang xử lý..." : "Thanh toán lại"}
                     </button>
@@ -275,9 +275,9 @@ const UserOrderDetailPage: React.FC = () => {
               {/* Thông tin chung */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 {/* Thông tin giao hàng */}
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-mono-50 p-4 rounded-lg">
                   <div className="flex items-center gap-2 mb-3">
-                    <FaMapMarkerAlt className="text-blue-500" />
+                    <FaMapMarkerAlt className="text-mono-500" />
                     <h3 className="font-semibold">Thông tin giao hàng</h3>
                   </div>
                   <div className="space-y-2 text-sm">
@@ -290,7 +290,7 @@ const UserOrderDetailPage: React.FC = () => {
                     <p>
                       <strong>Địa chỉ:</strong>
                     </p>
-                    <p className="text-gray-600 pl-2">
+                    <p className="text-mono-600 pl-2">
                       {order.shippingAddress?.detail}
                       <br />
                       {order.shippingAddress?.ward},{" "}
@@ -302,9 +302,9 @@ const UserOrderDetailPage: React.FC = () => {
                 </div>
 
                 {/* Thông tin thanh toán */}
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-mono-50 p-4 rounded-lg">
                   <div className="flex items-center gap-2 mb-3">
-                    <FaCreditCard className="text-green-500" />
+                    <FaCreditCard className="text-mono-700" />
                     <h3 className="font-semibold">Thông tin thanh toán</h3>
                   </div>
                   <div className="space-y-2 text-sm">
@@ -344,7 +344,7 @@ const UserOrderDetailPage: React.FC = () => {
                 </div>
 
                 {/* Thông tin đơn hàng */}
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-mono-50 p-4 rounded-lg">
                   <div className="flex items-center gap-2 mb-3">
                     <FaCalendarAlt className="text-purple-500" />
                     <h3 className="font-semibold">Thông tin đơn hàng</h3>
@@ -386,17 +386,17 @@ const UserOrderDetailPage: React.FC = () => {
               {order.couponDetail && (
                 <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 p-4 rounded-lg mb-6">
                   <div className="flex items-center gap-2 mb-2">
-                    <FaTag className="text-orange-500" />
+                    <FaTag className="text-mono-600" />
                     <h3 className="font-semibold text-orange-800">
                       Mã giảm giá đã áp dụng
                     </h3>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                      <span className="bg-mono-600 text-white px-3 py-1 rounded-full text-sm font-bold">
                         {order.couponDetail.code}
                       </span>
-                      <span className="ml-3 text-gray-600">
+                      <span className="ml-3 text-mono-600">
                         {order.couponDetail.type === "percent"
                           ? `Giảm ${order.couponDetail.value}%`
                           : `Giảm ${order.couponDetail.value.toLocaleString()}đ`}
@@ -405,7 +405,7 @@ const UserOrderDetailPage: React.FC = () => {
                           ` (tối đa ${order.couponDetail.maxDiscount.toLocaleString()}đ)`}
                       </span>
                     </div>
-                    <span className="text-green-600 font-semibold">
+                    <span className="text-mono-800 font-semibold">
                       -{order.discount?.toLocaleString()}đ
                     </span>
                   </div>
@@ -414,11 +414,11 @@ const UserOrderDetailPage: React.FC = () => {
 
               {/* Ghi chú */}
               {order.note && (
-                <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-6">
+                <div className="bg-mono-50 border border-mono-200 p-4 rounded-lg mb-6">
                   <h3 className="font-semibold text-blue-800 mb-2">
                     Ghi chú đơn hàng:
                   </h3>
-                  <p className="text-gray-700">{order.note}</p>
+                  <p className="text-mono-700">{order.note}</p>
                 </div>
               )}
 
@@ -428,7 +428,7 @@ const UserOrderDetailPage: React.FC = () => {
                   <h3 className="font-semibold text-red-800 mb-2">
                     Lý do hủy đơn:
                   </h3>
-                  <p className="text-gray-700">{order.cancelReason}</p>
+                  <p className="text-mono-700">{order.cancelReason}</p>
                 </div>
               )}
 
@@ -439,7 +439,7 @@ const UserOrderDetailPage: React.FC = () => {
                   {order.orderItems.map((item, idx) => (
                     <div
                       key={item._id || idx}
-                      className="border border-gray-200 rounded-lg p-4"
+                      className="border border-mono-200 rounded-lg p-4"
                     >
                       <OrderCard
                         name={item.productName}
@@ -456,7 +456,7 @@ const UserOrderDetailPage: React.FC = () => {
 
               {/* Tổng cộng */}
               <div className="border-t pt-6 mt-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <div className="bg-mono-50 p-4 rounded-lg">
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Tạm tính:</span>
@@ -467,13 +467,13 @@ const UserOrderDetailPage: React.FC = () => {
                       <span>{order.shippingFee?.toLocaleString()}đ</span>
                     </div>
                     {order.discount > 0 && (
-                      <div className="flex justify-between text-green-600">
+                      <div className="flex justify-between text-mono-800">
                         <span>Giảm giá:</span>
                         <span>-{order.discount?.toLocaleString()}đ</span>
                       </div>
                     )}
                     <hr />
-                    <div className="flex justify-between text-lg font-bold text-red-600">
+                    <div className="flex justify-between text-lg font-bold text-mono-900">
                       <span>Tổng cộng:</span>
                       <span>
                         {order.totalAfterDiscountAndShipping?.toLocaleString()}đ
@@ -493,9 +493,9 @@ const UserOrderDetailPage: React.FC = () => {
                     {order.statusHistory.map((history, idx) => (
                       <div
                         key={idx}
-                        className="flex items-start gap-4 p-3 bg-gray-50 rounded-lg"
+                        className="flex items-start gap-4 p-3 bg-mono-50 rounded-lg"
                       >
-                        <div className="w-3 h-3 bg-blue-500 rounded-full mt-1 flex-shrink-0"></div>
+                        <div className="w-3 h-3 bg-mono-500 rounded-full mt-1 flex-shrink-0"></div>
                         <div className="flex-1">
                           <div className="flex justify-between items-start">
                             <div>
@@ -503,12 +503,12 @@ const UserOrderDetailPage: React.FC = () => {
                                 {getStatusText(history.status)}
                               </span>
                               {history.note && (
-                                <p className="text-sm text-gray-600 mt-1">
+                                <p className="text-sm text-mono-600 mt-1">
                                   {history.note}
                                 </p>
                               )}
                             </div>
-                            <span className="text-sm text-gray-500">
+                            <span className="text-sm text-mono-500">
                               {new Date(history.updatedAt).toLocaleString()}
                             </span>
                           </div>

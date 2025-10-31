@@ -1,4 +1,4 @@
-import default_avatar from "../../assets/default_avatar.png";
+﻿import default_avatar from "../../assets/default_avatar.png";
 // @ts-expect-error - Google Fonts import does not have TypeScript declarations
 import "@fontsource/lobster";
 import { useState, useEffect } from "react";
@@ -68,7 +68,7 @@ const AdminNavbar = () => {
           </h1>
         </div>
       </div>
-      <div className="h-12 flex items-center gap-3 hover:bg-gray-600 cursor-pointer p-2 pr-4 rounded-full transition-all duration-300">
+      <div className="h-12 flex items-center gap-3 hover:bg-mono-600 cursor-pointer p-2 pr-4 rounded-full transition-all duration-300">
         <img
           src={default_avatar}
           alt="avatar"
@@ -82,17 +82,17 @@ const AdminNavbar = () => {
         <div className="flex items-center">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-gray-600 hover:text-gray-900 focus:outline-none mr-3"
+            className="text-mono-600 hover:text-mono-900 focus:outline-none mr-3"
           >
             {isOpen ? <RiCloseLine size={24} /> : <AiOutlineMenu size={24} />}
           </button>
-          <h1 className="font-bold text-xl text-gray-800">{getPageTitle()}</h1>
+          <h1 className="font-bold text-xl text-mono-800">{getPageTitle()}</h1>
         </div>
 
         {/* Thêm nút về trang chủ */}
         <Link
           to="/"
-          className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+          className="flex items-center text-mono-black hover:text-blue-800 transition-colors"
         >
           <AiOutlineHome size={20} />
           <span className="ml-1 font-medium">Trang chủ</span>
@@ -106,7 +106,7 @@ const AdminNavbar = () => {
           {/* Nút chuyển về trang chủ tại navbar desktop */}
           <Link
             to="/"
-            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+            className="flex items-center text-mono-black hover:text-blue-800 transition-colors"
           >
             <AiOutlineHome size={20} />
             <span className="ml-1 font-medium">Trang chủ</span>
@@ -114,7 +114,7 @@ const AdminNavbar = () => {
 
           <button
             onClick={handleLogout}
-            className="flex items-center text-red-600 hover:text-red-800 transition-colors"
+            className="flex items-center text-mono-900 hover:text-red-800 transition-colors"
           >
             <AiOutlineLogout className="mr-1" />
             <span>Đăng xuất</span>

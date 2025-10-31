@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import ShipperService from "../../../services/ShipperService";
 import type { Shipper } from "../../../types/shipper";
 
@@ -70,15 +70,15 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">
+        <h2 className="text-xl font-bold mb-4 text-mono-800">
           🚚 Gán đơn hàng cho Shipper
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Order ID */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
-              Mã đơn hàng <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Mã đơn hàng <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -86,7 +86,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
               onChange={(e) =>
                 setFormData({ ...formData, orderId: e.target.value })
               }
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               placeholder="Nhập ID hoặc mã đơn hàng"
               required
             />
@@ -94,8 +94,8 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
 
           {/* Shipper Selection */}
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">
-              Chọn Shipper <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Chọn Shipper <span className="text-mono-800">*</span>
             </label>
 
             {availableShippers.length === 0 ? (
@@ -104,16 +104,16 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                 đạt giới hạn đơn hàng.
               </div>
             ) : (
-              <div className="space-y-2 max-h-64 overflow-y-auto border border-gray-200 rounded-lg p-2">
+              <div className="space-y-2 max-h-64 overflow-y-auto border border-mono-200 rounded-lg p-2">
                 {availableShippers.map((shipper) => {
                   const capacity = getShipperCapacity(shipper);
                   return (
                     <label
                       key={shipper._id}
-                      className={`flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50 ${
+                      className={`flex items-center p-3 border rounded-lg cursor-pointer hover:bg-mono-50 ${
                         formData.shipperId === shipper._id
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-gray-300"
+                          ? "border-mono-500 bg-mono-50"
+                          : "border-mono-300"
                       }`}
                     >
                       <input
@@ -132,10 +132,10 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium text-gray-800">
+                            <p className="font-medium text-mono-800">
                               {shipper.name}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-mono-600">
                               {shipper.phone}
                             </p>
                           </div>
@@ -148,7 +148,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                               {shipper.shipper.activeOrders}/
                               {shipper.shipper.maxOrders} đơn
                             </span>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-mono-500 mt-1">
                               {
                                 shipper.shipper.deliveryStats
                                   .successfulDeliveries
@@ -160,14 +160,14 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
 
                         {/* Capacity Bar */}
                         <div className="mt-2">
-                          <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                          <div className="bg-mono-200 rounded-full h-2 overflow-hidden">
                             <div
                               className={`h-full ${
                                 capacity >= 80
-                                  ? "bg-red-500"
+                                  ? "bg-mono-800"
                                   : capacity >= 50
                                   ? "bg-yellow-500"
-                                  : "bg-green-500"
+                                  : "bg-mono-700"
                               }`}
                               style={{ width: `${capacity}%` }}
                             />
@@ -193,14 +193,14 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
             <button
               type="submit"
               disabled={loading || availableShippers.length === 0}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+              className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
               {loading ? "Đang xử lý..." : "✅ Gán đơn hàng"}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-gray-200 py-3 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+              className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
               ❌ Hủy
             </button>

@@ -1,4 +1,4 @@
-import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
+﻿import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   FaTachometerAlt,
@@ -59,15 +59,15 @@ const ShipperLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-mono-100">
       {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? "w-64" : "w-20"
-        } bg-gradient-to-b from-blue-600 to-blue-800 text-white transition-all duration-300 flex flex-col`}
+        } bg-gradient-to-b from-mono-black to-blue-800 text-white transition-all duration-300 flex flex-col`}
       >
         {/* Logo */}
-        <div className="p-6 flex items-center justify-between border-b border-blue-500">
+        <div className="p-6 flex items-center justify-between border-b border-mono-500">
           {sidebarOpen && (
             <div className="flex items-center gap-3">
               <FaTruck size={32} />
@@ -90,7 +90,7 @@ const ShipperLayout = () => {
               to={item.path}
               className={`flex items-center gap-4 px-6 py-3 mx-3 mb-2 rounded-lg transition-all ${
                 isActive(item.path)
-                  ? "bg-white text-blue-600 shadow-lg"
+                  ? "bg-white text-mono-black shadow-lg"
                   : "hover:bg-blue-700"
               }`}
             >
@@ -101,17 +101,17 @@ const ShipperLayout = () => {
         </nav>
 
         {/* User Info & Logout */}
-        <div className="border-t border-blue-500">
+        <div className="border-t border-mono-500">
           {user && sidebarOpen && (
             <div className="px-6 py-4">
-              <p className="text-sm text-blue-200">Xin chào,</p>
+              <p className="text-sm text-mono-200">Xin chào,</p>
               <p className="font-bold truncate">{user.name}</p>
-              <p className="text-xs text-blue-200 truncate">{user.email}</p>
+              <p className="text-xs text-mono-200 truncate">{user.email}</p>
             </div>
           )}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-4 px-6 py-3 mx-3 mb-3 rounded-lg hover:bg-red-600 transition-all w-[calc(100%-1.5rem)]"
+            className="flex items-center gap-4 px-6 py-3 mx-3 mb-3 rounded-lg hover:bg-mono-900 transition-all w-[calc(100%-1.5rem)]"
           >
             <FaSignOutAlt size={20} />
             {sidebarOpen && <span>Đăng xuất</span>}
@@ -124,13 +124,13 @@ const ShipperLayout = () => {
         {/* Header */}
         <header className="bg-white shadow-sm px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-800">
+            <h1 className="text-2xl font-bold text-mono-800">
               {menuItems.find((item) => isActive(item.path))?.label ||
                 "Shipper Dashboard"}
             </h1>
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-mono-600">
                   {new Date().toLocaleDateString("vi-VN", {
                     weekday: "long",
                     year: "numeric",
@@ -144,7 +144,7 @@ const ShipperLayout = () => {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50">
+        <main className="flex-1 overflow-y-auto bg-mono-50">
           <Outlet />
         </main>
       </div>

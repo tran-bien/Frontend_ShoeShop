@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { productApi } from "../../../services/ProductService";
 import { Product } from "../../../types/product";
 import ProductImagesManager from "./ProductImagesManager";
@@ -62,16 +62,16 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 font-sans p-4">
       <div className="bg-white rounded-xl w-full max-w-6xl relative shadow-2xl max-h-[95vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-mono-50 to-indigo-50">
           <div className="flex-1">
-            <h2 className="text-2xl font-bold text-gray-800 mb-1">
+            <h2 className="text-2xl font-bold text-mono-800 mb-1">
               {detail.name}
             </h2>
-            <p className="text-sm text-gray-500">Chi tiết sản phẩm</p>
+            <p className="text-sm text-mono-500">Chi tiết sản phẩm</p>
           </div>
           <button
             onClick={handleClose}
-            className="ml-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all"
+            className="ml-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-red-50 text-mono-400 hover:text-mono-800 transition-all"
             title="Đóng"
           >
             <svg
@@ -91,13 +91,13 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b bg-gray-50 px-6">
+        <div className="flex border-b bg-mono-50 px-6">
           <button
             onClick={() => setActiveTab("images")}
             className={`px-6 py-3 font-medium text-sm transition-all border-b-2 -mb-px ${
               activeTab === "images"
-                ? "text-blue-600 border-blue-600 bg-white"
-                : "text-gray-600 border-transparent hover:text-blue-600 hover:bg-gray-100"
+                ? "text-mono-black border-mono-black bg-white"
+                : "text-mono-600 border-transparent hover:text-mono-black hover:bg-mono-100"
             }`}
           >
             <span className="flex items-center gap-2">
@@ -121,8 +121,8 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
             onClick={() => setActiveTab("info")}
             className={`px-6 py-3 font-medium text-sm transition-all border-b-2 -mb-px ${
               activeTab === "info"
-                ? "text-blue-600 border-blue-600 bg-white"
-                : "text-gray-600 border-transparent hover:text-blue-600 hover:bg-gray-100"
+                ? "text-mono-black border-mono-black bg-white"
+                : "text-mono-600 border-transparent hover:text-mono-black hover:bg-mono-100"
             }`}
           >
             <span className="flex items-center gap-2">
@@ -146,8 +146,8 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
             onClick={() => setActiveTab("variants")}
             className={`px-6 py-3 font-medium text-sm transition-all border-b-2 -mb-px ${
               activeTab === "variants"
-                ? "text-blue-600 border-blue-600 bg-white"
-                : "text-gray-600 border-transparent hover:text-blue-600 hover:bg-gray-100"
+                ? "text-mono-black border-mono-black bg-white"
+                : "text-mono-600 border-transparent hover:text-mono-black hover:bg-mono-100"
             }`}
           >
             <span className="flex items-center gap-2">
@@ -177,7 +177,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
               {detail.images && detail.images.length > 0 ? (
                 <>
                   {/* Main Image */}
-                  <div className="relative bg-gray-100 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+                  <div className="relative bg-mono-100 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
                     <img
                       src={
                         selectedImage ||
@@ -190,7 +190,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                     {canManageImages() && (
                       <button
                         onClick={() => setShowImageManager(true)}
-                        className="absolute top-4 right-4 bg-white hover:bg-gray-100 text-gray-700 px-4 py-2 rounded-lg shadow-lg text-sm font-medium transition-all flex items-center gap-2"
+                        className="absolute top-4 right-4 bg-white hover:bg-mono-100 text-mono-700 px-4 py-2 rounded-lg shadow-lg text-sm font-medium transition-all flex items-center gap-2"
                       >
                         <svg
                           className="w-4 h-4"
@@ -217,8 +217,8 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         onClick={() => setSelectedImage(img.url)}
                         className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
                           selectedImage === img.url
-                            ? "border-blue-500 shadow-lg"
-                            : "border-gray-200 hover:border-blue-300"
+                            ? "border-mono-500 shadow-lg"
+                            : "border-mono-200 hover:border-mono-400"
                         }`}
                       >
                         <img
@@ -227,7 +227,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                           className="w-full h-full object-cover"
                         />
                         {img.isMain && (
-                          <div className="absolute top-1 right-1 bg-blue-500 text-white px-2 py-0.5 rounded text-xs font-semibold">
+                          <div className="absolute top-1 right-1 bg-mono-500 text-white px-2 py-0.5 rounded text-xs font-semibold">
                             Main
                           </div>
                         )}
@@ -238,7 +238,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
               ) : (
                 <div className="text-center py-12">
                   <svg
-                    className="mx-auto h-16 w-16 text-gray-400"
+                    className="mx-auto h-16 w-16 text-mono-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -250,7 +250,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <p className="mt-4 text-gray-500">Chưa có hình ảnh</p>
+                  <p className="mt-4 text-mono-500">Chưa có hình ảnh</p>
                 </div>
               )}
             </div>
@@ -260,10 +260,10 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
           {activeTab === "info" && (
             <div className="space-y-6">
               {/* Description Card */}
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center gap-2">
+              <div className="bg-gradient-to-br from-mono-50 to-indigo-50 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-mono-800 mb-3 flex items-center gap-2">
                   <svg
-                    className="w-5 h-5 text-blue-600"
+                    className="w-5 h-5 text-mono-black"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -277,29 +277,29 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   </svg>
                   Mô tả sản phẩm
                 </h3>
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-mono-700 leading-relaxed">
                   {detail.description}
                 </p>
               </div>
 
               {/* Info Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white border border-gray-200 rounded-xl p-4">
-                  <div className="text-xs text-gray-500 font-medium mb-1">
+                <div className="bg-white border border-mono-200 rounded-xl p-4">
+                  <div className="text-xs text-mono-500 font-medium mb-1">
                     Danh mục
                   </div>
-                  <div className="text-sm font-semibold text-gray-800">
+                  <div className="text-sm font-semibold text-mono-800">
                     {typeof detail.category === "object"
                       ? detail.category?.name
                       : detail.category}
                   </div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-4">
-                  <div className="text-xs text-gray-500 font-medium mb-1">
+                <div className="bg-white border border-mono-200 rounded-xl p-4">
+                  <div className="text-xs text-mono-500 font-medium mb-1">
                     Thương hiệu
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-gray-800">
+                    <span className="text-sm font-semibold text-mono-800">
                       {typeof detail.brand === "object"
                         ? detail.brand?.name
                         : detail.brand}
@@ -314,22 +314,22 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       )}
                   </div>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-4">
-                  <div className="text-xs text-gray-500 font-medium mb-1">
+                <div className="bg-white border border-mono-200 rounded-xl p-4">
+                  <div className="text-xs text-mono-500 font-medium mb-1">
                     Trạng thái
                   </div>
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                       detail.isActive
                         ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-600"
+                        : "bg-mono-100 text-mono-600"
                     }`}
                   >
                     {detail.isActive ? "Đang hoạt động" : "Ngừng hoạt động"}
                   </span>
                 </div>
-                <div className="bg-white border border-gray-200 rounded-xl p-4">
-                  <div className="text-xs text-gray-500 font-medium mb-1">
+                <div className="bg-white border border-mono-200 rounded-xl p-4">
+                  <div className="text-xs text-mono-500 font-medium mb-1">
                     Tồn kho
                   </div>
                   <div className="flex items-center gap-2">
@@ -353,7 +353,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                           | "out_of_stock"
                       ] || "Hết hàng"}
                     </span>
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-mono-600">
                       ({detail.totalQuantity} sản phẩm)
                     </span>
                   </div>
@@ -362,8 +362,8 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
 
               {/* Tags */}
               {detail.tags && detail.tags.length > 0 && (
-                <div className="bg-white border border-gray-200 rounded-xl p-4">
-                  <div className="text-xs text-gray-500 font-medium mb-3">
+                <div className="bg-white border border-mono-200 rounded-xl p-4">
+                  <div className="text-xs text-mono-500 font-medium mb-3">
                     Tags sản phẩm
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -376,7 +376,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                           key={tag._id || index}
                           className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                             tag.type === "MATERIAL"
-                              ? "bg-blue-100 text-blue-800"
+                              ? "bg-mono-100 text-blue-800"
                               : tag.type === "USECASE"
                               ? "bg-green-100 text-green-800"
                               : "bg-purple-100 text-purple-800"
@@ -391,29 +391,29 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
               )}
 
               {/* Metadata */}
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
+              <div className="bg-mono-50 border border-mono-200 rounded-xl p-4">
                 <div className="grid grid-cols-2 gap-4 text-xs">
                   <div>
-                    <span className="text-gray-500">ID:</span>
-                    <span className="ml-2 font-mono text-gray-700">
+                    <span className="text-mono-500">ID:</span>
+                    <span className="ml-2 font-mono text-mono-700">
                       {detail._id}
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Slug:</span>
-                    <span className="ml-2 font-mono text-gray-700">
+                    <span className="text-mono-500">Slug:</span>
+                    <span className="ml-2 font-mono text-mono-700">
                       {detail.slug}
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Ngày tạo:</span>
-                    <span className="ml-2 text-gray-700">
+                    <span className="text-mono-500">Ngày tạo:</span>
+                    <span className="ml-2 text-mono-700">
                       {new Date(detail.createdAt).toLocaleDateString("vi-VN")}
                     </span>
                   </div>
                   <div>
-                    <span className="text-gray-500">Cập nhật:</span>
-                    <span className="ml-2 text-gray-700">
+                    <span className="text-mono-500">Cập nhật:</span>
+                    <span className="ml-2 text-mono-700">
                       {new Date(detail.updatedAt).toLocaleDateString("vi-VN")}
                     </span>
                   </div>
@@ -433,7 +433,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   return (
                     <div
                       key={variant._id}
-                      className="border border-gray-200 rounded-xl p-5 bg-gradient-to-br from-white to-gray-50 hover:shadow-md transition-shadow"
+                      className="border border-mono-200 rounded-xl p-5 bg-gradient-to-br from-white to-mono-50 hover:shadow-md transition-shadow"
                     >
                       {/* Variant Header */}
                       <div className="flex items-center justify-between mb-4">
@@ -446,7 +446,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                               <div className="flex gap-2">
                                 {variant.color.colors.length === 1 ? (
                                   <span
-                                    className="inline-block w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm"
+                                    className="inline-block w-10 h-10 rounded-full border-2 border-mono-300 shadow-sm"
                                     style={{
                                       background: variant.color.colors[0],
                                     }}
@@ -454,7 +454,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                                   />
                                 ) : variant.color.colors.length === 2 ? (
                                   <span
-                                    className="inline-block w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm"
+                                    className="inline-block w-10 h-10 rounded-full border-2 border-mono-300 shadow-sm"
                                     style={{
                                       background: `linear-gradient(90deg, ${variant.color.colors[0]} 50%, ${variant.color.colors[1]} 50%)`,
                                     }}
@@ -462,7 +462,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                                   />
                                 ) : (
                                   <span
-                                    className="inline-block w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm"
+                                    className="inline-block w-10 h-10 rounded-full border-2 border-mono-300 shadow-sm"
                                     style={{
                                       background: `linear-gradient(90deg, ${variant.color.colors
                                         .map(
@@ -485,7 +485,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                               </div>
                             )}
                           <div>
-                            <h4 className="font-semibold text-gray-800 text-lg">
+                            <h4 className="font-semibold text-mono-800 text-lg">
                               {variant.color &&
                               typeof variant.color !== "string"
                                 ? variant.color.name
@@ -494,7 +494,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                             <span
                               className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium mt-1 ${
                                 variant.gender === "Nam"
-                                  ? "bg-blue-100 text-blue-700"
+                                  ? "bg-mono-100 text-blue-700"
                                   : variant.gender === "Nữ"
                                   ? "bg-pink-100 text-pink-700"
                                   : "bg-purple-100 text-purple-700"
@@ -508,7 +508,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                           className={`px-3 py-1 rounded-full text-sm font-semibold ${
                             variant.isActive
                               ? "bg-green-100 text-green-700"
-                              : "bg-gray-100 text-gray-600"
+                              : "bg-mono-100 text-mono-600"
                           }`}
                         >
                           {variant.isActive ? "✓ Đang bán" : "✕ Ẩn"}
@@ -517,27 +517,27 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
 
                       {/* Price Info */}
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                        <div className="bg-white rounded-lg p-3 border border-gray-200">
-                          <div className="text-xs text-gray-500 mb-1">
+                        <div className="bg-white rounded-lg p-3 border border-mono-200">
+                          <div className="text-xs text-mono-500 mb-1">
                             Giá gốc
                           </div>
-                          <div className="text-sm font-bold text-gray-800">
+                          <div className="text-sm font-bold text-mono-800">
                             {(variant as any).price?.toLocaleString() || "N/A"}{" "}
                             ₫
                           </div>
                         </div>
-                        <div className="bg-white rounded-lg p-3 border border-blue-200">
-                          <div className="text-xs text-gray-500 mb-1">
+                        <div className="bg-white rounded-lg p-3 border border-mono-200">
+                          <div className="text-xs text-mono-500 mb-1">
                             Giá bán
                           </div>
-                          <div className="text-sm font-bold text-blue-600">
+                          <div className="text-sm font-bold text-mono-black">
                             {(variant as any).priceFinal?.toLocaleString() ||
                               "N/A"}{" "}
                             ₫
                           </div>
                         </div>
                         <div className="bg-white rounded-lg p-3 border border-orange-200">
-                          <div className="text-xs text-gray-500 mb-1">
+                          <div className="text-xs text-mono-500 mb-1">
                             Giảm giá
                           </div>
                           <div className="text-sm font-bold text-orange-600">
@@ -545,10 +545,10 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                           </div>
                         </div>
                         <div className="bg-white rounded-lg p-3 border border-green-200">
-                          <div className="text-xs text-gray-500 mb-1">
+                          <div className="text-xs text-mono-500 mb-1">
                             Lợi nhuận
                           </div>
-                          <div className="text-sm font-bold text-green-600">
+                          <div className="text-sm font-bold text-mono-800">
                             {(variant as any).profit?.toLocaleString() || "N/A"}{" "}
                             ₫
                           </div>
@@ -559,7 +559,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       {variant.imagesvariant &&
                         variant.imagesvariant.length > 0 && (
                           <div className="mb-4">
-                            <div className="text-xs text-gray-500 font-medium mb-2">
+                            <div className="text-xs text-mono-500 font-medium mb-2">
                               Ảnh biến thể ({variant.imagesvariant.length})
                             </div>
                             <div className="flex gap-2 flex-wrap">
@@ -568,7 +568,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                                   key={img._id}
                                   src={img.url}
                                   alt="variant"
-                                  className="h-16 w-16 object-cover rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-all"
+                                  className="h-16 w-16 object-cover rounded-lg border-2 border-mono-200 hover:border-mono-600 transition-all"
                                 />
                               ))}
                             </div>
@@ -577,7 +577,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
 
                       {/* Sizes */}
                       <div>
-                        <div className="text-xs text-gray-500 font-medium mb-2">
+                        <div className="text-xs text-mono-500 font-medium mb-2">
                           Size & Số lượng
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -585,21 +585,21 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                             variant.sizes.map((sz) => (
                               <span
                                 key={sz._id}
-                                className="inline-flex items-center gap-2 bg-white border border-gray-300 px-3 py-2 rounded-lg text-sm hover:border-blue-400 transition-all"
+                                className="inline-flex items-center gap-2 bg-white border border-mono-300 px-3 py-2 rounded-lg text-sm hover:border-mono-600 transition-all"
                               >
-                                <span className="font-semibold text-gray-800">
+                                <span className="font-semibold text-mono-800">
                                   {sz.size && typeof sz.size !== "string"
                                     ? sz.size.description || sz.size.value
                                     : sz.size}
                                 </span>
-                                <span className="text-gray-400">•</span>
+                                <span className="text-mono-400">•</span>
                                 <span
                                   className={`font-medium ${
                                     sz.quantity > 10
-                                      ? "text-green-600"
+                                      ? "text-mono-800"
                                       : sz.quantity > 0
                                       ? "text-yellow-600"
-                                      : "text-red-600"
+                                      : "text-mono-900"
                                   }`}
                                 >
                                   {sz.quantity} đôi
@@ -607,7 +607,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                               </span>
                             ))
                           ) : (
-                            <span className="text-gray-400 text-sm">
+                            <span className="text-mono-400 text-sm">
                               Chưa có size
                             </span>
                           )}
@@ -619,7 +619,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
               ) : (
                 <div className="text-center py-12">
                   <svg
-                    className="mx-auto h-16 w-16 text-gray-400"
+                    className="mx-auto h-16 w-16 text-mono-400"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -631,7 +631,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                     />
                   </svg>
-                  <p className="mt-4 text-gray-500">Chưa có biến thể nào</p>
+                  <p className="mt-4 text-mono-500">Chưa có biến thể nào</p>
                 </div>
               )}
             </div>
@@ -643,7 +643,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
             <div className="bg-white rounded-xl p-6 w-full max-w-2xl relative shadow-2xl">
               <button
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition-all"
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-mono-400 hover:text-mono-800 transition-all"
                 onClick={() => setShowImageManager(false)}
               >
                 <svg

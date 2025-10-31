@@ -259,7 +259,7 @@ const BannerPage: React.FC = () => {
           <h3 className="text-xl font-bold mb-4">Tạo Banner Mới</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Tiêu đề
               </label>
               <input
@@ -268,12 +268,12 @@ const BannerPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Vị trí hiển thị
               </label>
               <select
@@ -284,7 +284,7 @@ const BannerPage: React.FC = () => {
                     displayOrder: parseInt(e.target.value),
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
               >
                 {[1, 2, 3, 4, 5].map((num) => (
                   <option key={num} value={num}>
@@ -294,7 +294,7 @@ const BannerPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Liên kết (tùy chọn)
               </label>
               <input
@@ -303,12 +303,12 @@ const BannerPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, link: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 placeholder="https://example.com"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Ảnh Banner
               </label>
               <input
@@ -320,7 +320,7 @@ const BannerPage: React.FC = () => {
                     banner: e.target.files?.[0] || null,
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 required
               />
             </div>
@@ -332,9 +332,9 @@ const BannerPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, isActive: e.target.checked })
                 }
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-mono-black focus:ring-mono-500 border-mono-300 rounded"
               />
-              <label htmlFor="isActive" className="ml-2 text-sm text-gray-700">
+              <label htmlFor="isActive" className="ml-2 text-sm text-mono-700">
                 Hiển thị ngay lập tức
               </label>
             </div>
@@ -342,7 +342,7 @@ const BannerPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50"
                 disabled={submitting}
               >
                 Hủy
@@ -350,7 +350,7 @@ const BannerPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
                 {submitting ? "Đang tạo..." : "Tạo Banner"}
               </button>
@@ -433,7 +433,7 @@ const BannerPage: React.FC = () => {
           <h3 className="text-xl font-bold mb-4">Chỉnh sửa Banner</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Tiêu đề
               </label>
               <input
@@ -442,12 +442,12 @@ const BannerPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Vị trí hiển thị
               </label>
               <select
@@ -458,7 +458,7 @@ const BannerPage: React.FC = () => {
                     displayOrder: parseInt(e.target.value),
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
               >
                 {[1, 2, 3, 4, 5].map((num) => (
                   <option key={num} value={num}>
@@ -468,7 +468,7 @@ const BannerPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Liên kết (tùy chọn)
               </label>
               <input
@@ -477,7 +477,7 @@ const BannerPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, link: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 placeholder="https://example.com"
               />
             </div>
@@ -489,11 +489,11 @@ const BannerPage: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, isActive: e.target.checked })
                 }
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-mono-black focus:ring-mono-500 border-mono-300 rounded"
               />
               <label
                 htmlFor="editIsActive"
-                className="ml-2 text-sm text-gray-700"
+                className="ml-2 text-sm text-mono-700"
               >
                 Hiển thị banner
               </label>
@@ -505,7 +505,7 @@ const BannerPage: React.FC = () => {
                   setShowEditModal(false);
                   setSelectedBanner(null);
                 }}
-                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50"
                 disabled={submitting}
               >
                 Hủy
@@ -513,7 +513,7 @@ const BannerPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
                 {submitting ? "Đang cập nhật..." : "Cập nhật"}
               </button>
@@ -563,7 +563,7 @@ const BannerPage: React.FC = () => {
 
           {/* Current Image */}
           <div className="mb-4">
-            <p className="text-sm text-gray-600 mb-2">Ảnh hiện tại:</p>
+            <p className="text-sm text-mono-600 mb-2">Ảnh hiện tại:</p>
             <img
               src={selectedBanner.image.url}
               alt={selectedBanner.title}
@@ -573,21 +573,21 @@ const BannerPage: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
                 Chọn ảnh mới
               </label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => setNewImage(e.target.files?.[0] || null)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
                 required
               />
             </div>
 
             {newImage && (
               <div>
-                <p className="text-sm text-gray-600 mb-2">Ảnh mới:</p>
+                <p className="text-sm text-mono-600 mb-2">Ảnh mới:</p>
                 <img
                   src={URL.createObjectURL(newImage)}
                   alt="Preview"
@@ -604,7 +604,7 @@ const BannerPage: React.FC = () => {
                   setSelectedBanner(null);
                   setNewImage(null);
                 }}
-                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
+                className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50"
                 disabled={submitting}
               >
                 Hủy
@@ -612,7 +612,7 @@ const BannerPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={submitting || !newImage}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
               >
                 {submitting ? "Đang cập nhật..." : "Cập nhật ảnh"}
               </button>
@@ -634,7 +634,7 @@ const BannerPage: React.FC = () => {
             {/* Warning Icon */}
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
               <svg
-                className="h-8 w-8 text-red-600"
+                className="h-8 w-8 text-mono-900"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -648,31 +648,31 @@ const BannerPage: React.FC = () => {
               </svg>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900 mb-2">
+            <h3 className="text-xl font-bold text-mono-900 mb-2">
               Xác nhận xóa banner
             </h3>
 
             <div className="mb-4">
-              <p className="text-gray-600 mb-3">
+              <p className="text-mono-600 mb-3">
                 Bạn có chắc chắn muốn xóa banner này không?
               </p>
 
               {/* Banner Preview */}
-              <div className="bg-gray-50 rounded-lg p-3 mb-3">
+              <div className="bg-mono-50 rounded-lg p-3 mb-3">
                 <img
                   src={selectedBanner.image.url}
                   alt={selectedBanner.title}
                   className="w-full h-24 object-cover rounded-md mb-2"
                 />
-                <p className="font-medium text-gray-900 text-sm">
+                <p className="font-medium text-mono-900 text-sm">
                   {selectedBanner.title}
                 </p>
-                <p className="text-gray-500 text-xs">
+                <p className="text-mono-500 text-xs">
                   Vị trí {selectedBanner.displayOrder}
                 </p>
               </div>
 
-              <p className="text-red-600 text-sm font-medium">
+              <p className="text-mono-900 text-sm font-medium">
                 ⚠️ Hành động này không thể hoàn tác
               </p>
             </div>
@@ -684,7 +684,7 @@ const BannerPage: React.FC = () => {
                   setShowDeleteModal(false);
                   setSelectedBanner(null);
                 }}
-                className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
                 disabled={submitting}
               >
                 Hủy
@@ -693,7 +693,7 @@ const BannerPage: React.FC = () => {
                 type="button"
                 onClick={confirmDeleteBanner}
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
               >
                 {submitting ? "Đang xóa..." : "Xóa banner"}
               </button>
@@ -707,21 +707,21 @@ const BannerPage: React.FC = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-400"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-mono-400"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-mono-50 p-6">
       {/* Header */}
       <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-3xl font-bold text-mono-900 mb-2">
               Quản lý Banner
             </h1>
-            <p className="text-gray-600">
+            <p className="text-mono-600">
               Quản lý banner hiển thị trên trang chủ website (tối đa 5 banner)
             </p>
           </div>
@@ -730,7 +730,7 @@ const BannerPage: React.FC = () => {
             {canCreate() && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                className="px-6 py-3 bg-gradient-to-r from-mono-black to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
               >
                 <svg
                   className="w-5 h-5"
@@ -757,9 +757,9 @@ const BannerPage: React.FC = () => {
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-mono-100 rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-blue-600"
+                  className="w-5 h-5 text-mono-black"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -774,10 +774,10 @@ const BannerPage: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-mono-900">
                 Tổng Banner
               </h3>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-mono-black">
                 {banners.length}
               </p>
             </div>
@@ -789,7 +789,7 @@ const BannerPage: React.FC = () => {
             <div className="flex-shrink-0">
               <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-green-600"
+                  className="w-5 h-5 text-mono-800"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -810,10 +810,10 @@ const BannerPage: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-mono-900">
                 Đang Hiển Thị
               </h3>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-mono-800">
                 {banners.filter((b) => b.isActive).length}
               </p>
             </div>
@@ -823,9 +823,9 @@ const BannerPage: React.FC = () => {
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-mono-100 rounded-lg flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-gray-600"
+                  className="w-5 h-5 text-mono-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -840,8 +840,8 @@ const BannerPage: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-gray-900">Đã Ẩn</h3>
-              <p className="text-2xl font-bold text-gray-600">
+              <h3 className="text-lg font-semibold text-mono-900">Đã Ẩn</h3>
+              <p className="text-2xl font-bold text-mono-600">
                 {banners.filter((b) => !b.isActive).length}
               </p>
             </div>
@@ -851,8 +851,8 @@ const BannerPage: React.FC = () => {
 
       {/* Banner List */}
       {banners.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-xl border-2 border-dashed border-gray-200">
-          <div className="text-gray-400 mb-6">
+        <div className="text-center py-20 bg-white rounded-xl border-2 border-dashed border-mono-200">
+          <div className="text-mono-400 mb-6">
             <svg
               className="mx-auto h-16 w-16"
               fill="none"
@@ -867,16 +867,16 @@ const BannerPage: React.FC = () => {
               />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <h3 className="text-xl font-semibold text-mono-900 mb-2">
             Chưa có banner nào
           </h3>
-          <p className="text-gray-500 mb-6">
+          <p className="text-mono-500 mb-6">
             Hãy tạo banner đầu tiên để quảng bá sản phẩm trên trang chủ
           </p>
           {canCreate() && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 inline-flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-mono-black to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 inline-flex items-center gap-2"
             >
               <svg
                 className="w-5 h-5"
@@ -914,7 +914,7 @@ const BannerPage: React.FC = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg"></div>
                       <div className="absolute top-3 left-3">
-                        <span className="bg-white/90 backdrop-blur-sm text-gray-800 text-sm font-medium px-2 py-1 rounded-full">
+                        <span className="bg-white/90 backdrop-blur-sm text-mono-800 text-sm font-medium px-2 py-1 rounded-full">
                           #{banner.displayOrder}
                         </span>
                       </div>
@@ -925,18 +925,18 @@ const BannerPage: React.FC = () => {
                   <div className="lg:w-3/5 flex flex-col justify-between">
                     <div>
                       <div className="flex items-start justify-between mb-3">
-                        <h3 className="text-xl font-bold text-gray-900 line-clamp-2">
+                        <h3 className="text-xl font-bold text-mono-900 line-clamp-2">
                           {banner.title}
                         </h3>
                         <div className="flex items-center gap-2 ml-4">
                           {banner.isActive ? (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                              <div className="w-2 h-2 bg-mono-700 rounded-full"></div>
                               Đang hiển thị
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-600">
-                              <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-mono-100 text-mono-600">
+                              <div className="w-2 h-2 bg-mono-400 rounded-full"></div>
                               Đã ẩn
                             </span>
                           )}
@@ -945,7 +945,7 @@ const BannerPage: React.FC = () => {
 
                       {/* Meta Info */}
                       <div className="flex flex-wrap items-center gap-3 mb-4">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium bg-mono-50 text-blue-700 border border-mono-200">
                           <svg
                             className="w-4 h-4"
                             fill="none"
@@ -987,7 +987,7 @@ const BannerPage: React.FC = () => {
                           </span>
                         )}
 
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-mono-500">
                           Tạo:{" "}
                           {new Date(banner.createdAt).toLocaleDateString(
                             "vi-VN"
@@ -1005,7 +1005,7 @@ const BannerPage: React.FC = () => {
                               setSelectedBanner(banner);
                               setShowEditModal(true);
                             }}
-                            className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-2"
+                            className="px-4 py-2 bg-mono-50 hover:bg-mono-100 text-mono-700 text-sm font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-2"
                           >
                             <svg
                               className="w-4 h-4"
@@ -1028,7 +1028,7 @@ const BannerPage: React.FC = () => {
                               setSelectedBanner(banner);
                               setShowImageModal(true);
                             }}
-                            className="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 transition-colors flex items-center gap-2"
+                            className="px-4 py-2 bg-mono-50 hover:bg-mono-100 text-mono-700 text-sm font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-2"
                           >
                             <svg
                               className="w-4 h-4"
@@ -1055,7 +1055,7 @@ const BannerPage: React.FC = () => {
                                 parseInt(e.target.value)
                               )
                             }
-                            className="px-3 py-2 bg-white hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg border border-gray-200 transition-colors"
+                            className="px-3 py-2 bg-white hover:bg-mono-50 text-mono-700 text-sm font-medium rounded-lg border border-mono-200 transition-colors"
                           >
                             {[1, 2, 3, 4, 5].map((position) => (
                               <option key={position} value={position}>

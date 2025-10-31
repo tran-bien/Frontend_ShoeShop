@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+﻿import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast"; // Thay đổi import
@@ -128,13 +128,13 @@ const ForgotPasswordForm = () => {
 
         {/* Email */}
         <div className="w-full mb-4">
-          <label className="block text-left mb-1 text-base text-gray-500 font-light pl-2">
+          <label className="block text-left mb-1 text-base text-mono-500 font-light pl-2">
             Email
           </label>
           <input
             type="email"
             className={`border ${
-              errors.email ? "border-red-500" : "border-black"
+              errors.email ? "border-mono-800" : "border-black"
             } rounded-md p-2 w-full`}
             value={email}
             onChange={(e) => {
@@ -145,12 +145,12 @@ const ForgotPasswordForm = () => {
             disabled={loading}
           />
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            <p className="text-mono-800 text-sm mt-1">{errors.email}</p>
           )}
         </div>
 
         {/* Tôi không phải là người máy */}
-        <div className="w-[40%] mb-2 flex items-center border border-black rounded-md p-2 bg-gray-100 justify-start self-start">
+        <div className="w-[40%] mb-2 flex items-center border border-black rounded-md p-2 bg-mono-100 justify-start self-start">
           <input
             type="checkbox"
             id="notRobot"
@@ -165,7 +165,7 @@ const ForgotPasswordForm = () => {
           />
           <label
             htmlFor="notRobot"
-            className="text-base text-gray-500 font-light"
+            className="text-base text-mono-500 font-light"
           >
             Tôi không phải là người máy
           </label>
@@ -174,7 +174,7 @@ const ForgotPasswordForm = () => {
         {/* Error message for captcha */}
         {errors.captcha && (
           <div className="w-full mb-4">
-            <p className="text-red-500 text-sm">{errors.captcha}</p>
+            <p className="text-mono-800 text-sm">{errors.captcha}</p>
           </div>
         )}
 
@@ -188,7 +188,7 @@ const ForgotPasswordForm = () => {
             {loading ? "Đang xử lý..." : "Lấy lại mật khẩu"}
           </button>
           <button
-            className="text-black text-base ml-[5cm] transition-all duration-300 hover:text-gray-600 hover:scale-105"
+            className="text-black text-base ml-[5cm] transition-all duration-300 hover:text-mono-600 hover:scale-105"
             onClick={() => navigate("/login")}
             disabled={loading}
           >

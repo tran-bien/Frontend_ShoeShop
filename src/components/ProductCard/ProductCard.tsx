@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { ProductCardProduct } from "../../types/product";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
@@ -51,18 +51,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         <div className="flex flex-col">
           {product.hasDiscount ? (
             <>
-              <span className="text-red-600 font-bold text-base md:text-lg">
+              <span className="text-mono-900 font-bold text-base md:text-lg">
                 {(product.priceRange.min || 0).toLocaleString()} -{" "}
                 {(product.priceRange.max || 0).toLocaleString()}đ
               </span>
               {product.originalPrice && (
-                <span className="text-gray-400 text-sm line-through">
+                <span className="text-mono-400 text-sm line-through">
                   Gốc: {product.originalPrice.toLocaleString()}đ
                 </span>
               )}
             </>
           ) : (
-            <span className="text-gray-900 font-bold text-base md:text-lg">
+            <span className="text-mono-900 font-bold text-base md:text-lg">
               {(product.priceRange.min || 0).toLocaleString()} -{" "}
               {(product.priceRange.max || 0).toLocaleString()}đ
             </span>
@@ -76,18 +76,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       <div className="flex flex-col">
         {product.hasDiscount ? (
           <>
-            <span className="text-red-600 font-bold text-base md:text-lg">
+            <span className="text-mono-900 font-bold text-base md:text-lg">
               {(product.price || product.priceRange?.min || 0).toLocaleString()}
               đ
             </span>
             {product.originalPrice && (
-              <span className="text-gray-400 text-sm line-through">
+              <span className="text-mono-400 text-sm line-through">
                 {product.originalPrice.toLocaleString()}đ
               </span>
             )}
           </>
         ) : (
-          <span className="text-gray-900 font-bold text-base md:text-lg">
+          <span className="text-mono-900 font-bold text-base md:text-lg">
             {(product.price || product.priceRange?.min || 0).toLocaleString()}đ
           </span>
         )}
@@ -125,18 +125,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     return (
       <div className="flex items-center mt-2 gap-1">
         <div className="flex">{stars}</div>
-        <span className="text-xs text-gray-600 ml-1">({reviewCount})</span>
+        <span className="text-xs text-mono-600 ml-1">({reviewCount})</span>
       </div>
     );
   };
 
   return (
     <div
-      className="group cursor-pointer bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden h-full flex flex-col transform hover:translate-y-[-4px]"
+      className="group cursor-pointer bg-white rounded-lg shadow-soft hover:shadow-luxury transition-all duration-300 overflow-hidden h-full flex flex-col transform hover:translate-y-[-4px] border border-mono-100"
       onClick={onClick}
     >
       {/* Phần ảnh sản phẩm với hiệu ứng chuyển đổi mềm mại */}
-      <div className="aspect-square w-full overflow-hidden bg-gray-50 relative">
+      <div className="aspect-square w-full overflow-hidden bg-mono-50 relative">
         <img
           src={imageUrl}
           alt={product.name}
@@ -163,8 +163,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
                 key={idx}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
                   currentImageIndex === idx
-                    ? "w-3 bg-gray-800"
-                    : "w-1.5 bg-gray-400"
+                    ? "w-3 bg-mono-800"
+                    : "w-1.5 bg-mono-400"
                 }`}
               />
             ))}
@@ -174,7 +174,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         {/* Sale tag - Sửa lỗi kiểm tra undefined */}
         {typeof product.salePercentage === "number" &&
           product.salePercentage > 0 && (
-            <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2.5 py-1.5 rounded">
+            <div className="absolute top-2 right-2 bg-mono-800 text-white text-xs font-bold px-2.5 py-1.5 rounded">
               -{product.salePercentage}%
             </div>
           )}
@@ -186,7 +186,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           </div>
         )}
         {product.stockStatus === "low_stock" && (
-          <div className="absolute bottom-0 left-0 right-0 bg-orange-500 bg-opacity-70 text-white text-center py-1.5 text-sm font-medium">
+          <div className="absolute bottom-0 left-0 right-0 bg-mono-600 bg-opacity-70 text-white text-center py-1.5 text-sm font-medium">
             Sắp hết hàng
           </div>
         )}
@@ -196,13 +196,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       <div className="p-4 flex flex-col flex-1">
         {/* Thương hiệu */}
         {product.brand && (
-          <span className="text-sm font-medium text-gray-500 mb-1.5">
+          <span className="text-sm font-medium text-mono-500 mb-1.5">
             {product.brand.name}
           </span>
         )}
 
         {/* Tên sản phẩm - Tăng kích thước và độ đậm */}
-        <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2 line-clamp-2 flex-grow leading-snug">
+        <h3 className="text-base md:text-lg font-bold text-mono-900 mb-2 line-clamp-2 flex-grow leading-snug">
           {product.name}
         </h3>
 

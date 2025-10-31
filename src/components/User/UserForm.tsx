@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { inforApi } from "../../services/InforService";
 import Cookie from "js-cookie";
@@ -131,7 +131,7 @@ const UserForm: React.FC = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-3 text-gray-800">
+      <h2 className="text-2xl font-bold mb-3 text-mono-800">
         Thông tin tài khoản
       </h2>
 
@@ -157,7 +157,7 @@ const UserForm: React.FC = () => {
           />
           <button
             onClick={handleDeleteAvatar}
-            className="absolute right-0 bottom-0 bg-red-500 text-white rounded-full px-2 py-1 text-xs shadow hover:bg-red-600"
+            className="absolute right-0 bottom-0 bg-mono-800 text-white rounded-full px-2 py-1 text-xs shadow hover:bg-mono-900"
             title="Xóa avatar"
             type="button"
           >
@@ -179,13 +179,13 @@ const UserForm: React.FC = () => {
             />
             <button
               type="submit"
-              className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+              className="bg-mono-500 text-white px-3 py-1 rounded text-sm"
             >
               Lưu tên
             </button>
             <button
               type="button"
-              className="bg-gray-300 px-3 py-1 rounded text-sm"
+              className="bg-mono-300 px-3 py-1 rounded text-sm"
               onClick={() => {
                 setEditName(user.name);
                 setIsEditingName(false);
@@ -199,21 +199,21 @@ const UserForm: React.FC = () => {
             <span className="font-semibold text-lg">{user.name}</span>
             <button
               type="button"
-              className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+              className="bg-mono-500 text-white px-3 py-1 rounded text-sm"
               onClick={() => setIsEditingName(true)}
             >
               Sửa
             </button>
           </div>
         )}
-        <div className="text-gray-500">{user.email}</div>
+        <div className="text-mono-500">{user.email}</div>
       </div>
 
       <div>
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-bold">Địa chỉ:</h3>
           <button
-            className="bg-blue-500 text-white px-3 py-1 rounded text-sm"
+            className="bg-mono-500 text-white px-3 py-1 rounded text-sm"
             onClick={() => setIsAddModalOpen(true)}
           >
             Thêm địa chỉ
@@ -225,7 +225,7 @@ const UserForm: React.FC = () => {
               <li
                 key={addr._id}
                 className={`border rounded p-2 ${
-                  addr.isDefault ? "border-green-500" : "border-gray-300"
+                  addr.isDefault ? "border-mono-700" : "border-mono-300"
                 }`}
               >
                 <div>
@@ -237,12 +237,12 @@ const UserForm: React.FC = () => {
                   {addr.province}
                 </div>
                 {addr.isDefault && (
-                  <span className="text-green-600 text-xs font-semibold">
+                  <span className="text-mono-800 text-xs font-semibold">
                     [Mặc định]
                   </span>
                 )}
                 <button
-                  className="ml-2 text-blue-500 text-xs"
+                  className="ml-2 text-mono-500 text-xs"
                   onClick={() => {
                     setEditingAddress(addr);
                     setIsModalOpen(true);
@@ -251,7 +251,7 @@ const UserForm: React.FC = () => {
                   Sửa
                 </button>
                 <button
-                  className="ml-2 text-red-500 text-xs"
+                  className="ml-2 text-mono-800 text-xs"
                   onClick={() => addr._id && handleDeleteAddress(addr._id)}
                 >
                   Xóa
@@ -260,7 +260,7 @@ const UserForm: React.FC = () => {
             ))}
           </ul>
         ) : (
-          <div className="text-gray-500">Chưa có địa chỉ nào.</div>
+          <div className="text-mono-500">Chưa có địa chỉ nào.</div>
         )}
       </div>
 
@@ -320,13 +320,13 @@ const UserForm: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1 bg-gray-300 rounded"
+                  className="px-3 py-1 bg-mono-300 rounded"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-3 py-1 bg-blue-600 text-white rounded"
+                  className="px-3 py-1 bg-mono-black text-white rounded"
                 >
                   Lưu
                 </button>
@@ -383,13 +383,13 @@ const UserForm: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-3 py-1 bg-gray-300 rounded"
+                  className="px-3 py-1 bg-mono-300 rounded"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-3 py-1 bg-blue-600 text-white rounded"
+                  className="px-3 py-1 bg-mono-black text-white rounded"
                 >
                   Thêm
                 </button>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   FaTruck,
@@ -105,12 +105,12 @@ const OrderDetailPage = () => {
 
   const getStatusColor = (status: string) => {
     const colorMap: Record<string, string> = {
-      assigned_to_shipper: "bg-blue-100 text-blue-800",
+      assigned_to_shipper: "bg-mono-100 text-blue-800",
       out_for_delivery: "bg-yellow-100 text-yellow-800",
       delivered: "bg-green-100 text-green-800",
       delivery_failed: "bg-red-100 text-red-800",
     };
-    return colorMap[status] || "bg-gray-100 text-gray-800";
+    return colorMap[status] || "bg-mono-100 text-mono-800";
   };
 
   const getStatusLabel = (status: string) => {
@@ -126,7 +126,7 @@ const OrderDetailPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-gray-500">Đang tải...</div>
+        <div className="text-mono-500">Đang tải...</div>
       </div>
     );
   }
@@ -138,7 +138,7 @@ const OrderDetailPage = () => {
           <p className="mb-4">Không tìm thấy đơn hàng</p>
           <button
             onClick={() => navigate("/shipper/orders")}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg"
+            className="px-4 py-2 bg-mono-900 text-white rounded-lg"
           >
             Quay lại danh sách
           </button>
@@ -153,12 +153,12 @@ const OrderDetailPage = () => {
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate("/shipper/orders")}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
+          className="flex items-center gap-2 text-mono-black hover:text-blue-700"
         >
           <FaArrowLeft />
           <span>Quay lại</span>
         </button>
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-2xl font-bold text-mono-800">
           Chi tiết đơn hàng #{order.orderNumber || order._id.slice(-8)}
         </h1>
       </div>
@@ -166,7 +166,7 @@ const OrderDetailPage = () => {
       {/* Order Status */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-800">
+          <h2 className="text-xl font-bold text-mono-800">
             Trạng thái đơn hàng
           </h2>
           <span
@@ -197,7 +197,7 @@ const OrderDetailPage = () => {
               <button
                 onClick={() => handleUpdateStatus("delivered")}
                 disabled={updating}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-mono-800 hover:bg-green-700 text-white rounded-lg font-medium disabled:opacity-50"
               >
                 <FaCheckCircle />
                 Giao thành công
@@ -205,7 +205,7 @@ const OrderDetailPage = () => {
               <button
                 onClick={() => handleUpdateStatus("delivery_failed")}
                 disabled={updating}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium disabled:opacity-50"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-mono-900 hover:bg-red-700 text-white rounded-lg font-medium disabled:opacity-50"
               >
                 <FaTimesCircle />
                 Giao thất bại
@@ -218,7 +218,7 @@ const OrderDetailPage = () => {
         {(order.status === "assigned_to_shipper" ||
           order.status === "out_for_delivery") && (
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Ghi chú (tùy chọn)
             </label>
             <textarea
@@ -226,7 +226,7 @@ const OrderDetailPage = () => {
               onChange={(e) =>
                 setFormData({ ...formData, note: e.target.value })
               }
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full border border-mono-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               rows={3}
               placeholder="Nhập ghi chú về đơn hàng..."
             />
@@ -236,36 +236,36 @@ const OrderDetailPage = () => {
 
       {/* Customer Info */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-          <FaUser className="text-blue-600" />
+        <h2 className="text-xl font-bold text-mono-800 mb-4 flex items-center gap-2">
+          <FaUser className="text-mono-black" />
           Thông tin khách hàng
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-600">Họ tên</p>
-            <p className="font-semibold text-gray-800">
+            <p className="text-sm text-mono-600">Họ tên</p>
+            <p className="font-semibold text-mono-800">
               {order.user?.name || "N/A"}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600 flex items-center gap-1">
+            <p className="text-sm text-mono-600 flex items-center gap-1">
               <FaPhone size={12} />
               Số điện thoại
             </p>
-            <p className="font-semibold text-gray-800">
+            <p className="font-semibold text-mono-800">
               {order.user?.phone || order.shippingAddress?.phone || "N/A"}
             </p>
           </div>
           <div className="md:col-span-2">
-            <p className="text-sm text-gray-600 flex items-center gap-1">
-              <FaMapMarkerAlt className="text-red-500" size={12} />
+            <p className="text-sm text-mono-600 flex items-center gap-1">
+              <FaMapMarkerAlt className="text-mono-800" size={12} />
               Địa chỉ giao hàng
             </p>
-            <p className="font-semibold text-gray-800">
+            <p className="font-semibold text-mono-800">
               {order.shippingAddress?.address || "N/A"}
             </p>
             {order.shippingAddress?.ward && (
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-mono-600">
                 {order.shippingAddress.ward}, {order.shippingAddress.district},{" "}
                 {order.shippingAddress.province}
               </p>
@@ -276,14 +276,14 @@ const OrderDetailPage = () => {
 
       {/* Order Items */}
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">
+        <h2 className="text-xl font-bold text-mono-800 mb-4">
           Sản phẩm ({order.items?.length || 0})
         </h2>
         <div className="space-y-4">
           {order.items?.map((item: any, index: number) => (
             <div
               key={index}
-              className="flex items-center gap-4 border-b border-gray-200 pb-4 last:border-0"
+              className="flex items-center gap-4 border-b border-mono-200 pb-4 last:border-0"
             >
               {item.variant?.images?.[0] && (
                 <img
@@ -293,22 +293,22 @@ const OrderDetailPage = () => {
                 />
               )}
               <div className="flex-1">
-                <p className="font-semibold text-gray-800">
+                <p className="font-semibold text-mono-800">
                   {item.product?.name || "N/A"}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-mono-600">
                   Màu: {item.variant?.color?.name || "N/A"} | Size:{" "}
                   {item.size?.value || "N/A"}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-mono-600">
                   Số lượng: {item.quantity}
                 </p>
               </div>
               <div className="text-right">
-                <p className="font-bold text-blue-600">
+                <p className="font-bold text-mono-black">
                   {item.finalPrice?.toLocaleString("vi-VN")}₫
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-mono-500">
                   x{item.quantity} ={" "}
                   {(item.finalPrice * item.quantity).toLocaleString("vi-VN")}₫
                 </p>
@@ -318,25 +318,25 @@ const OrderDetailPage = () => {
         </div>
 
         {/* Order Summary */}
-        <div className="mt-6 pt-6 border-t border-gray-200">
+        <div className="mt-6 pt-6 border-t border-mono-200">
           <div className="space-y-2">
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-mono-600">
               <span>Tạm tính</span>
               <span>{order.subtotal?.toLocaleString("vi-VN")}₫</span>
             </div>
             {order.discount > 0 && (
-              <div className="flex justify-between text-green-600">
+              <div className="flex justify-between text-mono-800">
                 <span>Giảm giá</span>
                 <span>-{order.discount?.toLocaleString("vi-VN")}₫</span>
               </div>
             )}
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-mono-600">
               <span>Phí vận chuyển</span>
               <span>{order.shippingFee?.toLocaleString("vi-VN")}₫</span>
             </div>
-            <div className="flex justify-between text-xl font-bold text-gray-800 pt-2 border-t">
+            <div className="flex justify-between text-xl font-bold text-mono-800 pt-2 border-t">
               <span>Tổng cộng</span>
-              <span className="text-blue-600">
+              <span className="text-mono-black">
                 {order.finalTotal?.toLocaleString("vi-VN")}₫
               </span>
             </div>
@@ -347,20 +347,20 @@ const OrderDetailPage = () => {
       {/* Delivery History */}
       {order.deliveryAttempts && order.deliveryAttempts.length > 0 && (
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
+          <h2 className="text-xl font-bold text-mono-800 mb-4">
             Lịch sử giao hàng
           </h2>
           <div className="space-y-3">
             {order.deliveryAttempts.map((attempt: any, index: number) => (
-              <div key={index} className="border-l-4 border-blue-500 pl-4 py-2">
-                <p className="font-semibold text-gray-800">
+              <div key={index} className="border-l-4 border-mono-500 pl-4 py-2">
+                <p className="font-semibold text-mono-800">
                   Lần {attempt.attemptNumber}: {getStatusLabel(attempt.status)}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-mono-600">
                   {new Date(attempt.timestamp).toLocaleString("vi-VN")}
                 </p>
                 {attempt.note && (
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-mono-600 mt-1">
                     Ghi chú: {attempt.note}
                   </p>
                 )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+﻿import React, { useState, useEffect, useRef } from "react";
 import { BiSearch } from "react-icons/bi";
 import {
   AiOutlineShoppingCart,
@@ -99,7 +99,7 @@ const MainNavbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between px-12 py-4 shadow-xl sticky top-0 bg-white z-50">
+    <nav className="flex items-center justify-between px-12 py-4 shadow-luxury sticky top-0 bg-white z-50 border-b border-mono-100">
       {/* logo */}
       <div className="h-10 flex items-center">
         <Link to="/">
@@ -108,6 +108,7 @@ const MainNavbar = () => {
               fontFamily: "'Lobster', cursive",
               fontSize: "3rem",
               color: "black",
+              letterSpacing: "-0.02em",
             }}
             className="text-2xl"
           >
@@ -121,7 +122,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?sort=newest"
-            className="hover:text-blue-600 transition-colors font-medium"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight"
           >
             SẢN PHẨM MỚI
           </Link>
@@ -129,7 +130,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?sort=popular"
-            className="hover:text-blue-600 transition-colors font-medium"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight"
           >
             SẢN PHẨM PHỔ BIẾN
           </Link>
@@ -137,7 +138,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?gender=male"
-            className="hover:text-blue-600 transition-colors font-medium"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight"
           >
             GIÀY NAM
           </Link>
@@ -145,7 +146,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?gender=female"
-            className="hover:text-blue-600 transition-colors font-medium"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight"
           >
             GIÀY NỮ
           </Link>
@@ -158,7 +159,7 @@ const MainNavbar = () => {
           <input
             type="text"
             placeholder="Tìm kiếm sản phẩm, thương hiệu..."
-            className="border border-gray-300 p-2 px-5 rounded-3xl w-full pr-10 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            className="border border-mono-300 p-2 px-5 rounded-3xl w-full pr-10 focus:outline-none focus:border-mono-500 focus:ring-1 focus:ring-mono-500"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => {
@@ -169,18 +170,18 @@ const MainNavbar = () => {
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 hover:text-blue-600 transition-colors"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1 hover:text-mono-black transition-colors"
           >
-            <BiSearch className="text-gray-500" />
+            <BiSearch className="text-mono-500" />
           </button>
         </form>
 
         {/* Search suggestions dropdown */}
         {showSuggestions && (suggestions.length > 0 || loading) && (
-          <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-96 overflow-y-auto z-50">
+          <div className="absolute top-full left-0 right-0 bg-white border border-mono-200 rounded-lg shadow-lg mt-1 max-h-96 overflow-y-auto z-50">
             {loading ? (
-              <div className="p-4 text-center text-gray-500">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
+              <div className="p-4 text-center text-mono-500">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-mono-500 mx-auto"></div>
                 <span className="mt-2 block">Đang tìm kiếm...</span>
               </div>
             ) : (
@@ -189,10 +190,10 @@ const MainNavbar = () => {
                   <li key={`${suggestion.type}-${suggestion.id}-${index}`}>
                     <button
                       onClick={() => handleSuggestionClick(suggestion)}
-                      className="w-full px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-left transition-colors"
+                      className="w-full px-4 py-3 hover:bg-mono-50 flex items-center gap-3 text-left transition-colors"
                     >
                       {/* Suggestion image */}
-                      <div className="w-10 h-10 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
+                      <div className="w-10 h-10 bg-mono-100 rounded-md overflow-hidden flex-shrink-0">
                         <img
                           src={getSuggestionImage(suggestion)}
                           alt={suggestion.name}
@@ -206,10 +207,10 @@ const MainNavbar = () => {
 
                       {/* Suggestion content */}
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-gray-900 truncate">
+                        <div className="font-medium text-mono-900 truncate">
                           {suggestion.name}
                         </div>
-                        <div className="text-sm text-gray-500 capitalize">
+                        <div className="text-sm text-mono-500 capitalize">
                           {suggestion.type === "product" && "Sản phẩm"}
                           {suggestion.type === "category" && "Danh mục"}
                           {suggestion.type === "brand" && "Thương hiệu"}
@@ -220,7 +221,7 @@ const MainNavbar = () => {
                 ))}
 
                 {/* Show all results option */}
-                <li className="border-t border-gray-100">
+                <li className="border-t border-mono-100">
                   <button
                     onClick={() => {
                       navigate(
@@ -229,7 +230,7 @@ const MainNavbar = () => {
                       setShowSuggestions(false);
                       setSearchQuery("");
                     }}
-                    className="w-full px-4 py-3 hover:bg-gray-50 text-left transition-colors text-blue-600 font-medium"
+                    className="w-full px-4 py-3 hover:bg-mono-50 text-left transition-colors text-mono-black font-medium"
                   >
                     Xem tất cả kết quả cho "{searchQuery}"
                   </button>
@@ -245,9 +246,9 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/cart"
-            className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
           >
-            <AiOutlineShoppingCart className="text-2xl text-gray-700 hover:text-blue-600 transition" />
+            <AiOutlineShoppingCart className="text-2xl text-mono-700 hover:text-mono-black transition" />
           </Link>
         </li>
 
@@ -255,9 +256,9 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/user-information"
-            className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
           >
-            <AiOutlineUser className="text-2xl text-gray-700 hover:text-red-500 transition" />
+            <AiOutlineUser className="text-2xl text-mono-700 hover:text-mono-800 transition" />
           </Link>
         </li>
         {/* Dashboard/Admin Panel - Hiển thị cho cả admin và staff */}
@@ -267,9 +268,9 @@ const MainNavbar = () => {
               to={
                 user?.role === "admin" ? "/admin/dashboard" : "/admin/products"
               }
-              className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
             >
-              <AiOutlineDashboard className="text-2xl text-gray-700 hover:text-green-500 transition" />
+              <AiOutlineDashboard className="text-2xl text-mono-700 hover:text-mono-700 transition" />
             </Link>
           </li>
         )}

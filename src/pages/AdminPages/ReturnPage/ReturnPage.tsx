@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { FaBox, FaCheckCircle, FaTimesCircle, FaClock } from "react-icons/fa";
 import ReturnService from "../../../services/ReturnService";
 import type { ReturnRequest } from "../../../types/return";
@@ -104,7 +104,7 @@ const ReturnPage = () => {
         icon: FaClock,
       },
       approved: {
-        color: "bg-blue-100 text-blue-800",
+        color: "bg-mono-100 text-blue-800",
         label: "Đã duyệt",
         icon: FaCheckCircle,
       },
@@ -124,7 +124,7 @@ const ReturnPage = () => {
         icon: FaCheckCircle,
       },
       cancelled: {
-        color: "bg-gray-100 text-gray-800",
+        color: "bg-mono-100 text-mono-800",
         label: "Đã hủy",
         icon: FaTimesCircle,
       },
@@ -147,7 +147,7 @@ const ReturnPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Quản lý Đổi trả</h1>
+        <h1 className="text-3xl font-bold text-mono-800">Quản lý Đổi trả</h1>
       </div>
 
       {/* Stats Cards */}
@@ -156,19 +156,19 @@ const ReturnPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Tổng yêu cầu</p>
-                <p className="text-2xl font-bold text-gray-800">
+                <p className="text-mono-500 text-sm">Tổng yêu cầu</p>
+                <p className="text-2xl font-bold text-mono-800">
                   {stats.totalRequests}
                 </p>
               </div>
-              <FaBox className="text-blue-500" size={40} />
+              <FaBox className="text-mono-500" size={40} />
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Chờ duyệt</p>
+                <p className="text-mono-500 text-sm">Chờ duyệt</p>
                 <p className="text-2xl font-bold text-yellow-600">
                   {stats.pendingRequests}
                 </p>
@@ -180,24 +180,24 @@ const ReturnPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Đã hoàn thành</p>
-                <p className="text-2xl font-bold text-green-600">
+                <p className="text-mono-500 text-sm">Đã hoàn thành</p>
+                <p className="text-2xl font-bold text-mono-800">
                   {stats.completedRequests}
                 </p>
               </div>
-              <FaCheckCircle className="text-green-500" size={40} />
+              <FaCheckCircle className="text-mono-700" size={40} />
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 text-sm">Từ chối</p>
-                <p className="text-2xl font-bold text-red-600">
+                <p className="text-mono-500 text-sm">Từ chối</p>
+                <p className="text-2xl font-bold text-mono-900">
                   {stats.rejectedRequests}
                 </p>
               </div>
-              <FaTimesCircle className="text-red-500" size={40} />
+              <FaTimesCircle className="text-mono-800" size={40} />
             </div>
           </div>
         </div>
@@ -234,27 +234,27 @@ const ReturnPage = () => {
       {/* Returns Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+          <thead className="bg-mono-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Mã yêu cầu
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Khách hàng
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Loại
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Số lượng SP
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Trạng thái
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Ngày tạo
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Hành động
               </th>
             </tr>
@@ -262,29 +262,29 @@ const ReturnPage = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {loading ? (
               <tr>
-                <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={7} className="px-6 py-4 text-center text-mono-500">
                   Đang tải...
                 </td>
               </tr>
             ) : returns.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={7} className="px-6 py-4 text-center text-mono-500">
                   Không có dữ liệu
                 </td>
               </tr>
             ) : (
               returns.map((returnRequest) => (
-                <tr key={returnRequest._id} className="hover:bg-gray-50">
+                <tr key={returnRequest._id} className="hover:bg-mono-50">
                   <td className="px-6 py-4">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-mono-900">
                       #{returnRequest._id.slice(-8)}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-mono-900">
                       {returnRequest.customer?.name || "N/A"}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-mono-500">
                       {returnRequest.customer?.email || ""}
                     </div>
                   </td>
@@ -293,7 +293,7 @@ const ReturnPage = () => {
                       className={`px-2 py-1 text-xs font-semibold rounded ${
                         returnRequest.type === "RETURN"
                           ? "bg-orange-100 text-orange-800"
-                          : "bg-blue-100 text-blue-800"
+                          : "bg-mono-100 text-blue-800"
                       }`}
                     >
                       {returnRequest.type === "RETURN"
@@ -302,7 +302,7 @@ const ReturnPage = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-mono-900">
                       {returnRequest.items.length}
                     </div>
                   </td>
@@ -310,7 +310,7 @@ const ReturnPage = () => {
                     {getStatusBadge(returnRequest.status)}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">
+                    <div className="text-sm text-mono-900">
                       {new Date(returnRequest.createdAt).toLocaleDateString(
                         "vi-VN"
                       )}
@@ -319,7 +319,7 @@ const ReturnPage = () => {
                   <td className="px-6 py-4 text-sm space-x-2">
                     <button
                       onClick={() => handleViewDetail(returnRequest)}
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-mono-black hover:text-blue-800"
                     >
                       Chi tiết
                     </button>
@@ -327,13 +327,13 @@ const ReturnPage = () => {
                       <>
                         <button
                           onClick={() => handleApprove(returnRequest)}
-                          className="text-green-600 hover:text-green-800"
+                          className="text-mono-800 hover:text-green-800"
                         >
                           Duyệt
                         </button>
                         <button
                           onClick={() => handleReject(returnRequest)}
-                          className="text-red-600 hover:text-red-800"
+                          className="text-mono-900 hover:text-red-800"
                         >
                           Từ chối
                         </button>
@@ -361,7 +361,7 @@ const ReturnPage = () => {
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            className="px-4 py-2 bg-mono-200 rounded disabled:opacity-50"
           >
             Trước
           </button>
@@ -371,7 +371,7 @@ const ReturnPage = () => {
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+            className="px-4 py-2 bg-mono-200 rounded disabled:opacity-50"
           >
             Sau
           </button>

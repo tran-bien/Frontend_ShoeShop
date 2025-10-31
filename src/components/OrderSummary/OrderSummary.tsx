@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { userOrderService } from "../../services/OrderService";
@@ -191,20 +191,20 @@ const OrderSummary: React.FC = () => {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center py-12">
-          <FaSpinner className="animate-spin text-4xl text-blue-500 mx-auto mb-4" />
-          <p className="text-gray-600">Đang tải thông tin đơn hàng...</p>
+          <FaSpinner className="animate-spin text-4xl text-mono-500 mx-auto mb-4" />
+          <p className="text-mono-600">Đang tải thông tin đơn hàng...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gray-50 min-h-screen">
+    <div className="max-w-6xl mx-auto p-6 bg-mono-50 min-h-screen">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+        <div className="bg-gradient-to-r from-mono-black to-blue-700 text-white p-6">
           <h1 className="text-2xl font-bold">Xác nhận đơn hàng</h1>
-          <p className="text-blue-100 mt-1">
+          <p className="text-mono-100 mt-1">
             Vui lòng kiểm tra thông tin trước khi đặt hàng
           </p>
         </div>
@@ -213,9 +213,9 @@ const OrderSummary: React.FC = () => {
           {/* Cột trái - Thông tin đơn hàng */}
           <div className="lg:col-span-2 space-y-6">
             {/* Danh sách sản phẩm */}
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
-                <FaCreditCard className="mr-2 text-blue-600" />
+                <FaCreditCard className="mr-2 text-mono-black" />
                 Sản phẩm đã chọn ({selectedItems.length} sản phẩm)
               </h3>
               <div className="space-y-3 max-h-60 overflow-y-auto">
@@ -233,14 +233,14 @@ const OrderSummary: React.FC = () => {
                       <h4 className="font-medium text-sm">
                         {item.productName}
                       </h4>
-                      <div className="flex items-center space-x-4 text-xs text-gray-600 mt-1">
+                      <div className="flex items-center space-x-4 text-xs text-mono-600 mt-1">
                         <span>Màu: {item.variant.color.name}</span>
                         <span>Size: {item.size.value}</span>
                         <span>SL: {item.quantity}</span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-blue-600">
+                      <p className="font-semibold text-mono-black">
                         {(item.price * item.quantity).toLocaleString()}đ
                       </p>
                     </div>
@@ -250,20 +250,20 @@ const OrderSummary: React.FC = () => {
             </div>
 
             {/* Địa chỉ giao hàng */}
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
-                <FaMapMarkerAlt className="mr-2 text-red-600" />
+                <FaMapMarkerAlt className="mr-2 text-mono-900" />
                 Địa chỉ giao hàng
               </h3>
               {addresses.length === 0 ? (
-                <div className="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg">
+                <div className="text-center py-6 border-2 border-dashed border-mono-300 rounded-lg">
                   <FaExclamationTriangle className="text-yellow-500 text-3xl mx-auto mb-2" />
-                  <p className="text-gray-600 mb-3">
+                  <p className="text-mono-600 mb-3">
                     Bạn chưa có địa chỉ giao hàng
                   </p>
                   <Link
                     to="/user-information"
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     <FaPlus className="mr-2" />
                     Thêm địa chỉ
@@ -272,7 +272,7 @@ const OrderSummary: React.FC = () => {
               ) : (
                 <div className="space-y-3">
                   <select
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full border border-mono-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                     value={addressId}
                     onChange={(e) => setAddressId(e.target.value)}
                   >
@@ -287,7 +287,7 @@ const OrderSummary: React.FC = () => {
                   </select>
                   <Link
                     to="/user-information"
-                    className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm"
+                    className="inline-flex items-center text-mono-black hover:text-blue-800 text-sm"
                   >
                     <FaPlus className="mr-1" />
                     Thêm địa chỉ mới
@@ -297,9 +297,9 @@ const OrderSummary: React.FC = () => {
             </div>
 
             {/* Phương thức thanh toán */}
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
-                <FaCreditCard className="mr-2 text-green-600" />
+                <FaCreditCard className="mr-2 text-mono-800" />
                 Phương thức thanh toán
               </h3>
               <div className="space-y-3">
@@ -310,7 +310,7 @@ const OrderSummary: React.FC = () => {
                     value="COD"
                     checked={paymentMethod === "COD"}
                     onChange={() => setPaymentMethod("COD")}
-                    className="text-blue-600 focus:ring-blue-500"
+                    className="text-mono-black focus:ring-mono-500"
                   />
                   <span>Thanh toán khi nhận hàng (COD)</span>
                 </label>
@@ -321,7 +321,7 @@ const OrderSummary: React.FC = () => {
                     value="VNPAY"
                     checked={paymentMethod === "VNPAY"}
                     onChange={() => setPaymentMethod("VNPAY")}
-                    className="text-blue-600 focus:ring-blue-500"
+                    className="text-mono-black focus:ring-mono-500"
                   />
                   <span>Thanh toán online (VNPAY)</span>
                 </label>
@@ -329,13 +329,13 @@ const OrderSummary: React.FC = () => {
             </div>
 
             {/* Ghi chú */}
-            <div className="bg-gray-50 rounded-lg p-4">
+            <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
                 <FaStickyNote className="mr-2 text-yellow-600" />
                 Ghi chú đơn hàng
               </h3>
               <textarea
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-mono-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                 rows={3}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
@@ -346,11 +346,11 @@ const OrderSummary: React.FC = () => {
 
           {/* Cột phải - Tóm tắt đơn hàng */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-50 rounded-lg p-4 sticky top-6">
+            <div className="bg-mono-50 rounded-lg p-4 sticky top-6">
               <h3 className="font-semibold text-lg mb-4">Tóm tắt đơn hàng</h3>
 
               {/* Mã giảm giá */}
-              <div className="mb-4 p-3 border border-gray-200 rounded-lg bg-white">
+              <div className="mb-4 p-3 border border-mono-200 rounded-lg bg-white">
                 <h4 className="font-medium mb-2 flex items-center">
                   <FaPercent className="mr-2 text-orange-600" />
                   Mã giảm giá
@@ -358,7 +358,7 @@ const OrderSummary: React.FC = () => {
                 <div className="flex space-x-2">
                   <input
                     type="text"
-                    className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="flex-1 border border-mono-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                     value={couponCode}
                     onChange={(e) => setCouponCode(e.target.value)}
                     placeholder="Nhập mã giảm giá"
@@ -386,7 +386,7 @@ const OrderSummary: React.FC = () => {
                     <span>{previewData.subTotal.toLocaleString()}đ</span>
                   </div>
                   {previewData.discount > 0 && (
-                    <div className="flex justify-between text-sm text-green-600">
+                    <div className="flex justify-between text-sm text-mono-800">
                       <span>Giảm giá:</span>
                       <span>-{previewData.discount.toLocaleString()}đ</span>
                     </div>
@@ -399,10 +399,10 @@ const OrderSummary: React.FC = () => {
                         : "Miễn phí"}
                     </span>
                   </div>
-                  <hr className="border-gray-300" />
+                  <hr className="border-mono-300" />
                   <div className="flex justify-between font-semibold text-lg">
                     <span>Tổng cộng:</span>
-                    <span className="text-red-600">
+                    <span className="text-mono-900">
                       {previewData.totalPrice.toLocaleString()}đ
                     </span>
                   </div>
@@ -413,7 +413,7 @@ const OrderSummary: React.FC = () => {
               <button
                 onClick={handleOrder}
                 disabled={loading || !addressId || selectedItems.length === 0}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-3 rounded-lg text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-gradient-to-r from-mono-black to-blue-700 text-white font-bold py-3 rounded-lg text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? (
                   <>
@@ -426,7 +426,7 @@ const OrderSummary: React.FC = () => {
               </button>
 
               {paymentMethod === "VNPAY" && (
-                <p className="text-xs text-gray-600 mt-2 text-center">
+                <p className="text-xs text-mono-600 mt-2 text-center">
                   Bạn sẽ được chuyển đến trang thanh toán VNPAY
                 </p>
               )}

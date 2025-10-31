@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { brandApi } from "../../../services/BrandService";
 
 interface AddBrandProps {
@@ -37,12 +37,12 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-300 bg-opacity-75 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md relative text-black">
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
+          className="absolute top-2 right-2 text-mono-500 hover:text-mono-700 text-2xl"
         >
           &times;
         </button>
@@ -58,7 +58,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
           </div>
           <div>
@@ -70,15 +70,15 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
               value={formData.description}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
           </div>
-          {error && <div className="text-red-500 text-sm">{error}</div>}
+          {error && <div className="text-mono-800 text-sm">{error}</div>}
           <div className="flex justify-end">
             <button
               type="submit"
               disabled={loading}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+              className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
               {loading ? "Đang thêm..." : "Thêm"}
             </button>
