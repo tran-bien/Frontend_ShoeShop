@@ -1,35 +1,68 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
+import type { Variant, VariantQueryParams } from "../types/variant";
+import { ApiResponse } from "../types/api";
 
-export const variantApi = {
+// Admin Variant Service
+export const adminVariantService = {
   // Lấy danh sách tất cả variant
-  getAllVariants: (params?: Record<string, string | number | boolean>) =>
+  getAllVariants: (
+    params?: VariantQueryParams
+  ): Promise<{ data: ApiResponse<Variant[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/variants", { params }),
 
   // Lấy danh sách variant đã xóa
-  getDeletedVariants: (params?: Record<string, string | number | boolean>) =>
+  getDeletedVariants: (
+    params?: VariantQueryParams
+  ): Promise<{ data: ApiResponse<Variant[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/variants/deleted", { params }),
 
+  // Lấy variant theo ID
+  getVariantById: (
+    variantId: string
+  ): Promise<{ data: ApiResponse<Variant> }> =>
+    axiosInstanceAuth.get(`/api/v1/admin/variants/${variantId}`),
+
   // Thêm variant mới
-  createVariant: (data: any) =>
+  createVariant: (data: {
+    product: string;
+    color: string;
+    images: Array<{ url: string; public_id: string }>;
+    sizes: Array<{ size: string; price: number; quantity: number }>;
+    isActive?: boolean;
+  }): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.post("/api/v1/admin/variants", data),
 
   // Cập nhật variant
-  updateVariant: (variantId: string, data: any) =>
+  updateVariant: (
+    variantId: string,
+    data: {
+      color?: string;
+      images?: Array<{ url: string; public_id: string }>;
+      sizes?: Array<{ size: string; price: number; quantity: number }>;
+      isActive?: boolean;
+    }
+  ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/variants/${variantId}`, data),
 
   // Xóa mềm variant
-  deleteVariant: (variantId: string) =>
+  deleteVariant: (variantId: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/variants/${variantId}`),
 
   // Khôi phục variant đã xóa
-  restoreVariant: (variantId: string) =>
+  restoreVariant: (
+    variantId: string
+  ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.post(`/api/v1/admin/variants/${variantId}/restore`),
+
   // Chỉnh sửa trạng thái isActive
-  updateStatus: (variantId: string, isActive: boolean) =>
+  updateStatus: (
+    variantId: string,
+    isActive: boolean
+  ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/variants/${variantId}/status`, {
       isActive,
     }),
-  // Lấy variant theo ID
-  getVariantById: (variantId: string) =>
-    axiosInstanceAuth.get(`/api/v1/admin/variants/${variantId}`),
 };
+
+// Backward compatibility
+export const variantApi = { ...adminVariantService };

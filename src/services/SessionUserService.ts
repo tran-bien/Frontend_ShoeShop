@@ -1,26 +1,87 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
+import type {
+  User,
+  UserQueryParams,
+  UsersResponse,
+  UserDetailResponse,
+  BlockUserData,
+} from "../types/user";
+import type { Session } from "../types/session";
+import type { ApiResponse } from "../types/api";
 
-export const sessionUserApi = {
+// Re-export types for convenience
+export type { UserQueryParams, BlockUserData };
+
+// =======================
+// RESPONSE TYPES
+// =======================
+
+export interface SessionsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    sessions: Session[];
+    pagination?: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  };
+}
+
+// =======================
+// ADMIN USER SERVICE
+// =======================
+
+export const adminUserService = {
   // Lấy danh sách user
-  getAllUsers: () => axiosInstanceAuth.get("/api/v1/admin/users"),
+  getAllUsers: (params?: UserQueryParams): Promise<{ data: UsersResponse }> =>
+    axiosInstanceAuth.get("/api/v1/admin/users", { params }),
 
   // Lấy chi tiết user theo id
-  getUserById: (userId: string) =>
+  getUserById: (userId: string): Promise<{ data: UserDetailResponse }> =>
     axiosInstanceAuth.get(`/api/v1/admin/users/${userId}`),
 
+  // Khóa hoặc mở khóa tài khoản user
+  blockUser: (
+    userId: string,
+    data: BlockUserData
+  ): Promise<{ data: ApiResponse<User> }> =>
+    axiosInstanceAuth.put(`/api/v1/admin/users/${userId}/block`, data),
+};
+
+// =======================
+// ADMIN SESSION SERVICE
+// =======================
+
+export const adminSessionService = {
   // Lấy danh sách session đăng nhập
-  getAllSessions: () => axiosInstanceAuth.get("/api/v1/admin/auth/sessions"),
+  getAllSessions: (): Promise<{ data: SessionsResponse }> =>
+    axiosInstanceAuth.get("/api/v1/admin/auth/sessions"),
 
   // Đăng xuất (xóa session) theo userId
-  logoutUser: (userId: string) =>
+  logoutUser: (userId: string): Promise<{ data: ApiResponse<null> }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/auth/logout/${userId}`),
+};
 
-  // Khóa hoặc mở khóa tài khoản user
+// =======================
+// LEGACY EXPORTS (Backward Compatibility)
+// =======================
+
+export const sessionUserApi = {
+  getAllUsers: adminUserService.getAllUsers,
+  getUserById: adminUserService.getUserById,
+  getAllSessions: adminSessionService.getAllSessions,
+  logoutUser: adminSessionService.logoutUser,
   blockUser: (userId: string, isBlock: boolean, reason?: string) =>
-    axiosInstanceAuth.put(
-      `/api/v1/admin/users/${userId}/block`,
-      isBlock
-        ? { isBlock: true, reason: reason || "Bị khóa bởi admin" }
-        : { isBlock: false }
-    ),
+    adminUserService.blockUser(userId, {
+      isBlock,
+      reason: isBlock ? reason || "Bị khóa bởi admin" : undefined,
+    }),
+};
+
+export default {
+  user: adminUserService,
+  session: adminSessionService,
 };

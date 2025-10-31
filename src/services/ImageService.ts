@@ -1,77 +1,168 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
+import type {
+  ImageOrder,
+  UploadImageResponse,
+  DeleteImageResponse,
+  ReorderImageResponse,
+  SetMainImageResponse,
+} from "../types/image";
 
-// Upload logo cho brand
-export const uploadBrandLogo = (brandId: string, formData: FormData) =>
-  axiosInstanceAuth.post(
-    `/api/v1/admin/images/brand/${brandId}/logo`,
-    formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" },
-    }
-  );
+// Re-export types for convenience
+export type { ImageOrder };
 
-// Xóa logo brand
-export const removeBrandLogo = (brandId: string) =>
-  axiosInstanceAuth.delete(`/api/v1/admin/images/brand/${brandId}/logo`);
+// =======================
+// BRAND IMAGE SERVICE
+// =======================
 
-// Upload ảnh cho product
-export const uploadProductImages = (productId: string, formData: FormData) =>
-  axiosInstanceAuth.post(
-    `/api/v1/admin/images/product/${productId}`,
-    formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" },
-    }
-  );
+export const brandImageService = {
+  // Upload logo cho brand
+  uploadLogo: (
+    brandId: string,
+    formData: FormData
+  ): Promise<{ data: UploadImageResponse }> =>
+    axiosInstanceAuth.post(
+      `/api/v1/admin/images/brand/${brandId}/logo`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
 
-// Xóa ảnh product (body: { imageIds: string[] })
-export const removeProductImages = (productId: string, imageIds: string[]) =>
-  axiosInstanceAuth.delete(`/api/v1/admin/images/product/${productId}`, {
-    data: { imageIds },
-  });
+  // Xóa logo brand
+  removeLogo: (brandId: string): Promise<{ data: DeleteImageResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/admin/images/brand/${brandId}/logo`),
+};
 
-// Upload ảnh cho variant
-export const uploadVariantImages = (variantId: string, formData: FormData) =>
-  axiosInstanceAuth.post(
-    `/api/v1/admin/images/variant/${variantId}`,
-    formData,
-    {
-      headers: { "Content-Type": "multipart/form-data" },
-    }
-  );
+// =======================
+// PRODUCT IMAGE SERVICE
+// =======================
 
-// Xóa ảnh variant (body: { imageIds: string[] })
-export const removeVariantImages = (variantId: string, imageIds: string[]) =>
-  axiosInstanceAuth.delete(`/api/v1/admin/images/variant/${variantId}`, {
-    data: { imageIds },
-  });
+export const productImageService = {
+  // Upload ảnh cho product
+  uploadImages: (
+    productId: string,
+    formData: FormData
+  ): Promise<{ data: UploadImageResponse }> =>
+    axiosInstanceAuth.post(
+      `/api/v1/admin/images/product/${productId}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
 
-// Sắp xếp ảnh product (body: { imageOrders: { _id: string, displayOrder: number }[] })
-export const reorderProductImages = (productId: string, imageOrders: any[]) =>
-  axiosInstanceAuth.put(`/api/v1/admin/images/product/${productId}/reorder`, {
-    imageOrders,
-  });
+  // Xóa ảnh product
+  removeImages: (
+    productId: string,
+    imageIds: string[]
+  ): Promise<{ data: DeleteImageResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/admin/images/product/${productId}`, {
+      data: { imageIds },
+    }),
 
-// Sắp xếp ảnh variant (body: { imageOrders: { _id: string, displayOrder: number }[] })
-export const reorderVariantImages = (variantId: string, imageOrders: any[]) =>
-  axiosInstanceAuth.put(`/api/v1/admin/images/variant/${variantId}/reorder`, {
-    imageOrders,
-  });
+  // Sắp xếp ảnh product
+  reorderImages: (
+    productId: string,
+    imageOrders: ImageOrder[]
+  ): Promise<{ data: ReorderImageResponse }> =>
+    axiosInstanceAuth.put(`/api/v1/admin/images/product/${productId}/reorder`, {
+      imageOrders,
+    }),
 
-// Đặt ảnh chính cho product (body: { imageId: string })
-export const setProductMainImage = (productId: string, imageId: string) =>
-  axiosInstanceAuth.put(`/api/v1/admin/images/product/${productId}/set-main`, {
-    imageId,
-  });
+  // Đặt ảnh chính cho product
+  setMainImage: (
+    productId: string,
+    imageId: string
+  ): Promise<{ data: SetMainImageResponse }> =>
+    axiosInstanceAuth.put(
+      `/api/v1/admin/images/product/${productId}/set-main`,
+      {
+        imageId,
+      }
+    ),
+};
 
-// Đặt ảnh chính cho variant (body: { imageId: string })
-export const setVariantMainImage = (variantId: string, imageId: string) =>
-  axiosInstanceAuth.put(`/api/v1/admin/images/variant/${variantId}/set-main`, {
-    imageId,
-  });
+// =======================
+// VARIANT IMAGE SERVICE
+// =======================
 
-// Xóa ảnh trực tiếp từ Cloudinary (body: { publicIds: string[] })
-export const deleteFromCloudinary = (publicIds: string[]) =>
-  axiosInstanceAuth.delete(`/api/v1/admin/images/cloudinary`, {
-    data: { publicIds },
-  });
+export const variantImageService = {
+  // Upload ảnh cho variant
+  uploadImages: (
+    variantId: string,
+    formData: FormData
+  ): Promise<{ data: UploadImageResponse }> =>
+    axiosInstanceAuth.post(
+      `/api/v1/admin/images/variant/${variantId}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
+
+  // Xóa ảnh variant
+  removeImages: (
+    variantId: string,
+    imageIds: string[]
+  ): Promise<{ data: DeleteImageResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/admin/images/variant/${variantId}`, {
+      data: { imageIds },
+    }),
+
+  // Sắp xếp ảnh variant
+  reorderImages: (
+    variantId: string,
+    imageOrders: ImageOrder[]
+  ): Promise<{ data: ReorderImageResponse }> =>
+    axiosInstanceAuth.put(`/api/v1/admin/images/variant/${variantId}/reorder`, {
+      imageOrders,
+    }),
+
+  // Đặt ảnh chính cho variant
+  setMainImage: (
+    variantId: string,
+    imageId: string
+  ): Promise<{ data: SetMainImageResponse }> =>
+    axiosInstanceAuth.put(
+      `/api/v1/admin/images/variant/${variantId}/set-main`,
+      {
+        imageId,
+      }
+    ),
+};
+
+// =======================
+// CLOUDINARY SERVICE
+// =======================
+
+export const cloudinaryService = {
+  // Xóa ảnh trực tiếp từ Cloudinary
+  deleteImages: (publicIds: string[]): Promise<{ data: DeleteImageResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/admin/images/cloudinary`, {
+      data: { publicIds },
+    }),
+};
+
+// =======================
+// LEGACY EXPORTS (Backward Compatibility)
+// =======================
+
+export const uploadBrandLogo = brandImageService.uploadLogo;
+export const removeBrandLogo = brandImageService.removeLogo;
+export const uploadProductImages = productImageService.uploadImages;
+export const removeProductImages = productImageService.removeImages;
+export const reorderProductImages = productImageService.reorderImages;
+export const setProductMainImage = productImageService.setMainImage;
+export const uploadVariantImages = variantImageService.uploadImages;
+export const removeVariantImages = variantImageService.removeImages;
+export const reorderVariantImages = variantImageService.reorderImages;
+export const setVariantMainImage = variantImageService.setMainImage;
+export const deleteFromCloudinary = cloudinaryService.deleteImages;
+
+// Default export
+export default {
+  brand: brandImageService,
+  product: productImageService,
+  variant: variantImageService,
+  cloudinary: cloudinaryService,
+};

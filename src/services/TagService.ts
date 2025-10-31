@@ -1,52 +1,96 @@
 import { axiosInstanceAuth, axiosInstance } from "../utils/axiosIntance";
+import type { Tag, TagQueryParams } from "../types/tag";
+import { ApiResponse } from "../types/api";
 
-const API_PREFIX = "/api/v1/admin/tags";
-const PUBLIC_API_PREFIX = "/api/v1/tags";
-
-export const tagApi = {
-  // ========== ADMIN ENDPOINTS (Auth required) ==========
-
+// Admin Tag Service
+export const adminTagService = {
   // Lấy tất cả tags (Admin/Staff)
-  getAll: (params?: any) => axiosInstanceAuth.get(`${API_PREFIX}`, { params }),
+  getAll: (params?: TagQueryParams): Promise<{ data: ApiResponse<Tag[]> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/tags", { params }),
 
   // Lấy tags đã xóa mềm (Admin/Staff)
-  getDeleted: (params?: any) =>
-    axiosInstanceAuth.get(`${API_PREFIX}/deleted`, { params }),
+  getDeleted: (
+    params?: TagQueryParams
+  ): Promise<{ data: ApiResponse<Tag[]> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/tags/deleted", { params }),
 
   // Lấy chi tiết tag theo ID (Admin/Staff)
-  getById: (id: string) => axiosInstanceAuth.get(`${API_PREFIX}/${id}`),
+  getById: (id: string): Promise<{ data: ApiResponse<Tag> }> =>
+    axiosInstanceAuth.get(`/api/v1/admin/tags/${id}`),
 
   // Tạo mới tag (Admin/Staff)
-  create: (data: any) => axiosInstanceAuth.post(`${API_PREFIX}`, data),
+  create: (data: {
+    name: string;
+    type: "MATERIAL" | "USECASE" | "CUSTOM";
+    description?: string;
+    isActive?: boolean;
+  }): Promise<{ data: ApiResponse<Tag> }> =>
+    axiosInstanceAuth.post("/api/v1/admin/tags", data),
 
   // Cập nhật tag (Admin/Staff)
-  update: (id: string, data: any) =>
-    axiosInstanceAuth.put(`${API_PREFIX}/${id}`, data),
+  update: (
+    id: string,
+    data: {
+      name?: string;
+      type?: "MATERIAL" | "USECASE" | "CUSTOM";
+      description?: string;
+      isActive?: boolean;
+    }
+  ): Promise<{ data: ApiResponse<Tag> }> =>
+    axiosInstanceAuth.put(`/api/v1/admin/tags/${id}`, data),
 
   // Xóa mềm tag (Admin/Staff)
-  delete: (id: string) => axiosInstanceAuth.delete(`${API_PREFIX}/${id}`),
+  delete: (id: string): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/admin/tags/${id}`),
 
   // Khôi phục tag đã xóa mềm (Admin/Staff)
-  restore: (id: string) =>
-    axiosInstanceAuth.patch(`${API_PREFIX}/${id}/restore`),
+  restore: (id: string): Promise<{ data: ApiResponse<Tag> }> =>
+    axiosInstanceAuth.patch(`/api/v1/admin/tags/${id}/restore`),
 
   // Toggle status (Admin/Staff)
-  toggleStatus: (id: string, data: { isActive: boolean }) =>
-    axiosInstanceAuth.patch(`${API_PREFIX}/${id}/status`, data),
+  toggleStatus: (
+    id: string,
+    data: { isActive: boolean }
+  ): Promise<{ data: ApiResponse<Tag> }> =>
+    axiosInstanceAuth.patch(`/api/v1/admin/tags/${id}/status`, data),
+};
 
-  // ========== PUBLIC ENDPOINTS (No auth) ==========
-
+// Public Tag Service
+export const publicTagService = {
   // Lấy tất cả tags active (Public)
-  getActiveTags: (params?: any) =>
-    axiosInstance.get(`${PUBLIC_API_PREFIX}`, { params }),
+  getActiveTags: (
+    params?: TagQueryParams
+  ): Promise<{ data: ApiResponse<Tag[]> }> =>
+    axiosInstance.get("/api/v1/tags", { params }),
 
   // Lấy tags theo type (Public - MATERIAL/USECASE/CUSTOM)
-  getByType: (type: string, params?: any) =>
-    axiosInstance.get(`${PUBLIC_API_PREFIX}/type/${type}`, { params }),
+  getByType: (
+    type: string,
+    params?: TagQueryParams
+  ): Promise<{ data: ApiResponse<Tag[]> }> =>
+    axiosInstance.get(`/api/v1/tags/type/${type}`, { params }),
 
   // Lấy tag detail (Public - chỉ active)
-  getPublicById: (id: string) =>
-    axiosInstance.get(`${PUBLIC_API_PREFIX}/${id}`),
+  getPublicById: (id: string): Promise<{ data: ApiResponse<Tag> }> =>
+    axiosInstance.get(`/api/v1/tags/${id}`),
+};
+
+// Backward compatibility
+export const tagApi = {
+  // Admin API
+  getAll: adminTagService.getAll,
+  getDeleted: adminTagService.getDeleted,
+  getById: adminTagService.getById,
+  create: adminTagService.create,
+  update: adminTagService.update,
+  delete: adminTagService.delete,
+  restore: adminTagService.restore,
+  toggleStatus: adminTagService.toggleStatus,
+
+  // Public API
+  getActiveTags: publicTagService.getActiveTags,
+  getByType: publicTagService.getByType,
+  getPublicById: publicTagService.getPublicById,
 };
 
 export default tagApi;

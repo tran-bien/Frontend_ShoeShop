@@ -1,93 +1,76 @@
-import axios from "axios";
+import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type {
+  ShipperInfo,
   AssignOrderData,
   UpdateDeliveryStatusData,
   UpdateLocationData,
+  ShipperStatsResponse,
 } from "../types/shipper";
+import { ApiResponse } from "../types/api";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// Admin Shipper Service
+export const adminShipperService = {
+  // Lấy danh sách shipper
+  getShippers: (params?: {
+    available?: boolean;
+  }): Promise<{ data: ApiResponse<ShipperInfo[]> }> =>
+    axiosInstanceAuth.get("/api/v1/shipper/list", { params }),
 
-class ShipperService {
-  private getAuthHeader() {
-    const token = localStorage.getItem("token");
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }
+  // Phân công đơn hàng cho shipper
+  assignOrderToShipper: (
+    orderId: string,
+    data: AssignOrderData
+  ): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.post(`/api/v1/shipper/assign/${orderId}`, data),
 
-  // ADMIN APIs
-  async getShippers(available?: boolean) {
-    const params = available !== undefined ? { available } : {};
-    const response = await axios.get(`${API_URL}/shipper/list`, {
-      ...this.getAuthHeader(),
-      params,
-    });
-    return response.data;
-  }
+  // Lấy thống kê của shipper
+  getShipperStats: (
+    shipperId: string
+  ): Promise<{ data: ShipperStatsResponse }> =>
+    axiosInstanceAuth.get(`/api/v1/shipper/stats/${shipperId}`),
 
-  async assignOrderToShipper(orderId: string, data: AssignOrderData) {
-    const response = await axios.post(
-      `${API_URL}/shipper/assign/${orderId}`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+  // Lấy chi tiết shipper
+  getShipperDetail: (
+    shipperId: string
+  ): Promise<{ data: ApiResponse<ShipperInfo> }> =>
+    axiosInstanceAuth.get(`/api/v1/shipper/detail/${shipperId}`),
+};
 
-  async getShipperStats(shipperId: string) {
-    const response = await axios.get(
-      `${API_URL}/shipper/stats/${shipperId}`,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+// Shipper Service (for shipper role)
+export const shipperService = {
+  // Lấy danh sách đơn hàng của shipper
+  getMyOrders: (params?: { status?: string }): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.get("/api/v1/shipper/my-orders", { params }),
 
-  async getShipperDetail(shipperId: string) {
-    const response = await axios.get(
-      `${API_URL}/shipper/detail/${shipperId}`,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+  // Cập nhật trạng thái giao hàng
+  updateDeliveryStatus: (
+    orderId: string,
+    data: UpdateDeliveryStatusData
+  ): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.patch(`/api/v1/shipper/delivery-status/${orderId}`, data),
 
-  // SHIPPER APIs
-  async getMyOrders(status?: string) {
-    const params = status ? { status } : {};
-    const response = await axios.get(`${API_URL}/shipper/my-orders`, {
-      ...this.getAuthHeader(),
-      params,
-    });
-    return response.data;
-  }
+  // Cập nhật vị trí
+  updateLocation: (data: UpdateLocationData): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.patch("/api/v1/shipper/location", data),
 
-  async updateDeliveryStatus(orderId: string, data: UpdateDeliveryStatusData) {
-    const response = await axios.patch(
-      `${API_URL}/shipper/delivery-status/${orderId}`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+  // Cập nhật trạng thái sẵn sàng
+  updateAvailability: (isAvailable: boolean): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.patch("/api/v1/shipper/availability", { isAvailable }),
+};
 
-  async updateLocation(data: UpdateLocationData) {
-    const response = await axios.patch(
-      `${API_URL}/shipper/location`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+// Backward compatibility - Combined legacy API
+const shipperServiceLegacy = {
+  // Admin methods
+  getShippers: adminShipperService.getShippers,
+  assignOrderToShipper: adminShipperService.assignOrderToShipper,
+  getShipperStats: adminShipperService.getShipperStats,
+  getShipperDetail: adminShipperService.getShipperDetail,
 
-  async updateAvailability(isAvailable: boolean) {
-    const response = await axios.patch(
-      `${API_URL}/shipper/availability`,
-      { isAvailable },
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-}
+  // Shipper methods
+  getMyOrders: shipperService.getMyOrders,
+  updateDeliveryStatus: shipperService.updateDeliveryStatus,
+  updateLocation: shipperService.updateLocation,
+  updateAvailability: shipperService.updateAvailability,
+};
 
-export default new ShipperService();
+export default shipperServiceLegacy;

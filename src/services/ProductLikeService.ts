@@ -1,18 +1,25 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
+import type { Product } from "../types/product";
+import { ApiResponse } from "../types/api";
 
-// Thêm code cần thiết cho service này
-const productLikeService = {
-  likeProduct: async (productId: string) => {
-    return await axiosInstanceAuth.post(`/api/v1/products/${productId}/like`);
-  },
+// User Wishlist Service (Product Like)
+export const userWishlistService = {
+  // Thích sản phẩm (thêm vào wishlist)
+  likeProduct: (productId: string): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.post("/api/v1/users/wishlist/like", { productId }),
 
-  unlikeProduct: async (productId: string) => {
-    return await axiosInstanceAuth.delete(`/api/v1/products/${productId}/like`);
-  },
+  // Bỏ thích sản phẩm (xóa khỏi wishlist)
+  unlikeProduct: (productId: string): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/users/wishlist/${productId}`),
 
-  getUserLikedProducts: async () => {
-    return await axiosInstanceAuth.get(`/api/v1/users/liked-products`);
-  },
+  // Lấy danh sách sản phẩm đã thích
+  getUserLikedProducts: (): Promise<{ data: ApiResponse<Product[]> }> =>
+    axiosInstanceAuth.get("/api/v1/users/wishlist"),
 };
 
-export default productLikeService;
+// Backward compatibility
+export const likeProduct = userWishlistService.likeProduct;
+export const unlikeProduct = userWishlistService.unlikeProduct;
+export const getUserLikedProducts = userWishlistService.getUserLikedProducts;
+
+export default userWishlistService;

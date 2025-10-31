@@ -1,116 +1,97 @@
-import axios from "axios";
-import type { CreateReturnRequestData } from "../types/return";
+import { axiosInstanceAuth } from "../utils/axiosIntance";
+import type {
+  ReturnRequest,
+  CreateReturnRequestData,
+  ReturnRequestQueryParams,
+} from "../types/return";
+import { ApiResponse } from "../types/api";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// Customer Return Service
+export const customerReturnService = {
+  // Tạo yêu cầu đổi/trả hàng
+  createReturnRequest: (
+    data: CreateReturnRequestData
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.post("/api/v1/users/returns", data),
 
-export interface GetReturnRequestsParams {
-  page?: number;
-  limit?: number;
-  status?: string;
-  type?: "RETURN" | "EXCHANGE";
-  customerId?: string;
-}
+  // Lấy danh sách yêu cầu đổi/trả hàng
+  getReturnRequests: (
+    params?: ReturnRequestQueryParams
+  ): Promise<{ data: ApiResponse<ReturnRequest[]> }> =>
+    axiosInstanceAuth.get("/api/v1/users/returns", { params }),
 
-export interface ApproveReturnData {
-  note?: string;
-}
+  // Lấy chi tiết yêu cầu đổi/trả hàng
+  getReturnRequestDetail: (
+    id: string
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.get(`/api/v1/users/returns/${id}`),
 
-export interface RejectReturnData {
-  reason: string;
-}
+  // Hủy yêu cầu đổi/trả hàng
+  cancelReturnRequest: (id: string): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/users/returns/${id}`),
+};
 
-export interface ProcessReturnData {
-  note?: string;
-}
+// Admin Return Service
+export const adminReturnService = {
+  // Lấy danh sách tất cả yêu cầu đổi/trả hàng (Admin)
+  getAllReturnRequests: (
+    params?: ReturnRequestQueryParams
+  ): Promise<{ data: ApiResponse<ReturnRequest[]> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/returns", { params }),
 
-class ReturnService {
-  private getAuthHeader() {
-    const token = localStorage.getItem("token");
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }
+  // Phê duyệt yêu cầu đổi/trả hàng
+  approveReturnRequest: (
+    id: string,
+    data?: { note?: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/approve`, data),
 
-  // Customer APIs
-  async createReturnRequest(data: CreateReturnRequestData) {
-    const response = await axios.post(
-      `${API_URL}/returns`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+  // Từ chối yêu cầu đổi/trả hàng
+  rejectReturnRequest: (
+    id: string,
+    data: { reason: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/reject`, data),
 
-  async getReturnRequests(params: GetReturnRequestsParams = {}) {
-    const response = await axios.get(`${API_URL}/returns`, {
-      ...this.getAuthHeader(),
-      params,
-    });
-    return response.data;
-  }
+  // Xử lý trả hàng
+  processReturn: (
+    id: string,
+    data?: { note?: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.post(`/api/v1/admin/returns/${id}/process-return`, data),
 
-  async getReturnRequestDetail(id: string) {
-    const response = await axios.get(
-      `${API_URL}/returns/${id}`,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+  // Xử lý đổi hàng
+  processExchange: (
+    id: string,
+    data?: { note?: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.post(
+      `/api/v1/admin/returns/${id}/process-exchange`,
+      data
+    ),
 
-  async cancelReturnRequest(id: string) {
-    const response = await axios.delete(
-      `${API_URL}/returns/${id}`,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+  // Hoàn thành xử lý
+  completeReturn: (
+    id: string,
+    data?: { note?: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/complete`, data),
+};
 
-  // Admin APIs
-  async approveReturnRequest(id: string, data: ApproveReturnData = {}) {
-    const response = await axios.patch(
-      `${API_URL}/returns/${id}/approve`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+// Backward compatibility - Combined legacy API
+export const returnService = {
+  // Customer methods
+  createReturnRequest: customerReturnService.createReturnRequest,
+  getReturnRequests: customerReturnService.getReturnRequests,
+  getReturnRequestDetail: customerReturnService.getReturnRequestDetail,
+  cancelReturnRequest: customerReturnService.cancelReturnRequest,
 
-  async rejectReturnRequest(id: string, data: RejectReturnData) {
-    const response = await axios.patch(
-      `${API_URL}/returns/${id}/reject`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
+  // Admin methods
+  approveReturnRequest: adminReturnService.approveReturnRequest,
+  rejectReturnRequest: adminReturnService.rejectReturnRequest,
+  processReturn: adminReturnService.processReturn,
+  processExchange: adminReturnService.processExchange,
+  completeReturn: adminReturnService.completeReturn,
+};
 
-  async processReturn(id: string, data: ProcessReturnData = {}) {
-    const response = await axios.post(
-      `${API_URL}/returns/${id}/process-return`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-
-  async processExchange(id: string, data: ProcessReturnData = {}) {
-    const response = await axios.post(
-      `${API_URL}/returns/${id}/process-exchange`,
-      data,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-
-  async getReturnStats() {
-    const response = await axios.get(
-      `${API_URL}/returns/stats/summary`,
-      this.getAuthHeader()
-    );
-    return response.data;
-  }
-}
-
-export default new ReturnService();
+export default returnService;
