@@ -1,94 +1,38 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
 import { ApiResponse } from "../types/common";
-import type { InventoryItem, InventoryTransaction } from "../types/inventory";
+import type {
+  InventoryItem,
+  InventoryTransaction,
+  StockInData,
+  StockOutData,
+  AdjustStockData,
+  CalculatePriceData,
+  CalculatePriceResponse,
+  InventoryListParams,
+  TransactionHistoryParams,
+  InventoryStats,
+  InventoryListResponse,
+  TransactionHistoryResponse,
+} from "../types/inventory";
 
-export interface StockInData {
-  productId: string;
-  variantId: string;
-  sizeId: string;
-  quantity: number;
-  costPrice: number;
-  targetProfitPercent?: number;
-  percentDiscount?: number;
-  note?: string;
-}
-
-export interface StockOutData {
-  productId: string;
-  variantId: string;
-  sizeId: string;
-  quantity: number;
-  note?: string;
-  orderId?: string;
-}
-
-export interface AdjustStockData {
-  productId: string;
-  variantId: string;
-  sizeId: string;
-  newQuantity: number;
-  reason: string;
-}
-
-export interface CalculatePriceData {
-  costPrice: number;
-  targetProfitPercent: number;
-  percentDiscount?: number;
-}
-
-export interface InventoryListParams {
-  page?: number;
-  limit?: number;
-  productId?: string;
-  lowStock?: boolean;
-  outOfStock?: boolean;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-}
-
-export interface TransactionHistoryParams {
-  page?: number;
-  limit?: number;
-  productId?: string;
-  variantId?: string;
-  sizeId?: string;
-  type?: "IN" | "OUT" | "ADJUST";
-  startDate?: string;
-  endDate?: string;
-}
-
-export interface InventoryStats {
-  totalItems: number;
-  lowStockItems: InventoryItem[];
-  outOfStockItems: InventoryItem[];
-  totalValue: number;
-}
-
-export interface InventoryListResponse {
-  items: InventoryItem[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
-
-export interface TransactionHistoryResponse {
-  transactions: InventoryTransaction[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-}
+// Re-export types for convenience
+export type {
+  InventoryItem,
+  InventoryTransaction,
+  StockInData,
+  StockOutData,
+  AdjustStockData,
+  CalculatePriceData,
+  InventoryListParams,
+  TransactionHistoryParams,
+  InventoryStats,
+};
 
 // =====================
-// INVENTORY SERVICE
+// ADMIN INVENTORY SERVICE
 // =====================
 
-export const inventoryService = {
+export const adminInventoryService = {
   /**
    * Lấy danh sách tồn kho với phân trang và filter
    */
@@ -148,15 +92,8 @@ export const inventoryService = {
    */
   calculatePrice: (
     data: CalculatePriceData
-  ): Promise<{
-    data: ApiResponse<{
-      calculatedPrice: number;
-      calculatedPriceFinal: number;
-      profitPerItem: number;
-      margin: number;
-      markup: number;
-    }>;
-  }> => axiosInstanceAuth.post("/api/v1/admin/inventory/calculate-price", data),
+  ): Promise<{ data: ApiResponse<CalculatePriceResponse> }> =>
+    axiosInstanceAuth.post("/api/v1/admin/inventory/calculate-price", data),
 
   /**
    * Cập nhật ngưỡng cảnh báo tồn kho thấp
@@ -171,5 +108,7 @@ export const inventoryService = {
     ),
 };
 
-// Export default for backward compatibility
+// Backward compatibility
+export const inventoryService = { ...adminInventoryService };
+
 export default inventoryService;

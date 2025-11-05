@@ -151,8 +151,99 @@ export interface InventoryStats {
 }
 
 // =======================
+// INVENTORY REQUEST TYPES (Stock Operations)
+// =======================
+
+export interface StockInData {
+  productId: string;
+  variantId: string;
+  sizeId: string;
+  quantity: number;
+  costPrice: number;
+  targetProfitPercent?: number;
+  percentDiscount?: number;
+  note?: string;
+}
+
+export interface StockOutData {
+  productId: string;
+  variantId: string;
+  sizeId: string;
+  quantity: number;
+  note?: string;
+  orderId?: string;
+}
+
+export interface AdjustStockData {
+  productId: string;
+  variantId: string;
+  sizeId: string;
+  newQuantity: number;
+  reason: string;
+}
+
+export interface CalculatePriceData {
+  costPrice: number;
+  targetProfitPercent: number;
+  percentDiscount?: number;
+}
+
+export interface CalculatePriceResponse {
+  calculatedPrice: number;
+  calculatedPriceFinal: number;
+  profitPerItem: number;
+  margin: number;
+  markup: number;
+}
+
+// =======================
+// INVENTORY QUERY/LIST PARAMS
+// =======================
+
+export interface InventoryListParams {
+  page?: number;
+  limit?: number;
+  productId?: string;
+  lowStock?: boolean;
+  outOfStock?: boolean;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+}
+
+export interface TransactionHistoryParams {
+  page?: number;
+  limit?: number;
+  productId?: string;
+  variantId?: string;
+  sizeId?: string;
+  type?: "IN" | "OUT" | "ADJUST";
+  startDate?: string;
+  endDate?: string;
+}
+
+// =======================
 // INVENTORY RESPONSE TYPES
 // =======================
+
+export interface InventoryListResponse {
+  items: InventoryItem[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface TransactionHistoryResponse {
+  transactions: InventoryTransaction[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
 
 export interface InventoryItemsResponse {
   success: boolean;

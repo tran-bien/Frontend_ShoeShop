@@ -232,11 +232,37 @@ export interface OrdersResponse {
 export interface CreateOrderResponse {
   success: boolean;
   message: string;
-  order: Order;
-  paymentUrl?: string; // For VNPAY
+  data: {
+    order?: Order;
+    paymentUrl?: string;
+  };
 }
 
 export interface OrderDetailResponse {
+  success: boolean;
+  message: string;
+  data: Order;
+}
+
+export interface CancelOrderResponse {
+  success: boolean;
+  message: string;
+  data: {
+    message: string;
+    cancelRequest?: CancelRequest;
+  };
+}
+
+export interface ProcessCancelRequestResponse {
+  success: boolean;
+  message: string;
+  data: {
+    cancelRequest: CancelRequest;
+    order?: Order;
+  };
+}
+
+export interface UpdateOrderStatusResponse {
   success: boolean;
   message: string;
   order: Order;
@@ -253,10 +279,15 @@ export interface CancelRequest {
   order: {
     _id: string;
     code: string;
-    status: string;
+    status: OrderStatus;
     totalAfterDiscountAndShipping: number;
     user: { name: string; email: string };
-    payment: { method: string; paymentStatus: string };
+    payment: {
+      method: PaymentMethod;
+      paymentStatus: PaymentStatus;
+      transactionId?: string;
+    };
+    createdAt: string;
   };
   user: {
     name: string;
@@ -279,9 +310,57 @@ export interface ProcessCancelRequestData {
 
 export interface CancelRequestsResponse {
   success: boolean;
-  message?: string;
-  data?: {
+  message: string;
+  data: {
     cancelRequests: CancelRequest[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+      hasNext: boolean;
+      hasPrev: boolean;
+    };
   };
-  cancelRequests?: CancelRequest[]; // Alternative structure
+}
+
+// =======================
+// VNPAY PAYMENT TYPES
+// =======================
+
+export interface VnpayCallbackParams {
+  vnp_TmnCode: string;
+  vnp_Amount: string;
+  vnp_BankCode: string;
+  vnp_BankTranNo?: string;
+  vnp_CardType: string;
+  vnp_PayDate: string;
+  vnp_OrderInfo: string;
+  vnp_TransactionNo: string;
+  vnp_ResponseCode: string;
+  vnp_TransactionStatus: string;
+  vnp_TxnRef: string;
+  vnp_SecureHashType: string;
+  vnp_SecureHash: string;
+  // Các tham số bổ sung từ backend redirect
+  orderId?: string;
+  orderCode?: string;
+  message?: string;
+  status?: string;
+}
+
+export interface VnpayResponse {
+  success: boolean;
+  message: string;
+  data: {
+    url?: string;
+    orderId?: string;
+    orderCode?: string;
+    transactionId?: string;
+    status?: string;
+    amount?: number;
+    paymentStatus?: string;
+    orderStatus?: string;
+    [key: string]: unknown;
+  };
 }

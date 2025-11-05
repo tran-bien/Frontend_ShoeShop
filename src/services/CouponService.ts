@@ -1,8 +1,32 @@
-import { axiosInstanceAuth, axiosInstance } from "../utils/axiosIntance";
-import { Coupon, CouponQuery, PublicCouponsResponse } from "../types/coupon";
+import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
+import type {
+  Coupon,
+  CouponQuery,
+  PublicCouponsResponse,
+  AdminCouponsResponse,
+  AdminCouponDetailResponse,
+  CreateCouponData,
+  UpdateCouponData,
+  UpdateCouponStatusData,
+} from "../types/coupon";
 import { ApiResponse } from "../types/api";
 
-// Public coupon service - không cần đăng nhập
+// Re-export types for convenience
+export type {
+  Coupon,
+  CouponQuery,
+  PublicCouponsResponse,
+  AdminCouponsResponse,
+  AdminCouponDetailResponse,
+  CreateCouponData,
+  UpdateCouponData,
+  UpdateCouponStatusData,
+};
+
+// =======================
+// PUBLIC COUPON SERVICE
+// =======================
+
 export const publicCouponService = {
   // Lấy danh sách coupon công khai đang hoạt động
   getPublicCoupons: (
@@ -11,7 +35,10 @@ export const publicCouponService = {
     axiosInstance.get("/api/v1/coupons/public", { params }),
 };
 
-// User coupon service - cần đăng nhập
+// =======================
+// USER COUPON SERVICE (authenticated)
+// =======================
+
 export const userCouponService = {
   // Lấy danh sách coupon đã thu thập của người dùng
   getUserCoupons: (
@@ -37,54 +64,60 @@ export const userCouponService = {
   }> => axiosInstanceAuth.post("/api/v1/coupons/verify", { code, subTotal }),
 };
 
-// Admin coupon service - cần quyền admin
+// =======================
+// ADMIN COUPON SERVICE (authenticated)
+// =======================
+
 export const adminCouponService = {
   // Lấy danh sách tất cả coupon (có phân trang và filter)
   getAllCoupons: (
     params: CouponQuery = {}
-  ): Promise<{ data: ApiResponse<Coupon[]> }> =>
+  ): Promise<{ data: AdminCouponsResponse }> =>
     axiosInstanceAuth.get("/api/v1/admin/coupons", { params }),
 
   // Lấy chi tiết coupon theo ID
-  getCouponById: (id: string): Promise<{ data: ApiResponse<Coupon> }> =>
+  getCouponById: (id: string): Promise<{ data: AdminCouponDetailResponse }> =>
     axiosInstanceAuth.get(`/api/v1/admin/coupons/${id}`),
 
   // Tạo coupon mới
   createCoupon: (
-    data: Omit<Coupon, "_id" | "createdAt" | "updatedAt" | "currentUses">
+    data: CreateCouponData
   ): Promise<{ data: ApiResponse<Coupon> }> =>
     axiosInstanceAuth.post("/api/v1/admin/coupons", data),
 
   // Cập nhật coupon
   updateCoupon: (
     id: string,
-    data: Partial<Coupon>
+    data: UpdateCouponData
   ): Promise<{ data: ApiResponse<Coupon> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/coupons/${id}`, data),
 
   // Xóa coupon
-  deleteCoupon: (id: string): Promise<{ data: ApiResponse }> =>
+  deleteCoupon: (id: string): Promise<{ data: ApiResponse<null> }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/coupons/${id}`),
 
   // Cập nhật trạng thái coupon
   updateCouponStatus: (
     id: string,
-    status: "active" | "inactive" | "archived"
+    data: UpdateCouponStatusData
   ): Promise<{ data: ApiResponse<Coupon> }> =>
-    axiosInstanceAuth.patch(`/api/v1/admin/coupons/${id}/status`, { status }),
+    axiosInstanceAuth.patch(`/api/v1/admin/coupons/${id}/status`, data),
 };
 
-// Backward compatibility
+// =======================
+// Backward compatibility adapters
+// =======================
+
 export const couponApi = {
-  // Public API
+  // Public
   getPublicCoupons: publicCouponService.getPublicCoupons,
 
-  // User API
+  // User
   getUserCoupons: userCouponService.getUserCoupons,
   collectCoupon: userCouponService.collectCoupon,
   verifyCoupon: userCouponService.verifyCoupon,
 
-  // Admin API
+  // Admin
   adminGetCoupons: adminCouponService.getAllCoupons,
   adminGetCouponById: adminCouponService.getCouponById,
   adminCreateCoupon: adminCouponService.createCoupon,
@@ -93,4 +126,21 @@ export const couponApi = {
   adminUpdateCouponStatus: adminCouponService.updateCouponStatus,
 };
 
-export default userCouponService;
+// Keep old discountApi name for compatibility
+export const discountApi = {
+  getAllAdminCoupons: adminCouponService.getAllCoupons,
+  getAdminCouponById: adminCouponService.getCouponById,
+  createAdminCoupon: adminCouponService.createCoupon,
+  updateAdminCoupon: adminCouponService.updateCoupon,
+  deleteAdminCoupon: adminCouponService.deleteCoupon,
+  updateAdminCouponStatus: adminCouponService.updateCouponStatus,
+};
+
+// Unified export named as requested
+export const CouponService = {
+  public: publicCouponService,
+  user: userCouponService,
+  admin: adminCouponService,
+};
+
+export default CouponService;
