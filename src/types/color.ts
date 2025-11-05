@@ -1,9 +1,10 @@
 /**
  * Color Types
  * Định nghĩa các interface liên quan đến Màu sắc
+ * Note: Backend sử dụng "solid" (1 màu với code) và "half" (2+ màu với colors array)
  */
 
-export type ColorType = "solid" | "half" | "gradient";
+export type ColorType = "solid" | "half";
 
 // =======================
 // MAIN COLOR INTERFACE
@@ -12,9 +13,9 @@ export type ColorType = "solid" | "half" | "gradient";
 export interface Color {
   _id: string;
   name: string;
-  code: string;
   type: ColorType;
-  colors?: string[]; // For gradient type
+  code?: string; // Only for solid type
+  colors?: string[]; // Only for half type (2+ colors)
   isActive?: boolean;
   deletedAt?: string | null;
   deletedBy?: string | { _id: string; name?: string } | null;
@@ -28,17 +29,17 @@ export interface Color {
 
 export interface CreateColorData {
   name: string;
-  code: string;
   type: ColorType;
-  colors?: string[];
+  code?: string; // Required for solid, omit for half
+  colors?: string[]; // Required for half (min 2), omit for solid
   isActive?: boolean;
 }
 
 export interface UpdateColorData {
   name?: string;
-  code?: string;
   type?: ColorType;
-  colors?: string[];
+  code?: string; // For solid type
+  colors?: string[]; // For half type
   isActive?: boolean;
 }
 

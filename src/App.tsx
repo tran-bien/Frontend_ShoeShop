@@ -1,42 +1,47 @@
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "./hooks/useAuth";
+import { CompareProvider } from "./contexts/CompareContext";
 import AppRouter from "./routers/Router";
+import CompareFloatingButton from "./components/Compare/CompareFloatingButton";
 import "./App.css";
 
 const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <div className="App">
-          <AppRouter />
-          <Toaster
-            position="top-center"
-            reverseOrder={false}
-            gutter={8}
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: "#fff",
-                color: "#333",
-              },
-              success: {
+        <CompareProvider>
+          <div className="App">
+            <AppRouter />
+            <CompareFloatingButton />
+            <Toaster
+              position="top-center"
+              reverseOrder={false}
+              gutter={8}
+              toastOptions={{
                 duration: 3000,
-                iconTheme: {
-                  primary: "#10B981",
-                  secondary: "#fff",
+                style: {
+                  background: "#fff",
+                  color: "#333",
                 },
-              },
-              error: {
-                duration: 4000,
-                iconTheme: {
-                  primary: "#EF4444",
-                  secondary: "#fff",
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: "#10B981",
+                    secondary: "#fff",
+                  },
                 },
-              },
-            }}
-          />
-        </div>
+                error: {
+                  duration: 4000,
+                  iconTheme: {
+                    primary: "#EF4444",
+                    secondary: "#fff",
+                  },
+                },
+              }}
+            />
+          </div>
+        </CompareProvider>
       </AuthProvider>
     </BrowserRouter>
   );

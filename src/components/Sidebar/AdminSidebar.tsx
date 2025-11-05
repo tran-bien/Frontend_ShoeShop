@@ -31,7 +31,7 @@ interface LinkProps {
 }
 
 const AdminSidebar = () => {
-  const activeClass = "bg-[#1E304B] border-l-[6px] border-mono-800";
+  const activeClass = "bg-mono-900 border-l-[6px] border-mono-700";
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const [isExpanded, setIsExpanded] = useState(window.innerWidth >= 768);
   const { hasAdminOnlyAccess } = useAuth();
@@ -128,10 +128,10 @@ const AdminSidebar = () => {
       <div className="flex flex-col gap-2">
         {filteredLinks.map((link, index) => (
           <div key={index}>
-            <div className="flex items-center justify-between transition-all duration-300 hover:bg-[#1E304B]">
+            <div className="flex items-center justify-between transition-all duration-300 hover:bg-mono-900">
               <Link
                 to={link.href || "#"}
-                className={`flex items-center w-full gap-3 px-4 py-3 text-sm transition-all duration-300 hover:bg-[#1E304B] ${
+                className={`flex items-center w-full gap-3 px-4 py-3 text-sm transition-all duration-300 hover:bg-mono-900 ${
                   pathname === link.href ? activeClass : ""
                 }`}
               >
@@ -159,7 +159,7 @@ const AdminSidebar = () => {
                   <Link
                     to={subLink.href}
                     key={subIndex}
-                    className={`px-4 py-2 text-sm transition-all duration-300 hover:bg-[#1E304B] ${
+                    className={`px-4 py-2 text-sm transition-all duration-300 hover:bg-mono-900 ${
                       pathname === subLink.href ? activeClass : ""
                     }`}
                   >

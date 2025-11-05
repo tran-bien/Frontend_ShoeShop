@@ -43,6 +43,14 @@ import ShipperDashboardPage from "../pages/ShipperPages/ShipperDashboardPage";
 import MyOrdersPage from "../pages/ShipperPages/MyOrdersPage";
 import OrderDetailPage from "../pages/ShipperPages/OrderDetailPage";
 import ShipperProfilePage from "../pages/ShipperPages/ShipperProfilePage";
+import NotificationsPage from "../pages/NotificationsPage";
+import LoyaltyPage from "../pages/LoyaltyPage";
+import BlogListPage from "../pages/BlogListPage";
+import BlogDetailPage from "../pages/BlogDetailPage";
+import AdminBlogPage from "../pages/AdminPages/BlogPage/AdminBlogPage";
+import AdminSizeGuidePage from "../pages/AdminPages/SizeGuidePage/AdminSizeGuidePage";
+import ProductComparePage from "../pages/ProductComparePage/ProductComparePage";
+import AdminLoyaltyTierPage from "../pages/AdminPages/LoyaltyTierPage/AdminLoyaltyTierPage";
 
 const AppRouter = () => {
   return (
@@ -95,6 +103,9 @@ const AppRouter = () => {
         <Route path="inventory" element={<InventoryPage />} />
         <Route path="shippers" element={<ShipperPage />} />
         <Route path="returns" element={<ReturnPage />} />
+        <Route path="blogs" element={<AdminBlogPage />} />
+        <Route path="size-guides" element={<AdminSizeGuidePage />} />
+        <Route path="loyalty-tiers" element={<AdminLoyaltyTierPage />} />
 
         {/* Routes chỉ dành cho Admin */}
         <Route
@@ -129,11 +140,30 @@ const AppRouter = () => {
         <Route path="products" element={<ProductListPage />} />
         <Route path="product/:slug" element={<ProductDetailPage />} />
         <Route path="coupons" element={<CouponsPage />} />
+        <Route path="blog" element={<BlogListPage />} />
+        <Route path="blog/:slug" element={<BlogDetailPage />} />
+        <Route path="compare" element={<ProductComparePage />} />
         <Route
           path="cart"
           element={
             <AuthGuard>
               <CartPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="notifications"
+          element={
+            <AuthGuard>
+              <NotificationsPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="loyalty"
+          element={
+            <AuthGuard>
+              <LoyaltyPage />
             </AuthGuard>
           }
         />

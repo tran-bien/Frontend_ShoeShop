@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import cartService from "../../services/CartService";
 import wishlistService from "../../services/WishlistService";
 import { productPublicService } from "../../services/ProductService";
+import { publicViewHistoryService } from "../../services/ViewHistoryService";
 import {
   Product as ProductType,
   ProductCardProduct,
@@ -24,6 +25,8 @@ import {
 import ProductInfo from "./ProductInfo";
 import ProductComments from "./ProductComments";
 import ProductCard from "../ProductCard/ProductCard";
+import ColorSwatch from "../Custom/ColorSwatch";
+import SizeGuideModal from "../Modal/SizeGuideModal";
 import toast from "react-hot-toast";
 import { FaStar, FaRegStar } from "react-icons/fa";
 
@@ -178,6 +181,20 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     setSelectedQuantity(1);
     setQuantityInput("1");
   }, [selectedSizeId, selectedColorId]);
+
+  // Track product view
+  useEffect(() => {
+    if (product?._id) {
+      // Track view sau 2 giây để đảm bảo user thật sự xem
+      const timer = setTimeout(() => {
+        publicViewHistoryService.trackView(product._id).catch((error) => {
+          console.error("Failed to track view:", error);
+        });
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [product?._id]);
 
   const [quantityInput, setQuantityInput] = useState("1");
 
@@ -705,44 +722,18 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                         setSelectedColorId(color._id);
                         setSelectedSizeId(null);
                       }}
-                      className={`flex items-center gap-2 px-3 py-2 border rounded-lg transition-colors ${
+                      className={`flex items-center gap-2 px-3 py-2 border-2 rounded-lg transition-all ${
                         selectedColorId === color._id
-                          ? "border-mono-500 bg-mono-50"
+                          ? "border-mono-black bg-mono-50 shadow-sm"
                           : "border-mono-300 hover:border-mono-400"
                       }`}
                     >
-                      {color.type === "solid" ? (
-                        <div
-                          className="w-4 h-4 rounded-full border"
-                          style={{ backgroundColor: color.code }}
-                        />
-                      ) : (
-                        <div className="w-4 h-4 rounded-full border relative overflow-hidden">
-                          <div
-                            style={{
-                              backgroundColor: color.colors?.[0] || "#fff",
-                              width: "100%",
-                              height: "100%",
-                              position: "absolute",
-                              left: 0,
-                              top: 0,
-                              clipPath: "inset(0 50% 0 0)",
-                            }}
-                          />
-                          <div
-                            style={{
-                              backgroundColor: color.colors?.[1] || "#fff",
-                              width: "100%",
-                              height: "100%",
-                              position: "absolute",
-                              right: 0,
-                              top: 0,
-                              clipPath: "inset(0 0 0 50%)",
-                            }}
-                          />
-                        </div>
-                      )}
-                      <span>{color.name}</span>
+                      <ColorSwatch
+                        color={color}
+                        size="md"
+                        selected={selectedColorId === color._id}
+                      />
+                      <span className="font-medium">{color.name}</span>
                     </button>
                   ))}
               </div>
@@ -755,10 +746,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-medium">Kích thước:</h3>
                 <button
-                  onClick={() => setShowSizeGuide(!showSizeGuide)}
-                  className="text-sm text-mono-black hover:text-blue-800 flex items-center gap-1"
+                  onClick={() => setShowSizeGuide(true)}
+                  className="text-sm text-mono-700 hover:text-mono-black font-medium flex items-center gap-1 hover:underline"
                 >
-                  <FiInfo size={14} />
+                  <FiInfo size={16} />
                   Hướng dẫn chọn size
                 </button>
               </div>
@@ -821,24 +812,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                         Size {selectedSizeInfo.sizeValue}:
                       </span>
                     </div>
-                    <p className="text-sm text-blue-800 mt-1">
+                    <p className="text-sm text-mono-800 mt-1">
                       {getSizeDetails(selectedSizeInfo.sizeId)?.description}
                     </p>
                   </div>
                 )}
-
-              {/* Size guide */}
-              {showSizeGuide && (
-                <div className="mt-4 p-4 border rounded-lg bg-mono-50">
-                  <h4 className="font-medium mb-2">Hướng dẫn chọn size giày</h4>
-                  <div className="text-sm text-mono-600 space-y-1">
-                    <p>• Đo chiều dài bàn chân từ gót đến ngón cái dài nhất</p>
-                    <p>• Nên đo vào buổi chiều khi bàn chân hơi phù</p>
-                    <p>• Chọn size lớn hơn 0.5-1cm so với chiều dài bàn chân</p>
-                    <p>• Tham khảo bảng size cụ thể của từng thương hiệu</p>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
@@ -1055,6 +1033,18 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           )}
         </div>
       )}
+
+      {/* Size Guide Modal */}
+      <SizeGuideModal
+        isOpen={showSizeGuide}
+        onClose={() => setShowSizeGuide(false)}
+        categoryId={
+          typeof product?.category === "object"
+            ? product.category._id
+            : undefined
+        }
+        gender={selectedGender || undefined}
+      />
     </div>
   );
 };

@@ -2,6 +2,7 @@
 import { productApi } from "../../../services/ProductService";
 import { Product } from "../../../types/product";
 import ProductImagesManager from "./ProductImagesManager";
+import ColorSwatch from "../../../components/Custom/ColorSwatch";
 import { useAuth } from "../../../hooks/useAuth";
 
 interface ProductDetailProps {
@@ -440,49 +441,8 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         <div className="flex items-center gap-3">
                           {/* Color Swatch */}
                           {variant.color &&
-                            typeof variant.color !== "string" &&
-                            variant.color.colors &&
-                            variant.color.colors.length > 0 && (
-                              <div className="flex gap-2">
-                                {variant.color.colors.length === 1 ? (
-                                  <span
-                                    className="inline-block w-10 h-10 rounded-full border-2 border-mono-300 shadow-sm"
-                                    style={{
-                                      background: variant.color.colors[0],
-                                    }}
-                                    title={variant.color.colors[0]}
-                                  />
-                                ) : variant.color.colors.length === 2 ? (
-                                  <span
-                                    className="inline-block w-10 h-10 rounded-full border-2 border-mono-300 shadow-sm"
-                                    style={{
-                                      background: `linear-gradient(90deg, ${variant.color.colors[0]} 50%, ${variant.color.colors[1]} 50%)`,
-                                    }}
-                                    title={variant.color.colors.join(" / ")}
-                                  />
-                                ) : (
-                                  <span
-                                    className="inline-block w-10 h-10 rounded-full border-2 border-mono-300 shadow-sm"
-                                    style={{
-                                      background: `linear-gradient(90deg, ${variant.color.colors
-                                        .map(
-                                          (
-                                            c: string,
-                                            i: number,
-                                            arr: string[]
-                                          ) => {
-                                            const percent = Math.round(
-                                              (100 / arr.length) * (i + 1)
-                                            );
-                                            return `${c} ${percent}%`;
-                                          }
-                                        )
-                                        .join(", ")})`,
-                                    }}
-                                    title={variant.color.colors.join(" / ")}
-                                  />
-                                )}
-                              </div>
+                            typeof variant.color !== "string" && (
+                              <ColorSwatch color={variant.color} size="lg" />
                             )}
                           <div>
                             <h4 className="font-semibold text-mono-800 text-lg">
@@ -494,10 +454,10 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                             <span
                               className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium mt-1 ${
                                 variant.gender === "Nam"
-                                  ? "bg-mono-100 text-blue-700"
+                                  ? "bg-mono-100 text-mono-900"
                                   : variant.gender === "Nữ"
-                                  ? "bg-pink-100 text-pink-700"
-                                  : "bg-purple-100 text-purple-700"
+                                  ? "bg-mono-200 text-mono-900"
+                                  : "bg-mono-300 text-mono-900"
                               }`}
                             >
                               {variant.gender}

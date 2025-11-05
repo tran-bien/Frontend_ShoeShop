@@ -1,6 +1,8 @@
 ﻿import React, { useState, useEffect } from "react";
 import { ProductCardProduct } from "../../types/product";
 import { FaStar, FaRegStar } from "react-icons/fa";
+import { ArrowsRightLeftIcon } from "@heroicons/react/24/outline";
+import { useCompare } from "../../contexts/CompareContext";
 
 interface ProductCardProps {
   product: ProductCardProduct;
@@ -13,6 +15,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   // State cho hiệu ứng slide ảnh
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Compare context
+  const { addToCompare, removeFromCompare, isInCompare } = useCompare();
+  const inCompare = isInCompare(product._id);
 
   // Kiểm tra chắc chắn images là mảng và có nhiều hơn 1 phần tử
   const hasMultipleImages =
@@ -137,6 +143,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     >
       {/* Phần ảnh sản phẩm với hiệu ứng chuyển đổi mềm mại */}
       <div className="aspect-square w-full overflow-hidden bg-mono-50 relative">
+        {/* Compare Button - Top Left */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (inCompare) {
+              removeFromCompare(product._id);
+            } else {
+              addToCompare(product as any);
+            }
+          }}
+          className={`absolute top-2 left-2 z-20 p-2 rounded-full transition-all duration-200 ${
+            inCompare
+              ? "bg-mono-black text-white shadow-lg scale-110"
+              : "bg-white/90 hover:bg-white text-mono-700 hover:scale-110 shadow-md"
+          }`}
+          title={inCompare ? "Xóa khỏi so sánh" : "Thêm vào so sánh"}
+        >
+          <ArrowsRightLeftIcon className="h-5 w-5" />
+        </button>
+
         <img
           src={imageUrl}
           alt={product.name}

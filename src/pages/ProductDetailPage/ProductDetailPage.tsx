@@ -9,6 +9,7 @@ import {
 import type { ProductImage } from "../../types/common";
 import ProductDetail from "../../components/ProductDetail/ProductDetail";
 import { productPublicService } from "../../services/ProductService";
+import RecentlyViewed from "../../components/ViewHistory/RecentlyViewed";
 
 const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -155,6 +156,13 @@ const ProductDetailPage: React.FC = () => {
         variants={variants as any}
         images={images || undefined}
         similarProducts={similarProducts as any}
+      />
+
+      {/* Recently Viewed Products - exclude current product */}
+      <RecentlyViewed
+        limit={4}
+        title="Bạn có thể quan tâm"
+        excludeProductId={product._id}
       />
     </div>
   );

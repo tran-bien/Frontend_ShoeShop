@@ -13,7 +13,7 @@ const ViewDetailModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-mono-black to-purple-600 text-white p-6 rounded-t-xl">
+        <div className="sticky top-0 bg-gradient-to-r from-mono-800 to-mono-black text-white p-6 rounded-t-xl">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold">Chi tiết Màu sắc</h2>
             <button
@@ -126,8 +126,8 @@ const EditColorModal: React.FC<{
   onSuccess: () => void;
 }> = ({ color, onClose, onSuccess }) => {
   const [name, setName] = useState(color.name);
-  const [type, setType] = useState<"solid" | "half" | "gradient">(
-    color.type as "solid" | "half" | "gradient"
+  const [type, setType] = useState<"solid" | "half">(
+    color.type as "solid" | "half"
   );
   const [code, setCode] = useState(color.code || "");
   const [color1, setColor1] = useState(color.colors?.[0] || "");
@@ -449,25 +449,25 @@ const ColorPage: React.FC = () => {
       {!showDeleted ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
-            <h3 className="text-sm font-medium text-mono-black mb-1">
+            <h3 className="text-sm font-medium text-mono-600 mb-1">
               Tổng số màu sắc
             </h3>
-            <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
+            <p className="text-3xl font-bold text-mono-900">{totalCount}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
-            <h3 className="text-sm font-medium text-mono-800 mb-1">
+          <div className="bg-gradient-to-br from-mono-100 to-mono-200 rounded-xl p-6 shadow-sm border border-mono-300">
+            <h3 className="text-sm font-medium text-mono-600 mb-1">
               Đang hoạt động
             </h3>
-            <p className="text-3xl font-bold text-green-900">{activeCount}</p>
+            <p className="text-3xl font-bold text-mono-900">{activeCount}</p>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200">
-            <h3 className="text-sm font-medium text-mono-900 mb-1">
+          <div className="bg-gradient-to-br from-mono-200 to-mono-300 rounded-xl p-6 shadow-sm border border-mono-400">
+            <h3 className="text-sm font-medium text-mono-700 mb-1">
               Tổng số màu sắc đã xóa
             </h3>
-            <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
+            <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
           </div>
         </div>
       )}
@@ -519,7 +519,7 @@ const ColorPage: React.FC = () => {
           </select>
           {!showDeleted && canCreate() && (
             <button
-              className="px-4 py-2 bg-gradient-to-r from-mono-black to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              className="px-4 py-2 bg-mono-black text-white rounded-lg font-medium hover:bg-mono-800 transition-all shadow-md"
               onClick={() => setShowAddColor(true)}
             >
               + Thêm Màu
@@ -605,11 +605,11 @@ const ColorPage: React.FC = () => {
                 </td>
                 <td className="py-2 px-4 border-b text-center text-sm">
                   {item.deletedAt ? (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-300 text-mono-800">
                       Đã xóa
                     </span>
                   ) : (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-200 text-mono-900">
                       Hoạt động
                     </span>
                   )}
@@ -618,7 +618,7 @@ const ColorPage: React.FC = () => {
                   <div className="flex flex-wrap gap-1.5 justify-center min-w-[140px]">
                     <button
                       onClick={() => setViewDetailColor(item)}
-                      className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-800 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                     >
                       <svg
                         className="w-3.5 h-3.5"
@@ -667,7 +667,7 @@ const ColorPage: React.FC = () => {
                         {canDelete() && (
                           <button
                             onClick={() => handleDeleteColor(item._id)}
-                            className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-mono-200 hover:bg-mono-300 text-mono-900 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -690,7 +690,7 @@ const ColorPage: React.FC = () => {
                       canUpdate() && (
                         <button
                           onClick={() => handleRestoreColor(item._id)}
-                          className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                         >
                           <svg
                             className="w-3.5 h-3.5"

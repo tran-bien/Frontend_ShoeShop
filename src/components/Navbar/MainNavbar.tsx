@@ -8,6 +8,8 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { filterService, SearchSuggestion } from "../../services/FilterService";
 import { useAuth } from "../../hooks/useAuth";
+import NotificationBell from "./NotificationBell";
+import LoyaltyBadge from "./LoyaltyBadge";
 // @ts-ignore
 import "@fontsource/lobster";
 
@@ -151,6 +153,14 @@ const MainNavbar = () => {
             GIÀY NỮ
           </Link>
         </li>
+        <li>
+          <Link
+            to="/blog"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight"
+          >
+            BLOG
+          </Link>
+        </li>
       </ul>
 
       {/* search bar */}
@@ -241,7 +251,21 @@ const MainNavbar = () => {
         )}
       </div>
 
-      <ul className="flex gap-2">
+      <ul className="flex gap-2 items-center">
+        {/* Loyalty Badge - Chỉ hiển thị khi đã đăng nhập */}
+        {user && (
+          <li>
+            <LoyaltyBadge />
+          </li>
+        )}
+
+        {/* Notifications - Chỉ hiển thị khi đã đăng nhập */}
+        {user && (
+          <li>
+            <NotificationBell />
+          </li>
+        )}
+
         {/* Giỏ hàng */}
         <li>
           <Link

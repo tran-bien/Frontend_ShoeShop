@@ -51,8 +51,8 @@ const AdminNavbar = () => {
   };
 
   return (
-    <div className="w-full bg-[#1E304B] h-16 flex justify-between items-center sticky top-0 text-white px-6 shadow-md z-10">
-      <div className="flex items-center gap-4">
+    <div className="w-full bg-mono-black h-16 flex justify-between items-center sticky top-0 text-white px-6 shadow-md z-10">
+      <div className="flex items-center gap-3">
         {/* <BiMenu className="rounded-full bg-purple-500 h-10 w-10 p-2 hover:bg-purple-400 cursor-pointer transition-all duration-300" onClick={toggleSidebar}/> */}
         <div className="h-10 flex items-center">
           {/*<img className="w-auto h-full" src="/image/logo.png" alt="logo" />*/}
@@ -92,7 +92,7 @@ const AdminNavbar = () => {
         {/* Thêm nút về trang chủ */}
         <Link
           to="/"
-          className="flex items-center text-mono-black hover:text-blue-800 transition-colors"
+          className="flex items-center text-mono-black hover:text-mono-900 transition-colors"
         >
           <AiOutlineHome size={20} />
           <span className="ml-1 font-medium">Trang chủ</span>
@@ -106,7 +106,7 @@ const AdminNavbar = () => {
           {/* Nút chuyển về trang chủ tại navbar desktop */}
           <Link
             to="/"
-            className="flex items-center text-mono-black hover:text-blue-800 transition-colors"
+            className="flex items-center text-mono-black hover:text-mono-900 transition-colors"
           >
             <AiOutlineHome size={20} />
             <span className="ml-1 font-medium">Trang chủ</span>
@@ -114,7 +114,7 @@ const AdminNavbar = () => {
 
           <button
             onClick={handleLogout}
-            className="flex items-center text-mono-900 hover:text-red-800 transition-colors"
+            className="flex items-center text-mono-900 hover:text-mono-black transition-colors"
           >
             <AiOutlineLogout className="mr-1" />
             <span>Đăng xuất</span>

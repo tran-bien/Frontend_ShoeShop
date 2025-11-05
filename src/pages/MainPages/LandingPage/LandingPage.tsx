@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductCard from "../../../components/ProductCard/ProductCard";
+import RecentlyViewed from "../../../components/ViewHistory/RecentlyViewed";
 import {
   productPublicService,
   convertToProductCardProduct,
@@ -542,6 +543,9 @@ const LandingPage: React.FC = () => {
           />
         </div>
       </section>
+
+      {/* Sản phẩm đã xem gần đây */}
+      <RecentlyViewed limit={8} title="Sản phẩm đã xem gần đây" />
 
       {/* Footer - Monochrome Luxury */}
       <footer className="bg-mono-50 border-t border-mono-200 pt-16 pb-8">
