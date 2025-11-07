@@ -102,22 +102,22 @@ const AdminNavbar = () => {
       {/* Desktop navbar */}
       <div className="hidden lg:flex lg:justify-between lg:items-center lg:px-6 lg:py-3">
         {/* Menu điều hướng */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-3">
           {/* Nút chuyển về trang chủ tại navbar desktop */}
           <Link
             to="/"
-            className="flex items-center text-mono-black hover:text-mono-900 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-white hover:bg-mono-700 rounded-lg transition-all duration-200"
           >
             <AiOutlineHome size={20} />
-            <span className="ml-1 font-medium">Trang chủ</span>
+            <span className="font-medium">Trang chủ</span>
           </Link>
 
           <button
             onClick={handleLogout}
-            className="flex items-center text-mono-900 hover:text-mono-black transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 text-white hover:bg-mono-700 rounded-lg transition-all duration-200"
           >
-            <AiOutlineLogout className="mr-1" />
-            <span>Đăng xuất</span>
+            <AiOutlineLogout size={20} />
+            <span className="font-medium">Đăng xuất</span>
           </button>
         </div>
       </div>

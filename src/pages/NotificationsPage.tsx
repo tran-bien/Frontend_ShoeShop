@@ -135,8 +135,11 @@ const NotificationsPage = () => {
 
         {/* Notifications List */}
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-10 h-10 border-2 border-mono-300 border-t-mono-black rounded-full animate-spin" />
+          <div className="bg-white border border-mono-200 rounded-xl p-12 text-center">
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-12 h-12 border-3 border-mono-200 border-t-mono-black rounded-full animate-spin mb-4" />
+              <p className="text-mono-600">Đang tải thông báo...</p>
+            </div>
           </div>
         ) : notifications.length === 0 ? (
           <div className="bg-white border border-mono-200 rounded-xl p-12 text-center">

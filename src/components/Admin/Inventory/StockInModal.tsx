@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { toast } from "react-hot-toast";
 import InventoryService from "../../../services/InventoryService";
 import { productApi } from "../../../services/ProductService";
 import {
@@ -258,12 +259,12 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
     // Validation
     if (!formData.productId || !formData.variantId) {
-      alert("Vui lòng chọn sản phẩm và màu sắc!");
+      toast.error("Vui lòng chọn sản phẩm và màu sắc!");
       return;
     }
 
     if (sizeEntries.length === 0) {
-      alert("Vui lòng thêm ít nhất một kích thước!");
+      toast.error("Vui lòng thêm ít nhất một kích thước!");
       return;
     }
 
@@ -272,14 +273,14 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
       (entry) => !entry.sizeId || entry.quantity <= 0
     );
     if (invalidEntries.length > 0) {
-      alert(
+      toast.error(
         "Vui lòng chọn kích thước và nhập số lượng hợp lệ cho tất cả các dòng!"
       );
       return;
     }
 
     if (formData.costPrice <= 0) {
-      alert("Giá vốn phải lớn hơn 0!");
+      toast.error("Giá vốn phải lớn hơn 0!");
       return;
     }
 
@@ -315,11 +316,11 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
       await Promise.all(promises);
 
-      alert(`✅ Nhập kho thành công ${sizeEntries.length} kích thước!`);
+      toast.success(`✅ Nhập kho thành công ${sizeEntries.length} kích thước!`);
       onSuccess();
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
-      alert(err.response?.data?.message || "Có lỗi xảy ra khi nhập kho");
+      toast.error(err.response?.data?.message || "Có lỗi xảy ra khi nhập kho");
     } finally {
       setSubmitting(false);
     }
@@ -560,17 +561,66 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   </label>
                   <input
                     type="number"
-                    value={formData.costPrice}
+                    value={formData.costPrice || ""}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
                         costPrice: parseInt(e.target.value) || 0,
                       })
                     }
+                    placeholder="Nhập giá vốn"
                     className="w-full border border-mono-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-mono-500 font-semibold text-mono-900"
                     min="0"
                     required
                   />
+                  {/* Đề xuất giá nhanh */}
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, costPrice: 100000 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      100K
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, costPrice: 200000 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      200K
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, costPrice: 500000 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      500K
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, costPrice: 1000000 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      1 triệu
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, costPrice: 2000000 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      2 triệu
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
@@ -578,16 +628,47 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   </label>
                   <input
                     type="number"
-                    value={formData.targetProfitPercent}
+                    value={formData.targetProfitPercent || ""}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
                         targetProfitPercent: parseInt(e.target.value) || 0,
                       })
                     }
+                    placeholder="VD: 30"
                     className="w-full border border-mono-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-mono-500 font-semibold text-mono-900"
                     min="0"
                   />
+                  {/* Đề xuất % lợi nhuận */}
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, targetProfitPercent: 20 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      20%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, targetProfitPercent: 30 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      30%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, targetProfitPercent: 50 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      50%
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
@@ -595,17 +676,48 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   </label>
                   <input
                     type="number"
-                    value={formData.percentDiscount}
+                    value={formData.percentDiscount || ""}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
                         percentDiscount: parseInt(e.target.value) || 0,
                       })
                     }
+                    placeholder="VD: 10"
                     className="w-full border border-mono-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-mono-500 font-semibold text-mono-900"
                     min="0"
                     max="100"
                   />
+                  {/* Đề xuất % giảm giá */}
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, percentDiscount: 0 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      0%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, percentDiscount: 10 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      10%
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, percentDiscount: 20 })
+                      }
+                      className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                    >
+                      20%
+                    </button>
+                  </div>
                 </div>
               </div>
 

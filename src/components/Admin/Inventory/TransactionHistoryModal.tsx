@@ -86,7 +86,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
       <div className="bg-white rounded-lg p-6 w-full max-w-4xl m-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-mono-800">
-            📜 Lịch sử giao dịch
+            📜 Lịch sử nhập kho
           </h2>
           <button
             onClick={onClose}

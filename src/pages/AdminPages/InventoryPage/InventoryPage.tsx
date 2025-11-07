@@ -212,6 +212,9 @@ const InventoryPage = () => {
                 Sản phẩm
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
+                Hình ảnh
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Biến thể / Size
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
@@ -250,9 +253,45 @@ const InventoryPage = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-mono-900">
-                      {item.variant?.color?.name || "N/A"} /{" "}
-                      {item.size?.value || "N/A"}
+                    <div className="flex items-center gap-3">
+                      {/* Hiển thị ảnh biến thể nếu có */}
+                      {item.variant?.imagesvariant?.[0]?.url ? (
+                        <img
+                          src={item.variant.imagesvariant[0].url}
+                          alt={item.variant.color?.name || "Variant"}
+                          className="w-16 h-16 object-cover rounded-lg border-2 border-mono-200 shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-mono-100 rounded-lg flex items-center justify-center border-2 border-mono-200">
+                          <span className="text-mono-400 text-xs">No img</span>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col gap-1">
+                      {/* Hiển thị màu sắc với color swatch */}
+                      <div className="flex items-center gap-2">
+                        {item.variant?.color?.hexCode && (
+                          <div
+                            className="w-5 h-5 rounded-full border-2 border-mono-300 shadow-sm"
+                            style={{
+                              backgroundColor: item.variant.color.hexCode,
+                            }}
+                            title={item.variant.color.name}
+                          />
+                        )}
+                        <span className="text-sm font-semibold text-mono-900">
+                          {item.variant?.color?.name || "N/A"}
+                        </span>
+                      </div>
+                      {/* Hiển thị size */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-mono-600">Size:</span>
+                        <span className="text-sm font-bold text-mono-900 bg-mono-100 px-2 py-0.5 rounded">
+                          {item.size?.value || "N/A"}
+                        </span>
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">

@@ -20,8 +20,13 @@ export interface InventoryItemVariant {
     _id: string;
     name: string;
     code?: string;
+    hexCode?: string;
   };
   gender?: string;
+  imagesvariant?: Array<{
+    url: string;
+    publicId?: string;
+  }>;
 }
 
 export interface InventoryItemSize {

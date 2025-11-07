@@ -31,7 +31,7 @@ interface LinkProps {
 }
 
 const AdminSidebar = () => {
-  const activeClass = "bg-mono-900 border-l-[6px] border-mono-700";
+  const activeClass = "bg-mono-800 border-l-4 border-white";
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const [isExpanded, setIsExpanded] = useState(window.innerWidth >= 768);
   const { hasAdminOnlyAccess } = useAuth();
@@ -113,25 +113,25 @@ const AdminSidebar = () => {
 
   return (
     <aside
-      className={`bg-[#16283C] border-r min-h-screen transition-all duration-300 ${
+      className={`bg-mono-black border-r border-mono-800 min-h-screen transition-all duration-300 ${
         isExpanded ? "w-48" : "w-16"
       } sticky top-0 left-0 text-white text-center py-6`}
       id="adminSide"
     >
       <button
         onClick={toggleSidebar}
-        className="text-white focus:outline-none mb-4 flex flex-row items-center gap-1 m-auto"
+        className="text-white hover:text-mono-300 focus:outline-none mb-4 flex flex-row items-center gap-1 m-auto transition-colors duration-200"
       >
         <FaBars className="text-lg mx-auto" />
         <p className={`${isExpanded ? "block" : "hidden"}`}>Menu</p>
       </button>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1">
         {filteredLinks.map((link, index) => (
           <div key={index}>
-            <div className="flex items-center justify-between transition-all duration-300 hover:bg-mono-900">
+            <div className="flex items-center justify-between transition-all duration-300 hover:bg-mono-800">
               <Link
                 to={link.href || "#"}
-                className={`flex items-center w-full gap-3 px-4 py-3 text-sm transition-all duration-300 hover:bg-mono-900 ${
+                className={`flex items-center w-full gap-3 px-4 py-3 text-sm transition-all duration-300 hover:bg-mono-800 ${
                   pathname === link.href ? activeClass : ""
                 }`}
               >
@@ -143,7 +143,7 @@ const AdminSidebar = () => {
               {link.subLinks && isExpanded && (
                 <button
                   onClick={() => toggleMenu(link.name)}
-                  className="text-white focus:outline-none"
+                  className="text-white hover:text-mono-300 focus:outline-none transition-colors duration-200"
                 >
                   <FaChevronDown
                     className={`transition-transform mr-2 ${
@@ -159,7 +159,7 @@ const AdminSidebar = () => {
                   <Link
                     to={subLink.href}
                     key={subIndex}
-                    className={`px-4 py-2 text-sm transition-all duration-300 hover:bg-mono-900 ${
+                    className={`px-4 py-2 text-sm transition-all duration-300 hover:bg-mono-800 ${
                       pathname === subLink.href ? activeClass : ""
                     }`}
                   >
