@@ -35,7 +35,8 @@ const ListCustomerPage: React.FC = () => {
   const fetchSessions = async () => {
     try {
       const res = await sessionUserApi.getAllSessions();
-      setSessions(res.data.sessions || res.data.data || []);
+      const sessionsData = res.data.data || res.data;
+      setSessions(Array.isArray(sessionsData) ? sessionsData : []);
     } catch {
       setSessions([]);
     }
@@ -207,7 +208,8 @@ const ListCustomerPage: React.FC = () => {
                         .map((s) => (
                           <div key={s._id} className="mb-1">
                             <span className="text-xs">
-                              {s.device?.browser || "Unknown"} - {s.ip} <br />
+                              {s.device?.browser?.name || "Unknown"} - {s.ip}{" "}
+                              <br />
                               {new Date(s.createdAt).toLocaleString()}
                             </span>
                           </div>

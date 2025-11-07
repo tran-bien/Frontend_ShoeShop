@@ -28,10 +28,16 @@ const ShipperPage = () => {
   const fetchShippers = async () => {
     try {
       setLoading(true);
-      const response = await ShipperService.getShippers(filterAvailable);
-      setShippers(response.data);
+      const params =
+        filterAvailable !== undefined
+          ? { available: filterAvailable }
+          : undefined;
+      const response = await ShipperService.getShippers(params);
+      // Backend returns: { success: true, data: { shippers: [], pagination: {} } }
+      setShippers(response.data.data?.shippers || []);
     } catch (error) {
       console.error("Error fetching shippers:", error);
+      setShippers([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -47,13 +53,11 @@ const ShipperPage = () => {
   };
 
   const calculateSuccessRate = (stats: {
-    totalDeliveries: number;
-    successfulDeliveries: number;
+    total: number;
+    successful: number;
   }) => {
-    if (stats.totalDeliveries === 0) return 0;
-    return ((stats.successfulDeliveries / stats.totalDeliveries) * 100).toFixed(
-      1
-    );
+    if (stats.total === 0) return 0;
+    return ((stats.successful / stats.total) * 100).toFixed(1);
   };
 
   return (
@@ -174,19 +178,19 @@ const ShipperPage = () => {
                   <div className="text-center">
                     <div className="text-xs text-mono-500">Tổng</div>
                     <div className="text-lg font-bold text-mono-900">
-                      {shipper.shipper.deliveryStats.totalDeliveries}
+                      {shipper.shipper.deliveryStats.total}
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="text-xs text-mono-500">Thành công</div>
                     <div className="text-lg font-bold text-mono-800">
-                      {shipper.shipper.deliveryStats.successfulDeliveries}
+                      {shipper.shipper.deliveryStats.successful}
                     </div>
                   </div>
                   <div className="text-center">
                     <div className="text-xs text-mono-500">Thất bại</div>
                     <div className="text-lg font-bold text-mono-900">
-                      {shipper.shipper.deliveryStats.failedDeliveries}
+                      {shipper.shipper.deliveryStats.failed}
                     </div>
                   </div>
                 </div>

@@ -221,7 +221,7 @@ const NotificationsPage = () => {
               onClick={() =>
                 setParams((prev) => ({ ...prev, page: prev.page! - 1 }))
               }
-              disabled={!pagination.hasPrev}
+              disabled={pagination.page <= 1}
               className="px-4 py-2 text-sm font-medium text-mono-700 bg-white border border-mono-200 rounded-lg hover:bg-mono-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Trước
@@ -235,7 +235,7 @@ const NotificationsPage = () => {
               onClick={() =>
                 setParams((prev) => ({ ...prev, page: prev.page! + 1 }))
               }
-              disabled={!pagination.hasNext}
+              disabled={pagination.page >= pagination.totalPages}
               className="px-4 py-2 text-sm font-medium text-mono-700 bg-white border border-mono-200 rounded-lg hover:bg-mono-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Sau

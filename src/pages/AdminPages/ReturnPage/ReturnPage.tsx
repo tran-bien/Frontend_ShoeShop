@@ -12,8 +12,11 @@ const ReturnPage = () => {
   const [stats, setStats] = useState<{
     totalRequests: number;
     pendingRequests: number;
+    approvedRequests?: number;
     completedRequests: number;
     rejectedRequests: number;
+    returnRequests?: number;
+    exchangeRequests?: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,15 +43,20 @@ const ReturnPage = () => {
   const fetchReturns = async () => {
     try {
       setLoading(true);
-      const response = await ReturnService.getReturnRequests({
+      const params: Record<string, unknown> = {
         page: currentPage,
         limit: 20,
-        status: filter.status || undefined,
-        type: (filter.type as "RETURN" | "EXCHANGE" | "") || undefined,
-      });
+      };
 
-      setReturns(response.data.items);
-      setTotalPages(response.data.pagination.totalPages);
+      if (filter.status) params.status = filter.status;
+      if (filter.type) params.type = filter.type;
+
+      const response = await ReturnService.getReturnRequests(params);
+
+      // Backend trả về { success: true, data: { items: [], pagination: {} } }
+      const data = response.data.data;
+      setReturns(data?.items || []);
+      setTotalPages(data?.pagination?.totalPages || 1);
     } catch (error) {
       console.error("Error fetching returns:", error);
     } finally {
@@ -59,7 +67,10 @@ const ReturnPage = () => {
   const fetchStats = async () => {
     try {
       const response = await ReturnService.getReturnStats();
-      setStats(response.data);
+      const statsData = response.data.data || response.data;
+      if ("totalRequests" in statsData) {
+        setStats(statsData);
+      }
     } catch (error) {
       console.error("Error fetching stats:", error);
     }

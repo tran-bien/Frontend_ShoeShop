@@ -74,7 +74,7 @@ const LoyaltyPage = () => {
                 </h1>
               </div>
               <p className="text-mono-300 text-sm">
-                {loyaltyInfo.currentTier.description}
+                Hạng thành viên hiện tại của bạn
               </p>
             </div>
             <div className="text-right">
@@ -164,23 +164,9 @@ const LoyaltyPage = () => {
               </h2>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-mono-700">Giảm giá</span>
-                  <span className="text-sm font-medium text-mono-black">
-                    {loyaltyInfo.currentTier.benefits.discountPercent}%
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
                   <span className="text-sm text-mono-700">Điểm tích lũy</span>
                   <span className="text-sm font-medium text-mono-black">
                     x{loyaltyInfo.currentTier.benefits.pointsMultiplier}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-mono-700">Miễn phí ship</span>
-                  <span className="text-sm font-medium text-mono-black">
-                    {loyaltyInfo.currentTier.benefits.freeShipping
-                      ? "Có"
-                      : "Không"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -301,21 +287,13 @@ const LoyaltyPage = () => {
                     )}
                   </div>
 
-                  <p className="text-sm text-mono-600 mb-4">
-                    {tier.description}
-                  </p>
+                  <p className="text-sm text-mono-600 mb-4">Hạng {tier.name}</p>
 
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-mono-600">Điểm tối thiểu</span>
                       <span className="font-medium text-mono-black">
                         {tier.minPoints.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-mono-600">Giảm giá</span>
-                      <span className="font-medium text-mono-black">
-                        {tier.benefits.discountPercent}%
                       </span>
                     </div>
                     <div className="flex justify-between">

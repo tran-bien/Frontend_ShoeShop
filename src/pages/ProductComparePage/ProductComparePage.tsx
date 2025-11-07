@@ -114,13 +114,22 @@ const ProductComparePage: React.FC = () => {
                 {compareList.map((product) => (
                   <td key={product._id} className="p-4 text-center">
                     <div className="text-2xl font-bold text-mono-900">
-                      {product.finalPrice?.toLocaleString("vi-VN")}₫
+                      {product.priceRange?.min?.toLocaleString("vi-VN") || 0}₫
+                      {product.priceRange?.min !== product.priceRange?.max &&
+                        product.priceRange?.max && (
+                          <span>
+                            {" "}
+                            - {product.priceRange.max.toLocaleString("vi-VN")}₫
+                          </span>
+                        )}
                     </div>
-                    {product.basePrice !== product.finalPrice && (
-                      <div className="text-sm text-mono-500 line-through mt-1">
-                        {product.basePrice?.toLocaleString("vi-VN")}₫
-                      </div>
-                    )}
+                    {product.hasDiscount &&
+                      product.maxDiscountPercent &&
+                      product.maxDiscountPercent > 0 && (
+                        <div className="text-sm text-red-600 mt-1">
+                          Giảm đến {product.maxDiscountPercent}%
+                        </div>
+                      )}
                   </td>
                 ))}
               </tr>
@@ -163,23 +172,7 @@ const ProductComparePage: React.FC = () => {
                 ))}
               </tr>
 
-              {/* Gender */}
-              <tr className="border-b border-mono-100 hover:bg-mono-50">
-                <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
-                  Giới tính
-                </td>
-                {compareList.map((product) => (
-                  <td key={product._id} className="p-4 text-center">
-                    <span className="text-mono-900">
-                      {product.gender === "male"
-                        ? "Nam"
-                        : product.gender === "female"
-                        ? "Nữ"
-                        : "Unisex"}
-                    </span>
-                  </td>
-                ))}
-              </tr>
+              {/* Gender - Removed as not in Product type */}
 
               {/* Colors */}
               <tr className="border-b border-mono-100 hover:bg-mono-50">
@@ -192,27 +185,24 @@ const ProductComparePage: React.FC = () => {
                 {compareList.map((product) => (
                   <td key={product._id} className="p-4">
                     <div className="flex flex-wrap gap-2 justify-center">
-                      {product.colors && product.colors.length > 0 ? (
-                        product.colors.map((color) => (
+                      {product.variantSummary?.colors &&
+                      product.variantSummary.colors.length > 0 ? (
+                        product.variantSummary.colors.map((color, index) => (
                           <div
-                            key={typeof color === "object" ? color._id : color}
+                            key={index}
                             className="flex flex-col items-center gap-1"
                           >
                             <ColorSwatch
-                              color={
-                                typeof color === "object"
-                                  ? {
-                                      name: color.name,
-                                      code: color.code,
-                                      type: color.type,
-                                      secondaryCode: color.secondaryCode,
-                                    }
-                                  : { name: "", code: "", type: "solid" }
-                              }
+                              color={{
+                                _id: `${product._id}-${index}`,
+                                name: color.name,
+                                code: color.code || "#000000",
+                                type: color.type || "solid",
+                              }}
                               size="md"
                             />
                             <span className="text-xs text-mono-600">
-                              {typeof color === "object" ? color.name : ""}
+                              {color.name}
                             </span>
                           </div>
                         ))
@@ -234,19 +224,8 @@ const ProductComparePage: React.FC = () => {
                 </td>
                 {compareList.map((product) => (
                   <td key={product._id} className="p-4 text-center">
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {product.sizes && product.sizes.length > 0 ? (
-                        product.sizes.map((size) => (
-                          <span
-                            key={typeof size === "object" ? size._id : size}
-                            className="px-3 py-1 bg-mono-100 text-mono-700 rounded text-sm"
-                          >
-                            {typeof size === "object" ? size.value : size}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-mono-500">N/A</span>
-                      )}
+                    <div className="text-mono-600">
+                      {product.variantSummary?.sizeCount || 0} kích cỡ
                     </div>
                   </td>
                 ))}

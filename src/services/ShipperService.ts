@@ -5,15 +5,27 @@ import type {
   UpdateDeliveryStatusData,
   UpdateLocationData,
   ShipperStatsResponse,
+  Shipper,
 } from "../types/shipper";
 import { ApiResponse } from "../types/api";
+
+// Response type for getShippers
+interface GetShippersResponse {
+  shippers: Shipper[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
 
 // Admin Shipper Service
 export const adminShipperService = {
   // Lấy danh sách shipper
   getShippers: (params?: {
     available?: boolean;
-  }): Promise<{ data: ApiResponse<ShipperInfo[]> }> =>
+  }): Promise<{ data: ApiResponse<GetShippersResponse> }> =>
     axiosInstanceAuth.get("/api/v1/shipper/list", { params }),
 
   // Phân công đơn hàng cho shipper

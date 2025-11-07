@@ -19,9 +19,13 @@ export interface ShipperLocation {
 // =======================
 
 export interface ShipperDeliveryStats {
-  totalDeliveries: number;
-  successfulDeliveries: number;
-  failedDeliveries: number;
+  total: number; // Backend field name
+  successful: number; // Backend field name
+  failed: number; // Backend field name
+  // Legacy support
+  totalDeliveries?: number;
+  successfulDeliveries?: number;
+  failedDeliveries?: number;
   successRate?: number;
 }
 
