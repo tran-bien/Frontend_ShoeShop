@@ -5,14 +5,16 @@ import {
   FaChartLine,
   FaExclamationTriangle,
   FaDollarSign,
-  FaHistory,
 } from "react-icons/fa";
 import InventoryService, {
   InventoryStats,
 } from "../../../services/InventoryService";
 import type { InventoryItem } from "../../../types/inventory";
 import StockInModal from "../../../components/Admin/Inventory/StockInModal";
+import StockOutModal from "../../../components/Admin/Inventory/StockOutModal";
+import AdjustStockModal from "../../../components/Admin/Inventory/AdjustStockModal";
 import TransactionHistoryModal from "../../../components/Admin/Inventory/TransactionHistoryModal";
+import InventoryDetailModal from "../../../components/Admin/Inventory/InventoryDetailModal";
 
 const InventoryPage = () => {
   const [inventoryList, setInventoryList] = useState<InventoryItem[]>([]);
@@ -28,7 +30,10 @@ const InventoryPage = () => {
 
   // Modals
   const [showStockInModal, setShowStockInModal] = useState(false);
+  const [showStockOutModal, setShowStockOutModal] = useState(false);
+  const [showAdjustModal, setShowAdjustModal] = useState(false);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
   const fetchInventory = async () => {
@@ -101,10 +106,27 @@ const InventoryPage = () => {
     setShowTransactionModal(true);
   };
 
+  const handleViewDetail = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setShowDetailModal(true);
+  };
+
+  const handleStockOut = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setShowStockOutModal(true);
+  };
+
+  const handleAdjustStock = (item: InventoryItem) => {
+    setSelectedItem(item);
+    setShowAdjustModal(true);
+  };
+
   const onSuccess = () => {
     fetchInventory();
     fetchStats();
     setShowStockInModal(false);
+    setShowStockOutModal(false);
+    setShowAdjustModal(false);
   };
 
   return (
@@ -141,7 +163,7 @@ const InventoryPage = () => {
               <div>
                 <p className="text-mono-500 text-sm">Tồn kho thấp</p>
                 <p className="text-2xl font-bold text-orange-600">
-                  {stats.lowStockItems?.length || 0}
+                  {stats.lowStockItems || 0}
                 </p>
               </div>
               <FaChartLine className="text-mono-600" size={40} />
@@ -153,7 +175,7 @@ const InventoryPage = () => {
               <div>
                 <p className="text-mono-500 text-sm">Hết hàng</p>
                 <p className="text-2xl font-bold text-mono-900">
-                  {stats.outOfStockItems?.length || 0}
+                  {stats.outOfStockItems || 0}
                 </p>
               </div>
               <FaExclamationTriangle className="text-mono-800" size={40} />
@@ -320,13 +342,36 @@ const InventoryPage = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 text-sm">
-                    <button
-                      onClick={() => handleViewTransactions(item)}
-                      className="flex items-center gap-1 text-mono-black hover:text-blue-800"
-                    >
-                      <FaHistory size={16} />
-                      Xem lịch sử
-                    </button>
+                    <div className="flex flex-col gap-1.5">
+                      <button
+                        onClick={() => handleViewDetail(item)}
+                        className="px-3 py-1.5 text-xs font-medium text-mono-700 bg-mono-100 hover:bg-mono-200 rounded border border-mono-300 transition-colors"
+                        title="Xem chi tiết"
+                      >
+                        Chi tiết
+                      </button>
+                      <button
+                        onClick={() => handleStockOut(item)}
+                        className="px-3 py-1.5 text-xs font-medium text-mono-700 bg-white hover:bg-mono-50 rounded border border-mono-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Xuất kho"
+                        disabled={item.isOutOfStock}
+                      >
+                        Xuất kho
+                      </button>
+                      <button
+                        onClick={() => handleAdjustStock(item)}
+                        className="px-3 py-1.5 text-xs font-medium text-mono-700 bg-white hover:bg-mono-50 rounded border border-mono-300 transition-colors"
+                        title="Điều chỉnh tồn kho"
+                      >
+                        Điều chỉnh
+                      </button>
+                      <button
+                        onClick={() => handleViewTransactions(item)}
+                        className="px-3 py-1.5 text-xs font-medium text-white bg-mono-black hover:bg-mono-800 rounded border border-mono-black transition-colors"
+                      >
+                        Lịch sử
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -363,6 +408,30 @@ const InventoryPage = () => {
         <StockInModal
           onClose={() => setShowStockInModal(false)}
           onSuccess={onSuccess}
+        />
+      )}
+      {showStockOutModal && selectedItem && (
+        <StockOutModal
+          item={selectedItem}
+          onClose={() => setShowStockOutModal(false)}
+          onSuccess={onSuccess}
+        />
+      )}
+      {showAdjustModal && selectedItem && (
+        <AdjustStockModal
+          item={selectedItem}
+          onClose={() => setShowAdjustModal(false)}
+          onSuccess={onSuccess}
+        />
+      )}
+      {showDetailModal && selectedItem && (
+        <InventoryDetailModal
+          itemId={selectedItem._id}
+          onClose={() => setShowDetailModal(false)}
+          onUpdate={() => {
+            fetchInventory();
+            fetchStats();
+          }}
         />
       )}
       {showTransactionModal && selectedItem && (

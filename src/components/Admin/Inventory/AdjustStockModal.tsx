@@ -70,7 +70,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4 text-mono-800">
-          🔧 Điều chỉnh tồn kho - {item.product?.name}
+          Điều chỉnh tồn kho - {item.product?.name}
         </h2>
 
         {/* Product Info */}
@@ -173,14 +173,14 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
               disabled={loading || getDifference() === 0}
               className="flex-1 bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "Đang xử lý..." : "✅ Điều chỉnh"}
+              {loading ? "Đang xử lý..." : "Điều chỉnh"}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
-              ❌ Hủy
+              Hủy
             </button>
           </div>
         </form>

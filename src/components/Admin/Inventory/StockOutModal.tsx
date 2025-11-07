@@ -56,7 +56,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4 text-mono-800">
-          📤 Xuất kho - {item.product?.name}
+          Xuất kho - {item.product?.name}
         </h2>
 
         {/* Product Info */}
@@ -149,14 +149,14 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
               disabled={loading}
               className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "Đang xử lý..." : "✅ Xuất kho"}
+              {loading ? "Đang xử lý..." : "Xuất kho"}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
-              ❌ Hủy
+              Hủy
             </button>
           </div>
         </form>
