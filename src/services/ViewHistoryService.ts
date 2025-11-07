@@ -12,7 +12,7 @@ import type {
 export const publicViewHistoryService = {
   // Track view (public - works for both guest and logged-in users)
   trackView: (productId: string): Promise<{ data: TrackViewResponse }> =>
-    axiosInstance.post("/api/v1/view-history/track", { productId }),
+    axiosInstance.post("/api/v1/users/view-history/track", { productId }),
 };
 
 // =======================
@@ -24,11 +24,11 @@ export const userViewHistoryService = {
   getViewHistory: (
     params: ViewHistoryQueryParams = {}
   ): Promise<{ data: ViewHistoryResponse }> =>
-    axiosInstanceAuth.get("/api/v1/user/view-history", { params }),
+    axiosInstanceAuth.get("/api/v1/users/view-history", { params }),
 
   // Clear view history
   clearHistory: (): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstanceAuth.delete("/api/v1/user/view-history"),
+    axiosInstanceAuth.delete("/api/v1/users/view-history"),
 };
 
 // =======================

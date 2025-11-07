@@ -19,19 +19,19 @@ import type {
 export const userLoyaltyService = {
   // Lấy thông tin điểm và hạng thành viên hiện tại
   getLoyaltyInfo: (): Promise<{ data: LoyaltyInfoResponse }> =>
-    axiosInstanceAuth.get("/api/v1/loyalty"),
+    axiosInstanceAuth.get("/api/v1/users/loyalty/stats"),
 
   // Lấy lịch sử giao dịch điểm
   getTransactions: (
     params: LoyaltyTransactionQueryParams = {}
   ): Promise<{ data: LoyaltyTransactionsResponse }> =>
-    axiosInstanceAuth.get("/api/v1/loyalty/transactions", { params }),
+    axiosInstanceAuth.get("/api/v1/users/loyalty/transactions", { params }),
 
   // Lấy danh sách các hạng thành viên
   getTiers: (
     params: LoyaltyTierQueryParams = {}
   ): Promise<{ data: LoyaltyTiersResponse }> =>
-    axiosInstanceAuth.get("/api/v1/loyalty/tiers", { params }),
+    axiosInstanceAuth.get("/api/v1/admin/loyalty-tiers", { params }),
 };
 
 // =======================
@@ -43,30 +43,30 @@ export const adminLoyaltyService = {
   getAllTiers: (
     params: LoyaltyTierQueryParams = {}
   ): Promise<{ data: LoyaltyTiersResponse }> =>
-    axiosInstanceAuth.get("/api/v1/admin/loyalty/tiers", { params }),
+    axiosInstanceAuth.get("/api/v1/admin/loyalty-tiers", { params }),
 
   // Lấy chi tiết hạng thành viên
   getTierById: (tierId: string): Promise<{ data: LoyaltyTierDetailResponse }> =>
-    axiosInstanceAuth.get(`/api/v1/admin/loyalty/tiers/${tierId}`),
+    axiosInstanceAuth.get(`/api/v1/admin/loyalty-tiers/${tierId}`),
 
   // Tạo hạng thành viên mới
   createTier: (
     data: CreateLoyaltyTierData
   ): Promise<{ data: LoyaltyTierDetailResponse }> =>
-    axiosInstanceAuth.post("/api/v1/admin/loyalty/tiers", data),
+    axiosInstanceAuth.post("/api/v1/admin/loyalty-tiers", data),
 
   // Cập nhật hạng thành viên
   updateTier: (
     tierId: string,
     data: UpdateLoyaltyTierData
   ): Promise<{ data: LoyaltyTierDetailResponse }> =>
-    axiosInstanceAuth.put(`/api/v1/admin/loyalty/tiers/${tierId}`, data),
+    axiosInstanceAuth.put(`/api/v1/admin/loyalty-tiers/${tierId}`, data),
 
   // Xóa hạng thành viên
   deleteTier: (
     tierId: string
   ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstanceAuth.delete(`/api/v1/admin/loyalty/tiers/${tierId}`),
+    axiosInstanceAuth.delete(`/api/v1/admin/loyalty-tiers/${tierId}`),
 
   // Điều chỉnh điểm cho user
   adjustUserPoints: (

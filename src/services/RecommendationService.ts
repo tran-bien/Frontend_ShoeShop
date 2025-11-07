@@ -43,28 +43,30 @@ export const userRecommendationService = {
   getPersonalizedRecommendations: (
     params: RecommendationQueryParams = {}
   ): Promise<{ data: RecommendationsResponse }> =>
-    axiosInstanceAuth.get("/api/v1/recommendations/personalized", { params }),
+    axiosInstanceAuth.get("/api/v1/users/recommendations/personalized", {
+      params,
+    }),
 
   // Lấy lịch sử xem sản phẩm
   getViewHistory: (
     params: ViewHistoryQueryParams = {}
   ): Promise<{ data: ViewHistoryResponse }> =>
-    axiosInstanceAuth.get("/api/v1/view-history", { params }),
+    axiosInstanceAuth.get("/api/v1/users/view-history", { params }),
 
   // Xóa lịch sử xem
   clearViewHistory: (): Promise<{
     data: { success: boolean; message: string };
-  }> => axiosInstanceAuth.delete("/api/v1/view-history"),
+  }> => axiosInstanceAuth.delete("/api/v1/users/view-history"),
 
   // Xóa một sản phẩm khỏi lịch sử
   removeFromViewHistory: (
     productId: string
   ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstanceAuth.delete(`/api/v1/view-history/${productId}`),
+    axiosInstanceAuth.delete(`/api/v1/users/view-history/${productId}`),
 
   // Lấy thông tin hành vi người dùng
   getUserBehavior: (): Promise<{ data: UserBehaviorResponse }> =>
-    axiosInstanceAuth.get("/api/v1/user-behavior"),
+    axiosInstanceAuth.get("/api/v1/users/user-behavior"),
 };
 
 // =======================

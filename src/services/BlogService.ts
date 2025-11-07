@@ -21,23 +21,23 @@ export const publicBlogService = {
   getCategories: (
     params: BlogCategoryQueryParams = {}
   ): Promise<{ data: BlogCategoriesResponse }> =>
-    axiosInstance.get("/api/v1/blog/categories", { params }),
+    axiosInstance.get("/api/v1/blogs/categories", { params }),
 
   // Lấy danh sách bài viết
   getPosts: (
     params: BlogPostQueryParams = {}
   ): Promise<{ data: BlogPostsResponse }> =>
-    axiosInstance.get("/api/v1/blog/posts", { params }),
+    axiosInstance.get("/api/v1/blogs/posts", { params }),
 
   // Lấy chi tiết bài viết
   getPostBySlug: (slug: string): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstance.get(`/api/v1/blog/posts/${slug}`),
+    axiosInstance.get(`/api/v1/blogs/posts/${slug}`),
 
   // Lấy bài viết nổi bật
   getHighlightedPosts: (
     limit: number = 5
   ): Promise<{ data: BlogPostsResponse }> =>
-    axiosInstance.get("/api/v1/blog/posts/highlighted", {
+    axiosInstance.get("/api/v1/blogs/posts/highlighted", {
       params: { limit },
     }),
 
@@ -46,7 +46,7 @@ export const publicBlogService = {
     postId: string,
     limit: number = 4
   ): Promise<{ data: BlogPostsResponse }> =>
-    axiosInstance.get(`/api/v1/blog/posts/${postId}/related`, {
+    axiosInstance.get(`/api/v1/blogs/posts/${postId}/related`, {
       params: { limit },
     }),
 };

@@ -13,7 +13,7 @@ export const cartService = {
   getCart: (): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Getting cart...");
     return axiosInstanceAuth
-      .get("/api/v1/cart")
+      .get("/api/v1/users/cart")
       .then((response) => {
         console.log("🛒 CartService: Cart response received:", response.data);
         return response;
@@ -33,7 +33,7 @@ export const cartService = {
   ): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Adding to cart:", data);
     return axiosInstanceAuth
-      .post("/api/v1/cart/items", data)
+      .post("/api/v1/users/cart/items", data)
       .then((response) => {
         console.log("🛒 CartService: Add to cart response:", response.data);
         return response;
@@ -54,7 +54,7 @@ export const cartService = {
   ): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Updating cart item quantity:", itemId, data);
     return axiosInstanceAuth
-      .put(`/api/v1/cart/items/${itemId}`, data)
+      .put(`/api/v1/users/cart/items/${itemId}`, data)
       .then((response) => {
         console.log("🛒 CartService: Update quantity response:", response.data);
         return response;
@@ -74,7 +74,7 @@ export const cartService = {
   ): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Toggling cart item:", itemId);
     return axiosInstanceAuth
-      .patch(`/api/v1/cart/items/${itemId}/toggle`)
+      .patch(`/api/v1/users/cart/items/${itemId}/toggle`)
       .then((response) => {
         console.log("🛒 CartService: Toggle item response:", response.data);
         return response;
@@ -92,7 +92,7 @@ export const cartService = {
   removeSelectedItems: (): Promise<{ data: CartApiResponse<Cart> }> => {
     console.log("🛒 CartService: Removing selected items");
     return axiosInstanceAuth
-      .delete("/api/v1/cart/items")
+      .delete("/api/v1/users/cart/items")
       .then((response) => {
         console.log(
           "🛒 CartService: Remove selected items response:",
@@ -113,7 +113,7 @@ export const cartService = {
   clearCart: (): Promise<{ data: CartApiResponse }> => {
     console.log("🛒 CartService: Clearing cart");
     return axiosInstanceAuth
-      .delete("/api/v1/cart")
+      .delete("/api/v1/users/cart")
       .then((response) => {
         console.log("🛒 CartService: Clear cart response:", response.data);
         return response;
@@ -133,7 +133,7 @@ export const cartService = {
   ): Promise<{ data: CartApiResponse }> => {
     console.log("🛒 CartService: Previewing order:", data);
     return axiosInstanceAuth
-      .post("/api/v1/cart/preview-before-order", data)
+      .post("/api/v1/users/cart/preview-before-order", data)
       .then((response) => {
         console.log("🛒 CartService: Preview order response:", response.data);
         return response;

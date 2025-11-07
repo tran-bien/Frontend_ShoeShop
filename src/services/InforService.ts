@@ -31,13 +31,13 @@ export interface AddressResponse {
 export const profileService = {
   // Lấy thông tin profile
   getProfile: (): Promise<{ data: ProfileResponse }> =>
-    axiosInstanceAuth.get("/api/v1/users/Profile"),
+    axiosInstanceAuth.get("/api/v1/users/profile"),
 
   // Cập nhật thông tin người dùng
   updateProfile: (
     data: UpdateUserProfileData
   ): Promise<{ data: ApiResponse<User> }> =>
-    axiosInstanceAuth.put("/api/v1/users/Profile", data),
+    axiosInstanceAuth.put("/api/v1/users/profile", data),
 
   // Cập nhật avatar (form-data)
   updateAvatar: (formData: FormData): Promise<{ data: ApiResponse<User> }> =>
