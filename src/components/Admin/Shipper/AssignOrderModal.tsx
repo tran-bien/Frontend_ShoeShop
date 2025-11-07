@@ -195,14 +195,14 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
               disabled={loading || availableShippers.length === 0}
               className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "Đang xử lý..." : "✅ Gán đơn hàng"}
+              {loading ? "Đang xử lý..." : "Gán đơn hàng"}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
-              ❌ Hủy
+              Hủy
             </button>
           </div>
         </form>
