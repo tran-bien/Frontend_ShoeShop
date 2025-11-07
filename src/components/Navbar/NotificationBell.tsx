@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { BellIcon } from "@heroicons/react/24/outline";
 import { userNotificationService } from "../../services/NotificationService";
@@ -19,23 +19,6 @@ export const NotificationBell = () => {
       console.error("Failed to fetch unread count:", error);
     }
   };
-
-  // Fetch recent notifications
-  const fetchNotifications = useCallback(async () => {
-    if (loading) return;
-
-    setLoading(true);
-    try {
-      const { data } = await userNotificationService.getNotifications({
-        limit: 5,
-      });
-      setNotifications(data.data.notifications);
-    } catch (error) {
-      console.error("Failed to fetch notifications:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading]);
 
   // Mark as read
   const handleMarkAsRead = async (notificationId: string) => {
@@ -62,9 +45,27 @@ export const NotificationBell = () => {
   // Fetch notifications when dropdown opens
   useEffect(() => {
     if (isOpen) {
-      fetchNotifications();
+      const loadNotifications = async () => {
+        setLoading(true);
+        try {
+          const { data } = await userNotificationService.getNotifications({
+            limit: 5,
+          });
+          setNotifications(data.data.notifications);
+        } catch (error) {
+          console.error("Failed to fetch notifications:", error);
+          setNotifications([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadNotifications();
+    } else {
+      // Reset khi đóng dropdown
+      setNotifications([]);
+      setLoading(false);
     }
-  }, [isOpen, fetchNotifications]);
+  }, [isOpen]);
 
   return (
     <div className="relative">
