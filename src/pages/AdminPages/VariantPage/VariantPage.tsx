@@ -33,13 +33,13 @@ const VariantPage: React.FC = () => {
     hasAdminOnlyAccess,
   } = useAuth();
 
-  // State cho qu?n l� ?nh
+  // State cho quản lý ảnh
   const [showImageManager, setShowImageManager] = useState<string | null>(null);
   const [variantImages, setVariantImages] = useState<Variant["imagesvariant"]>(
     []
   );
 
-  // L?y danh s�ch bi?n th?
+  // Lấy danh sách biến thể
   const fetchVariants = async (page: number = 1) => {
     setLoading(true);
     try {
@@ -71,7 +71,7 @@ const VariantPage: React.FC = () => {
     }
   };
 
-  // L?y danh s�ch bi?n th? d� x�a
+  // Lấy danh sách biến thể đã xóa
   const fetchDeletedVariants = async (page: number = 1) => {
     setLoading(true);
     try {
@@ -114,13 +114,13 @@ const VariantPage: React.FC = () => {
     sortOption,
   ]);
 
-  // X�a m?m
+  // Xóa mềm
   const handleDelete = async (id: string) => {
     await variantApi.deleteVariant(id);
     fetchVariants();
   };
 
-  // Kh�i ph?c
+  // Khôi phục
   const handleRestore = async (id: string) => {
     await variantApi.restoreVariant(id);
     if (showDeleted) {
@@ -128,35 +128,35 @@ const VariantPage: React.FC = () => {
     }
     fetchVariants();
   };
-  // B?t d?u c?p nh?t
+  // Bắt đầu cập nhật
   const handleEdit = (variant: Variant) => {
     setEditingVariant(variant);
     setIsFormOpen(true);
   };
 
-  // M? form th�m m?i
+  // Mở form thêm mới
   const handleAddNew = () => {
     setEditingVariant(null);
     setIsFormOpen(true);
   };
 
-  // Sau khi th�m/c?p nh?t th�nh c�ng
+  // Sau khi thêm/cập nhật thành công
   const handleSuccess = () => {
     setEditingVariant(null);
     setIsFormOpen(false);
     fetchVariants();
   };
 
-  // ��ng form
+  // Đóng form
   const handleCloseForm = () => {
     setEditingVariant(null);
     setIsFormOpen(false);
   };
 
-  // M? modal qu?n l� ?nh
+  // Mở modal quản lý ảnh
   const handleOpenImageManager = async (variant: Variant) => {
     setShowImageManager(variant._id);
-    // L?y l?i ?nh bi?n th? t? API
+    // Lấy lại ảnh biến thể từ API
     if (variant.imagesvariant) {
       setVariantImages(variant.imagesvariant);
     } else {
@@ -169,10 +169,10 @@ const VariantPage: React.FC = () => {
   return (
     <div className="p-6 w-full font-sans bg-mono-50 min-h-screen">
       <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug mb-6">
-        Qu?n L� Bi?n Th? S?n Ph?m
+        Quản lý biến thể sản phẩm
       </h2>
 
-      {/* Tab chuy?n d?i */}
+      {/* Tab chuyển đổi */}
       <div className="flex border-b mb-6 bg-white rounded-t-lg">
         <button
           onClick={() => {
@@ -185,7 +185,7 @@ const VariantPage: React.FC = () => {
               : "text-mono-500 border-transparent hover:text-mono-black"
           }`}
         >
-          Bi?n th? ho?t d?ng
+          Biến thể hoạt động
           {!showDeleted && totalVariants > 0 ? ` (${totalVariants})` : ""}
         </button>
         {hasStaffAccess() && (
@@ -200,7 +200,7 @@ const VariantPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Bi?n th? d� x�a
+            Biến thể đã xóa
           </button>
         )}
         {!showDeleted && canCreate() && (
@@ -208,7 +208,7 @@ const VariantPage: React.FC = () => {
             className="ml-auto px-6 py-3 bg-mono-black hover:bg-mono-800 text-white rounded-lg font-medium mr-3 my-2 transition-colors shadow-sm"
             onClick={handleAddNew}
           >
-            + Th�m Bi?n Th?
+            + Thêm biến thể
           </button>
         )}
       </div>
@@ -221,7 +221,7 @@ const VariantPage: React.FC = () => {
             <div className="flex-1">
               <input
                 type="text"
-                placeholder="?? T�m ki?m bi?n th? theo s?n ph?m, m�u s?c..."
+                placeholder="🔍 Tìm kiếm biến thể theo sản phẩm, màu sắc..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -243,9 +243,9 @@ const VariantPage: React.FC = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">T?t c? gi?i t�nh</option>
+              <option value="all">Tất cả giới tính</option>
               <option value="male">Nam</option>
-              <option value="female">N?</option>
+              <option value="female">Nữ</option>
               <option value="unisex">Unisex</option>
             </select>
 
@@ -258,9 +258,9 @@ const VariantPage: React.FC = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">T?t c? tr?ng th�i</option>
-              <option value="true">Ho?t d?ng</option>
-              <option value="false">Ng?ng ho?t d?ng</option>
+              <option value="all">Tất cả trạng thái</option>
+              <option value="true">Hoạt động</option>
+              <option value="false">Ngừng hoạt động</option>
             </select>
 
             {/* Sort */}
@@ -272,9 +272,9 @@ const VariantPage: React.FC = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value='{"createdAt":-1}'>M?i nh?t</option>
-              <option value='{"createdAt":1}'>Cu nh?t</option>
-              <option value='{"updatedAt":-1}'>C?p nh?t g?n d�y</option>
+              <option value='{"createdAt":-1}'>Mới nhất</option>
+              <option value='{"createdAt":1}'>Cũ nhất</option>
+              <option value='{"updatedAt":-1}'>Cập nhật gần đây</option>
             </select>
 
             {/* Clear Filters */}
@@ -292,22 +292,22 @@ const VariantPage: React.FC = () => {
                 }}
                 className="px-3 py-2 text-sm text-mono-black hover:text-mono-900 font-medium border border-mono-200 rounded-lg hover:bg-mono-50 transition-colors"
               >
-                ? X�a b? l?c
+                ✖ Xóa bộ lọc
               </button>
             )}
           </div>
         </div>
       )}
-      {/* Modal hi?n th? form */}
+      {/* Modal hiển thị form */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl relative">
             <button
               className="absolute top-2 right-2 text-mono-500 hover:text-mono-800 text-xl"
               onClick={handleCloseForm}
-              title="��ng"
+              title="Đóng"
             >
-              �
+              ×
             </button>
             <VariantForm
               onSuccess={handleSuccess}
@@ -319,7 +319,7 @@ const VariantPage: React.FC = () => {
       {loading ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-mono-black"></div>
-          <p className="mt-4 text-mono-600">�ang t?i d? li?u...</p>
+          <p className="mt-4 text-mono-600">Đang tải dữ liệu...</p>
         </div>
       ) : (showDeleted ? deletedVariants : variants).length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
@@ -338,15 +338,15 @@ const VariantPage: React.FC = () => {
           </svg>
           <h3 className="text-lg font-medium text-mono-900 mb-2">
             {showDeleted
-              ? "Kh�ng c� bi?n th? n�o d� x�a"
-              : "Kh�ng t�m th?y bi?n th?"}
+              ? "Không có biến thể nào đã xóa"
+              : "Không tìm thấy biến thể"}
           </h3>
           <p className="text-mono-500">
             {showDeleted
-              ? "Chua c� bi?n th? n�o b? x�a trong h? th?ng"
+              ? "Chưa có biến thể nào bị xóa trong hệ thống"
               : searchQuery || genderFilter !== "all"
-              ? "Th? thay d?i b? l?c ho?c t? kh�a t�m ki?m"
-              : "H�y th�m bi?n th? d?u ti�n cho s?n ph?m"}
+              ? "Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm"
+              : "Hãy thêm biến thể đầu tiên cho sản phẩm"}
           </p>
         </div>
       ) : (
@@ -356,25 +356,25 @@ const VariantPage: React.FC = () => {
               <thead className="bg-gradient-to-r from-mono-50 to-mono-100">
                 <tr>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Bi?n th?
+                    Biến thể
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    M�u s?c
+                    Màu sắc
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Gi?i t�nh
+                    Giới tính
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Size & SKU
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    T?n kho
+                    Tồn kho
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Tr?ng th�i
+                    Trạng thái
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    H�nh d?ng
+                    Hành động
                   </th>
                 </tr>
               </thead>
@@ -465,7 +465,7 @@ const VariantPage: React.FC = () => {
                           ))}
                           {v.sizes && v.sizes.length > 3 && (
                             <span className="text-xs text-mono-black font-medium">
-                              +{v.sizes.length - 3} size kh�c
+                              +{v.sizes.length - 3} size khác
                             </span>
                           )}
                         </div>
@@ -476,17 +476,17 @@ const VariantPage: React.FC = () => {
                             {
                               in_stock: (
                                 <span className="bg-mono-200 text-mono-900 px-3 py-1 rounded-full text-xs font-semibold">
-                                  C�n h�ng
+                                  Còn hàng
                                 </span>
                               ),
                               low_stock: (
                                 <span className="bg-mono-300 text-mono-900 px-3 py-1 rounded-full text-xs font-semibold">
-                                  S?p h?t
+                                  Sắp hết
                                 </span>
                               ),
                               out_of_stock: (
                                 <span className="bg-mono-300 text-mono-900 px-3 py-1 rounded-full text-xs font-semibold">
-                                  H?t h�ng
+                                  Hết hàng
                                 </span>
                               ),
                             }[stockStatus]
@@ -499,7 +499,7 @@ const VariantPage: React.FC = () => {
                       <td className="px-6 py-4 text-center">
                         {v.deletedAt ? (
                           <span className="bg-mono-200 text-mono-800 px-3 py-1.5 rounded-full text-xs font-semibold">
-                            �� x�a
+                            Đã xóa
                           </span>
                         ) : (
                           <span
@@ -509,7 +509,7 @@ const VariantPage: React.FC = () => {
                                 : "bg-mono-100 text-mono-700"
                             }`}
                           >
-                            {v.isActive ? "? Ho?t d?ng" : "? Ng?ng"}
+                            {v.isActive ? "Hoạt động" : "Ngừng"}
                           </span>
                         )}
                       </td>
@@ -520,7 +520,7 @@ const VariantPage: React.FC = () => {
                               <button
                                 className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                                 onClick={() => handleOpenImageManager(v)}
-                                title="Qu?n l� ?nh"
+                                title="Quản lý ảnh"
                               >
                                 <svg
                                   className="w-3.5 h-3.5"
@@ -535,13 +535,13 @@ const VariantPage: React.FC = () => {
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                   />
                                 </svg>
-                                ?nh
+                                Ảnh
                               </button>
                               {canUpdate() && (
                                 <button
                                   className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                   onClick={() => handleEdit(v)}
-                                  title="S?a bi?n th?"
+                                  title="Sửa biến thể"
                                 >
                                   <svg
                                     className="w-3.5 h-3.5"
@@ -556,7 +556,7 @@ const VariantPage: React.FC = () => {
                                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                     />
                                   </svg>
-                                  S?a
+                                  Sửa
                                 </button>
                               )}
                               {canToggleStatus() && (
@@ -574,7 +574,7 @@ const VariantPage: React.FC = () => {
                                     fetchVariants(currentPage);
                                   }}
                                   title={
-                                    v.isActive ? "T?t ho?t d?ng" : "K�ch ho?t"
+                                    v.isActive ? "Tắt hoạt động" : "Kích hoạt"
                                   }
                                 >
                                   <svg
@@ -590,14 +590,14 @@ const VariantPage: React.FC = () => {
                                       d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                                     />
                                   </svg>
-                                  {v.isActive ? "T?t" : "B?t"}
+                                  {v.isActive ? "Tắt" : "Bật"}
                                 </button>
                               )}
                               {canDelete() && !v.deletedAt && (
                                 <button
                                   className="px-3 py-1.5 bg-red-50 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-1.5"
                                   onClick={() => handleDelete(v._id)}
-                                  title="X�a bi?n th?"
+                                  title="Xóa biến thể"
                                 >
                                   <svg
                                     className="w-3.5 h-3.5"
@@ -612,7 +612,7 @@ const VariantPage: React.FC = () => {
                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                     />
                                   </svg>
-                                  X�a
+                                  Xóa
                                 </button>
                               )}
                             </>
@@ -621,7 +621,7 @@ const VariantPage: React.FC = () => {
                               <button
                                 className="px-3 py-1.5 bg-green-50 hover:bg-mono-200 text-mono-900 text-xs font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-1.5"
                                 onClick={() => handleRestore(v._id)}
-                                title="Kh�i ph?c bi?n th?"
+                                title="Khôi phục biến thể"
                               >
                                 <svg
                                   className="w-3.5 h-3.5"
@@ -636,7 +636,7 @@ const VariantPage: React.FC = () => {
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                                   />
                                 </svg>
-                                Kh�i ph?c
+                                Khôi phục
                               </button>
                             )
                           )}
@@ -660,7 +660,7 @@ const VariantPage: React.FC = () => {
                   disabled={currentPage === 1}
                   className="relative inline-flex items-center px-4 py-2 border border-mono-300 text-sm font-medium rounded-md text-mono-700 bg-white hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Tru?c
+                  Trước
                 </button>
                 <button
                   onClick={() =>
@@ -675,17 +675,17 @@ const VariantPage: React.FC = () => {
               <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm text-mono-700">
-                    Hi?n th?{" "}
+                    Hiển thị{" "}
                     <span className="font-medium">
                       {(currentPage - 1) * limit + 1}
                     </span>{" "}
-                    d?n{" "}
+                    đến{" "}
                     <span className="font-medium">
                       {Math.min(currentPage * limit, totalVariants)}
                     </span>{" "}
-                    trong t?ng s?{" "}
-                    <span className="font-medium">{totalVariants}</span> bi?n
-                    th?
+                    trong tổng số{" "}
+                    <span className="font-medium">{totalVariants}</span> biến
+                    thể
                   </p>
                 </div>
                 <div>
@@ -697,7 +697,7 @@ const VariantPage: React.FC = () => {
                       disabled={currentPage === 1}
                       className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-mono-300 bg-white text-sm font-medium text-mono-500 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      ?
+                      ‹
                     </button>
                     {[...Array(totalPages)].map((_, idx) => {
                       const page = idx + 1;
@@ -741,7 +741,7 @@ const VariantPage: React.FC = () => {
                       disabled={currentPage === totalPages}
                       className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-mono-300 bg-white text-sm font-medium text-mono-500 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      ?
+                      ›
                     </button>
                   </nav>
                 </div>
@@ -750,7 +750,7 @@ const VariantPage: React.FC = () => {
           )}
         </>
       )}
-      {/* Modal qu?n l� ?nh variant */}
+      {/* Modal quản lý ảnh variant */}
       {showImageManager && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-4 w-full max-w-xl relative">
@@ -758,13 +758,13 @@ const VariantPage: React.FC = () => {
               className="absolute top-2 right-2 text-xl font-bold"
               onClick={() => setShowImageManager(null)}
             >
-              �
+              ×
             </button>
             <VariantImagesManager
               variantId={showImageManager}
               images={variantImages}
               reloadImages={async () => {
-                // G?i l?i API l?y variant theo id
+                // Gọi lại API lấy variant theo id
                 const res = await variantApi.getVariantById(showImageManager);
                 const variantData = res.data.variant || res.data.data?.variant;
                 setVariantImages(variantData?.imagesvariant || []);

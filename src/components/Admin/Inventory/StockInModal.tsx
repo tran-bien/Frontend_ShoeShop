@@ -286,9 +286,20 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
     try {
       setSubmitting(true);
 
+      // Debug: Log data being sent
+      console.log("===== STOCK IN DEBUG =====");
+      console.log("Product ID:", formData.productId);
+      console.log("Variant ID:", formData.variantId);
+      console.log("Size Entries:", JSON.stringify(sizeEntries, null, 2));
+      console.log("All Variants:", JSON.stringify(variants, null, 2));
+      console.log(
+        "Available Sizes Full:",
+        JSON.stringify(availableSizes, null, 2)
+      );
+
       // Submit all sizes in parallel using Promise.all
-      const promises = sizeEntries.map((entry) =>
-        InventoryService.stockIn({
+      const promises = sizeEntries.map((entry) => {
+        const payload = {
           productId: formData.productId,
           variantId: formData.variantId,
           sizeId: entry.sizeId,
@@ -297,8 +308,10 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
           targetProfitPercent: formData.targetProfitPercent,
           percentDiscount: formData.percentDiscount,
           note: formData.note,
-        })
-      );
+        };
+        console.log("Sending payload:", payload);
+        return InventoryService.stockIn(payload);
+      });
 
       await Promise.all(promises);
 
