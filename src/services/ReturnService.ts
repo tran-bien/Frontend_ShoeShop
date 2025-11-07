@@ -33,23 +33,23 @@ export const customerReturnService = {
   createReturnRequest: (
     data: CreateReturnRequestData
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.post("/api/v1/returns", data),
+    axiosInstanceAuth.post("/api/v1/users/returns", data),
 
   // Lấy danh sách yêu cầu đổi/trả hàng
   getReturnRequests: (
     params?: ReturnRequestQueryParams
   ): Promise<{ data: ApiResponse<GetReturnRequestsResponse> }> =>
-    axiosInstanceAuth.get("/api/v1/returns", { params }),
+    axiosInstanceAuth.get("/api/v1/users/returns", { params }),
 
   // Lấy chi tiết yêu cầu đổi/trả hàng
   getReturnRequestDetail: (
     id: string
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.get(`/api/v1/returns/${id}`),
+    axiosInstanceAuth.get(`/api/v1/users/returns/${id}`),
 
   // Hủy yêu cầu đổi/trả hàng
   cancelReturnRequest: (id: string): Promise<{ data: ApiResponse }> =>
-    axiosInstanceAuth.delete(`/api/v1/returns/${id}`),
+    axiosInstanceAuth.delete(`/api/v1/users/returns/${id}`),
 };
 
 // Admin Return Service
@@ -58,46 +58,49 @@ export const adminReturnService = {
   getAllReturnRequests: (
     params?: ReturnRequestQueryParams
   ): Promise<{ data: ApiResponse<GetReturnRequestsResponse> }> =>
-    axiosInstanceAuth.get("/api/v1/returns", { params }),
+    axiosInstanceAuth.get("/api/v1/admin/returns", { params }),
 
   // Lấy thống kê đổi trả (Admin)
   getReturnStats: (): Promise<{ data: ApiResponse<ReturnStatsResponse> }> =>
-    axiosInstanceAuth.get("/api/v1/returns/stats/summary"),
+    axiosInstanceAuth.get("/api/v1/admin/returns/stats/summary"),
 
   // Phê duyệt yêu cầu đổi/trả hàng
   approveReturnRequest: (
     id: string,
     data?: { note?: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.patch(`/api/v1/returns/${id}/approve`, data),
+    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/approve`, data),
 
   // Từ chối yêu cầu đổi/trả hàng
   rejectReturnRequest: (
     id: string,
     data: { reason: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.patch(`/api/v1/returns/${id}/reject`, data),
+    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/reject`, data),
 
   // Xử lý trả hàng
   processReturn: (
     id: string,
     data?: { note?: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.post(`/api/v1/returns/${id}/process-return`, data),
+    axiosInstanceAuth.post(`/api/v1/admin/returns/${id}/process-return`, data),
 
   // Xử lý đổi hàng
   processExchange: (
     id: string,
     data?: { note?: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.post(`/api/v1/returns/${id}/process-exchange`, data),
+    axiosInstanceAuth.post(
+      `/api/v1/admin/returns/${id}/process-exchange`,
+      data
+    ),
 
   // Hoàn thành xử lý
   completeReturn: (
     id: string,
     data?: { note?: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.patch(`/api/v1/returns/${id}/complete`, data),
+    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/complete`, data),
 };
 
 // Backward compatibility - Combined legacy API
