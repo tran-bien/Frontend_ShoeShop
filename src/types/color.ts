@@ -15,6 +15,7 @@ export interface Color {
   name: string;
   type: ColorType;
   code?: string; // Only for solid type
+  hexCode?: string; // Backend mapping field (same as code)
   colors?: string[]; // Only for half type (2+ colors)
   isActive?: boolean;
   deletedAt?: string | null;

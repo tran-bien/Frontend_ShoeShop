@@ -101,18 +101,18 @@ const MainNavbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between px-12 py-4 shadow-luxury sticky top-0 bg-white z-50 border-b border-mono-100">
+    <nav className="flex items-center justify-between px-6 lg:px-12 py-4 shadow-luxury sticky top-0 bg-white z-50 border-b border-mono-100">
       {/* logo */}
-      <div className="h-10 flex items-center">
+      <div className="h-10 flex items-center flex-shrink-0">
         <Link to="/">
           <h1
             style={{
               fontFamily: "'Lobster', cursive",
-              fontSize: "3rem",
+              fontSize: "2.5rem",
               color: "black",
               letterSpacing: "-0.02em",
             }}
-            className="text-2xl"
+            className="text-2xl whitespace-nowrap"
           >
             ShoeStore
           </h1>
@@ -120,11 +120,11 @@ const MainNavbar = () => {
       </div>
 
       {/* navigation links */}
-      <ul className="flex gap-16">
+      <ul className="hidden lg:flex gap-8 xl:gap-16 flex-shrink-0 ml-6 lg:ml-8">
         <li>
           <Link
             to="/products?sort=newest"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
             SẢN PHẨM MỚI
           </Link>
@@ -132,7 +132,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?sort=popular"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
             SẢN PHẨM PHỔ BIẾN
           </Link>
@@ -140,7 +140,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?gender=male"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
             GIÀY NAM
           </Link>
@@ -148,7 +148,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?gender=female"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
             GIÀY NỮ
           </Link>
@@ -156,7 +156,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/blog"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
             BLOG
           </Link>
@@ -164,7 +164,10 @@ const MainNavbar = () => {
       </ul>
 
       {/* search bar */}
-      <div className="flex items-center w-1/3 relative" ref={searchRef}>
+      <div
+        className="flex items-center w-full lg:w-1/3 xl:w-1/3 mx-4 lg:mx-6 relative"
+        ref={searchRef}
+      >
         <form onSubmit={handleSearch} className="w-full relative">
           <input
             type="text"
@@ -251,7 +254,7 @@ const MainNavbar = () => {
         )}
       </div>
 
-      <ul className="flex gap-2 items-center">
+      <ul className="flex gap-2 items-center flex-shrink-0">
         {/* Loyalty Badge - Chỉ hiển thị khi đã đăng nhập */}
         {user && (
           <li>
@@ -272,7 +275,7 @@ const MainNavbar = () => {
             to="/cart"
             className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
           >
-            <AiOutlineShoppingCart className="text-2xl text-mono-700 hover:text-mono-black transition" />
+            <AiOutlineShoppingCart className="text-xl xl:text-2xl text-mono-700 hover:text-mono-black transition" />
           </Link>
         </li>
 
@@ -282,7 +285,7 @@ const MainNavbar = () => {
             to="/user-information"
             className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
           >
-            <AiOutlineUser className="text-2xl text-mono-700 hover:text-mono-800 transition" />
+            <AiOutlineUser className="text-xl xl:text-2xl text-mono-700 hover:text-mono-800 transition" />
           </Link>
         </li>
         {/* Dashboard/Admin Panel - Hiển thị cho cả admin và staff */}
@@ -294,7 +297,7 @@ const MainNavbar = () => {
               }
               className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
             >
-              <AiOutlineDashboard className="text-2xl text-mono-700 hover:text-mono-700 transition" />
+              <AiOutlineDashboard className="text-xl xl:text-2xl text-mono-700 hover:text-mono-700 transition" />
             </Link>
           </li>
         )}

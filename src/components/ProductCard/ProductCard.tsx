@@ -17,7 +17,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Compare context
-  const { addToCompare, removeFromCompare, isInCompare } = useCompare();
+  const { addToCompareById, removeFromCompare, isInCompare, isLoading } =
+    useCompare();
   const inCompare = isInCompare(product._id);
 
   // Kiểm tra chắc chắn images là mảng và có nhiều hơn 1 phần tử
@@ -150,17 +151,30 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
             if (inCompare) {
               removeFromCompare(product._id);
             } else {
-              addToCompare(product as any);
+              addToCompareById(product._id);
             }
           }}
+          disabled={isLoading}
           className={`absolute top-2 left-2 z-20 p-2 rounded-full transition-all duration-200 ${
             inCompare
               ? "bg-mono-black text-white shadow-lg scale-110"
+              : isLoading
+              ? "bg-mono-300 text-mono-500 cursor-wait"
               : "bg-white/90 hover:bg-white text-mono-700 hover:scale-110 shadow-md"
           }`}
-          title={inCompare ? "Xóa khỏi so sánh" : "Thêm vào so sánh"}
+          title={
+            isLoading
+              ? "Đang tải..."
+              : inCompare
+              ? "Xóa khỏi so sánh"
+              : "Thêm vào so sánh"
+          }
         >
-          <ArrowsRightLeftIcon className="h-5 w-5" />
+          {isLoading ? (
+            <div className="animate-spin h-5 w-5 border-2 border-mono-700 border-t-transparent rounded-full"></div>
+          ) : (
+            <ArrowsRightLeftIcon className="h-5 w-5" />
+          )}
         </button>
 
         <img

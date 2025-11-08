@@ -174,6 +174,42 @@ const ProductComparePage: React.FC = () => {
 
               {/* Gender - Removed as not in Product type */}
 
+              {/* Tags */}
+              <tr className="border-b border-mono-100 hover:bg-mono-50">
+                <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
+                  <div className="flex items-center gap-2">
+                    <TagIcon className="h-5 w-5" />
+                    Tags
+                  </div>
+                </td>
+                {compareList.map((product) => (
+                  <td key={product._id} className="p-4">
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {product.tags && product.tags.length > 0 ? (
+                        product.tags.map((tag, index) => {
+                          const tagName =
+                            typeof tag === "string" ? tag : tag.name;
+                          const tagId =
+                            typeof tag === "string"
+                              ? `tag-${index}`
+                              : tag._id;
+                          return (
+                            <span
+                              key={tagId}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-mono-100 text-mono-800 border border-mono-200"
+                            >
+                              {tagName}
+                            </span>
+                          );
+                        })
+                      ) : (
+                        <span className="text-mono-500">N/A</span>
+                      )}
+                    </div>
+                  </td>
+                ))}
+              </tr>
+
               {/* Colors */}
               <tr className="border-b border-mono-100 hover:bg-mono-50">
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
@@ -196,8 +232,10 @@ const ProductComparePage: React.FC = () => {
                               color={{
                                 _id: `${product._id}-${index}`,
                                 name: color.name,
-                                code: color.code || "#000000",
+                                code:
+                                  color.hexCode || color.code || "#000000",
                                 type: color.type || "solid",
+                                colors: color.colors,
                               }}
                               size="md"
                             />

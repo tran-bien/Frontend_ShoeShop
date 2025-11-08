@@ -679,6 +679,25 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             </span>
           </div>
 
+          {/* Tags */}
+          {product.tags && product.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {product.tags.map((tag, index) => {
+                const tagName = typeof tag === "string" ? tag : tag.name;
+                const tagId =
+                  typeof tag === "string" ? `tag-${index}` : tag._id;
+                return (
+                  <span
+                    key={tagId}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-mono-100 text-mono-800 border border-mono-200"
+                  >
+                    {tagName}
+                  </span>
+                );
+              })}
+            </div>
+          )}
+
           {/* Gender selection */}
           {attributes?.genders && attributes.genders.length > 0 && (
             <div>

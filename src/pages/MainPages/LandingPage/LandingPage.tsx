@@ -282,17 +282,37 @@ const LandingPage: React.FC = () => {
     <>
       {products && products.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {products.map((product) => (
-            <div key={product._id} className="px-2">
-              <ProductCard
-                product={convertToProductCardProduct(product)}
-                onClick={() => {
-                  navigate(`/product/${product.slug || product._id}`);
-                  window.scrollTo(0, 0); // Add this line to scroll to top
-                }}
-              />
-            </div>
-          ))}
+          {products
+            .filter((product) => {
+              // Filter out invalid products
+              if (!product || !product._id) {
+                console.warn("Skipping invalid product:", product);
+                return false;
+              }
+              return true;
+            })
+            .map((product) => {
+              const cardProduct = convertToProductCardProduct(product);
+              // Double-check converted product is valid
+              if (!cardProduct || !cardProduct._id) {
+                console.warn(
+                  "Skipping product with invalid conversion:",
+                  product
+                );
+                return null;
+              }
+              return (
+                <div key={product._id} className="px-2">
+                  <ProductCard
+                    product={cardProduct}
+                    onClick={() => {
+                      navigate(`/product/${product.slug || product._id}`);
+                      window.scrollTo(0, 0);
+                    }}
+                  />
+                </div>
+              );
+            })}
         </div>
       ) : (
         <div className="text-center py-10 bg-mono-50 rounded-lg">
