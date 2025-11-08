@@ -59,11 +59,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
     const inStock = product.stockStatus !== "out_of_stock";
 
+    // Try top-level priceRange first, fallback to variantSummary.priceRange
     const pr = product.priceRange;
+    const prVariant = product.variantSummary?.priceRange;
+
     const hasRange = !!(pr && pr.min != null && pr.max != null && pr.min > 0);
     const displayMin: number = hasRange
       ? (pr!.min as number)
-      : product.price || product.priceRange?.min || 0;
+      : prVariant?.min ?? product.price ?? product.priceRange?.min ?? 0;
     const displayMax: number | null = hasRange ? (pr!.max as number) : null;
 
     if (!inStock && (!displayMin || displayMin === 0)) {
@@ -86,7 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     }
 
     // Single price
-    const finalPrice = product.price || pr?.min || 0;
+    const finalPrice = product.price ?? pr?.min ?? prVariant?.min ?? 0;
     return (
       <div className="flex flex-col">
         {product.hasDiscount ? (

@@ -198,6 +198,25 @@ export interface ProductCardProduct {
   discountPercent?: number;
   hasDiscount?: boolean;
   mainImage?: string;
+  variantSummary?: {
+    priceRange?: PriceRange;
+    total?: number;
+    active?: number;
+    colors?: Array<{
+      _id: string;
+      name: string;
+      code?: string;
+      hexCode?: string;
+      type?: string;
+      colors?: string[];
+    }>;
+    colorCount?: number;
+    sizeCount?: number;
+    discount?: {
+      hasDiscount: boolean;
+      maxPercent: number;
+    };
+  };
 }
 
 // =======================
