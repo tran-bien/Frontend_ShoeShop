@@ -52,40 +52,47 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   // Xử lý khoảng giá
   const renderPrice = () => {
-    // Nếu có khoảng giá và không phải giá đơn
-    if (product.priceRange && !product.priceRange.isSinglePrice) {
+    // Priority for displaying price:
+    // 1. Use product.priceRange if valid (min/max or single)
+    // 2. Fallback to product.price or originalPrice
+    // 3. If out_of_stock and price is 0 -> show "Hết hàng"
+
+    const inStock = product.stockStatus !== "out_of_stock";
+
+    const pr = product.priceRange;
+    const hasRange = !!(pr && pr.min != null && pr.max != null && pr.min > 0);
+    const displayMin: number = hasRange
+      ? (pr!.min as number)
+      : product.price || product.priceRange?.min || 0;
+    const displayMax: number | null = hasRange ? (pr!.max as number) : null;
+
+    if (!inStock && (!displayMin || displayMin === 0)) {
+      return <div className="text-sm font-medium text-red-600">Hết hàng</div>;
+    }
+
+    if (hasRange && displayMax && displayMin !== displayMax) {
       return (
         <div className="flex flex-col">
-          {product.hasDiscount ? (
-            <>
-              <span className="text-mono-900 font-bold text-base md:text-lg">
-                {(product.priceRange.min || 0).toLocaleString()} -{" "}
-                {(product.priceRange.max || 0).toLocaleString()}đ
-              </span>
-              {product.originalPrice && (
-                <span className="text-mono-400 text-sm line-through">
-                  Gốc: {product.originalPrice.toLocaleString()}đ
-                </span>
-              )}
-            </>
-          ) : (
-            <span className="text-mono-900 font-bold text-base md:text-lg">
-              {(product.priceRange.min || 0).toLocaleString()} -{" "}
-              {(product.priceRange.max || 0).toLocaleString()}đ
+          <span className="text-mono-900 font-bold text-base md:text-lg">
+            {displayMin.toLocaleString()} - {displayMax.toLocaleString()}đ
+          </span>
+          {product.originalPrice && (
+            <span className="text-mono-400 text-sm line-through">
+              Gốc: {product.originalPrice.toLocaleString()}đ
             </span>
           )}
         </div>
       );
     }
 
-    // Trường hợp giá đơn hoặc fallback về price
+    // Single price
+    const finalPrice = product.price || pr?.min || 0;
     return (
       <div className="flex flex-col">
         {product.hasDiscount ? (
           <>
             <span className="text-mono-900 font-bold text-base md:text-lg">
-              {(product.price || product.priceRange?.min || 0).toLocaleString()}
-              đ
+              {finalPrice.toLocaleString()}đ
             </span>
             {product.originalPrice && (
               <span className="text-mono-400 text-sm line-through">
@@ -95,7 +102,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           </>
         ) : (
           <span className="text-mono-900 font-bold text-base md:text-lg">
-            {(product.price || product.priceRange?.min || 0).toLocaleString()}đ
+            {finalPrice.toLocaleString()}đ
           </span>
         )}
       </div>
