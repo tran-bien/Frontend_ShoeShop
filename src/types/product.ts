@@ -80,7 +80,7 @@ export interface Variant {
 }
 
 // =======================
-// PRODUCT ATTRIBUTES
+// PRODUCT ATTRIBUTES (Optimized)
 // =======================
 export interface ProductAttributes {
   genders?: Array<{
@@ -89,11 +89,30 @@ export interface ProductAttributes {
   }>;
   colors?: Color[];
   sizes?: Size[];
-  priceRange?: PriceRange;
   inventoryMatrix?: {
     summary?: {
+      byGender?: Array<{
+        id: string;
+        name: string;
+        quantity: number;
+      }>;
+      byColor?: Array<{
+        id: string;
+        name: string;
+        code?: string | null;
+        type?: string;
+        colors?: string[];
+        quantity: number;
+      }>;
+      bySize?: Array<{
+        id: string;
+        value: string | number;
+        description?: string;
+        quantity: number;
+      }>;
       total: number;
     };
+    stock?: Record<string, Record<string, Record<string, VariantSize>>>;
   };
 }
 
@@ -102,6 +121,9 @@ export interface ProductVariants {
     id: string;
     colorId?: string;
     colorName?: string;
+    colorCode?: string | null;
+    colorType?: string;
+    colors?: string[];
     gender?: string;
     sizes?: VariantSize[]; // Mỗi size có price, finalPrice, discountPercent
     totalQuantity?: number;

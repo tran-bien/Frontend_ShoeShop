@@ -7,6 +7,7 @@ import {
   Product,
 } from "../../types/product";
 import type { ProductImage } from "../../types/common";
+import type { SizeGuide } from "../../types/sizeGuide";
 import ProductDetail from "../../components/ProductDetail/ProductDetail";
 import { productPublicService } from "../../services/ProductService";
 import RecentlyViewed from "../../components/ViewHistory/RecentlyViewed";
@@ -20,6 +21,7 @@ const ProductDetailPage: React.FC = () => {
   const [images, setImages] = useState<
     Record<string, ProductImage[]> | undefined
   >(undefined);
+  const [sizeGuide, setSizeGuide] = useState<SizeGuide | null>(null);
   const [similarProducts, setSimilarProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +69,11 @@ const ProductDetailPage: React.FC = () => {
             setImages(response.data.images);
           }
 
+          // Lấy Size Guide nếu có
+          if (response.data.sizeGuide) {
+            setSizeGuide(response.data.sizeGuide);
+          }
+
           // Lấy sản phẩm liên quan nếu có product ID
           const productData = response.data.product || response.data.data;
           if (productData?._id) {
@@ -97,6 +104,7 @@ const ProductDetailPage: React.FC = () => {
         setAttributes(null);
         setVariants(null);
         setImages(undefined);
+        setSizeGuide(null);
         setSimilarProducts([]);
       } finally {
         setLoading(false);
@@ -151,11 +159,12 @@ const ProductDetailPage: React.FC = () => {
   return (
     <div>
       <ProductDetail
-        product={product as any}
-        attributes={attributes as any}
-        variants={variants as any}
+        product={product}
+        attributes={attributes || undefined}
+        variants={variants || undefined}
         images={images || undefined}
-        similarProducts={similarProducts as any}
+        similarProducts={similarProducts}
+        sizeGuide={sizeGuide}
       />
 
       {/* Recently Viewed Products - exclude current product */}

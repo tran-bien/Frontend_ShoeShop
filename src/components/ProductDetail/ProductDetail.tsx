@@ -14,6 +14,7 @@ import {
 } from "../../types/product";
 import type { Size } from "../../types/size";
 import type { ProductImage } from "../../types/common";
+import type { SizeGuide } from "../../types/sizeGuide";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import {
   FiMinus,
@@ -47,6 +48,7 @@ interface ProductDetailProps {
   variants?: Record<string, Variant>;
   images?: Record<string, ProductImage[]>;
   similarProducts?: ProductType[];
+  sizeGuide?: SizeGuide | null;
 }
 
 const ProductDetail: React.FC<ProductDetailProps> = ({
@@ -55,6 +57,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   variants,
   images,
   similarProducts,
+  sizeGuide,
 }) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
