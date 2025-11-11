@@ -8,6 +8,9 @@ import {
   FaTimesCircle,
   FaKey,
   FaLaptopCode,
+  FaGift,
+  FaHistory,
+  FaLightbulb,
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import authService from "../../services/AuthService";
@@ -56,6 +59,21 @@ const Sidebar: React.FC = () => {
       path: "/like-page",
       icon: <FaHeart className="text-xl" />,
       label: "Sản phẩm yêu thích",
+    },
+    {
+      path: "/loyalty/dashboard",
+      icon: <FaGift className="text-xl" />,
+      label: "Điểm thưởng",
+    },
+    {
+      path: "/view-history",
+      icon: <FaHistory className="text-xl" />,
+      label: "Lịch sử xem",
+    },
+    {
+      path: "/recommendations",
+      icon: <FaLightbulb className="text-xl" />,
+      label: "Gợi ý cho bạn",
     },
     {
       path: "/user-change-password",

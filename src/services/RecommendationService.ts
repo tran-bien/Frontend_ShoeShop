@@ -13,25 +13,29 @@ import type {
 
 export const publicRecommendationService = {
   // Lấy sản phẩm gợi ý (không cần đăng nhập)
+  // Note: Public recommendations endpoint không tồn tại trong backend
+  // Sử dụng user recommendations thay thế
   getRecommendations: (
     params: RecommendationQueryParams = {}
   ): Promise<{ data: RecommendationsResponse }> =>
-    axiosInstance.get("/api/v1/recommendations", { params }),
+    axiosInstanceAuth.get("/api/v1/users/recommendations", { params }),
 
   // Lấy sản phẩm tương tự
+  // Note: Similar products endpoint không tồn tại riêng
+  // Sử dụng recommendations với algorithm=CONTENT_BASED
   getSimilarProducts: (
     productId: string,
     limit: number = 8
   ): Promise<{ data: RecommendationsResponse }> =>
-    axiosInstance.get(`/api/v1/recommendations/similar/${productId}`, {
-      params: { limit },
+    axiosInstanceAuth.get(`/api/v1/users/recommendations`, {
+      params: { algorithm: "CONTENT_BASED", limit },
     }),
 
   // Track product view (không cần đăng nhập - sử dụng session)
   trackProductView: (
     productId: string
   ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstance.post("/api/v1/view-history/track", { productId }),
+    axiosInstance.post("/api/v1/users/view-history/track", { productId }),
 };
 
 // =======================
@@ -40,10 +44,11 @@ export const publicRecommendationService = {
 
 export const userRecommendationService = {
   // Lấy gợi ý cá nhân hóa (cần đăng nhập)
+  // Backend endpoint: GET /api/v1/users/recommendations?algorithm={HYBRID|COLLABORATIVE|CONTENT_BASED|TRENDING}
   getPersonalizedRecommendations: (
     params: RecommendationQueryParams = {}
   ): Promise<{ data: RecommendationsResponse }> =>
-    axiosInstanceAuth.get("/api/v1/users/recommendations/personalized", {
+    axiosInstanceAuth.get("/api/v1/users/recommendations", {
       params,
     }),
 

@@ -51,6 +51,10 @@ import AdminBlogPage from "../pages/AdminPages/BlogPage/AdminBlogPage";
 import AdminSizeGuidePage from "../pages/AdminPages/SizeGuidePage/AdminSizeGuidePage";
 import ProductComparePage from "../pages/ProductComparePage/ProductComparePage";
 import AdminLoyaltyTierPage from "../pages/AdminPages/LoyaltyTierPage/AdminLoyaltyTierPage";
+import LoyaltyDashboardPage from "../pages/LoyaltyDashboardPage";
+import ReturnListPage from "../pages/ReturnListPage";
+import RecommendationsPage from "../pages/RecommendationsPage";
+import UserViewHistoryPage from "../pages/UserViewHistoryPage";
 
 const AppRouter = () => {
   return (
@@ -164,6 +168,38 @@ const AppRouter = () => {
           element={
             <AuthGuard>
               <LoyaltyPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="loyalty/dashboard"
+          element={
+            <AuthGuard>
+              <LoyaltyDashboardPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="returns"
+          element={
+            <AuthGuard>
+              <ReturnListPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="recommendations"
+          element={
+            <AuthGuard>
+              <RecommendationsPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="view-history"
+          element={
+            <AuthGuard>
+              <UserViewHistoryPage />
             </AuthGuard>
           }
         />

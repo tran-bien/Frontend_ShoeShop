@@ -17,37 +17,39 @@ import type {
 // =======================
 
 export const publicBlogService = {
-  // Lấy danh sách categories
+  // Lấy danh sách categories - Note: Backend không có public category endpoint
   getCategories: (
     params: BlogCategoryQueryParams = {}
   ): Promise<{ data: BlogCategoriesResponse }> =>
     axiosInstance.get("/api/v1/blogs/categories", { params }),
 
   // Lấy danh sách bài viết
+  // Backend: GET /api/v1/blogs
   getPosts: (
     params: BlogPostQueryParams = {}
   ): Promise<{ data: BlogPostsResponse }> =>
-    axiosInstance.get("/api/v1/blogs/posts", { params }),
+    axiosInstance.get("/api/v1/blogs", { params }),
 
   // Lấy chi tiết bài viết
+  // Backend: GET /api/v1/blogs/:slug
   getPostBySlug: (slug: string): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstance.get(`/api/v1/blogs/posts/${slug}`),
+    axiosInstance.get(`/api/v1/blogs/${slug}`),
 
-  // Lấy bài viết nổi bật
+  // Lấy bài viết nổi bật - Note: Backend không có endpoint này
   getHighlightedPosts: (
     limit: number = 5
   ): Promise<{ data: BlogPostsResponse }> =>
-    axiosInstance.get("/api/v1/blogs/posts/highlighted", {
-      params: { limit },
+    axiosInstance.get("/api/v1/blogs", {
+      params: { isHighlighted: true, limit },
     }),
 
-  // Lấy bài viết liên quan
+  // Lấy bài viết liên quan - Note: Backend không có endpoint này
   getRelatedPosts: (
     postId: string,
     limit: number = 4
   ): Promise<{ data: BlogPostsResponse }> =>
-    axiosInstance.get(`/api/v1/blogs/posts/${postId}/related`, {
-      params: { limit },
+    axiosInstance.get(`/api/v1/blogs`, {
+      params: { relatedTo: postId, limit },
     }),
 };
 
@@ -57,74 +59,77 @@ export const publicBlogService = {
 
 export const adminBlogService = {
   // === CATEGORY MANAGEMENT ===
+  // IMPORTANT: Backend chưa có admin blog category endpoints
+  // Tạm thời sử dụng placeholder, cần implement backend endpoints sau
   // Lấy tất cả categories
   getAllCategories: (
     params: BlogCategoryQueryParams = {}
   ): Promise<{ data: BlogCategoriesResponse }> =>
-    axiosInstanceAuth.get("/api/v1/admin/blog/categories", { params }),
+    axiosInstanceAuth.get("/api/v1/blogs/categories", { params }),
 
   // Lấy chi tiết category
   getCategoryById: (
     categoryId: string
   ): Promise<{ data: BlogCategoryDetailResponse }> =>
-    axiosInstanceAuth.get(`/api/v1/admin/blog/categories/${categoryId}`),
+    axiosInstanceAuth.get(`/api/v1/blogs/categories/${categoryId}`),
 
   // Tạo category mới
   createCategory: (
     data: CreateBlogCategoryData
   ): Promise<{ data: BlogCategoryDetailResponse }> =>
-    axiosInstanceAuth.post("/api/v1/admin/blog/categories", data),
+    axiosInstanceAuth.post("/api/v1/blogs/categories", data),
 
   // Cập nhật category
   updateCategory: (
     categoryId: string,
     data: UpdateBlogCategoryData
   ): Promise<{ data: BlogCategoryDetailResponse }> =>
-    axiosInstanceAuth.put(`/api/v1/admin/blog/categories/${categoryId}`, data),
+    axiosInstanceAuth.put(`/api/v1/blogs/categories/${categoryId}`, data),
 
   // Xóa category
   deleteCategory: (
     categoryId: string
   ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstanceAuth.delete(`/api/v1/admin/blog/categories/${categoryId}`),
+    axiosInstanceAuth.delete(`/api/v1/blogs/categories/${categoryId}`),
 
   // === POST MANAGEMENT ===
+  // Backend: /api/v1/admin/blogs (không có /posts)
   // Lấy tất cả posts
   getAllPosts: (
     params: BlogPostQueryParams = {}
   ): Promise<{ data: BlogPostsResponse }> =>
-    axiosInstanceAuth.get("/api/v1/admin/blog/posts", { params }),
+    axiosInstanceAuth.get("/api/v1/admin/blogs", { params }),
 
   // Lấy chi tiết post
   getPostById: (postId: string): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstanceAuth.get(`/api/v1/admin/blog/posts/${postId}`),
+    axiosInstanceAuth.get(`/api/v1/admin/blogs/${postId}`),
 
   // Tạo post mới
   createPost: (
     data: CreateBlogPostData
   ): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstanceAuth.post("/api/v1/admin/blog/posts", data),
+    axiosInstanceAuth.post("/api/v1/admin/blogs", data),
 
   // Cập nhật post
   updatePost: (
     postId: string,
     data: UpdateBlogPostData
   ): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstanceAuth.put(`/api/v1/admin/blog/posts/${postId}`, data),
+    axiosInstanceAuth.put(`/api/v1/admin/blogs/${postId}`, data),
 
   // Xóa post
   deletePost: (
     postId: string
   ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstanceAuth.delete(`/api/v1/admin/blog/posts/${postId}`),
+    axiosInstanceAuth.delete(`/api/v1/admin/blogs/${postId}`),
 
-  // Publish post
+  // Publish post - Note: Backend không có endpoint này
   publishPost: (postId: string): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstanceAuth.patch(`/api/v1/admin/blog/posts/${postId}/publish`),
+    axiosInstanceAuth.patch(`/api/v1/admin/blogs/${postId}/publish`),
 
-  // Archive post
+  // Archive post - Note: Backend không có endpoint này
   archivePost: (postId: string): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstanceAuth.patch(`/api/v1/admin/blog/posts/${postId}/archive`),
+    axiosInstanceAuth.patch(`/api/v1/admin/blogs/${postId}/archive`),
 };
 
 // =======================
