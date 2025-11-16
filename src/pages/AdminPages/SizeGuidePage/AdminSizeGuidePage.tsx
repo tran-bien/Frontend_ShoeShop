@@ -28,12 +28,15 @@ const AdminSizeGuidePage = () => {
   const fetchSizeGuides = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await adminSizeGuideService.getAllSizeGuides();
-      setSizeGuides(data.data.sizeGuides);
-      setFilteredGuides(data.data.sizeGuides);
+      const response = await adminSizeGuideService.getAllSizeGuides();
+      const sizeGuidesData = response.data.data || [];
+      setSizeGuides(sizeGuidesData);
+      setFilteredGuides(sizeGuidesData);
     } catch (error) {
       console.error("Failed to fetch size guides:", error);
       toast.error("Không thể tải danh sách hướng dẫn size");
+      setSizeGuides([]);
+      setFilteredGuides([]);
     } finally {
       setLoading(false);
     }

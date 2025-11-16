@@ -76,10 +76,13 @@ export interface UpdateSizeGuideData extends Partial<CreateSizeGuideData> {
 
 export interface SizeGuidesResponse {
   success: boolean;
-  message: string;
-  data: {
-    sizeGuides: SizeGuide[];
-  };
+  count: number;
+  total: number;
+  totalPages: number;
+  currentPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  data: SizeGuide[];
 }
 
 export interface SizeGuideDetailResponse {

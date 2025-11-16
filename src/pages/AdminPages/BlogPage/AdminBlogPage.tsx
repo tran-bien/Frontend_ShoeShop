@@ -36,6 +36,7 @@ const AdminBlogPage = () => {
     page: 1,
     totalPages: 1,
     total: 0,
+    limit: 10,
   });
 
   // Category states
@@ -54,8 +55,17 @@ const AdminBlogPage = () => {
     setLoading(true);
     try {
       const { data } = await adminBlogService.getAllPosts(postParams);
-      setPosts(data.data.posts);
-      setPostPagination(data.data.pagination);
+      // Backend trả về: { success, data: [...], total, totalPages, currentPage }
+      // TypeScript type expects: { success, data: { posts: [], pagination: {} } }
+      // Access actual backend response structure
+      const response = data as any;
+      setPosts(response.data || []);
+      setPostPagination({
+        page: response.currentPage || 1,
+        totalPages: response.totalPages || 1,
+        total: response.total || 0,
+        limit: postParams.limit || 10,
+      });
     } catch (error) {
       console.error("Failed to fetch posts:", error);
       toast.error("Không thể tải danh sách bài viết");
@@ -68,7 +78,9 @@ const AdminBlogPage = () => {
   const fetchCategories = useCallback(async () => {
     try {
       const { data } = await adminBlogService.getAllCategories();
-      setCategories(data.data.categories);
+      // Backend trả về: { success, data: [...], total, totalPages }
+      const response = data as any;
+      setCategories(response.data || []);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
     }
@@ -537,4 +549,3 @@ const AdminBlogPage = () => {
 };
 
 export default AdminBlogPage;
-
