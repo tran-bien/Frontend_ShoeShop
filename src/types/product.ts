@@ -196,6 +196,12 @@ export interface Product {
       maxPercent: number;
     };
   };
+
+  // Compare API specific fields
+  discount?: {
+    hasDiscount: boolean;
+    maxPercent: number;
+  };
 }
 
 // =======================

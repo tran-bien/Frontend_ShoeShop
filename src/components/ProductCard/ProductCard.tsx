@@ -10,11 +10,6 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  // Guard clause - return null if product is undefined
-  if (!product || !product._id) {
-    return null;
-  }
-
   // State cho hiệu ứng fade-in khi ảnh được tải
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -24,15 +19,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   // Compare context
   const { addToCompareById, removeFromCompare, isInCompare, isLoading } =
     useCompare();
-  const inCompare = isInCompare(product._id);
 
   // Kiểm tra chắc chắn images là mảng và có nhiều hơn 1 phần tử
   const hasMultipleImages =
-    Array.isArray(product.images) && product.images.length > 1;
+    product && Array.isArray(product.images) && product.images.length > 1;
 
   // Hiệu ứng slide ảnh với tốc độ vừa phải (3 giây cho mỗi ảnh)
   useEffect(() => {
-    if (!hasMultipleImages) return;
+    if (!hasMultipleImages || !product) return;
 
     const interval = setInterval(() => {
       // Kiểm tra images tồn tại trước khi truy cập length
@@ -44,7 +38,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     }, 3000); // Tốc độ chuyển ảnh vừa phải: 3 giây
 
     return () => clearInterval(interval);
-  }, [product.images, hasMultipleImages]);
+  }, [product, product?.images, hasMultipleImages]);
+
+  // Guard clause - return null if product is undefined
+  // MUST be after all hooks
+  if (!product || !product._id) {
+    return null;
+  }
+
+  const inCompare = isInCompare(product._id);
 
   // Get image URL to display với kiểm tra null/undefined
   const imageUrl =

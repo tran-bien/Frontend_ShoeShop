@@ -14,7 +14,10 @@ import {
 const ProductComparePage: React.FC = () => {
   const { compareList, removeFromCompare, clearCompare } = useCompare();
 
-  if (compareList.length === 0) {
+  // Filter out any undefined or invalid products
+  const validProducts = compareList.filter((p) => p && p._id && p.slug);
+
+  if (validProducts.length === 0) {
     return (
       <div className="min-h-screen bg-mono-50 flex items-center justify-center">
         <div className="text-center">
@@ -46,7 +49,7 @@ const ProductComparePage: React.FC = () => {
               So sánh sản phẩm
             </h1>
             <p className="text-mono-600">
-              So sánh {compareList.length} sản phẩm
+              So sánh {validProducts.length} sản phẩm
             </p>
           </div>
           <button
@@ -66,7 +69,7 @@ const ProductComparePage: React.FC = () => {
                 <th className="p-4 text-left text-mono-700 font-medium w-48 sticky left-0 bg-white z-10">
                   Thông tin
                 </th>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <th key={product._id} className="p-4 min-w-[280px]">
                     <div className="relative">
                       {/* Remove Button */}
@@ -111,7 +114,7 @@ const ProductComparePage: React.FC = () => {
                     Giá
                   </div>
                 </td>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <td key={product._id} className="p-4 text-center">
                     <div className="text-2xl font-bold text-mono-900">
                       {product.priceRange?.min?.toLocaleString("vi-VN") || 0}₫
@@ -123,11 +126,11 @@ const ProductComparePage: React.FC = () => {
                           </span>
                         )}
                     </div>
-                    {product.hasDiscount &&
-                      product.maxDiscountPercent &&
-                      product.maxDiscountPercent > 0 && (
-                        <div className="text-sm text-red-600 mt-1">
-                          Giảm đến {product.maxDiscountPercent}%
+                    {product.discount?.hasDiscount &&
+                      product.discount?.maxPercent &&
+                      product.discount.maxPercent > 0 && (
+                        <div className="text-sm text-mono-900 font-semibold mt-1">
+                          Giảm đến {product.discount.maxPercent}%
                         </div>
                       )}
                   </td>
@@ -142,7 +145,7 @@ const ProductComparePage: React.FC = () => {
                     Thương hiệu
                   </div>
                 </td>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <td key={product._id} className="p-4 text-center">
                     <span className="text-mono-900">
                       {typeof product.brand === "object"
@@ -161,7 +164,7 @@ const ProductComparePage: React.FC = () => {
                     Danh mục
                   </div>
                 </td>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <td key={product._id} className="p-4 text-center">
                     <span className="text-mono-900">
                       {typeof product.category === "object"
@@ -182,7 +185,7 @@ const ProductComparePage: React.FC = () => {
                     Tags
                   </div>
                 </td>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <td key={product._id} className="p-4">
                     <div className="flex flex-wrap gap-2 justify-center">
                       {product.tags && product.tags.length > 0 ? (
@@ -190,9 +193,7 @@ const ProductComparePage: React.FC = () => {
                           const tagName =
                             typeof tag === "string" ? tag : tag.name;
                           const tagId =
-                            typeof tag === "string"
-                              ? `tag-${index}`
-                              : tag._id;
+                            typeof tag === "string" ? `tag-${index}` : tag._id;
                           return (
                             <span
                               key={tagId}
@@ -218,7 +219,7 @@ const ProductComparePage: React.FC = () => {
                     Màu sắc
                   </div>
                 </td>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <td key={product._id} className="p-4">
                     <div className="flex flex-wrap gap-2 justify-center">
                       {product.variantSummary?.colors &&
@@ -232,8 +233,7 @@ const ProductComparePage: React.FC = () => {
                               color={{
                                 _id: `${product._id}-${index}`,
                                 name: color.name,
-                                code:
-                                  color.hexCode || color.code || "#000000",
+                                code: color.hexCode || color.code || "#000000",
                                 type: color.type || "solid",
                                 colors: color.colors,
                               }}
@@ -260,7 +260,7 @@ const ProductComparePage: React.FC = () => {
                     Size
                   </div>
                 </td>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <td key={product._id} className="p-4 text-center">
                     <div className="text-mono-600">
                       {product.variantSummary?.sizeCount || 0} kích cỡ
@@ -274,13 +274,13 @@ const ProductComparePage: React.FC = () => {
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
                   Tình trạng
                 </td>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <td key={product._id} className="p-4 text-center">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
                         product.totalQuantity && product.totalQuantity > 0
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
+                          ? "bg-mono-800 text-white"
+                          : "bg-mono-200 text-mono-600"
                       }`}
                     >
                       {product.totalQuantity && product.totalQuantity > 0
@@ -296,7 +296,7 @@ const ProductComparePage: React.FC = () => {
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
                   Mô tả
                 </td>
-                {compareList.map((product) => (
+                {validProducts.map((product) => (
                   <td key={product._id} className="p-4">
                     <p className="text-mono-600 text-sm line-clamp-4">
                       {product.description || "Không có mô tả"}
@@ -316,7 +316,7 @@ const ProductComparePage: React.FC = () => {
           >
             Thêm sản phẩm
           </Link>
-          {compareList.length > 1 && (
+          {validProducts.length > 1 && (
             <button
               onClick={clearCompare}
               className="bg-mono-black hover:bg-mono-800 text-white px-6 py-3 rounded-lg transition-colors font-medium"

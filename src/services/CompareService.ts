@@ -10,7 +10,9 @@ export const publicCompareService = {
   compareProducts: (
     productIds: string[]
   ): Promise<{ data: CompareProductsResponse }> =>
-    axiosInstance.post("/api/v1/compare", { productIds }),
+    axiosInstance.get("/api/v1/compare/products", {
+      params: { productIds: productIds.join(",") },
+    }),
 };
 
 // =======================

@@ -22,11 +22,5 @@ export interface CompareList {
 
 export interface CompareProductsResponse {
   success: boolean;
-  message: string;
-  data: {
-    products: CompareProduct[];
-    comparisonMatrix: {
-      [key: string]: unknown;
-    };
-  };
+  data: CompareProduct[];
 }
