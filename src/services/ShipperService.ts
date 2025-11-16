@@ -8,6 +8,7 @@ import type {
   Shipper,
 } from "../types/shipper";
 import { ApiResponse } from "../types/api";
+import type { Order } from "../types/order";
 
 // Response type for getShippers
 interface GetShippersResponse {
@@ -51,7 +52,9 @@ export const adminShipperService = {
 // Shipper Service (for shipper role)
 export const shipperService = {
   // Lấy danh sách đơn hàng của shipper
-  getMyOrders: (params?: { status?: string }): Promise<{ data: ApiResponse }> =>
+  getMyOrders: (params?: {
+    status?: string;
+  }): Promise<{ data: ApiResponse<Order[]> }> =>
     axiosInstanceAuth.get("/api/v1/shipper/my-orders", { params }),
 
   // Cập nhật trạng thái giao hàng

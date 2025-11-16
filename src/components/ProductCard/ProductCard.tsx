@@ -10,6 +10,11 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
+  // Guard clause - return null if product is undefined
+  if (!product || !product._id) {
+    return null;
+  }
+
   // State cho hiệu ứng fade-in khi ảnh được tải
   const [imageLoaded, setImageLoaded] = useState(false);
 

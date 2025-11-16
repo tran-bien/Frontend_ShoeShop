@@ -102,7 +102,7 @@ export const CompareProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   const isInCompare = (productId: string) => {
-    return compareList.some((p) => p._id === productId);
+    return compareList.some((p) => p && p._id === productId);
   };
 
   return (

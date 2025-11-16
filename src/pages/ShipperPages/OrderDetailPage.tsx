@@ -36,7 +36,9 @@ const OrderDetailPage = () => {
     try {
       setLoading(true);
       const response = await ShipperService.getMyOrders();
-      const foundOrder = response.data.find((o: any) => o._id === orderId);
+      // response.data.data is the array of orders
+      const orders = response.data.data || [];
+      const foundOrder = orders.find((o: any) => o._id === orderId);
       if (foundOrder) {
         setOrder(foundOrder);
         setFormData((prev) => ({ ...prev, status: foundOrder.status }));
@@ -285,9 +287,9 @@ const OrderDetailPage = () => {
               key={index}
               className="flex items-center gap-4 border-b border-mono-200 pb-4 last:border-0"
             >
-              {item.variant?.images?.[0] && (
+              {item.variant?.imagesvariant?.[0] && (
                 <img
-                  src={item.variant.images[0]}
+                  src={item.variant.imagesvariant[0].url}
                   alt={item.product?.name}
                   className="w-20 h-20 object-cover rounded-lg"
                 />

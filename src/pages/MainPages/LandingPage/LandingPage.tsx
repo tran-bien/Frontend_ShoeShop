@@ -91,7 +91,7 @@ const LandingPage: React.FC = () => {
             featuredRes.data.data || featuredRes.data.products || [];
           console.log("Featured products:", products);
           const flattenedProducts = Array.isArray(products)
-            ? products.flat()
+            ? products.flat().filter((p: any) => p && p._id)
             : [];
           setFeaturedProducts(flattenedProducts);
         }
@@ -101,7 +101,7 @@ const LandingPage: React.FC = () => {
             bestSellersRes.data.data || bestSellersRes.data.products || [];
           console.log("Best sellers:", products);
           const flattenedProducts = Array.isArray(products)
-            ? products.flat()
+            ? products.flat().filter((p: any) => p && p._id)
             : [];
           setBestSellers(flattenedProducts);
         }
@@ -111,7 +111,7 @@ const LandingPage: React.FC = () => {
             newArrivalsRes.data.data || newArrivalsRes.data.products || [];
           console.log("New arrivals:", products);
           const flattenedProducts = Array.isArray(products)
-            ? products.flat()
+            ? products.flat().filter((p: any) => p && p._id)
             : [];
           setNewArrivals(flattenedProducts);
         }
@@ -121,7 +121,7 @@ const LandingPage: React.FC = () => {
             allProductsRes.data.data || allProductsRes.data.products || [];
           console.log("All products:", products);
           const flattenedProducts = Array.isArray(products)
-            ? products.flat()
+            ? products.flat().filter((p: any) => p && p._id)
             : [];
           setAllProducts(flattenedProducts);
         }

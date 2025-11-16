@@ -95,12 +95,9 @@ export const adminReturnService = {
       data
     ),
 
-  // Hoàn thành xử lý
-  completeReturn: (
-    id: string,
-    data?: { note?: string }
-  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/complete`, data),
+  // REMOVED: completeReturn endpoint không tồn tại ở backend
+  // Backend tự động chuyển sang 'completed' sau khi processReturn hoặc processExchange thành công
+  // Nếu cần endpoint này, phải thêm vào backend trước
 };
 
 // Backward compatibility - Combined legacy API
@@ -117,7 +114,7 @@ export const returnService = {
   rejectReturnRequest: adminReturnService.rejectReturnRequest,
   processReturn: adminReturnService.processReturn,
   processExchange: adminReturnService.processExchange,
-  completeReturn: adminReturnService.completeReturn,
+  // completeReturn: adminReturnService.completeReturn, // REMOVED - endpoint không tồn tại
 };
 
 export default returnService;
