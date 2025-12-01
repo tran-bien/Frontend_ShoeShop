@@ -19,6 +19,7 @@ import {
   FaBlog,
   FaStar,
   FaBookOpen,
+  FaComments,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -94,6 +95,7 @@ const AdminSidebar = () => {
     { name: "Blogs", href: "/admin/blogs", icon: FaBlog },
     { name: "Size Guides", href: "/admin/size-guides", icon: FaBookOpen },
     { name: "Loyalty Tiers", href: "/admin/loyalty-tiers", icon: FaStar },
+    { name: "Chat Support", href: "/admin/chat", icon: FaComments },
     {
       name: "Coupon",
       href: "/admin/products/discount",

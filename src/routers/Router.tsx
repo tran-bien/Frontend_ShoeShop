@@ -55,6 +55,12 @@ import LoyaltyDashboardPage from "../pages/LoyaltyDashboardPage";
 import ReturnListPage from "../pages/ReturnListPage";
 import RecommendationsPage from "../pages/RecommendationsPage";
 import UserViewHistoryPage from "../pages/UserViewHistoryPage";
+import NotFoundPage from "../pages/NotFoundPage";
+import TermsPage from "../pages/TermsPage";
+import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
+import ContactPage from "../pages/ContactPage";
+import FAQPage from "../pages/FAQPage";
+import AdminChatPage from "../pages/AdminPages/ChatPage/AdminChatPage";
 
 const AppRouter = () => {
   return (
@@ -110,6 +116,7 @@ const AppRouter = () => {
         <Route path="blogs" element={<AdminBlogPage />} />
         <Route path="size-guides" element={<AdminSizeGuidePage />} />
         <Route path="loyalty-tiers" element={<AdminLoyaltyTierPage />} />
+        <Route path="chat" element={<AdminChatPage />} />
 
         {/* Routes chỉ dành cho Admin */}
         <Route
@@ -277,7 +284,16 @@ const AppRouter = () => {
         />
         <Route path="payment/status" element={<PaymentStatusPage />} />
         <Route path="payment/result" element={<PaymentStatusPage />} />
+
+        {/* Static pages */}
+        <Route path="terms" element={<TermsPage />} />
+        <Route path="privacy" element={<PrivacyPolicyPage />} />
+        <Route path="contact" element={<ContactPage />} />
+        <Route path="faq" element={<FAQPage />} />
       </Route>
+
+      {/* 404 Not Found - catch all route */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };

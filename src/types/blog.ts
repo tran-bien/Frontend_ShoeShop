@@ -23,7 +23,7 @@ export interface BlogCategory {
 // BLOG POST TYPES
 // =======================
 
-export type BlogPostStatus = "draft" | "published" | "archived";
+export type BlogPostStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
 export interface BlogPost {
   _id: string;

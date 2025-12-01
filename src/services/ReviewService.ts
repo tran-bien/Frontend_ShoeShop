@@ -24,7 +24,7 @@ export const reviewApi = {
     productId: string,
     params: ReviewQueryParams = {}
   ): Promise<{ data: ApiResponse<Review[]> }> =>
-    axiosInstance.get(`/api/v1/products/${productId}/reviews`, { params }),
+    axiosInstance.get(`/api/v1/reviews/products/${productId}`, { params }),
 
   // Lấy chi tiết đánh giá theo ID
   getReviewDetail: (reviewId: string): Promise<{ data: ApiResponse<Review> }> =>

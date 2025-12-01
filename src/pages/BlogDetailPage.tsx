@@ -23,15 +23,25 @@ const BlogDetailPage = () => {
       setLoading(true);
       try {
         const { data } = await publicBlogService.getPostBySlug(slug);
-        setPost(data.data);
+        // BE returns { success, post }
+        setPost(data.post || data.data);
 
-        // Fetch related posts
-        if (data.data._id) {
-          const relatedRes = await publicBlogService.getRelatedPosts(
-            data.data._id,
-            3
-          );
-          setRelatedPosts(relatedRes.data.data.posts);
+        // Fetch related posts (same category, exclude current post)
+        if (data.post?._id || data.data?._id) {
+          const postData = data.post || data.data;
+          try {
+            const relatedRes = await publicBlogService.getPosts({
+              category: postData.category?._id,
+              limit: 3,
+            });
+            // Filter out current post and limit to 3
+            const related = (relatedRes.data.data || [])
+              .filter((p: BlogPost) => p._id !== postData._id)
+              .slice(0, 3);
+            setRelatedPosts(related);
+          } catch (err) {
+            console.error("Failed to fetch related posts:", err);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch blog post:", error);

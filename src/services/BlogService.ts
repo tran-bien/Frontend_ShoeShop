@@ -59,38 +59,37 @@ export const publicBlogService = {
 
 export const adminBlogService = {
   // === CATEGORY MANAGEMENT ===
-  // IMPORTANT: Backend chưa có admin blog category endpoints
-  // Tạm thời sử dụng placeholder, cần implement backend endpoints sau
+  // Backend: /api/v1/admin/blogs/categories
   // Lấy tất cả categories
   getAllCategories: (
     params: BlogCategoryQueryParams = {}
   ): Promise<{ data: BlogCategoriesResponse }> =>
-    axiosInstanceAuth.get("/api/v1/blogs/categories", { params }),
+    axiosInstanceAuth.get("/api/v1/admin/blogs/categories", { params }),
 
   // Lấy chi tiết category
   getCategoryById: (
     categoryId: string
   ): Promise<{ data: BlogCategoryDetailResponse }> =>
-    axiosInstanceAuth.get(`/api/v1/blogs/categories/${categoryId}`),
+    axiosInstanceAuth.get(`/api/v1/admin/blogs/categories/${categoryId}`),
 
   // Tạo category mới
   createCategory: (
     data: CreateBlogCategoryData
   ): Promise<{ data: BlogCategoryDetailResponse }> =>
-    axiosInstanceAuth.post("/api/v1/blogs/categories", data),
+    axiosInstanceAuth.post("/api/v1/admin/blogs/categories", data),
 
   // Cập nhật category
   updateCategory: (
     categoryId: string,
     data: UpdateBlogCategoryData
   ): Promise<{ data: BlogCategoryDetailResponse }> =>
-    axiosInstanceAuth.put(`/api/v1/blogs/categories/${categoryId}`, data),
+    axiosInstanceAuth.put(`/api/v1/admin/blogs/categories/${categoryId}`, data),
 
   // Xóa category
   deleteCategory: (
     categoryId: string
   ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstanceAuth.delete(`/api/v1/blogs/categories/${categoryId}`),
+    axiosInstanceAuth.delete(`/api/v1/admin/blogs/categories/${categoryId}`),
 
   // === POST MANAGEMENT ===
   // Backend: /api/v1/admin/blogs (không có /posts)
@@ -123,13 +122,17 @@ export const adminBlogService = {
   ): Promise<{ data: { success: boolean; message: string } }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/blogs/${postId}`),
 
-  // Publish post - Note: Backend không có endpoint này
+  // Publish post - Sử dụng updatePost với status PUBLISHED
   publishPost: (postId: string): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstanceAuth.patch(`/api/v1/admin/blogs/${postId}/publish`),
+    axiosInstanceAuth.put(`/api/v1/admin/blogs/${postId}`, {
+      status: "PUBLISHED",
+    }),
 
-  // Archive post - Note: Backend không có endpoint này
+  // Archive post - Sử dụng updatePost với status ARCHIVED
   archivePost: (postId: string): Promise<{ data: BlogPostDetailResponse }> =>
-    axiosInstanceAuth.patch(`/api/v1/admin/blogs/${postId}/archive`),
+    axiosInstanceAuth.put(`/api/v1/admin/blogs/${postId}`, {
+      status: "ARCHIVED",
+    }),
 };
 
 // =======================

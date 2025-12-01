@@ -5,6 +5,19 @@ import type {
   TrackViewResponse,
 } from "../types/viewHistory";
 
+// Helper để tạo/lấy session ID cho guest users
+const getGuestSessionId = (): string => {
+  const STORAGE_KEY = "guest_session_id";
+  let sessionId = localStorage.getItem(STORAGE_KEY);
+  if (!sessionId) {
+    sessionId = `guest_${Date.now()}_${Math.random()
+      .toString(36)
+      .substring(2, 15)}`;
+    localStorage.setItem(STORAGE_KEY, sessionId);
+  }
+  return sessionId;
+};
+
 // =======================
 // PUBLIC VIEW HISTORY SERVICE
 // =======================
@@ -12,7 +25,10 @@ import type {
 export const publicViewHistoryService = {
   // Track view (public - works for both guest and logged-in users)
   trackView: (productId: string): Promise<{ data: TrackViewResponse }> =>
-    axiosInstance.post("/api/v1/users/view-history/track", { productId }),
+    axiosInstance.post("/api/v1/users/view-history", {
+      productId,
+      sessionId: getGuestSessionId(),
+    }),
 };
 
 // =======================

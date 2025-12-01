@@ -101,9 +101,9 @@ const AdminBlogPage = () => {
       page: 1,
       status:
         filterStatus !== "all"
-          ? (filterStatus as "draft" | "published" | "archived")
+          ? (filterStatus as "DRAFT" | "PUBLISHED" | "ARCHIVED")
           : undefined,
-      categoryId: filterCategory !== "all" ? filterCategory : undefined,
+      category: filterCategory !== "all" ? filterCategory : undefined,
       search: searchQuery || undefined,
     }));
   }, [filterStatus, filterCategory, searchQuery]);
@@ -141,7 +141,7 @@ const AdminBlogPage = () => {
   // Publish/Archive post
   const handleToggleStatus = async (postId: string, currentStatus: string) => {
     try {
-      if (currentStatus === "published") {
+      if (currentStatus === "PUBLISHED") {
         await adminBlogService.archivePost(postId);
         toast.success("Đã lưu trữ bài viết");
       } else {
@@ -220,9 +220,9 @@ const AdminBlogPage = () => {
                     className="px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
                   >
                     <option value="all">Tất cả trạng thái</option>
-                    <option value="published">Đã xuất bản</option>
-                    <option value="draft">Bản nháp</option>
-                    <option value="archived">Đã lưu trữ</option>
+                    <option value="PUBLISHED">Đã xuất bản</option>
+                    <option value="DRAFT">Bản nháp</option>
+                    <option value="ARCHIVED">Đã lưu trữ</option>
                   </select>
 
                   {/* Category Filter */}
@@ -321,16 +321,16 @@ const AdminBlogPage = () => {
                           <td className="px-6 py-4">
                             <span
                               className={`px-2 py-1 text-xs rounded ${
-                                post.status === "published"
+                                post.status === "PUBLISHED"
                                   ? "bg-mono-200 text-mono-900"
-                                  : post.status === "draft"
+                                  : post.status === "DRAFT"
                                   ? "bg-mono-300 text-mono-900"
                                   : "bg-mono-100 text-mono-700"
                               }`}
                             >
-                              {post.status === "published"
+                              {post.status === "PUBLISHED"
                                 ? "Đã xuất bản"
-                                : post.status === "draft"
+                                : post.status === "DRAFT"
                                 ? "Bản nháp"
                                 : "Lưu trữ"}
                             </span>
@@ -372,7 +372,7 @@ const AdminBlogPage = () => {
                                     }
                                     className="px-3 py-1 text-xs font-medium text-mono-700 bg-mono-100 hover:bg-mono-200 rounded transition-colors"
                                   >
-                                    {post.status === "published"
+                                    {post.status === "PUBLISHED"
                                       ? "Lưu trữ"
                                       : "Xuất bản"}
                                   </button>

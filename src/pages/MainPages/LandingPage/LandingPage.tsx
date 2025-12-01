@@ -91,7 +91,7 @@ const LandingPage: React.FC = () => {
             featuredRes.data.data || featuredRes.data.products || [];
           console.log("Featured products:", products);
           const flattenedProducts = Array.isArray(products)
-            ? products.flat().filter((p: any) => p && p._id)
+            ? products.flat().filter((p: Product) => p && p._id)
             : [];
           setFeaturedProducts(flattenedProducts);
         }
@@ -101,7 +101,7 @@ const LandingPage: React.FC = () => {
             bestSellersRes.data.data || bestSellersRes.data.products || [];
           console.log("Best sellers:", products);
           const flattenedProducts = Array.isArray(products)
-            ? products.flat().filter((p: any) => p && p._id)
+            ? products.flat().filter((p: Product) => p && p._id)
             : [];
           setBestSellers(flattenedProducts);
         }
@@ -111,7 +111,7 @@ const LandingPage: React.FC = () => {
             newArrivalsRes.data.data || newArrivalsRes.data.products || [];
           console.log("New arrivals:", products);
           const flattenedProducts = Array.isArray(products)
-            ? products.flat().filter((p: any) => p && p._id)
+            ? products.flat().filter((p: Product) => p && p._id)
             : [];
           setNewArrivals(flattenedProducts);
         }
@@ -121,7 +121,7 @@ const LandingPage: React.FC = () => {
             allProductsRes.data.data || allProductsRes.data.products || [];
           console.log("All products:", products);
           const flattenedProducts = Array.isArray(products)
-            ? products.flat().filter((p: any) => p && p._id)
+            ? products.flat().filter((p: Product) => p && p._id)
             : [];
           setAllProducts(flattenedProducts);
         }
@@ -741,7 +741,7 @@ const LandingPage: React.FC = () => {
             </p>
             <div className="flex justify-center space-x-6 mt-4 text-sm">
               <Link
-                to="/privacy-policy"
+                to="/privacy"
                 className="text-mono-600 hover:text-mono-black transition-colors"
               >
                 Chính sách bảo mật
@@ -753,10 +753,10 @@ const LandingPage: React.FC = () => {
                 Điều khoản sử dụng
               </Link>
               <Link
-                to="/sitemap"
+                to="/products"
                 className="text-mono-600 hover:text-mono-black transition-colors"
               >
-                Sơ đồ trang
+                Sản phẩm
               </Link>
             </div>
           </div>

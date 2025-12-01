@@ -43,8 +43,9 @@ const BlogManagement: React.FC = () => {
 
       const response = await adminBlogService.getAllPosts(params);
       if (response.data.success) {
-        setPosts(response.data.data.posts);
-        setTotalPages(response.data.data.pagination.totalPages);
+        // paginate helper returns { success, data, totalPages, ... }
+        setPosts(response.data.data || []);
+        setTotalPages(response.data.totalPages || 1);
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
@@ -74,11 +75,11 @@ const BlogManagement: React.FC = () => {
 
   const getStatusBadge = (status: string) => {
     const styles = {
-      draft: "bg-gray-200 text-gray-700",
-      published: "bg-black text-white",
-      archived: "bg-gray-400 text-white",
+      DRAFT: "bg-gray-200 text-gray-700",
+      PUBLISHED: "bg-black text-white",
+      ARCHIVED: "bg-gray-400 text-white",
     };
-    return styles[status as keyof typeof styles] || styles.draft;
+    return styles[status as keyof typeof styles] || styles.DRAFT;
   };
 
   if (loading && page === 1) {
@@ -135,9 +136,9 @@ const BlogManagement: React.FC = () => {
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
           >
             <option value="all">Tất cả</option>
-            <option value="draft">Nháp</option>
-            <option value="published">Đã xuất bản</option>
-            <option value="archived">Đã lưu trữ</option>
+            <option value="DRAFT">Nháp</option>
+            <option value="PUBLISHED">Đã xuất bản</option>
+            <option value="ARCHIVED">Đã lưu trữ</option>
           </select>
         </div>
 
@@ -193,9 +194,9 @@ const BlogManagement: React.FC = () => {
                         post.status
                       )}`}
                     >
-                      {post.status === "draft" && "Nháp"}
-                      {post.status === "published" && "Đã xuất bản"}
-                      {post.status === "archived" && "Đã lưu trữ"}
+                      {post.status === "DRAFT" && "Nháp"}
+                      {post.status === "PUBLISHED" && "Đã xuất bản"}
+                      {post.status === "ARCHIVED" && "Đã lưu trữ"}
                     </span>
                     {typeof post.category === "object" && post.category && (
                       <span className="text-xs text-gray-500">

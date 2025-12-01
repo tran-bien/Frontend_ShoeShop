@@ -6,6 +6,7 @@ import ProductCard from "../ProductCard/ProductCard";
 import type { ViewHistory } from "../../types/viewHistory";
 import type { Product } from "../../types/product";
 import { ClockIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "../../hooks/useAuth";
 
 interface RecentlyViewedProps {
   limit?: number;
@@ -19,11 +20,18 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
   excludeProductId,
 }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [viewHistory, setViewHistory] = useState<ViewHistory[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchViewHistory = async () => {
+      // Only fetch if user is authenticated
+      if (!isAuthenticated) {
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       try {
         const { data } = await userViewHistoryService.getViewHistory({
@@ -52,7 +60,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
     };
 
     fetchViewHistory();
-  }, [limit, excludeProductId]);
+  }, [limit, excludeProductId, isAuthenticated]);
 
   if (loading) {
     return (

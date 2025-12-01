@@ -16,14 +16,15 @@ const BlogListPage = () => {
       try {
         const [postsRes, categoriesRes] = await Promise.all([
           publicBlogService.getPosts({
-            status: "published",
-            categoryId: selectedCategory || undefined,
+            status: "PUBLISHED",
+            category: selectedCategory || undefined,
           }),
           publicBlogService.getCategories({ isActive: true }),
         ]);
 
-        setPosts(postsRes.data.data.posts);
-        setCategories(categoriesRes.data.data.categories);
+        // BE returns { success, data, ... } from paginate helper
+        setPosts(postsRes.data.data || []);
+        setCategories(categoriesRes.data.data || []);
       } catch (error) {
         console.error("Failed to fetch blog data:", error);
       } finally {

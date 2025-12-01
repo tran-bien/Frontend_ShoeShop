@@ -27,26 +27,26 @@ export const adminShipperService = {
   getShippers: (params?: {
     available?: boolean;
   }): Promise<{ data: ApiResponse<GetShippersResponse> }> =>
-    axiosInstanceAuth.get("/api/v1/shipper/list", { params }),
+    axiosInstanceAuth.get("/api/v1/admin/shippers", { params }),
 
   // Phân công đơn hàng cho shipper
   assignOrderToShipper: (
     orderId: string,
     data: AssignOrderData
   ): Promise<{ data: ApiResponse }> =>
-    axiosInstanceAuth.post(`/api/v1/shipper/assign/${orderId}`, data),
+    axiosInstanceAuth.post(`/api/v1/admin/shippers/assign/${orderId}`, data),
 
   // Lấy thống kê của shipper
   getShipperStats: (
     shipperId: string
   ): Promise<{ data: ShipperStatsResponse }> =>
-    axiosInstanceAuth.get(`/api/v1/shipper/stats/${shipperId}`),
+    axiosInstanceAuth.get(`/api/v1/admin/shippers/${shipperId}/stats`),
 
   // Lấy chi tiết shipper
   getShipperDetail: (
     shipperId: string
   ): Promise<{ data: ApiResponse<ShipperInfo> }> =>
-    axiosInstanceAuth.get(`/api/v1/shipper/detail/${shipperId}`),
+    axiosInstanceAuth.get(`/api/v1/admin/shippers/${shipperId}`),
 };
 
 // Shipper Service (for shipper role)

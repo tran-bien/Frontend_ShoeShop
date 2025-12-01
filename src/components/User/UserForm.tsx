@@ -3,9 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { inforApi } from "../../services/InforService";
 import Cookie from "js-cookie";
 import type { User, UserAddress } from "../../types/user";
+import {
+  FiCamera,
+  FiEdit2,
+  FiTrash2,
+  FiPlus,
+  FiMapPin,
+  FiCheck,
+  FiX,
+} from "react-icons/fi";
+import toast from "react-hot-toast";
 
 // Alias for better semantics
 type Address = UserAddress;
+
+// Field labels for address form
+const fieldLabels: Record<string, string> = {
+  fullName: "Họ và tên",
+  phone: "Số điện thoại",
+  province: "Tỉnh/Thành phố",
+  district: "Quận/Huyện",
+  ward: "Phường/Xã",
+  addressDetail: "Địa chỉ chi tiết",
+};
 
 const UserForm: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +33,7 @@ const UserForm: React.FC = () => {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [newAddress, setNewAddress] = useState<Address>({
     name: "",
     fullName: "",
@@ -37,11 +58,14 @@ const UserForm: React.FC = () => {
 
     const fetchProfile = async () => {
       try {
+        setLoading(true);
         const res = await inforApi.getProfile();
         setUser(res.data.user);
         setEditName(res.data.user.name);
       } catch {
         navigate("/login");
+      } finally {
+        setLoading(false);
       }
     };
     fetchProfile();
@@ -49,226 +73,346 @@ const UserForm: React.FC = () => {
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const formData = new FormData();
-      formData.append("avatar", e.target.files[0]);
-      await inforApi.updateAvatar(formData);
-      const res = await inforApi.getProfile();
-      setUser(res.data.user);
-      setEditName(res.data.user.name);
+      try {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("avatar", e.target.files[0]);
+        await inforApi.updateAvatar(formData);
+        const res = await inforApi.getProfile();
+        setUser(res.data.user);
+        setEditName(res.data.user.name);
+        toast.success("Cập nhật ảnh đại diện thành công");
+      } catch {
+        toast.error("Không thể cập nhật ảnh đại diện");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
   // Xóa avatar
   const handleDeleteAvatar = async () => {
-    await inforApi.deleteAvatar();
-    const res = await inforApi.getProfile();
-    setUser(res.data.user);
-    setEditName(res.data.user.name);
+    try {
+      setLoading(true);
+      await inforApi.deleteAvatar();
+      const res = await inforApi.getProfile();
+      setUser(res.data.user);
+      setEditName(res.data.user.name);
+      toast.success("Đã xóa ảnh đại diện");
+    } catch {
+      toast.error("Không thể xóa ảnh đại diện");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Cập nhật tên người dùng
   const handleUpdateName = async (e: React.FormEvent) => {
     e.preventDefault();
-    await inforApi.updateProfile({ name: editName });
-    const res = await inforApi.getProfile();
-    setUser(res.data.user);
-    setEditName(res.data.user.name);
-    setIsEditingName(false);
+    try {
+      setLoading(true);
+      await inforApi.updateProfile({ name: editName });
+      const res = await inforApi.getProfile();
+      setUser(res.data.user);
+      setEditName(res.data.user.name);
+      setIsEditingName(false);
+      toast.success("Cập nhật tên thành công");
+    } catch {
+      toast.error("Không thể cập nhật tên");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleUpdateAddress = async (addr: Address) => {
     if (!addr._id) return;
-    await inforApi.updateAddress(addr._id, {
-      fullName: addr.fullName,
-      phone: addr.phone,
-      province: addr.province,
-      district: addr.district,
-      ward: addr.ward,
-      addressDetail: addr.addressDetail,
-      isDefault: addr.isDefault,
-    });
-    const res = await inforApi.getProfile();
-    setUser(res.data.user);
+    try {
+      setLoading(true);
+      await inforApi.updateAddress(addr._id, {
+        fullName: addr.fullName,
+        phone: addr.phone,
+        province: addr.province,
+        district: addr.district,
+        ward: addr.ward,
+        addressDetail: addr.addressDetail,
+        isDefault: addr.isDefault,
+      });
+      const res = await inforApi.getProfile();
+      setUser(res.data.user);
+      toast.success("Cập nhật địa chỉ thành công");
+    } catch {
+      toast.error("Không thể cập nhật địa chỉ");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Thêm địa chỉ mới
   const handleAddAddress = async (e: React.FormEvent) => {
     e.preventDefault();
-    await inforApi.addAddress({
-      fullName: newAddress.fullName,
-      phone: newAddress.phone,
-      province: newAddress.province,
-      district: newAddress.district,
-      ward: newAddress.ward,
-      addressDetail: newAddress.addressDetail,
-      isDefault: newAddress.isDefault,
-    });
-    setIsAddModalOpen(false);
-    setNewAddress({
-      name: "",
-      fullName: "",
-      phone: "",
-      province: "",
-      district: "",
-      ward: "",
-      detail: "",
-      addressDetail: "",
-      isDefault: false,
-      _id: "",
-    });
-    const res = await inforApi.getProfile();
-    setUser(res.data.user);
+    try {
+      setLoading(true);
+      await inforApi.addAddress({
+        fullName: newAddress.fullName,
+        phone: newAddress.phone,
+        province: newAddress.province,
+        district: newAddress.district,
+        ward: newAddress.ward,
+        addressDetail: newAddress.addressDetail,
+        isDefault: newAddress.isDefault,
+      });
+      setIsAddModalOpen(false);
+      setNewAddress({
+        name: "",
+        fullName: "",
+        phone: "",
+        province: "",
+        district: "",
+        ward: "",
+        detail: "",
+        addressDetail: "",
+        isDefault: false,
+        _id: "",
+      });
+      const res = await inforApi.getProfile();
+      setUser(res.data.user);
+      toast.success("Thêm địa chỉ thành công");
+    } catch {
+      toast.error("Không thể thêm địa chỉ");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Xóa địa chỉ
   const handleDeleteAddress = async (addressId: string) => {
-    await inforApi.deleteAddress(addressId);
-    const res = await inforApi.getProfile();
-    setUser(res.data.user);
+    try {
+      setLoading(true);
+      await inforApi.deleteAddress(addressId);
+      const res = await inforApi.getProfile();
+      setUser(res.data.user);
+      toast.success("Đã xóa địa chỉ");
+    } catch {
+      toast.error("Không thể xóa địa chỉ");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-mono-black border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-3 text-mono-800">
-        Thông tin tài khoản
-      </h2>
-
-      <div className="flex flex-col items-center mb-4">
-        <div className="relative mb-2 group">
-          <img
-            src={
-              user.avatar?.url ||
-              "https://ui-avatars.com/api/?name=" +
-                encodeURIComponent(user.name)
-            }
-            alt="avatar"
-            className="w-24 h-24 rounded-full border object-cover cursor-pointer group-hover:opacity-80 transition"
-            onClick={() => document.getElementById("avatarInput")?.click()}
-            title="Nhấn để đổi ảnh đại diện"
-          />
-          <input
-            id="avatarInput"
-            type="file"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            className="hidden"
-          />
-          <button
-            onClick={handleDeleteAvatar}
-            className="absolute right-0 bottom-0 bg-mono-800 text-white rounded-full px-2 py-1 text-xs shadow hover:bg-mono-900"
-            title="Xóa avatar"
-            type="button"
-          >
-            X
-          </button>
-        </div>
-        {/* Form cập nhật tên */}
-        {isEditingName ? (
-          <form
-            onSubmit={handleUpdateName}
-            className="flex items-center gap-2 mb-2"
-          >
-            <input
-              type="text"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              className="border px-2 py-1 rounded"
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="bg-mono-500 text-white px-3 py-1 rounded text-sm"
-            >
-              Lưu tên
-            </button>
-            <button
-              type="button"
-              className="bg-mono-300 px-3 py-1 rounded text-sm"
-              onClick={() => {
-                setEditName(user.name);
-                setIsEditingName(false);
-              }}
-            >
-              Hủy
-            </button>
-          </form>
-        ) : (
-          <div className="flex items-center gap-2 mb-2">
-            <span className="font-semibold text-lg">{user.name}</span>
-            <button
-              type="button"
-              className="bg-mono-500 text-white px-3 py-1 rounded text-sm"
-              onClick={() => setIsEditingName(true)}
-            >
-              Sửa
-            </button>
-          </div>
-        )}
-        <div className="text-mono-500">{user.email}</div>
+    <div className="bg-white rounded-2xl shadow-lg border border-mono-100 w-full max-w-2xl mx-auto overflow-hidden">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-mono-800 to-mono-black p-6">
+        <h2 className="text-2xl font-bold text-white">Thông tin tài khoản</h2>
+        <p className="text-mono-300 mt-1">Quản lý thông tin cá nhân của bạn</p>
       </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-bold">Địa chỉ:</h3>
-          <button
-            className="bg-mono-500 text-white px-3 py-1 rounded text-sm"
-            onClick={() => setIsAddModalOpen(true)}
-          >
-            Thêm địa chỉ
-          </button>
-        </div>
-        {user.addresses && user.addresses.length > 0 ? (
-          <ul className="space-y-2">
-            {user.addresses.map((addr) => (
-              <li
-                key={addr._id}
-                className={`border rounded p-2 ${
-                  addr.isDefault ? "border-mono-700" : "border-mono-300"
-                }`}
+      <div className="p-6 space-y-8">
+        {/* Avatar & Name Section */}
+        <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-mono-100">
+          {/* Avatar */}
+          <div className="relative group">
+            <img
+              src={
+                user.avatar?.url ||
+                "https://ui-avatars.com/api/?name=" +
+                  encodeURIComponent(user.name) +
+                  "&background=171717&color=fff"
+              }
+              alt="avatar"
+              className="w-28 h-28 rounded-full border-4 border-mono-100 object-cover shadow-md"
+            />
+            <div className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+              <button
+                onClick={() => document.getElementById("avatarInput")?.click()}
+                className="p-2 bg-white rounded-full text-mono-800 hover:bg-mono-100 transition-colors"
+                title="Đổi ảnh"
+                disabled={loading}
               >
-                <div>
-                  <span className="font-semibold">{addr.fullName}</span> -{" "}
-                  {addr.phone}
-                </div>
-                <div>
-                  {addr.addressDetail}, {addr.ward}, {addr.district},{" "}
-                  {addr.province}
-                </div>
-                {addr.isDefault && (
-                  <span className="text-mono-800 text-xs font-semibold">
-                    [Mặc định]
-                  </span>
-                )}
+                <FiCamera size={18} />
+              </button>
+              {user.avatar?.url && (
                 <button
-                  className="ml-2 text-mono-500 text-xs"
+                  onClick={handleDeleteAvatar}
+                  className="p-2 bg-white rounded-full text-red-600 hover:bg-mono-100 transition-colors"
+                  title="Xóa ảnh"
+                  disabled={loading}
+                >
+                  <FiTrash2 size={18} />
+                </button>
+              )}
+            </div>
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="hidden"
+            />
+          </div>
+
+          {/* Name & Email */}
+          <div className="flex-1 text-center sm:text-left">
+            {isEditingName ? (
+              <form
+                onSubmit={handleUpdateName}
+                className="flex items-center gap-2"
+              >
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-mono-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mono-black text-lg font-semibold"
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  className="p-2 bg-mono-black text-white rounded-xl hover:bg-mono-800 transition-colors"
+                  disabled={loading}
+                >
+                  <FiCheck size={20} />
+                </button>
+                <button
+                  type="button"
+                  className="p-2 bg-mono-100 text-mono-600 rounded-xl hover:bg-mono-200 transition-colors"
                   onClick={() => {
-                    setEditingAddress(addr);
-                    setIsModalOpen(true);
+                    setEditName(user.name);
+                    setIsEditingName(false);
                   }}
                 >
-                  Sửa
+                  <FiX size={20} />
                 </button>
+              </form>
+            ) : (
+              <div className="flex items-center justify-center sm:justify-start gap-2">
+                <h3 className="text-2xl font-bold text-mono-900">
+                  {user.name}
+                </h3>
                 <button
-                  className="ml-2 text-mono-800 text-xs"
-                  onClick={() => addr._id && handleDeleteAddress(addr._id)}
+                  type="button"
+                  className="p-1.5 text-mono-500 hover:text-mono-800 hover:bg-mono-100 rounded-lg transition-colors"
+                  onClick={() => setIsEditingName(true)}
                 >
-                  Xóa
+                  <FiEdit2 size={16} />
                 </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="text-mono-500">Chưa có địa chỉ nào.</div>
-        )}
+              </div>
+            )}
+            <p className="text-mono-500 mt-1">{user.email}</p>
+            {user.role && (
+              <span className="inline-block mt-2 px-3 py-1 bg-mono-100 text-mono-700 text-sm rounded-full capitalize">
+                {user.role === "admin"
+                  ? "Quản trị viên"
+                  : user.role === "staff"
+                  ? "Nhân viên"
+                  : "Khách hàng"}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Addresses Section */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <FiMapPin className="text-mono-700" size={20} />
+              <h3 className="text-lg font-semibold text-mono-900">
+                Địa chỉ của tôi
+              </h3>
+            </div>
+            <button
+              className="flex items-center gap-2 px-4 py-2 bg-mono-black text-white rounded-xl hover:bg-mono-800 transition-colors text-sm font-medium"
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              <FiPlus size={16} />
+              Thêm địa chỉ
+            </button>
+          </div>
+
+          {user.addresses && user.addresses.length > 0 ? (
+            <div className="space-y-3">
+              {user.addresses.map((addr) => (
+                <div
+                  key={addr._id}
+                  className={`p-4 rounded-xl border-2 transition-colors ${
+                    addr.isDefault
+                      ? "border-mono-800 bg-mono-50"
+                      : "border-mono-200 hover:border-mono-300"
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold text-mono-900">
+                          {addr.fullName}
+                        </span>
+                        <span className="text-mono-400">|</span>
+                        <span className="text-mono-600">{addr.phone}</span>
+                        {addr.isDefault && (
+                          <span className="px-2 py-0.5 bg-mono-800 text-white text-xs rounded-full">
+                            Mặc định
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-mono-600 text-sm">
+                        {addr.addressDetail}, {addr.ward}, {addr.district},{" "}
+                        {addr.province}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 ml-4">
+                      <button
+                        className="p-2 text-mono-500 hover:text-mono-800 hover:bg-mono-100 rounded-lg transition-colors"
+                        onClick={() => {
+                          setEditingAddress(addr);
+                          setIsModalOpen(true);
+                        }}
+                      >
+                        <FiEdit2 size={16} />
+                      </button>
+                      <button
+                        className="p-2 text-mono-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        onClick={() =>
+                          addr._id && handleDeleteAddress(addr._id)
+                        }
+                      >
+                        <FiTrash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 bg-mono-50 rounded-xl">
+              <FiMapPin className="mx-auto text-mono-300 mb-2" size={40} />
+              <p className="text-mono-500">Bạn chưa có địa chỉ nào</p>
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="mt-3 text-mono-800 hover:text-mono-black font-medium"
+              >
+                Thêm địa chỉ đầu tiên
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modal chỉnh sửa địa chỉ */}
       {isModalOpen && editingAddress && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-bold mb-4">Chỉnh sửa địa chỉ</h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
+            <div className="p-6 border-b border-mono-100">
+              <h3 className="text-xl font-bold text-mono-900">
+                Chỉnh sửa địa chỉ
+              </h3>
+            </div>
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
@@ -277,33 +421,30 @@ const UserForm: React.FC = () => {
                   setIsModalOpen(false);
                 }
               }}
-              className="space-y-2"
+              className="p-6 space-y-4"
             >
-              {[
-                "fullName",
-                "phone",
-                "province",
-                "district",
-                "ward",
-                "addressDetail",
-              ].map((field) => (
-                <input
-                  key={field}
-                  type="text"
-                  placeholder={field}
-                  value={String(
-                    (editingAddress as Address)[field as keyof Address] || ""
-                  )}
-                  onChange={(e) =>
-                    setEditingAddress({
-                      ...editingAddress!,
-                      [field]: e.target.value,
-                    })
-                  }
-                  className="w-full border px-2 py-1 rounded"
-                />
+              {Object.keys(fieldLabels).map((field) => (
+                <div key={field}>
+                  <label className="block text-sm font-medium text-mono-700 mb-1">
+                    {fieldLabels[field]}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={fieldLabels[field]}
+                    value={String(
+                      (editingAddress as Address)[field as keyof Address] || ""
+                    )}
+                    onChange={(e) =>
+                      setEditingAddress({
+                        ...editingAddress!,
+                        [field]: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-2.5 border border-mono-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mono-black transition-all"
+                  />
+                </div>
               ))}
-              <label className="flex items-center space-x-2">
+              <label className="flex items-center gap-3 py-2">
                 <input
                   type="checkbox"
                   checked={editingAddress.isDefault}
@@ -313,22 +454,24 @@ const UserForm: React.FC = () => {
                       isDefault: e.target.checked,
                     })
                   }
+                  className="w-5 h-5 rounded border-mono-300 text-mono-black focus:ring-mono-black"
                 />
-                <span>Đặt làm mặc định</span>
+                <span className="text-mono-700">Đặt làm địa chỉ mặc định</span>
               </label>
-              <div className="flex justify-end space-x-2">
+              <div className="flex gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-3 py-1 bg-mono-300 rounded"
+                  className="flex-1 px-4 py-2.5 border border-mono-200 text-mono-700 rounded-xl hover:bg-mono-50 transition-colors font-medium"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-3 py-1 bg-mono-black text-white rounded"
+                  disabled={loading}
+                  className="flex-1 px-4 py-2.5 bg-mono-black text-white rounded-xl hover:bg-mono-800 transition-colors font-medium disabled:opacity-50"
                 >
-                  Lưu
+                  {loading ? "Đang lưu..." : "Lưu thay đổi"}
                 </button>
               </div>
             </form>
@@ -338,35 +481,36 @@ const UserForm: React.FC = () => {
 
       {/* Modal thêm địa chỉ mới */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded shadow-lg w-full max-w-md">
-            <h3 className="text-lg font-bold mb-4">Thêm địa chỉ mới</h3>
-            <form onSubmit={handleAddAddress} className="space-y-2">
-              {[
-                "fullName",
-                "phone",
-                "province",
-                "district",
-                "ward",
-                "addressDetail",
-              ].map((field) => (
-                <input
-                  key={field}
-                  type="text"
-                  placeholder={field}
-                  value={String(
-                    (newAddress as Address)[field as keyof Address] || ""
-                  )}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      [field]: e.target.value,
-                    })
-                  }
-                  className="w-full border px-2 py-1 rounded"
-                />
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
+            <div className="p-6 border-b border-mono-100">
+              <h3 className="text-xl font-bold text-mono-900">
+                Thêm địa chỉ mới
+              </h3>
+            </div>
+            <form onSubmit={handleAddAddress} className="p-6 space-y-4">
+              {Object.keys(fieldLabels).map((field) => (
+                <div key={field}>
+                  <label className="block text-sm font-medium text-mono-700 mb-1">
+                    {fieldLabels[field]}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={fieldLabels[field]}
+                    value={String(
+                      (newAddress as Address)[field as keyof Address] || ""
+                    )}
+                    onChange={(e) =>
+                      setNewAddress({
+                        ...newAddress,
+                        [field]: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-2.5 border border-mono-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-mono-black transition-all"
+                  />
+                </div>
               ))}
-              <label className="flex items-center space-x-2">
+              <label className="flex items-center gap-3 py-2">
                 <input
                   type="checkbox"
                   checked={newAddress.isDefault}
@@ -376,22 +520,24 @@ const UserForm: React.FC = () => {
                       isDefault: e.target.checked,
                     })
                   }
+                  className="w-5 h-5 rounded border-mono-300 text-mono-black focus:ring-mono-black"
                 />
-                <span>Đặt làm mặc định</span>
+                <span className="text-mono-700">Đặt làm địa chỉ mặc định</span>
               </label>
-              <div className="flex justify-end space-x-2">
+              <div className="flex gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-3 py-1 bg-mono-300 rounded"
+                  className="flex-1 px-4 py-2.5 border border-mono-200 text-mono-700 rounded-xl hover:bg-mono-50 transition-colors font-medium"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-3 py-1 bg-mono-black text-white rounded"
+                  disabled={loading}
+                  className="flex-1 px-4 py-2.5 bg-mono-black text-white rounded-xl hover:bg-mono-800 transition-colors font-medium disabled:opacity-50"
                 >
-                  Thêm
+                  {loading ? "Đang thêm..." : "Thêm địa chỉ"}
                 </button>
               </div>
             </form>
