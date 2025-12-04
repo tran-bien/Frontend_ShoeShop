@@ -119,7 +119,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
         {selectedFile && (
           <div className="mb-4">
             <label className="block text-sm font-medium text-black mb-2">
-              Xem trước ẩnh mới:
+              Xem trước ảnh mới:
             </label>
             <div className="flex justify-center">
               <img
@@ -129,7 +129,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
               />
             </div>
             <p className="text-xs text-mono-800 text-center mt-1">
-              ? ẩnh dã chơn: {selectedFile.name}
+              ✓ Ảnh đã chọn: {selectedFile.name}
             </p>
           </div>
         )}
@@ -149,7 +149,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
             disabled={loading || !selectedFile}
             className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition disabled:opacity-50"
           >
-            {loading ? "Ðang cập nhật..." : "Cập nhật ẩnh"}
+            {loading ? "Đang cập nhật..." : "Cập nhật ảnh"}
           </button>
         </div>
       </div>
@@ -158,4 +158,3 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
 };
 
 export default BannerImageManager;
-

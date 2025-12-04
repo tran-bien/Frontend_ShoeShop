@@ -119,10 +119,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     );
   };
 
-  // Hiện thọ rating bảng các icon sao
+  // Hiển thị rating bằng các icon sao
   const renderRating = () => {
-    // N?u không có review count thì vẩn hiện thọ 5 sao rẩng
-    // Chờ ẩn phần rating khi c? hai di?u kiẩn đầu không tên tại
+    // Nếu không có review count thì vẫn hiển thị 5 sao rỗng
+    // Chỉ ẩn phần rating khi cả hai điều kiện đều không tồn tại
     if (
       product.reviewCount === undefined &&
       product.averageRating === undefined
@@ -130,12 +130,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       return null;
     }
 
-    // L?y rating, n?u không có thì m?c đếnh là 0
+    // Lấy rating, nếu không có thì mặc định là 0
     const rating = product.averageRating || 0;
     const reviewCount = product.reviewCount || 0;
     const stars = [];
 
-    // T?o 5 sao đánh giá
+    // Tạo 5 sao đánh giá
     for (let i = 1; i <= 5; i++) {
       stars.push(
         i <= rating ? (
@@ -181,9 +181,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           }`}
           title={
             isLoading
-              ? "Ðang tại..."
+              ? "Đang tải..."
               : inCompare
-              ? "Xóa kh?i so sánh"
+              ? "Xóa khỏi so sánh"
               : "Thêm vào so sánh"
           }
         >
@@ -274,6 +274,3 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 };
 
 export default ProductCard;
-
-
-

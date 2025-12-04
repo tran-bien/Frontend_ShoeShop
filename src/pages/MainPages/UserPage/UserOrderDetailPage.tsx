@@ -148,9 +148,9 @@ const UserOrderDetailPage: React.FC = () => {
       case "shipping":
         return "Đang giao";
       case "delivered":
-        return "Ðã giao";
+        return "Đã giao";
       case "cancelled":
-        return "Ðã hủy";
+        return "Đã hủy";
       default:
         return status;
     }
@@ -178,7 +178,7 @@ const UserOrderDetailPage: React.FC = () => {
           <div className="flex-1 p-10">
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-mono-black"></div>
-              <p className="mt-2">Ðang tại...</p>
+              <p className="mt-2">Đang tải...</p>
             </div>
           </div>
         </div>
@@ -193,7 +193,7 @@ const UserOrderDetailPage: React.FC = () => {
           <Sidebar />
           <div className="flex-1 p-10">
             <div className="text-center py-8">
-              <p className="text-mono-500">Không tìm thủy don hàng.</p>
+              <p className="text-mono-500">Không tìm thấy đơn hàng.</p>
             </div>
           </div>
         </div>
@@ -213,9 +213,9 @@ const UserOrderDetailPage: React.FC = () => {
               className="flex items-center gap-2 px-4 py-2 text-mono-black hover:bg-mono-50 rounded-lg transition-colors"
             >
               <FaArrowLeft />
-              <span>Quay lỗi</span>
+              <span>Quay lại</span>
             </button>
-            <h1 className="text-3xl font-bold">Chi tiết don hàng</h1>
+            <h1 className="text-3xl font-bold">Chi tiết đơn hàng</h1>
           </div>
 
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
@@ -224,7 +224,7 @@ const UserOrderDetailPage: React.FC = () => {
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">
-                    Ðon hàng {order.code}
+                    Đơn hàng {order.code}
                   </h2>
                   <span
                     className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
@@ -240,7 +240,7 @@ const UserOrderDetailPage: React.FC = () => {
                   {order.hasCancelRequest && (
                     <div className="mt-2">
                       <span className="inline-block px-3 py-1 bg-mono-200 text-mono-800 rounded-full text-sm font-medium">
-                        ?? Có yêu c?u hủy đang chờ xử lý
+                        ⚠️ Có yêu cầu hủy đang chờ xử lý
                       </span>
                     </div>
                   )}
@@ -254,7 +254,7 @@ const UserOrderDetailPage: React.FC = () => {
                       disabled={cancelLoading}
                       className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {cancelLoading ? "Ðang xử lý..." : "Hủy don"}
+                      {cancelLoading ? "Đang xử lý..." : "Hủy đơn"}
                     </button>
                   )}
 
@@ -264,7 +264,7 @@ const UserOrderDetailPage: React.FC = () => {
                       disabled={repayLoading}
                       className="px-4 py-2 bg-mono-700 text-white rounded hover:bg-mono-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {repayLoading ? "Ðang xử lý..." : "Thanh toán lỗi"}
+                      {repayLoading ? "Đang xử lý..." : "Thanh toán lại"}
                     </button>
                   )}
                 </div>
@@ -282,10 +282,10 @@ const UserOrderDetailPage: React.FC = () => {
                   </div>
                   <div className="space-y-2 text-sm">
                     <p>
-                      <strong>Người nhơn:</strong> {order.shippingAddress?.name}
+                      <strong>Người nhận:</strong> {order.shippingAddress?.name}
                     </p>
                     <p>
-                      <strong>SÐT:</strong> {order.shippingAddress?.phone}
+                      <strong>SĐT:</strong> {order.shippingAddress?.phone}
                     </p>
                     <p>
                       <strong>Ð?a ch?:</strong>
@@ -323,9 +323,9 @@ const UserOrderDetailPage: React.FC = () => {
                         }`}
                       >
                         {order.payment?.paymentStatus === "paid"
-                          ? "Ðã thanh toán"
+                          ? "Đã thanh toán"
                           : order.payment?.paymentStatus === "failed"
-                          ? "Thểt b?i"
+                          ? "Thất bại"
                           : "Chờ thanh toán"}
                       </span>
                     </p>

@@ -55,7 +55,7 @@ const Sidebar: React.FC = () => {
     {
       path: "/user-reviews",
       icon: <FaStar className="text-lg" />,
-      label: "Ðánh giá của tôi",
+      label: "Đánh giá của tôi",
     },
     {
       path: "/like-page",
@@ -164,6 +164,3 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
-
-
-

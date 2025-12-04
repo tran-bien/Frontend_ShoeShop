@@ -78,15 +78,15 @@ const LandingPage: React.FC = () => {
           productPublicService.getBestSellers({ limit: 8 }),
           productPublicService.getNewArrivals({ limit: 8 }),
           productPublicService.getProducts({ limit: 8 }),
-          // L?y 5 mã giảm giá d? hiện thọ trên trang chỉ
+          // Lấy 5 mã giảm giá để hiển thị trên trang chủ
           publicCouponService.getPublicCoupons({ limit: 5, status: "active" }),
-          // L?y banner hiện thể
+          // Lấy banner hiển thị
           bannerPublicService.getPublicBanners(),
         ]);
 
-        // Ki?m tra và xử lý dữ liệu trở về từ API
+        // Kiểm tra và xử lý dữ liệu trả về từ API
         if (featuredRes.data.success) {
-          // API có thọ trở về dữ liệu trong data, products ho?c truẩng khác
+          // API có thể trả về dữ liệu trong data, products hoặc trường khác
           const products =
             featuredRes.data.data || featuredRes.data.products || [];
           console.log("Featured products:", products);
@@ -149,8 +149,8 @@ const LandingPage: React.FC = () => {
         }
       } catch (error) {
         console.error("Error fetching landing page data:", error);
-        setError("Có lỗi x?y ra khi tại dữ liệu. Vui lòng thọ lỗi sau.");
-        toast.error("Không thể tại dữ liệu sản phẩm");
+        setError("Có lỗi xảy ra khi tải dữ liệu. Vui lòng thử lại sau.");
+        toast.error("Không thể tải dữ liệu sản phẩm");
       } finally {
         setLoading(false);
       }
@@ -163,7 +163,7 @@ const LandingPage: React.FC = () => {
   const copyCouponCode = async (code: string) => {
     try {
       await navigator.clipboard.writeText(code);
-      toast.success(`Ðã sao chép mã: ${code}`);
+      toast.success(`Đã sao chép mã: ${code}`);
     } catch (err) {
       console.error("Failed to copy: ", err);
       toast.error("Không thể sao chép mã giảm giá");
@@ -207,7 +207,7 @@ const LandingPage: React.FC = () => {
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-mono-800 mx-auto"></div>
-            <p className="mt-4 text-mono-600">Ðang tại...</p>
+            <p className="mt-4 text-mono-600">Đang tải...</p>
           </div>
         </div>
       </div>
@@ -234,14 +234,14 @@ const LandingPage: React.FC = () => {
               />
             </svg>
             <p className="text-xl font-semibold text-mono-800">
-              Không thể tại dữ liệu
+              Không thể tải dữ liệu
             </p>
             <p className="text-mono-600 mt-2">{error}</p>
             <button
               onClick={() => window.location.reload()}
               className="mt-4 px-6 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors"
             >
-              Thọ lỗi
+              Thử lại
             </button>
           </div>
         </div>
@@ -358,17 +358,17 @@ const LandingPage: React.FC = () => {
           )}
         </div>
 
-        {/* Mô từ */}
+        {/* Mô tả */}
         <div className="mb-3 flex-grow">
           <p className="text-xs text-mono-700 line-clamp-2 leading-relaxed">
             {coupon.description}
           </p>
           <p className="text-xs text-mono-500 mt-1">
-            Ðon tại thi?u {formatCurrency(coupon.minOrderValue)}
+            Đơn tối thiểu {formatCurrency(coupon.minOrderValue)}
           </p>
         </div>
 
-        {/* Footer với ngày h?t hơn */}
+        {/* Footer với ngày hết hạn */}
         <div className="mb-2">
           <div className="flex items-center space-x-1 text-xs text-mono-500">
             <FiCalendar size={10} />
@@ -376,7 +376,7 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Copy button - với màu nh?t hon */}
+        {/* Copy button - với màu nhạt hơn */}
         <button
           onClick={() => copyCouponCode(coupon.code)}
           className="w-full flex items-center justify-center space-x-2 bg-mono-600 hover:bg-mono-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-colors mt-auto"
@@ -415,7 +415,7 @@ const LandingPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Nút di?u huẩng trái - với hi?u ẩng m? */}
+              {/* Nút điều hướng trái - với hiệu ứng mờ */}
               {banners.length > 1 && (
                 <button
                   onClick={prevBanner}
@@ -428,7 +428,7 @@ const LandingPage: React.FC = () => {
                 </button>
               )}
 
-              {/* Nút di?u huẩng ph?i - với hi?u ẩng m? */}
+              {/* Nút điều hướng phải - với hiệu ứng mờ */}
               {banners.length > 1 && (
                 <button
                   onClick={nextBanner}
@@ -441,7 +441,7 @@ const LandingPage: React.FC = () => {
                 </button>
               )}
 
-              {/* Chờ báo (dots) - c?i thiện design */}
+              {/* Chỉ báo (dots) - cải thiện design */}
               {banners.length > 1 && (
                 <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
                   {banners.map((_, index) => (
@@ -571,4 +571,3 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
-

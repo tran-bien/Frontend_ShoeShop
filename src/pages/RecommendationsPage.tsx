@@ -105,16 +105,16 @@ const RecommendationsPage: React.FC = () => {
           <div className="text-center py-16 bg-gray-50 rounded-lg">
             <FiPackage className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-              ChÆ°a cÃ³ gá»£i Ã½
+              Chưa có gợi ý
             </h3>
             <p className="text-gray-500 mb-6">
-              HÃ£y xem thÃªm sáº£n pháº©m Ä‘á»ƒ nháº­n Ä‘Æ°á»£c gá»£i Ã½ phÃ¹ há»£p
+              Hãy xem thêm sản phẩm để nhận được gợi ý phù hợp
             </p>
             <button
               onClick={() => navigate("/products")}
               className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
             >
-              KhÃ¡m phÃ¡ sáº£n pháº©m
+              Khám phá sản phẩm
             </button>
           </div>
         ) : (
@@ -204,5 +204,3 @@ const RecommendationsPage: React.FC = () => {
 };
 
 export default RecommendationsPage;
-
-

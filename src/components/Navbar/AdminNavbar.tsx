@@ -95,21 +95,21 @@ const AdminNavbar = () => {
           className="flex items-center text-mono-black hover:text-mono-900 transition-colors"
         >
           <AiOutlineHome size={20} />
-          <span className="ml-1 font-medium">Trang chỉ</span>
+          <span className="ml-1 font-medium">Trang chủ</span>
         </Link>
       </div>
 
       {/* Desktop navbar */}
       <div className="hidden lg:flex lg:justify-between lg:items-center lg:px-6 lg:py-3">
-        {/* Menu di?u huẩng */}
+        {/* Menu điều hướng */}
         <div className="flex items-center space-x-3">
-          {/* Nút chuyện v? trang chờ tại navbar desktop */}
+          {/* Nút chuyển về trang chủ tại navbar desktop */}
           <Link
             to="/"
             className="flex items-center gap-1.5 px-3 py-2 text-white hover:bg-mono-700 rounded-lg transition-all duration-200"
           >
             <AiOutlineHome size={20} />
-            <span className="font-medium">Trang chỉ</span>
+            <span className="font-medium">Trang chủ</span>
           </Link>
 
           <button
@@ -117,7 +117,7 @@ const AdminNavbar = () => {
             className="flex items-center gap-1.5 px-3 py-2 text-white hover:bg-mono-700 rounded-lg transition-all duration-200"
           >
             <AiOutlineLogout size={20} />
-            <span className="font-medium">Ðang xuất</span>
+            <span className="font-medium">Đăng xuất</span>
           </button>
         </div>
       </div>
@@ -126,7 +126,3 @@ const AdminNavbar = () => {
 };
 
 export default AdminNavbar;
-
-
-
-

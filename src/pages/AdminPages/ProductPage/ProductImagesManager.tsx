@@ -13,7 +13,7 @@ const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
 
   const handleUpload = async () => {
     if (!selectedFiles || selectedFiles.length === 0) {
-      alert("Vui lòng chơn ít nh?t m?t ẩnh!");
+      alert("Vui lòng chọn ít nhất một ảnh!");
       return;
     }
     const formData = new FormData();

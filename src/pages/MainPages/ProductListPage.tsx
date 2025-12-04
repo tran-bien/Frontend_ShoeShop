@@ -102,9 +102,9 @@ const ProductListPage: React.FC = () => {
           : [];
         setProducts(flattenedProducts);
 
-        // Xử lý dúng c?u trúc phân trang - API backend có thọ trở về các đếng khác nhau
+        // Xử lý đúng cấu trúc phân trang - API backend có thể trả về các dạng khác nhau
         setPagination({
-          // Uu tiên lệy từ các truẩng chuẩn trước
+          // Ưu tiên lấy từ các trường chuẩn trước
           currentPage:
             response.data.currentPage ||
             response.data.pagination?.page ||
@@ -239,7 +239,7 @@ const ProductListPage: React.FC = () => {
     setSearchParams({ sort: "newest" });
   };
 
-  // Xử lý khi chơn trang
+  // Xử lý khi chọn trang
   const handlePageChange = (page: number) => {
     const newParams = new URLSearchParams(searchParams);
     newParams.set("page", page.toString());
@@ -249,7 +249,7 @@ const ProductListPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Ki?m tra xem có filter đang active không
+  // Kiểm tra xem có filter đang active không
   const hasActiveFilters = () => {
     return (
       filtersState.category ||
@@ -276,14 +276,14 @@ const ProductListPage: React.FC = () => {
     // Ki?m tra giới hơn
     if (type === "min") {
       if (numValue !== undefined) {
-        // Ð?m b?o giá min không vu?t quá giá max
+        // Đảm bảo giá min không vượt quá giá max
         if (
           filtersState.maxPrice !== undefined &&
           numValue > filtersState.maxPrice
         ) {
           return;
         }
-        // Ð?m b?o giá min không nhọ hon giá min cho phép
+        // Đảm bảo giá min không nhỏ hơn giá min cho phép
         if (
           filters.priceRange?.min !== undefined &&
           numValue < filters.priceRange.min
@@ -297,14 +297,14 @@ const ProductListPage: React.FC = () => {
       });
     } else {
       if (numValue !== undefined) {
-        // Ð?m b?o giá max không nhọ hon giá min
+        // Đảm bảo giá max không nhỏ hơn giá min
         if (
           filtersState.minPrice !== undefined &&
           numValue < filtersState.minPrice
         ) {
           return;
         }
-        // Ð?m b?o giá max không vu?t quá giá max cho phép
+        // Đảm bảo giá max không vượt quá giá max cho phép
         if (
           filters.priceRange?.max !== undefined &&
           numValue > filters.priceRange.max
@@ -384,7 +384,7 @@ const ProductListPage: React.FC = () => {
     });
   };
 
-  // Hàm di?u huẩng đến trang chi tiết sản phẩm
+  // Hàm điều hướng đến trang chi tiết sản phẩm
   const navigateToProduct = (product: Product) => {
     navigate(`/product/${product.slug || product._id}`);
   };
@@ -398,10 +398,10 @@ const ProductListPage: React.FC = () => {
           <div className="flex justify-between items-center">
             <p className="text-mono-600">
               {loading ? (
-                "Ðang tại sản phẩm..."
+                "Đang tải sản phẩm..."
               ) : (
                 <>
-                  Hiện thọ {products.length} / {pagination.totalItems} sản phẩm
+                  Hiển thị {products.length} / {pagination.totalItems} sản phẩm
                 </>
               )}
             </p>
@@ -410,7 +410,7 @@ const ProductListPage: React.FC = () => {
               className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-mono-200 md:hidden"
             >
               <FiFilter size={18} />
-              <span>Bỏ lọc</span>
+              <span>Bộ lọc</span>
             </button>
           </div>
         </div>
@@ -444,11 +444,11 @@ const ProductListPage: React.FC = () => {
                   }
                   className="w-full p-2 border border-mono-300 rounded-md"
                 >
-                  <option value="newest">Mới nh?t</option>
+                  <option value="newest">Mới nhất</option>
                   <option value="price-asc">Giá: Thấp đến cao</option>
                   <option value="price-desc">Giá: Cao đến thấp</option>
-                  <option value="popular">Phọ biẩn nh?t</option>
-                  <option value="rating">Ðánh giá cao</option>
+                  <option value="popular">Phổ biến nhất</option>
+                  <option value="rating">Đánh giá cao</option>
                 </select>
               </div>
 
@@ -497,13 +497,13 @@ const ProductListPage: React.FC = () => {
               <div className="space-y-6">
                 <h3 className="font-medium text-mono-700">Khoảng giá</h3>
 
-                {/* Thanh tru?t khoảng giá - Thêm mb-8 d? tăng khoảng cách */}
+                {/* Thanh trượt khoảng giá - Thêm mb-8 để tăng khoảng cách */}
                 <div className="px-2 mb-8">
                   <div className="relative">
-                    {/* Track cho thanh tru?t */}
+                    {/* Track cho thanh trượt */}
                     <div className="absolute h-1 bg-mono-200 rounded w-full top-1/2 -translate-y-1/2"></div>
 
-                    {/* Track dã chơn */}
+                    {/* Track đã chọn */}
                     <div
                       className="absolute h-1 bg-mono-500 rounded top-1/2 -translate-y-1/2"
                       style={{
@@ -529,7 +529,7 @@ const ProductListPage: React.FC = () => {
                       }}
                     ></div>
 
-                    {/* Thanh tru?t giá thấp nh?t */}
+                    {/* Thanh trượt giá thấp nhất */}
                     <input
                       type="range"
                       min={filters.priceRange?.min || 0}
@@ -539,7 +539,7 @@ const ProductListPage: React.FC = () => {
                       }
                       onChange={(e) => {
                         const value = Number(e.target.value);
-                        // Ð?m b?o minPrice không vu?t quá maxPrice
+                        // Đảm bảo minPrice không vượt quá maxPrice
                         if (
                           value <=
                           (filtersState.maxPrice ||
@@ -560,7 +560,7 @@ const ProductListPage: React.FC = () => {
                       }}
                     />
 
-                    {/* Thanh tru?t giá cao nh?t */}
+                    {/* Thanh trượt giá cao nhất */}
                     <input
                       type="range"
                       min={filters.priceRange?.min || 0}
@@ -572,7 +572,7 @@ const ProductListPage: React.FC = () => {
                       }
                       onChange={(e) => {
                         const value = Number(e.target.value);
-                        // Ð?m b?o maxPrice không nhọ hon giá minPrice
+                        // Đảm bảo maxPrice không nhỏ hơn giá minPrice
                         if (
                           value >=
                           (filtersState.minPrice ||
@@ -595,7 +595,7 @@ const ProductListPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Hiện thọ khoảng giá dã chơn với input number */}
+                {/* Hiển thị khoảng giá đã chọn với input number */}
                 <div className="flex items-center justify-between text-sm">
                   <input
                     type="number"
@@ -630,7 +630,7 @@ const ProductListPage: React.FC = () => {
                   />
                 </div>
 
-                {/* CSS d? tùy chơnh thumb của thanh tru?t */}
+                {/* CSS để tùy chỉnh thumb của thanh trượt */}
                 <style>{`
                   input[type="range"]::-webkit-slider-thumb {
                     -webkit-appearance: none;
@@ -787,14 +787,14 @@ const ProductListPage: React.FC = () => {
                       } group`}
                       title={size.description || `Size ${size.value}`}
                     >
-                      {/* Hiện thọ tooltip m?c đếnh của trình duy?t */}
+                      {/* Hiển thị tooltip mặc định của trình duyệt */}
                       <span>{size.value}</span>
 
-                      {/* Tooltip hiện thọ description */}
+                      {/* Tooltip hiển thị description */}
                       {size.description && (
                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-mono-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 w-max z-10 pointer-events-none">
                           {size.description}
-                          {/* Mui tên nhọ phía du?i tooltip */}
+                          {/* Mũi tên nhỏ phía dưới tooltip */}
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
                         </div>
                       )}
@@ -839,11 +839,11 @@ const ProductListPage: React.FC = () => {
                       }
                       className="w-full p-2 border border-mono-300 rounded-md"
                     >
-                      <option value="newest">Mới nh?t</option>
+                      <option value="newest">Mới nhất</option>
                       <option value="price-asc">Giá: Thấp đến cao</option>
                       <option value="price-desc">Giá: Cao đến thấp</option>
-                      <option value="popular">Phọ biẩn nh?t</option>
-                      <option value="rating">Ðánh giá cao</option>
+                      <option value="popular">Phổ biến nhất</option>
+                      <option value="rating">Đánh giá cao</option>
                     </select>
                   </div>
 
@@ -894,13 +894,13 @@ const ProductListPage: React.FC = () => {
                   <div className="space-y-6">
                     <h3 className="font-medium text-mono-700">Khoảng giá</h3>
 
-                    {/* Thanh tru?t khoảng giá - Thêm mb-8 d? tăng khoảng cách */}
+                    {/* Thanh trượt khoảng giá - Thêm mb-8 để tăng khoảng cách */}
                     <div className="px-2 mb-8">
                       <div className="relative">
-                        {/* Track cho thanh tru?t */}
+                        {/* Track cho thanh trượt */}
                         <div className="absolute h-1 bg-mono-200 rounded w-full top-1/2 -translate-y-1/2"></div>
 
-                        {/* Track dã chơn */}
+                        {/* Track đã chọn */}
                         <div
                           className="absolute h-1 bg-mono-500 rounded top-1/2 -translate-y-1/2"
                           style={{
@@ -926,7 +926,7 @@ const ProductListPage: React.FC = () => {
                           }}
                         ></div>
 
-                        {/* Thanh tru?t giá thấp nh?t */}
+                        {/* Thanh trượt giá thấp nhất */}
                         <input
                           type="range"
                           min={filters.priceRange?.min || 0}
@@ -959,7 +959,7 @@ const ProductListPage: React.FC = () => {
                           }}
                         />
 
-                        {/* Thanh tru?t giá cao nh?t */}
+                        {/* Thanh trượt giá cao nhất */}
                         <input
                           type="range"
                           min={filters.priceRange?.min || 0}
@@ -971,7 +971,7 @@ const ProductListPage: React.FC = () => {
                           }
                           onChange={(e) => {
                             const value = Number(e.target.value);
-                            // Ð?m b?o maxPrice không nhọ hon giá minPrice
+                            // Đảm bảo maxPrice không nhỏ hơn giá minPrice
                             if (
                               value >=
                               (filtersState.minPrice ||
@@ -994,7 +994,7 @@ const ProductListPage: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Hiện thọ khoảng giá dã chơn với input number */}
+                    {/* Hiển thị khoảng giá đã chọn với input number */}
                     <div className="flex items-center justify-between text-sm">
                       <input
                         type="number"
@@ -1215,19 +1215,19 @@ const ProductListPage: React.FC = () => {
                   onClick={fetchProducts}
                   className="px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-black"
                 >
-                  Thọ lỗi
+                  Thử lại
                 </button>
               </div>
             ) : products.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-mono-500 text-lg">
-                  Không tìm thủy sản phẩm nào phù hợp với bỏ lọc
+                  Không tìm thấy sản phẩm nào phù hợp với bộ lọc
                 </p>
                 <button
                   onClick={resetFilters}
                   className="mt-4 px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-black"
                 >
-                  Xóa tất cả bỏ lọc
+                  Xóa tất cả bộ lọc
                 </button>
               </div>
             ) : (
@@ -1307,5 +1307,3 @@ const ProductListPage: React.FC = () => {
 };
 
 export default ProductListPage;
-
-

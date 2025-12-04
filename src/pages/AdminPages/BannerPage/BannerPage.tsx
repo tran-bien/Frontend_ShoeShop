@@ -42,7 +42,7 @@ const BannerPage: React.FC = () => {
       const banner = banners.find((b) => b._id === bannerId);
       if (!banner) return;
 
-      // N?u đang ẩn và muẩn hiện, ki?m tra xung đặt v? trí
+      // Nếu đang ẩn và muốn hiện, kiểm tra xung đột vị trí
       if (!banner.isActive) {
         const conflictingBanner = banners.find(
           (b) =>
@@ -53,7 +53,7 @@ const BannerPage: React.FC = () => {
 
         if (conflictingBanner) {
           toast.error(
-            `Không thể hiện banner. V? trí ${banner.displayOrder} dã được sử dụng b?i banner "${conflictingBanner.title}".`
+            `Không thể hiện banner. Vị trí ${banner.displayOrder} đã được sử dụng bởi banner "${conflictingBanner.title}".`
           );
           return;
         }
@@ -77,16 +77,16 @@ const BannerPage: React.FC = () => {
         if (axiosError.response?.status === 409) {
           toast.error(
             axiosError.response?.data?.message ||
-              "Không thể thay đổi trạng thái đo xung đặt v? trí."
+              "Không thể thay đổi trạng thái do xung đột vị trí."
           );
         } else {
           toast.error(
-            "Có lỗi x?y ra khi thay đổi trạng thái banner. Vui lòng thọ lỗi."
+            "Có lỗi xảy ra khi thay đổi trạng thái banner. Vui lòng thử lại."
           );
         }
       } else {
         toast.error(
-          "Có lỗi x?y ra khi thay đổi trạng thái banner. Vui lòng thọ lỗi."
+          "Có lỗi xảy ra khi thay đổi trạng thái banner. Vui lòng thử lại."
         );
       }
     }
@@ -112,7 +112,7 @@ const BannerPage: React.FC = () => {
       setSelectedBanner(null);
     } catch (error) {
       console.error("Error deleting banner:", error);
-      toast.error("Có lỗi x?y ra khi xóa banner");
+      toast.error("Có lỗi xảy ra khi xóa banner");
     } finally {
       setSubmitting(false);
     }
@@ -124,20 +124,20 @@ const BannerPage: React.FC = () => {
       const currentBanner = banners.find((b) => b._id === bannerId);
       if (!currentBanner) return;
 
-      // Ki?m tra n?u v? trí không thay đổi
+      // Kiểm tra nếu vị trí không thay đổi
       if (currentBanner.displayOrder === newOrder) {
-        toast.error("Banner dã ? v? trí này r?i!");
-        return; // Không cẩn cập nhật n?u v? trí giẩng nhau
+        toast.error("Banner đã ở vị trí này rồi!");
+        return; // Không cần cập nhật nếu vị trí giống nhau
       }
 
-      // Ki?m tra xung đặt v? trí với banner active khác trên frontend trước khi gửi API
+      // Kiểm tra xung đột vị trí với banner active khác trên frontend trước khi gửi API
       const conflictingBanner = banners.find(
         (b) => b._id !== bannerId && b.displayOrder === newOrder && b.isActive
       );
 
       if (conflictingBanner) {
         toast.error(
-          `V? trí ${newOrder} dã được sử dụng b?i banner "${conflictingBanner.title}". Vui lòng chơn v? trí khác.`
+          `Vị trí ${newOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
         );
         return;
       }
@@ -147,7 +147,7 @@ const BannerPage: React.FC = () => {
         displayOrder: newOrder,
       });
       toast.success(
-        `Ðã chuyện banner "${currentBanner.title}" đến v? trí ${newOrder}`
+        `Đã chuyển banner "${currentBanner.title}" đến vị trí ${newOrder}`
       );
       fetchBanners();
     } catch (error: unknown) {
@@ -161,16 +161,16 @@ const BannerPage: React.FC = () => {
         if (axiosError.response?.status === 409) {
           toast.error(
             axiosError.response?.data?.message ||
-              `V? trí ${newOrder} dã được sử dụng. Vui lòng chơn v? trí khác.`
+              `Vị trí ${newOrder} đã được sử dụng. Vui lòng chọn vị trí khác.`
           );
         } else {
           toast.error(
-            "Có lỗi x?y ra khi thay đổi v? trí banner. Vui lòng thọ lỗi."
+            "Có lỗi xảy ra khi thay đổi vị trí banner. Vui lòng thử lại."
           );
         }
       } else {
         toast.error(
-          "Có lỗi x?y ra khi thay đổi v? trí banner. Vui lòng thọ lỗi."
+          "Có lỗi xảy ra khi thay đổi vị trí banner. Vui lòng thử lại."
         );
       }
     }
@@ -189,11 +189,11 @@ const BannerPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!formData.banner) {
-        toast.error("Vui lòng chơn ẩnh banner");
+        toast.error("Vui lòng chọn ảnh banner");
         return;
       }
 
-      // Ki?m tra xung đặt v? trí trên frontend trước khi gửi API
+      // Kiểm tra xung đột vị trí trên frontend trước khi gửi API
       if (formData.isActive) {
         const conflictingBanner = banners.find(
           (b) => b.displayOrder === formData.displayOrder && b.isActive
@@ -201,7 +201,7 @@ const BannerPage: React.FC = () => {
 
         if (conflictingBanner) {
           toast.error(
-            `V? trí ${formData.displayOrder} dã được sử dụng b?i banner "${conflictingBanner.title}". Vui lòng chơn v? trí khác.`
+            `Vị trí ${formData.displayOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
           );
           return;
         }
@@ -226,7 +226,7 @@ const BannerPage: React.FC = () => {
           banner: null,
         });
         fetchBanners();
-        toast.success("T?o banner thành công!");
+        toast.success("Tạo banner thành công!");
       } catch (error: unknown) {
         console.error("Error creating banner:", error);
 
@@ -238,13 +238,13 @@ const BannerPage: React.FC = () => {
           if (axiosError.response?.status === 409) {
             toast.error(
               axiosError.response?.data?.message ||
-                `V? trí ${formData.displayOrder} dã được sử dụng. Vui lòng chơn v? trí khác.`
+                `Vị trí ${formData.displayOrder} đã được sử dụng. Vui lòng chọn vị trí khác.`
             );
           } else {
-            toast.error("Có lỗi x?y ra khi t?o banner. Vui lòng thọ lỗi.");
+            toast.error("Có lỗi xảy ra khi tạo banner. Vui lòng thử lại.");
           }
         } else {
-          toast.error("Có lỗi x?y ra khi t?o banner. Vui lòng thọ lỗi.");
+          toast.error("Có lỗi xảy ra khi tạo banner. Vui lòng thử lại.");
         }
       } finally {
         setSubmitting(false);
@@ -256,11 +256,11 @@ const BannerPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">T?o Banner Mới</h3>
+          <h3 className="text-xl font-bold mb-4">Tạo Banner Mới</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Tiêu d?
+                Tiêu đề
               </label>
               <input
                 type="text"
@@ -309,7 +309,7 @@ const BannerPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                ẩnh Banner
+                Ảnh Banner
               </label>
               <input
                 type="file"
@@ -335,7 +335,7 @@ const BannerPage: React.FC = () => {
                 className="h-4 w-4 text-mono-black focus:ring-mono-500 border-mono-300 rounded"
               />
               <label htmlFor="isActive" className="ml-2 text-sm text-mono-700">
-                Hiện thọ ngay lệp t?c
+                Hiển thị ngay lập tức
               </label>
             </div>
             <div className="flex gap-3 pt-4">
@@ -352,7 +352,7 @@ const BannerPage: React.FC = () => {
                 disabled={submitting}
                 className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 disabled:opacity-50"
               >
-                {submitting ? "Ðang t?o..." : "T?o Banner"}
+                {submitting ? "Đang tạo..." : "Tạo Banner"}
               </button>
             </div>
           </form>
@@ -374,7 +374,7 @@ const BannerPage: React.FC = () => {
       e.preventDefault();
       if (!selectedBanner) return;
 
-      // Ki?m tra xung đặt v? trí trên frontend trước khi gửi API
+      // Kiểm tra xung đột vị trí trên frontend trước khi gửi API
       if (
         formData.isActive &&
         formData.displayOrder !== selectedBanner.displayOrder
@@ -388,7 +388,7 @@ const BannerPage: React.FC = () => {
 
         if (conflictingBanner) {
           toast.error(
-            `V? trí ${formData.displayOrder} dã được sử dụng b?i banner "${conflictingBanner.title}". Vui lòng chơn v? trí khác.`
+            `Vị trí ${formData.displayOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
           );
           return;
         }
@@ -412,13 +412,13 @@ const BannerPage: React.FC = () => {
           if (axiosError.response?.status === 409) {
             toast.error(
               axiosError.response?.data?.message ||
-                `V? trí ${formData.displayOrder} dã được sử dụng. Vui lòng chơn v? trí khác.`
+                `Vị trí ${formData.displayOrder} đã được sử dụng. Vui lòng chọn vị trí khác.`
             );
           } else {
-            toast.error("Có lỗi x?y ra khi cập nhật banner. Vui lòng thọ lỗi.");
+            toast.error("Có lỗi xảy ra khi cập nhật banner. Vui lòng thử lại.");
           }
         } else {
-          toast.error("Có lỗi x?y ra khi cập nhật banner. Vui lòng thọ lỗi.");
+          toast.error("Có lỗi xảy ra khi cập nhật banner. Vui lòng thử lại.");
         }
       } finally {
         setSubmitting(false);
@@ -430,11 +430,11 @@ const BannerPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">Chơnh sửa Banner</h3>
+          <h3 className="text-xl font-bold mb-4">Chỉnh sửa Banner</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Tiêu d?
+                Tiêu đề
               </label>
               <input
                 type="text"
@@ -495,7 +495,7 @@ const BannerPage: React.FC = () => {
                 htmlFor="editIsActive"
                 className="ml-2 text-sm text-mono-700"
               >
-                Hiện thọ banner
+                Hiển thị banner
               </label>
             </div>
             <div className="flex gap-3 pt-4">
@@ -515,7 +515,7 @@ const BannerPage: React.FC = () => {
                 disabled={submitting}
                 className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 disabled:opacity-50"
               >
-                {submitting ? "Ðang cập nhật..." : "Cập nhật"}
+                {submitting ? "Đang cập nhật..." : "Cập nhật"}
               </button>
             </div>
           </form>
@@ -545,10 +545,10 @@ const BannerPage: React.FC = () => {
         setSelectedBanner(null);
         setNewImage(null);
         fetchBanners();
-        toast.success("Cập nhật ẩnh banner thành công!");
+        toast.success("Cập nhật ảnh banner thành công!");
       } catch (error: unknown) {
         console.error("Error updating banner image:", error);
-        alert("Có lỗi x?y ra khi cập nhật ẩnh");
+        alert("Có lỗi xảy ra khi cập nhật ảnh");
       } finally {
         setSubmitting(false);
       }
@@ -614,7 +614,7 @@ const BannerPage: React.FC = () => {
                 disabled={submitting || !newImage}
                 className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 disabled:opacity-50"
               >
-                {submitting ? "Ðang cập nhật..." : "Cập nhật ẩnh"}
+                {submitting ? "Đang cập nhật..." : "Cập nhật ảnh"}
               </button>
             </div>
           </form>
@@ -668,12 +668,12 @@ const BannerPage: React.FC = () => {
                   {selectedBanner.title}
                 </p>
                 <p className="text-mono-500 text-xs">
-                  V? trí {selectedBanner.displayOrder}
+                  Vị trí {selectedBanner.displayOrder}
                 </p>
               </div>
 
               <p className="text-mono-900 text-sm font-medium">
-                ?? Hành đếng này không thể hoàn tác
+                ⚠️ Hành động này không thể hoàn tác
               </p>
             </div>
 
@@ -695,7 +695,7 @@ const BannerPage: React.FC = () => {
                 disabled={submitting}
                 className="flex-1 px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 disabled:opacity-50 transition-colors"
               >
-                {submitting ? "Ðang xóa..." : "Xóa banner"}
+                {submitting ? "Đang xóa..." : "Xóa banner"}
               </button>
             </div>
           </div>
@@ -719,10 +719,10 @@ const BannerPage: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-mono-900 mb-2">
-              Quận lý Banner
+              Quản lý Banner
             </h1>
             <p className="text-mono-600">
-              Quận lý banner hiện thọ trên trang chờ website (tại đã 5 banner)
+              Quản lý banner hiển thị trên trang chủ website (tối đa 5 banner)
             </p>
           </div>
 
@@ -811,7 +811,7 @@ const BannerPage: React.FC = () => {
             </div>
             <div className="ml-4">
               <h3 className="text-lg font-semibold text-mono-900">
-                Ðang Hiện Thể
+                Đang Hiển Thị
               </h3>
               <p className="text-2xl font-bold text-mono-800">
                 {banners.filter((b) => b.isActive).length}
@@ -840,7 +840,7 @@ const BannerPage: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-mono-900">Ðã ẩn</h3>
+              <h3 className="text-lg font-semibold text-mono-900">Đã ẩn</h3>
               <p className="text-2xl font-bold text-mono-600">
                 {banners.filter((b) => !b.isActive).length}
               </p>
@@ -932,12 +932,12 @@ const BannerPage: React.FC = () => {
                           {banner.isActive ? (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-mono-100 text-mono-800">
                               <div className="w-2 h-2 bg-mono-700 rounded-full"></div>
-                              Ðang hiện thể
+                              Đang hiển thị
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-mono-100 text-mono-600">
                               <div className="w-2 h-2 bg-mono-400 rounded-full"></div>
-                              Ðã ẩn
+                              Đã ẩn
                             </span>
                           )}
                         </div>
@@ -1157,9 +1157,3 @@ const BannerPage: React.FC = () => {
 };
 
 export default BannerPage;
-
-
-
-
-
-

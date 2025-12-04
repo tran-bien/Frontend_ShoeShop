@@ -56,13 +56,13 @@ const LikePage: React.FC = () => {
         setWishlist((prev) =>
           prev.filter((item) => item._id !== wishlistItemId)
         );
-        toast.success("Ðã xóa sản phẩm kh?i danh sách yêu thích");
+        toast.success("Đã xóa sản phẩm khỏi danh sách yêu thích");
       } else {
-        toast.error("Xóa sản phẩm yêu thích thểt b?i!");
+        toast.error("Xóa sản phẩm yêu thích thất bại!");
       }
     } catch (error) {
-      console.error("Lỗi khi xóa kh?i wishlist:", error);
-      toast.error("Xóa sản phẩm yêu thích thểt b?i!");
+      console.error("Lỗi khi xóa khỏi wishlist:", error);
+      toast.error("Xóa sản phẩm yêu thích thất bại!");
     } finally {
       setRemovingItems((prev) => {
         const newSet = new Set(prev);
@@ -176,6 +176,3 @@ const LikePage: React.FC = () => {
 };
 
 export default LikePage;
-
-
-

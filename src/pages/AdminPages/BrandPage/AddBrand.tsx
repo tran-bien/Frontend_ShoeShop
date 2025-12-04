@@ -30,7 +30,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Thêm thuong hi?u thểt b?i!");
+      setError("Thêm thương hiệu thất bại!");
     } finally {
       setLoading(false);
     }
@@ -46,11 +46,11 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Thêm Thuong Hi?u</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Thêm Thương Hiệu</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              Tên Thuong Hi?u
+              Tên Thương Hiệu
             </label>
             <input
               type="text"
@@ -63,7 +63,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-black">
-              Mô T?
+              Mô Tả
             </label>
             <textarea
               name="description"
@@ -80,7 +80,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
-              {loading ? "Ðang thêm..." : "Thêm"}
+              {loading ? "Đang thêm..." : "Thêm"}
             </button>
           </div>
         </form>
@@ -90,4 +90,3 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
 };
 
 export default AddBrand;
-

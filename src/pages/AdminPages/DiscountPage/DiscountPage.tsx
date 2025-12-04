@@ -236,15 +236,15 @@ const DiscountPage = () => {
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-center border-b">Mã</th>
-              <th className="py-3 px-4 text-center border-b">Mô t?</th>
-              <th className="py-3 px-4 text-center border-b">Lo?i</th>
-              <th className="py-3 px-4 text-center border-b">Giá trở</th>
-              <th className="py-3 px-4 text-center border-b">Giảm tại da</th>
-              <th className="py-3 px-4 text-center border-b">Ðon tại thi?u</th>
-              <th className="py-3 px-4 text-center border-b">Ngày b?t đầu</th>
-              <th className="py-3 px-4 text-center border-b">Ngày k?t thúc</th>
-              <th className="py-3 px-4 text-center border-b">Lu?t dùng</th>
-              <th className="py-3 px-4 text-center border-b">Tại da</th>
+              <th className="py-3 px-4 text-center border-b">Mô tả</th>
+              <th className="py-3 px-4 text-center border-b">Loại</th>
+              <th className="py-3 px-4 text-center border-b">Giá trị</th>
+              <th className="py-3 px-4 text-center border-b">Giảm tối đa</th>
+              <th className="py-3 px-4 text-center border-b">Đơn tối thiểu</th>
+              <th className="py-3 px-4 text-center border-b">Ngày bắt đầu</th>
+              <th className="py-3 px-4 text-center border-b">Ngày kết thúc</th>
+              <th className="py-3 px-4 text-center border-b">Lượt dùng</th>
+              <th className="py-3 px-4 text-center border-b">Tối đa</th>
               <th className="py-3 px-4 text-center border-b">Trạng thái</th>
               <th className="py-3 px-4 text-center border-b">Công khai</th>
               <th className="py-3 px-4 text-center border-b">Thao tác</th>
@@ -290,7 +290,7 @@ const DiscountPage = () => {
                 <td className="py-2 px-4 border-b text-center">
                   {discount.status === "active" ? (
                     <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
-                      Ðang ho?t đếng
+                      Đang hoạt động
                     </span>
                   ) : (
                     <span className="bg-mono-200 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
@@ -433,7 +433,7 @@ const DiscountPage = () => {
                     className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                     name="maxDiscount"
                     type="number"
-                    placeholder="Giảm tại da"
+                    placeholder="Giảm tối đa"
                     value={form.maxDiscount}
                     onChange={handleChange}
                     min={0}
@@ -442,13 +442,13 @@ const DiscountPage = () => {
               )}
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Ðon tại thi?u (VND)
+                  Đơn tối thiểu (VND)
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="minOrderValue"
                   type="number"
-                  placeholder="Ðon tại thi?u"
+                  placeholder="Đơn tối thiểu"
                   value={form.minOrderValue}
                   onChange={handleChange}
                   min={0}
@@ -456,7 +456,7 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Ngày b?t đầu
+                  Ngày bắt đầu
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
@@ -528,6 +528,3 @@ const DiscountPage = () => {
 };
 
 export default DiscountPage;
-
-
-

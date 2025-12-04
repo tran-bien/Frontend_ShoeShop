@@ -14,7 +14,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
 
   const handleUpload = async () => {
     if (!selectedFiles || selectedFiles.length === 0) {
-      alert("Vui lòng chơn ít nh?t m?t ẩnh!");
+      alert("Vui lòng chọn ít nhất một ảnh!");
       return;
     }
     const formData = new FormData();
@@ -36,7 +36,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
     reloadImages();
   };
 
-  // Hàm đổi v? trí ẩnh trong localImages
+  // Hàm đổi vị trí ảnh trong localImages
   const moveImage = (from: number, to: number) => {
     if (to < 0 || to >= localImages.length) return;
     const updated = [...localImages];
@@ -45,7 +45,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
     setLocalImages(updated);
   };
 
-  // Gửi thọ từ mới lên server
+  // Gửi thứ tự mới lên server
   const handleReorder = async () => {
     const imageOrders = localImages.map((img: any, idx: number) => ({
       _id: img._id,
@@ -58,7 +58,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-xl text-black">
       <h3 className="text-lg font-bold mb-4">
-        {canManageImages() ? "Quận Lý ẩnh Biẩn Thể" : "Xem ẩnh Biẩn Thể"}
+        {canManageImages() ? "Quản Lý Ảnh Biến Thể" : "Xem Ảnh Biến Thể"}
       </h3>
       {canManageImages() && (
         <div className="mb-4 flex flex-col md:flex-row gap-2 items-center">
@@ -74,7 +74,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
             onClick={handleUpload}
             className="bg-mono-500 text-white px-4 py-2 rounded hover:bg-mono-black transition"
           >
-            Tại ẩnh lên
+            Tải ảnh lên
           </button>
         </div>
       )}
@@ -137,7 +137,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
           onClick={handleReorder}
           disabled={localImages.length < 2}
         >
-          Luu thọ từ ẩnh
+          Lưu thứ tự ảnh
         </button>
       )}
     </div>
@@ -145,5 +145,3 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
 };
 
 export default VariantImagesManager;
-
-

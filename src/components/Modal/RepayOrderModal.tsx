@@ -116,14 +116,14 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
               disabled={loading}
               className="flex-1 px-4 py-2 text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Hủy b?
+              Hủy bỏ
             </button>
             <button
               type="submit"
               disabled={loading}
               className="flex-1 px-4 py-2 bg-mono-500 text-white rounded-lg hover:bg-mono-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? "Ðang xử lý..." : "Thanh toán ngay"}
+              {loading ? "Đang xử lý..." : "Thanh toán ngay"}
             </button>
           </div>
         </form>
@@ -133,6 +133,3 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
 };
 
 export default RepayOrderModal;
-
-
-

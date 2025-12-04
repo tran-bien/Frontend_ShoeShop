@@ -1,4 +1,4 @@
-﻿import RegisterForm from "../../components/Auth/RegisterForm"; 
+﻿import RegisterForm from "../../components/Auth/RegisterForm";
 
 const RegisterPage: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const RegisterPage: React.FC = () => {
       {/* Nội dung chính */}
       <div className="w-full max-w-2xl text-center">
         {/* Tiêu d? */}
-        <h2 className="text-4xl font-bold text-mono-900 mb-8">ÐANG KÝ</h2>
+        <h2 className="text-4xl font-bold text-mono-900 mb-8">ĐĂNG KÝ</h2>
 
         {/* Form đang ký */}
         <RegisterForm />
@@ -22,4 +22,3 @@ const RegisterPage: React.FC = () => {
 };
 
 export default RegisterPage;
-

@@ -79,22 +79,22 @@ const BlogManagement: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
-      toast.error("KhÃ´ng thá»ƒ táº£i danh sÃ¡ch bÃ i viáº¿t");
+      toast.error("Không thể tải danh sách bài viết");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm("Báº¡n cÃ³ cháº¯c muá»‘n xÃ³a bÃ i viáº¿t nÃ y?")) return;
+    if (!window.confirm("Bạn có chắc muốn xóa bài viết này?")) return;
 
     try {
       await adminBlogService.deletePost(id);
-      toast.success("XÃ³a bÃ i viáº¿t thÃ nh cÃ´ng");
+      toast.success("Xóa bài viết thành công");
       fetchPosts();
     } catch (error) {
       console.error("Error deleting post:", error);
-      toast.error("KhÃ´ng thá»ƒ xÃ³a bÃ i viáº¿t");
+      toast.error("Không thể xóa bài viết");
     }
   };
 
@@ -117,7 +117,7 @@ const BlogManagement: React.FC = () => {
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600">Äang táº£i...</p>
+          <p className="mt-4 text-gray-600">Đang tải...</p>
         </div>
       </div>
     );
@@ -127,8 +127,8 @@ const BlogManagement: React.FC = () => {
     <div className="min-h-screen bg-white p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Quáº£n LÃ½ Blog</h1>
-        <p className="text-gray-600">Quáº£n lÃ½ bÃ i viáº¿t vÃ  ná»™i dung blog</p>
+        <h1 className="text-3xl font-bold text-black mb-2">Quản Lý Blog</h1>
+        <p className="text-gray-600">Quản lý bài viết và nội dung blog</p>
       </div>
 
       {/* Actions Bar */}
@@ -139,7 +139,7 @@ const BlogManagement: React.FC = () => {
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="TÃ¬m kiáº¿m bÃ i viáº¿t..."
+              placeholder="Tìm kiếm bài viết..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -165,10 +165,10 @@ const BlogManagement: React.FC = () => {
             }}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
           >
-            <option value="all">Táº¥t cáº£</option>
-            <option value="DRAFT">NhÃ¡p</option>
-            <option value="PUBLISHED">ÄÃ£ xuáº¥t báº£n</option>
-            <option value="ARCHIVED">ÄÃ£ lÆ°u trá»¯</option>
+            <option value="all">Tất cả</option>
+            <option value="DRAFT">Nháp</option>
+            <option value="PUBLISHED">Đã xuất bản</option>
+            <option value="ARCHIVED">Đã lưu trữ</option>
           </select>
         </div>
 
@@ -188,7 +188,7 @@ const BlogManagement: React.FC = () => {
       {/* Posts Grid */}
       {posts.length === 0 ? (
         <div className="text-center py-16 bg-gray-50 rounded-lg">
-          <p className="text-gray-500 text-lg mb-4">ChÆ°a cÃ³ bÃ i viáº¿t nÃ o</p>
+          <p className="text-gray-500 text-lg mb-4">Chưa có bài viết nào</p>
           <button
             onClick={() => {
               setSelectedPost(null);
@@ -196,7 +196,7 @@ const BlogManagement: React.FC = () => {
             }}
             className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
           >
-            Táº¡o bÃ i viáº¿t Ä‘áº§u tiÃªn
+            Tạo bài viết đầu tiên
           </button>
         </div>
       ) : (
@@ -230,9 +230,9 @@ const BlogManagement: React.FC = () => {
                         post.status
                       )}`}
                     >
-                      {post.status === "DRAFT" && "NhÃ¡p"}
-                      {post.status === "PUBLISHED" && "ÄÃ£ xuáº¥t báº£n"}
-                      {post.status === "ARCHIVED" && "ÄÃ£ lÆ°u trá»¯"}
+                      {post.status === "DRAFT" && "Nháp"}
+                      {post.status === "PUBLISHED" && "Đã xuất bản"}
+                      {post.status === "ARCHIVED" && "Đã lưu trữ"}
                     </span>
                     {typeof post.category === "object" && post.category && (
                       <span className="text-xs text-gray-500">
@@ -252,7 +252,7 @@ const BlogManagement: React.FC = () => {
                   )}
 
                   <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span>{post.viewCount} lÆ°á»£t xem</span>
+                    <span>{post.viewCount} lượt xem</span>
                     <span>
                       {new Date(post.createdAt).toLocaleDateString("vi-VN")}
                     </span>
@@ -276,14 +276,14 @@ const BlogManagement: React.FC = () => {
                     className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors border-r border-gray-200"
                   >
                     <FiEdit2 className="w-4 h-4" />
-                    <span className="text-sm">Sá»­a</span>
+                    <span className="text-sm">Sửa</span>
                   </button>
                   <button
                     onClick={() => handleDelete(post._id)}
                     className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors text-mono-700"
                   >
                     <FiTrash2 className="w-4 h-4" />
-                    <span className="text-sm">XÃ³a</span>
+                    <span className="text-sm">Xóa</span>
                   </button>
                 </div>
               </div>

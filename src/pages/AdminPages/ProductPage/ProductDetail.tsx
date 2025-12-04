@@ -51,9 +51,9 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
             onClick={handleClose}
             className="absolute top-2 right-2 text-xl font-bold"
           >
-            ï¿½
+            ×
           </button>
-          <div>ï¿½ang tại chi tiết sản phẩm...</div>
+          <div>Đang tải chi tiết sản phẩm...</div>
         </div>
       </div>
     );
@@ -73,7 +73,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
           <button
             onClick={handleClose}
             className="ml-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-mono-100 text-mono-400 hover:text-mono-800 transition-all"
-            title="ï¿½ï¿½ng"
+            title="Đóng"
           >
             <svg
               className="w-6 h-6"
@@ -115,7 +115,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              Hï¿½nh ẩnh ({detail.images?.length || 0})
+              Hình ảnh ({detail.images?.length || 0})
             </span>
           </button>
           <button
@@ -140,7 +140,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Thï¿½ng tin
+              Thông tin
             </span>
           </button>
           <button
@@ -165,7 +165,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
                 />
               </svg>
-              Biẩn thọ ({detail.variants?.length || 0})
+              Biến thể ({detail.variants?.length || 0})
             </span>
           </button>
         </div>
@@ -206,7 +206,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                           />
                         </svg>
-                        Quận lï¿½ ẩnh
+                        Quản lý ảnh
                       </button>
                     )}
                   </div>
@@ -251,7 +251,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <p className="mt-4 text-mono-500">Chua cï¿½ hï¿½nh ẩnh</p>
+                  <p className="mt-4 text-mono-500">Chưa có hình ảnh</p>
                 </div>
               )}
             </div>
@@ -276,7 +276,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
-                  Mï¿½ từ sản phẩm
+                  Mô tả sản phẩm
                 </h3>
                 <p className="text-mono-700 leading-relaxed">
                   {detail.description}
@@ -297,7 +297,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                 </div>
                 <div className="bg-white border border-mono-200 rounded-xl p-4">
                   <div className="text-xs text-mono-500 font-medium mb-1">
-                    Thuong hi?u
+                    Thương hiệu
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-semibold text-mono-800">
@@ -317,7 +317,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                 </div>
                 <div className="bg-white border border-mono-200 rounded-xl p-4">
                   <div className="text-xs text-mono-500 font-medium mb-1">
-                    Trống thï¿½i
+                    Trạng thái
                   </div>
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
@@ -326,12 +326,12 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         : "bg-mono-100 text-mono-600"
                     }`}
                   >
-                    {detail.isActive ? "ï¿½ang ho?t đếng" : "Ngẩng ho?t đếng"}
+                    {detail.isActive ? "Đang hoạt động" : "Ngừng hoạt động"}
                   </span>
                 </div>
                 <div className="bg-white border border-mono-200 rounded-xl p-4">
                   <div className="text-xs text-mono-500 font-medium mb-1">
-                    Tên kho
+                    Tồn kho
                   </div>
                   <div className="flex items-center gap-2">
                     <span
@@ -344,9 +344,9 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       }`}
                     >
                       {{
-                        in_stock: "Cï¿½n hï¿½ng",
-                        low_stock: "S?p h?t",
-                        out_of_stock: "H?t hï¿½ng",
+                        in_stock: "Còn hàng",
+                        low_stock: "Sắp hết",
+                        out_of_stock: "Hết hàng",
                       }[
                         detail.stockStatus as
                           | "in_stock"
@@ -520,7 +520,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         variant.imagesvariant.length > 0 && (
                           <div className="mb-4">
                             <div className="text-xs text-mono-500 font-medium mb-2">
-                              ẩnh biẩn thọ ({variant.imagesvariant.length})
+                              Ảnh biến thể ({variant.imagesvariant.length})
                             </div>
                             <div className="flex gap-2 flex-wrap">
                               {variant.imagesvariant.map((img) => (
@@ -552,7 +552,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                                     ? sz.size.description || sz.size.value
                                     : sz.size}
                                 </span>
-                                <span className="text-mono-400">ï¿½</span>
+                                <span className="text-mono-400">|</span>
                                 <span
                                   className={`font-medium ${
                                     sz.quantity > 10
@@ -562,13 +562,13 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                                       : "text-mono-900"
                                   }`}
                                 >
-                                  {sz.quantity} dï¿½i
+                                  {sz.quantity} đôi
                                 </span>
                               </span>
                             ))
                           ) : (
                             <span className="text-mono-400 text-sm">
-                              Chua cï¿½ size
+                              Chưa có size
                             </span>
                           )}
                         </div>
@@ -591,7 +591,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                     />
                   </svg>
-                  <p className="mt-4 text-mono-500">Chua cï¿½ biẩn thọ nï¿½o</p>
+                  <p className="mt-4 text-mono-500">Chưa có biến thể nào</p>
                 </div>
               )}
             </div>
@@ -640,8 +640,3 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
 };
 
 export default ProductDetail;
-
-
-
-
-

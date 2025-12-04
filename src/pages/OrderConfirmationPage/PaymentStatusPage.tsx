@@ -125,7 +125,7 @@ const PaymentStatusPage: React.FC = () => {
       if (currentPath.includes("/payment/status") && responseCode) {
         console.log("🔄 Xử lý callback VNPAY trực tiếp...");
 
-        // Hiện thọ k?t qu? ngay lệp t?c d?a trên responseCode từ VNPAY
+        // Hiển thị kết quả ngay lập tức dựa trên responseCode từ VNPAY
         const isSuccessfulVnpayResponse = responseCode === "00";
 
         if (isSuccessfulVnpayResponse) {
@@ -163,7 +163,7 @@ const PaymentStatusPage: React.FC = () => {
             paymentService
               .vnpayCallback(vnpayParams as VnpayCallbackParams)
               .then((response) => {
-                console.log("✅ Backend đã cập nhật DB:", response);
+                console.log("Backend đã cập nhật DB:", response);
 
                 // Cập nhật thông tin bổ sung nếu có
                 if (
@@ -179,14 +179,14 @@ const PaymentStatusPage: React.FC = () => {
               })
               .catch((error) => {
                 console.warn(
-                  "⚠️ Lỗi khi đồng bộ DB (không ảnh hưởng UX):",
+                  " Lỗi khi đồng bộ DB (không ảnh hưởng UX):",
                   error
                 );
               });
           }
         } catch (error) {
           console.warn(
-            "⚠️ Lỗi khi chuẩn bị params cho API (không ảnh hưởng UX):",
+            " Lỗi khi chuẩn bị params cho API (không ảnh hưởng UX):",
             error
           );
         }
@@ -195,7 +195,7 @@ const PaymentStatusPage: React.FC = () => {
       }
 
       // CASE 3: Truy cập trực tiếp hoặc không có params hợp lệ
-      console.log("❌ Không tìm thấy thông tin thanh toán hợp lệ");
+      console.log(" Không tìm thấy thông tin thanh toán hợp lệ");
       setPaymentStatus({
         status: "error",
         message: "Không tìm thấy thông tin thanh toán",

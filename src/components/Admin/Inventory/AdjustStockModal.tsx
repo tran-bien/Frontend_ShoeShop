@@ -142,7 +142,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
           {/* Reason */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Lý đo di?u chơnh <span className="text-mono-800">*</span>
+              Lý do điều chỉnh <span className="text-mono-800">*</span>
             </label>
             <textarea
               value={formData.reason}
@@ -151,11 +151,11 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               rows={3}
-              placeholder="Ví d?: Ki?m kê phát hiện sai lọch, hàng hàng, m?t mát..."
+              placeholder="Ví dụ: Kiểm kê phát hiện sai lệch, hàng hỏng, mất mát..."
               required
             />
             <p className="mt-1 text-xs text-mono-500">
-              Tại thi?u 10 ký từ ({formData.reason.length}/10)
+              Tối thiểu 10 ký tự ({formData.reason.length}/10)
             </p>
           </div>
 
@@ -190,7 +190,3 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
 };
 
 export default AdjustStockModal;
-
-
-
-

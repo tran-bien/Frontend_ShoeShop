@@ -104,7 +104,7 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              Tiêu d? banner <span className="text-mono-800">*</span>
+              Tiêu đề banner <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -112,14 +112,14 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
               value={formData.title}
               onChange={handleChange}
               required
-              placeholder="Nhập tiêu d? cho banner"
+              placeholder="Nhập tiêu đề cho banner"
               className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-black">
-              V? trí hiện thọ <span className="text-mono-800">*</span>
+              Vị trí hiển thị <span className="text-mono-800">*</span>
             </label>
             <select
               name="displayOrder"
@@ -128,14 +128,14 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
               required
               className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             >
-              <option value={1}>V? trí 1</option>
-              <option value={2}>V? trí 2</option>
-              <option value={3}>V? trí 3</option>
-              <option value={4}>V? trí 4</option>
-              <option value={5}>V? trí 5</option>
+              <option value={1}>Vị trí 1</option>
+              <option value={2}>Vị trí 2</option>
+              <option value={3}>Vị trí 3</option>
+              <option value={4}>Vị trí 4</option>
+              <option value={5}>Vị trí 5</option>
             </select>
             <p className="text-xs text-mono-500 mt-1">
-              Chơn v? trí banner số xuất hiện trên trang chờ (tại đã 5 banners)
+              Chọn vị trí banner sẽ xuất hiện trên trang chủ (tối đa 5 banners)
             </p>
           </div>
 
@@ -168,7 +168,7 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
               className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
             <p className="text-xs text-mono-500 mt-1">
-              Chỉp nhơn: JPG, PNG, WEBP. Tại đã 5MB. Kích thước khuyện ngh?:
+              Chấp nhận: JPG, PNG, WEBP. Tối đa 5MB. Kích thước khuyến nghị:
               1920x400px
             </p>
             {selectedFile && (
@@ -179,7 +179,7 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
                   className="h-20 w-auto border rounded"
                 />
                 <p className="text-xs text-mono-800 mt-1">
-                  ? ẩnh dã chơn: {selectedFile.name}
+                  Ảnh đã chọn: {selectedFile.name}
                 </p>
               </div>
             )}
@@ -194,7 +194,7 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
               className="h-4 w-4 text-mono-900 focus:ring-mono-700 border-mono-300 rounded"
             />
             <label className="ml-2 block text-sm text-black">
-              Hiện thọ ngay
+              Hiển thị ngay
             </label>
           </div>
 
@@ -213,7 +213,7 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition disabled:opacity-50"
             >
-              {loading ? "Ðang thêm..." : "Thêm Banner"}
+              {loading ? "Đang thêm..." : "Thêm Banner"}
             </button>
           </div>
         </form>
@@ -223,4 +223,3 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
 };
 
 export default AddBanner;
-

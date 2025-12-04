@@ -23,7 +23,11 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
       if (type === "solid") {
         await adminColorService.create({ name, code, type });
       } else {
-        await adminColorService.create({ name, colors: [color1, color2], type });
+        await adminColorService.create({
+          name,
+          colors: [color1, color2],
+          type,
+        });
       }
       if (onSuccess) onSuccess();
       handleClose();
@@ -123,7 +127,7 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
               disabled={loading}
               className="bg-mono-700 hover:bg-mono-800 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Ðang thêm..." : "Thêm Màu"}
+              {loading ? "Đang thêm..." : "Thêm Màu"}
             </button>
             <button
               type="button"
@@ -140,4 +144,3 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
 };
 
 export default AddColor;
-

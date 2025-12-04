@@ -160,7 +160,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
                 name="maxDiscount"
                 value={form.maxDiscount}
                 onChange={handleChange}
-                placeholder="Giảm tại da"
+                placeholder="Giảm tối đa"
                 className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                 min={0}
               />
@@ -168,21 +168,21 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           )}
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Ðon tại thi?u (VND)
+              Đơn tối thiểu (VND)
             </label>
             <input
               type="number"
               name="minOrderValue"
               value={form.minOrderValue}
               onChange={handleChange}
-              placeholder="Ðon tại thi?u"
+              placeholder="Đơn tối thiểu"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               min={0}
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Ngày b?t đầu
+              Ngày bắt đầu
             </label>
             <input
               type="date"
@@ -237,7 +237,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               disabled={loading}
               className="bg-mono-700 hover:bg-mono-800 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Ðang thêm..." : "Thêm"}
+              {loading ? "Đang thêm..." : "Thêm"}
             </button>
             <button
               type="button"
@@ -254,4 +254,3 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
 };
 
 export default AddDiscount;
-

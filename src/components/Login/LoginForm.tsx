@@ -41,27 +41,27 @@ const LoginForm: React.FC = () => {
     try {
       console.log("Login attempt with:", values.email);
       await login(values.email, values.password);
-      toast.success("Ðang nhập thành công!");
-      navigate(returnUrl); // Chuyện huẩng sau đang nhập thành công
+      toast.success("Đăng nhập thành công!");
+      navigate(returnUrl); // Chuyển hướng sau đăng nhập thành công
     } catch (error: any) {
-      console.error("?? Ðang nhập thểt b?i:", error);
+      console.error(" Đăng nhập thất bại:", error);
 
-      // Hiện thọ lỗi c? thọ từ server
-      const errorMessage = error.message || "Ðang nhập thểt b?i";
+      // Hiển thị lỗi cụ thể từ server
+      const errorMessage = error.message || "Đăng nhập thất bại";
 
-      // Ki?m tra các đếng lỗi c? thọ d? hiện thọ thông báo thân thiện hon
+      // Kiểm tra các dạng lỗi cụ thể để hiển thị thông báo thân thiện hơn
       if (
-        errorMessage.includes("Tài khoẩn không tên tại") ||
-        errorMessage.includes("Email không tên tại")
+        errorMessage.includes("Tài khoản không tồn tại") ||
+        errorMessage.includes("Email không tồn tại")
       ) {
-        toast.error("Email không tên tại trong họ thàng");
+        toast.error("Email không tồn tại trong hệ thống");
       } else if (errorMessage.includes("Mật khẩu không chính xác")) {
         toast.error("Mật khẩu không chính xác");
       } else if (
-        errorMessage.includes("không được kích ho?t") ||
-        errorMessage.includes("chua kích ho?t")
+        errorMessage.includes("không được kích hoạt") ||
+        errorMessage.includes("chưa kích hoạt")
       ) {
-        toast.error("Tài khoẩn chua được kích ho?t, vui lòng ki?m tra email");
+        toast.error("Tài khoản chưa được kích hoạt, vui lòng kiểm tra email");
       } else {
         toast.error(errorMessage);
       }
@@ -73,7 +73,7 @@ const LoginForm: React.FC = () => {
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md mx-auto">
       <h2 className="text-2xl font-bold text-center mb-6 text-mono-800">
-        Ðang nhập
+        Đăng nhập
       </h2>
       <Formik
         initialValues={{ email: "", password: "" }}
@@ -158,10 +158,10 @@ const LoginForm: React.FC = () => {
               {isSubmitting ? (
                 <div className="flex items-center justify-center">
                   <div className="w-5 h-5 border-t-2 border-r-2 border-white rounded-full animate-spin mr-2"></div>
-                  Ðang xử lý...
+                  Đang xử lý...
                 </div>
               ) : (
-                "Ðang nhập"
+                "Đăng nhập"
               )}
             </button>
           </Form>
@@ -170,16 +170,16 @@ const LoginForm: React.FC = () => {
 
       <div className="mt-6 text-center">
         <p className="text-mono-600">
-          Chua có tài khoẩn?{" "}
+          Chưa có tài khoản?{" "}
           <Link to="/register" className="text-mono-black hover:text-mono-800">
-            Ðang ký ngay
+            Đăng ký ngay
           </Link>
         </p>
       </div>
 
       <div className="flex items-center my-6">
         <div className="flex-1 border-t border-mono-300"></div>
-        <span className="px-3 text-mono-500 text-sm">Ho?c đang nhập với</span>
+        <span className="px-3 text-mono-500 text-sm">Hoặc đăng nhập với</span>
         <div className="flex-1 border-t border-mono-300"></div>
       </div>
 
@@ -187,14 +187,14 @@ const LoginForm: React.FC = () => {
         {/* Social login buttons */}
         <button
           className="flex-1 flex justify-center items-center gap-2 border border-mono-300 p-2 rounded-lg hover:bg-mono-50"
-          onClick={() => toast.success("Ðang xử lý đang nhập bảng Google...")}
+          onClick={() => toast.success("Đang xử lý đăng nhập bằng Google...")}
         >
           <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
           <span>Google</span>
         </button>
         <button
           className="flex-1 flex justify-center items-center gap-2 border border-mono-300 p-2 rounded-lg hover:bg-mono-50"
-          onClick={() => toast.success("Ðang xử lý đang nhập bảng Facebook...")}
+          onClick={() => toast.success("Đang xử lý đăng nhập bằng Facebook...")}
         >
           <img src="/facebook-icon.svg" alt="Facebook" className="w-5 h-5" />
           <span>Facebook</span>
@@ -205,5 +205,3 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
-
-

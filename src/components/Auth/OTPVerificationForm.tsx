@@ -63,17 +63,17 @@ const OTPVerificationForm: React.FC = () => {
       }, 2000);
     } catch (error: any) {
       // Xử lý thông báo lỗi chi tiết từ BE
-      let errorMessage = "Xác thực thểt b?i!";
+      let errorMessage = "Xác thực thất bại!";
 
       if (
         error.response?.data?.errors &&
         error.response.data.errors.length > 0
       ) {
-        // Hiện thọ lỗi c? thọ từ validator của BE
+        // Hiển thị lỗi cụ thể từ validator của BE
         errorMessage = error.response.data.errors[0].msg;
         setError(errorMessage);
       } else if (error.response?.data?.message) {
-        // Hiện thọ thông báo lỗi từ BE
+        // Hiển thị thông báo lỗi từ BE
         errorMessage = error.response.data.message;
         setError(errorMessage);
       } else if (error.message) {
@@ -87,10 +87,10 @@ const OTPVerificationForm: React.FC = () => {
     }
   };
 
-  // Xử lý nhập OTP - chờ cho phép nhập s?
+  // Xử lý nhập OTP - chỉ cho phép nhập số
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Chờ cho phép nhập số và giới hơn 6 ký t?
+    // Chỉ cho phép nhập số và giới hạn 6 ký tự
     if (/^\d*$/.test(value) && value.length <= 6) {
       setOtp(value);
       if (error) setError("");
@@ -100,7 +100,7 @@ const OTPVerificationForm: React.FC = () => {
   return (
     <div className="w-[100%] flex items-center justify-center h-screen bg-white">
       <div className="w-[35%] p-8 bg-white rounded-lg flex flex-col items-center justify-center h-auto">
-        <h2 className="text-2xl mb-6 text-center">XÁC NH?N ÐANG KÝ</h2>
+        <h2 className="text-2xl mb-6 text-center">XÁC NHẬN ĐĂNG KÝ</h2>
 
         {/* Email */}
         <div className="w-full mb-4">
@@ -133,12 +133,12 @@ const OTPVerificationForm: React.FC = () => {
             } rounded-md p-2 w-full`}
             value={otp}
             onChange={handleOtpChange}
-            placeholder="Nhập mã OTP 6 chờ s?"
+            placeholder="Nhập mã OTP 6 chữ số"
             disabled={loading}
           />
         </div>
 
-        {/* Hiện thọ thông báo lỗi */}
+        {/* Hiển thị thông báo lỗi */}
         {error && (
           <div className="w-full mb-4">
             <p className="text-mono-800 text-sm">{error}</p>
@@ -152,7 +152,7 @@ const OTPVerificationForm: React.FC = () => {
             onClick={handleVerify}
             disabled={loading}
           >
-            {loading ? "Ðang xác thực..." : "Xác nhận"}
+            {loading ? "Đang xác thực..." : "Xác nhận"}
           </button>
           <button
             className="text-black text-base transition-all duration-300 hover:text-mono-600 hover:scale-105"
@@ -169,4 +169,3 @@ const OTPVerificationForm: React.FC = () => {
 };
 
 export default OTPVerificationForm;
-

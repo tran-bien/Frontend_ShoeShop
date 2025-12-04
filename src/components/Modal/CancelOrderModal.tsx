@@ -101,7 +101,8 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
           <div className="mb-4">
             <p className="text-mono-700 mb-2">
               Bẩn có chỉc chơn muẩn hủy don hàng{" "}
-              <span className="font-semibold text-mono-black">{orderCode}</span>?
+              <span className="font-semibold text-mono-black">{orderCode}</span>
+              ?
             </p>
             <p className="text-sm text-mono-500">
               Vui lòng cho bi?t lý đo d? shop có thọ c?i thiện d?ch v?.
@@ -167,12 +168,12 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
           {/* Warning */}
           <div className="mb-6 p-3 bg-mono-100 border border-mono-200 rounded-lg">
             <p className="text-sm text-mono-800">
-              <strong>Luu ý:</strong> Sau khi gửi yêu c?u hủy don hàng:
+              <strong>Lưu ý:</strong> Sau khi gửi yêu cầu hủy đơn hàng:
             </p>
             <ul className="text-sm text-mono-700 mt-1 ml-4 list-disc">
-              <li>Ðon hàng chờ xác nhận số được hủy ngay lệp t?c</li>
-              <li>Ðon hàng dã xác nhận cẩn chờ admin phê duy?t</li>
-              <li>Bẩn không thể thay đổi lý đo sau khi gửi</li>
+              <li>Đơn hàng chờ xác nhận sẽ được hủy ngay lập tức</li>
+              <li>Đơn hàng đã xác nhận cần chờ admin phê duyệt</li>
+              <li>Bạn không thể thay đổi lý do sau khi gửi</li>
             </ul>
           </div>
 
@@ -184,14 +185,14 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
               disabled={loading}
               className="flex-1 px-4 py-2 text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Hủy b?
+              Hủy bỏ
             </button>
             <button
               type="submit"
               disabled={loading || !reason.trim()}
               className="flex-1 px-4 py-2 bg-mono-800 text-white rounded-lg hover:bg-mono-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? "Ðang xử lý..." : "Xác nhận hủy don"}
+              {loading ? "Đang xử lý..." : "Xác nhận hủy đơn"}
             </button>
           </div>
         </form>
@@ -201,5 +202,3 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 };
 
 export default CancelOrderModal;
-
-

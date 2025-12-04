@@ -27,9 +27,9 @@ const UserCancelRequestsPage: React.FC = () => {
       const res = await userOrderService.getUserCancelRequests(params);
       setCancelRequests(res.data.data.cancelRequests || []);
     } catch (error) {
-      console.error("Lỗi khi tại yêu c?u hủy don:", error);
+      console.error("Lỗi khi tải yêu cầu hủy đơn:", error);
       setCancelRequests([]);
-      toast.error("Không thể tại danh sách yêu c?u hủy don");
+      toast.error("Không thể tải danh sách yêu cầu hủy đơn");
     } finally {
       setLoading(false);
     }
@@ -57,9 +57,9 @@ const UserCancelRequestsPage: React.FC = () => {
       case "pending":
         return "Chờ xử lý";
       case "approved":
-        return "Ðã chỉp nhơn";
+        return "Đã chấp nhận";
       case "rejected":
-        return "Ðã từ chỉi";
+        return "Đã từ chối";
       default:
         return status;
     }
@@ -68,8 +68,8 @@ const UserCancelRequestsPage: React.FC = () => {
   const statusTabs = [
     { key: "all", label: "Tất cả" },
     { key: "pending", label: "Chờ xử lý" },
-    { key: "approved", label: "Ðã chỉp nhơn" },
-    { key: "rejected", label: "Ðã từ chỉi" },
+    { key: "approved", label: "Đã chấp nhận" },
+    { key: "rejected", label: "Đã từ chối" },
   ];
 
   return (
@@ -77,7 +77,7 @@ const UserCancelRequestsPage: React.FC = () => {
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 p-10">
-          <h1 className="text-3xl font-bold mb-6">Yêu c?u hủy don hàng</h1>
+          <h1 className="text-3xl font-bold mb-6">Yêu cầu hủy đơn hàng</h1>
 
           {/* Tab filter */}
           <div className="bg-white rounded-lg shadow-sm mb-6">
@@ -104,12 +104,12 @@ const UserCancelRequestsPage: React.FC = () => {
               <FaInfoCircle className="text-mono-500 text-lg mt-0.5" />
               <div>
                 <h3 className="font-semibold text-mono-800 mb-1">
-                  Thông tin v? yêu c?u hủy don hàng
+                  Thông tin về yêu cầu hủy đơn hàng
                 </h3>
                 <ul className="text-sm text-mono-700 space-y-1">
-                  <li>• Ðon hàng "Chờ xác nhận" số được hủy ngay lệp t?c</li>
-                  <li>• Ðon hàng "Ðã xác nhận" cẩn chờ admin phê duy?t</li>
-                  <li>• Bẩn không thể hủy don hàng đang giao ho?c dã giao</li>
+                  <li>• Đơn hàng "Chờ xác nhận" sẽ được hủy ngay lập tức</li>
+                  <li>• Đơn hàng "Đã xác nhận" cần chờ admin phê duyệt</li>
+                  <li>• Bạn không thể hủy đơn hàng đang giao hoặc đã giao</li>
                 </ul>
               </div>
             </div>
@@ -118,15 +118,15 @@ const UserCancelRequestsPage: React.FC = () => {
           {loading ? (
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-mono-black"></div>
-              <p className="mt-2">Ðang tại...</p>
+              <p className="mt-2">Đang tải...</p>
             </div>
           ) : cancelRequests.length === 0 ? (
             <div className="text-center py-8">
               <FaClipboardList className="text-mono-400 text-6xl mx-auto mb-4" />
               <p className="text-mono-500 text-lg">
                 {statusFilter === "all"
-                  ? "Bẩn chua có yêu c?u hủy don hàng nào."
-                  : `Không có yêu c?u nào ? trạng thái "${
+                  ? "Bạn chưa có yêu cầu hủy đơn hàng nào."
+                  : `Không có yêu cầu nào ở trạng thái "${
                       statusTabs.find((t) => t.key === statusFilter)?.label
                     }".`}
               </p>
@@ -142,7 +142,7 @@ const UserCancelRequestsPage: React.FC = () => {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <h2 className="text-lg font-semibold text-mono-800">
-                        Ðon hàng: {request.order.code}
+                        Đơn hàng: {request.order.code}
                       </h2>
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2 ${getStatusColor(
@@ -155,7 +155,7 @@ const UserCancelRequestsPage: React.FC = () => {
                     <div className="text-right text-sm text-mono-500">
                       <div className="flex items-center gap-1 mb-1">
                         <FaCalendarAlt />
-                        <span>Gửi yêu c?u:</span>
+                        <span>Gửi yêu cầu:</span>
                       </div>
                       <span>
                         {new Date(request.createdAt).toLocaleString()}
@@ -167,17 +167,17 @@ const UserCancelRequestsPage: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h3 className="font-semibold text-mono-700 mb-2">
-                        Thông tin don hàng
+                        Thông tin đơn hàng
                       </h3>
                       <div className="space-y-1 text-sm text-mono-600">
                         <p>
-                          <strong>Trạng thái don:</strong>{" "}
+                          <strong>Trạng thái đơn:</strong>{" "}
                           {request.order.status}
                         </p>
                         <p>
-                          <strong>Giá tr?:</strong>{" "}
+                          <strong>Giá trị:</strong>{" "}
                           {request.order.totalAfterDiscountAndShipping?.toLocaleString()}
-                          d
+                          đ
                         </p>
                         <p>
                           <strong>Phuong thực TT:</strong>{" "}
@@ -230,7 +230,3 @@ const UserCancelRequestsPage: React.FC = () => {
 };
 
 export default UserCancelRequestsPage;
-
-
-
-

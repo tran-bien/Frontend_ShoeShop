@@ -234,22 +234,22 @@ const InventoryPage = () => {
                 Sản phẩm
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Hình ẩnh
+                Hình ảnh
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Biẩn thọ / Size
+                Biến thể / Size
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Tên kho
+                Tồn kho
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Giá vẩn TB
+                Giá vốn TB
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Trạng thái
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Hành đếng
+                Hành động
               </th>
             </tr>
           </thead>
@@ -257,7 +257,7 @@ const InventoryPage = () => {
             {loading ? (
               <tr>
                 <td colSpan={6} className="px-6 py-4 text-center text-mono-500">
-                  Ðang tại...
+                  Đang tải...
                 </td>
               </tr>
             ) : inventoryList.length === 0 ? (
@@ -276,7 +276,7 @@ const InventoryPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      {/* Hiện thọ ẩnh biẩn thọ n?u có */}
+                      {/* Hiển thị ảnh biến thể nếu có */}
                       {item.variant?.imagesvariant?.[0]?.url ? (
                         <img
                           src={item.variant.imagesvariant[0].url}
@@ -292,7 +292,7 @@ const InventoryPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-1">
-                      {/* Hiện thọ màu sắc với color swatch */}
+                      {/* Hiển thị màu sắc với color swatch */}
                       <div className="flex items-center gap-2">
                         {item.variant?.color?.hexCode && (
                           <div
@@ -307,7 +307,7 @@ const InventoryPage = () => {
                           {item.variant?.color?.name || "N/A"}
                         </span>
                       </div>
-                      {/* Hiện thọ size */}
+                      {/* Hiển thị size */}
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-mono-600">Size:</span>
                         <span className="text-sm font-bold text-mono-900 bg-mono-100 px-2 py-0.5 rounded">
@@ -445,7 +445,3 @@ const InventoryPage = () => {
 };
 
 export default InventoryPage;
-
-
-
-

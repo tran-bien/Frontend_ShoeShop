@@ -30,7 +30,7 @@ const ListOrderPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<"orders" | "cancel">("orders");
 
-  // L?y danh sï¿½ch don hï¿½ng từ API
+  // Lấy danh sách đơn hàng từ API
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -54,25 +54,25 @@ const ListOrderPage: React.FC = () => {
             : "",
           paymentStatus:
             o.payment?.paymentStatus === "paid"
-              ? "ï¿½ï¿½ thanh toï¿½n"
-              : "Chua thanh toï¿½n",
+              ? "Đã thanh toán"
+              : "Chưa thanh toán",
           paymentMethod:
             o.payment?.method === "VNPAY"
               ? "VNPAY"
               : o.payment?.method === "COD"
-              ? "Thanh toï¿½n khi nhơn hï¿½ng"
+              ? "Thanh toán khi nhận hàng"
               : o.payment?.method || "",
           orderStatus:
             o.status === "pending"
-              ? "Chờ xï¿½c nhơn"
+              ? "Chờ xác nhận"
               : o.status === "confirmed"
-              ? "ï¿½ï¿½ xï¿½c nhơn"
+              ? "Đã xác nhận"
               : o.status === "shipping"
-              ? "ï¿½ang giao hï¿½ng"
+              ? "Đang giao hàng"
               : o.status === "delivered"
-              ? "Giao hï¿½ng thï¿½nh cï¿½ng"
+              ? "Giao hàng thành công"
               : o.status === "cancelled"
-              ? "ï¿½ï¿½ hủy"
+              ? "Đã hủy"
               : o.status || "",
           orderStatusRaw: o.status,
         }))
@@ -114,25 +114,25 @@ const ListOrderPage: React.FC = () => {
           : "",
         paymentStatus:
           o.payment?.paymentStatus === "paid"
-            ? "ï¿½ï¿½ thanh toï¿½n"
-            : "Chua thanh toï¿½n",
+            ? "Đã thanh toán"
+            : "Chưa thanh toán",
         paymentMethod:
           o.payment?.method === "VNPAY"
             ? "VNPAY"
             : o.payment?.method === "COD"
-            ? "Thanh toï¿½n khi nhơn hï¿½ng"
+            ? "Thanh toán khi nhận hàng"
             : o.payment?.method || "",
         orderStatus:
           o.status === "pending"
-            ? "Chờ xï¿½c nhơn"
+            ? "Chờ xác nhận"
             : o.status === "confirmed"
-            ? "ï¿½ï¿½ xï¿½c nhơn"
+            ? "Đã xác nhận"
             : o.status === "shipping"
-            ? "ï¿½ang giao hï¿½ng"
+            ? "Đang giao hàng"
             : o.status === "delivered"
-            ? "Giao hï¿½ng thï¿½nh cï¿½ng"
+            ? "Giao hàng thành công"
             : o.status === "cancelled"
-            ? "ï¿½ï¿½ hủy"
+            ? "Đã hủy"
             : o.status || "",
         orderStatusRaw: o.status,
       });
@@ -163,7 +163,7 @@ const ListOrderPage: React.FC = () => {
     );
   });
 
-  // X? lï¿½ cập nhật trống thï¿½i don hï¿½ng
+  // Xử lý cập nhật trạng thái đơn hàng
   const handleUpdateOrderStatus = async (orderId: string, status: string) => {
     // Type assertion to match the expected union type
     const validStatus = status as "confirmed" | "shipping" | "delivered";
@@ -174,10 +174,10 @@ const ListOrderPage: React.FC = () => {
   return (
     <div className="p-6 w-full font-sans">
       <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug mb-4">
-        Quận Lï¿½ ï¿½on Hï¿½ng
+        Quản Lý Đơn Hàng
       </h2>
 
-      {/* Tab chuyện đổi */}
+      {/* Tab chuyển đổi */}
       <div className="flex border-b mb-4">
         <button
           onClick={() => setTab("orders")}
@@ -187,7 +187,7 @@ const ListOrderPage: React.FC = () => {
               : "text-mono-500 border-transparent hover:text-mono-black"
           }`}
         >
-          Danh sï¿½ch don hï¿½ng
+          Danh sách đơn hàng
         </button>
         <button
           onClick={() => setTab("cancel")}
@@ -197,11 +197,11 @@ const ListOrderPage: React.FC = () => {
               : "text-mono-500 border-transparent hover:text-mono-black"
           }`}
         >
-          Yï¿½u c?u hủy don
+          Yêu cầu hủy đơn
         </button>
       </div>
 
-      {/* Danh sï¿½ch don hï¿½ng */}
+      {/* Danh sách đơn hàng */}
       {tab === "orders" && (
         <>
           <div className="mb-4 flex items-center gap-4">
@@ -209,7 +209,7 @@ const ListOrderPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Tï¿½m mï¿½ don hï¿½ng ho?c tï¿½n khï¿½ch hï¿½ng"
+              placeholder="Tìm mã đơn hàng hoặc tên khách hàng"
               className="px-4 py-2 w-1/3 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -217,58 +217,62 @@ const ListOrderPage: React.FC = () => {
             <table className="min-w-full bg-white rounded-md overflow-hidden border">
               <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
                 <tr>
-                  <th className="py-3 px-4 text-left border-b">Mï¿½ don hï¿½ng</th>
-                  <th className="py-3 px-4 text-left border-b">Khï¿½ch hï¿½ng</th>
+                  <th className="py-3 px-4 text-left border-b">
+                    Mï¿½ don hï¿½ng
+                  </th>
+                  <th className="py-3 px-4 text-left border-b">
+                    Khï¿½ch hï¿½ng
+                  </th>
                   <th className="py-3 px-4 text-left border-b">ï¿½?a chỉ</th>
                   <th className="py-3 px-4 text-left border-b">
                     Số điện thoại
                   </th>
-                  <th className="py-3 px-4 text-left border-b">Giï¿½</th>
+                  <th className="py-3 px-4 text-left border-b">Giá</th>
                   <th className="py-3 px-4 text-left border-b">
-                    Thanh toï¿½n
+                    Thanh toán
                     <select
                       className=" py-1 px-1 border rounded-md"
                       onChange={(e) => handlePaymentFilter(e.target.value)}
                       value={paymentFilter}
                     >
                       <option value="">Tất cả</option>
-                      <option value="ï¿½ï¿½ thanh toï¿½n">ï¿½ï¿½ thanh toï¿½n</option>
-                      <option value="Chua thanh toï¿½n">Chua thanh toï¿½n</option>
+                      <option value="Đã thanh toán">Đã thanh toán</option>
+                      <option value="Chưa thanh toán">Chưa thanh toán</option>
                     </select>
                   </th>
                   <th className="py-3 px-4 text-left border-b">
-                    Phuong thực thanh toï¿½n
+                    Phương thức thanh toán
                   </th>
                   <th className="py-3 px-4 text-left border-b">
-                    Trống thï¿½i
+                    Trạng thái
                     <select
                       className=" py-1 px-1 border rounded-md"
                       onChange={(e) => handleStatusFilter(e.target.value)}
                       value={statusFilter}
                     >
                       <option value="">Tất cả</option>
-                      <option value="ï¿½ang giao hï¿½ng">ï¿½ang giao hï¿½ng</option>
-                      <option value="Giao hï¿½ng thï¿½nh cï¿½ng">
-                        Giao hï¿½ng thï¿½nh cï¿½ng
+                      <option value="Đang giao hàng">Đang giao hàng</option>
+                      <option value="Giao hàng thành công">
+                        Giao hàng thành công
                       </option>
-                      <option value="ï¿½ï¿½ hủy">ï¿½ï¿½ hủy</option>
-                      <option value="Chờ xï¿½c nhơn">Chờ xï¿½c nhơn</option>
+                      <option value="Đã hủy">Đã hủy</option>
+                      <option value="Chờ xác nhận">Chờ xác nhận</option>
                     </select>
                   </th>
-                  <th className="py-3 px-4 text-center border-b">Thao tï¿½c</th>
+                  <th className="py-3 px-4 text-center border-b">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
                     <td colSpan={9} className="text-center py-4">
-                      ï¿½ang tại...
+                      Đang tải...
                     </td>
                   </tr>
                 ) : filteredOrders.length === 0 ? (
                   <tr>
                     <td colSpan={9} className="text-center py-4">
-                      Khï¿½ng cï¿½ don hï¿½ng
+                      Không có đơn hàng
                     </td>
                   </tr>
                 ) : (
@@ -326,16 +330,16 @@ const ListOrderPage: React.FC = () => {
                                   handleUpdateOrderStatus(order._id, statusRaw);
                               }}
                             >
-                              <option value="">Chơn trống thï¿½i</option>
+                              <option value="">Chọn trạng thái</option>
                               {order.orderStatusRaw === "pending" && (
-                                <option value="confirmed">ï¿½ï¿½ xï¿½c nhơn</option>
+                                <option value="confirmed">Đã xác nhận</option>
                               )}
                               {order.orderStatusRaw === "confirmed" && (
-                                <option value="shipping">ï¿½ang giao hï¿½ng</option>
+                                <option value="shipping">Đang giao hàng</option>
                               )}
                               {order.orderStatusRaw === "shipping" && (
                                 <option value="delivered">
-                                  Giao hï¿½ng thï¿½nh cï¿½ng
+                                  Giao hàng thành công
                                 </option>
                               )}
                             </select>
@@ -355,7 +359,7 @@ const ListOrderPage: React.FC = () => {
         </>
       )}
 
-      {/* Danh sï¿½ch yï¿½u c?u hủy don */}
+      {/* Danh sách yêu cầu hủy đơn */}
       {tab === "cancel" && (
         <div className="mt-6">
           <CancelRequestList />
@@ -369,29 +373,29 @@ const ListOrderPage: React.FC = () => {
             <button
               onClick={handleCloseModal}
               className="absolute top-3 right-4 text-2xl text-mono-400 hover:text-mono-700"
-              title="ï¿½ï¿½ng"
+              title="Đóng"
             >
               &times;
             </button>
             <h3 className="text-2xl font-bold mb-6 text-mono-700 text-center">
-              Chi tiết don hï¿½ng
+              Chi tiết đơn hàng
             </h3>
             <div className="grid grid-cols-1 gap-y-3">
               <div className="flex justify-between">
                 <span className="font-semibold text-mono-600">
-                  Mï¿½ don hï¿½ng:
+                  Mã đơn hàng:
                 </span>
                 <span className="text-mono-900">{selectedOrder.orderCode}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-mono-600">Khï¿½ch hï¿½ng:</span>
+                <span className="font-semibold text-mono-600">Khách hàng:</span>
                 <span className="text-mono-900">
                   {selectedOrder.customerName}
                 </span>
               </div>
               <div className="flex justify-between items-start gap-4">
                 <span className="font-semibold text-mono-600 min-w-max">
-                  ï¿½?a ch?:
+                  Địa chỉ:
                 </span>
                 <span className="text-mono-900 text-right break-words max-w-[60%]">
                   {selectedOrder.address}
@@ -404,27 +408,27 @@ const ListOrderPage: React.FC = () => {
                 <span className="text-mono-900">{selectedOrder.phone}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-mono-600">Giï¿½:</span>
+                <span className="font-semibold text-mono-600">Giá:</span>
                 <span className="text-mono-black font-bold">
                   {selectedOrder.price}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-mono-600">Thanh toï¿½n:</span>
+                <span className="font-semibold text-mono-600">Thanh toán:</span>
                 <span className="text-mono-900">
                   {selectedOrder.paymentStatus}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="font-semibold text-mono-600">
-                  Phuong thực thanh toï¿½n:
+                  Phương thức thanh toán:
                 </span>
                 <span className="text-mono-900">
                   {selectedOrder.paymentMethod}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold text-mono-600">Trống thï¿½i:</span>
+                <span className="font-semibold text-mono-600">Trạng thái:</span>
                 <span className="text-mono-900">
                   {selectedOrder.orderStatus}
                 </span>
@@ -435,7 +439,7 @@ const ListOrderPage: React.FC = () => {
                 onClick={handleCloseModal}
                 className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-lg font-medium shadow"
               >
-                ï¿½ï¿½ng
+                Đóng
               </button>
             </div>
           </div>
@@ -446,5 +450,3 @@ const ListOrderPage: React.FC = () => {
 };
 
 export default ListOrderPage;
-
-

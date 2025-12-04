@@ -111,7 +111,10 @@ const EditSizeModal: React.FC<{
     setLoading(true);
     setError(null);
     try {
-      await adminSizeService.update(size._id, { value: String(value), region: type });
+      await adminSizeService.update(size._id, {
+        value: String(value),
+        region: type,
+      });
       onSuccess();
       onClose();
     } catch {
@@ -167,13 +170,13 @@ const EditSizeModal: React.FC<{
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Mô t?
+              Mô tả
             </label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Nhập mô t?"
+              placeholder="Nhập mô tả"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -185,7 +188,7 @@ const EditSizeModal: React.FC<{
               disabled={loading}
               className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Ðang cập nhật..." : "Cập nhật"}
+              {loading ? "Đang cập nhật..." : "Cập nhật"}
             </button>
             <button
               type="button"
@@ -276,7 +279,10 @@ const SizePage: React.FC = () => {
   // Fetch stats with limit=100 for estimation
   const fetchStats = async () => {
     try {
-      const statsResponse = await adminSizeService.getAll({ page: 1, limit: 100 });
+      const statsResponse = await adminSizeService.getAll({
+        page: 1,
+        limit: 100,
+      });
       const statsData = statsResponse.data.data || [];
       const totalFromAPI = statsResponse.data.total || 0;
 
@@ -293,7 +299,10 @@ const SizePage: React.FC = () => {
 
   const fetchDeletedStats = async () => {
     try {
-      const deletedResponse = await adminSizeService.getDeleted({ page: 1, limit: 100 });
+      const deletedResponse = await adminSizeService.getDeleted({
+        page: 1,
+        limit: 100,
+      });
       const totalDeleted = deletedResponse.data.total || 0;
       setDeletedCount(totalDeleted);
     } catch {
@@ -377,7 +386,7 @@ const SizePage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Tìm theo mô t?..."
+              placeholder="Tìm theo mô tả..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -395,7 +404,7 @@ const SizePage: React.FC = () => {
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
-              Ðang ho?t đếng
+              Đang hoạt động
             </h3>
             <p className="text-3xl font-bold text-mono-800">{activeCount}</p>
           </div>
@@ -404,14 +413,14 @@ const SizePage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
           <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-mono-300">
             <h3 className="text-sm font-medium text-mono-900 mb-1">
-              Tổng số kích thước dã xóa
+              Tổng số kích thước đã xóa
             </h3>
             <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
           </div>
         </div>
       )}
 
-      {/* Tab chuyện đổi và Sort */}
+      {/* Tab chuyển đổi và Sort */}
       <div className="flex items-center justify-between border-b mb-4">
         <div className="flex">
           <button
@@ -425,7 +434,7 @@ const SizePage: React.FC = () => {
               setCurrentPage(1);
             }}
           >
-            Size đang ho?t đếng
+            Size đang hoạt động
           </button>
           <button
             className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
@@ -438,7 +447,7 @@ const SizePage: React.FC = () => {
               setCurrentPage(1);
             }}
           >
-            Size dã xóa
+            Size đã xóa
           </button>
         </div>
         <div className="flex items-center gap-3 mb-2">
@@ -451,7 +460,7 @@ const SizePage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="all">Tất cả lo?i</option>
+            <option value="all">Tất cả loại</option>
             <option value="EU">EU</option>
             <option value="US">US</option>
             <option value="UK">UK</option>
@@ -468,10 +477,10 @@ const SizePage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="created_at_desc">Mới nh?t</option>
-            <option value="created_at_asc">Cu nh?t</option>
-            <option value="name_asc">Size tăng đến</option>
-            <option value="name_desc">Size giảm đến</option>
+            <option value="created_at_desc">Mới nhất</option>
+            <option value="created_at_asc">Cũ nhất</option>
+            <option value="name_asc">Size tăng dần</option>
+            <option value="name_desc">Size giảm dần</option>
           </select>
           {!showDeleted && canCreate() && (
             <button
@@ -483,14 +492,14 @@ const SizePage: React.FC = () => {
           )}
         </div>
       </div>
-      {/* Hiện thọ modal thêm size */}
+      {/* Hiển thị modal thêm size */}
       {showAddSize && (
         <AddSize
           handleClose={() => setShowAddSize(false)}
           onSuccess={fetchSizes}
         />
       )}
-      {/* Hiện thọ modal sửa size */}
+      {/* Hiển thị modal sửa size */}
       {editingSize && (
         <EditSizeModal
           size={editingSize}
@@ -504,10 +513,10 @@ const SizePage: React.FC = () => {
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
-              <th className="py-3 px-4 text-left border-b">Giá Trở</th>
-              <th className="py-3 px-4 text-left border-b">Lo?i</th>
-              <th className="py-3 px-4 text-left border-b">Mô T?</th>
-              <th className="py-3 px-4 text-center border-b">Trống Thái</th>
+              <th className="py-3 px-4 text-left border-b">Giá Trị</th>
+              <th className="py-3 px-4 text-left border-b">Loại</th>
+              <th className="py-3 px-4 text-left border-b">Mô Tả</th>
+              <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
               <th className="py-3 px-4 text-center border-b">Thao Tác</th>
             </tr>
           </thead>
@@ -545,11 +554,11 @@ const SizePage: React.FC = () => {
                 <td className="py-2 px-4 border-b text-center text-sm">
                   {item.deletedAt ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-200 text-mono-900">
-                      Ðã xóa
+                      Đã xóa
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
-                      Ho?t đếng
+                      Hoạt động
                     </span>
                   )}
                 </td>
@@ -777,9 +786,3 @@ const SizePage: React.FC = () => {
 };
 
 export default SizePage;
-
-
-
-
-
-

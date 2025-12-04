@@ -55,13 +55,13 @@ const CouponsPage: React.FC = () => {
           setTotalPages(response.data.pagination.totalPages);
         }
       } else {
-        setError("Không thể tại danh sách mã giảm giá");
-        toast.error("Không thể tại danh sách mã giảm giá");
+        setError("Không thể tải danh sách mã giảm giá");
+        toast.error("Không thể tải danh sách mã giảm giá");
       }
     } catch (error: any) {
       console.error("Error fetching coupons:", error);
-      setError("Có lỗi x?y ra khi tại dữ liệu mã giảm giá");
-      toast.error("Không thể tại danh sách mã giảm giá");
+      setError("Có lỗi xảy ra khi tải dữ liệu mã giảm giá");
+      toast.error("Không thể tải danh sách mã giảm giá");
     } finally {
       setLoading(false);
     }
@@ -71,7 +71,7 @@ const CouponsPage: React.FC = () => {
   const copyCouponCode = async (code: string) => {
     try {
       await navigator.clipboard.writeText(code);
-      toast.success(`Ðã sao chép mã: ${code}`);
+      toast.success(`Đã sao chép mã: ${code}`);
     } catch (err) {
       console.error("Failed to copy: ", err);
       toast.error("Không thể sao chép mã giảm giá");
@@ -100,16 +100,16 @@ const CouponsPage: React.FC = () => {
       coupon.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Component hiện thọ mã giảm giá
+  // Component hiển thị mã giảm giá
   const CouponCard = ({ coupon }: { coupon: Coupon }) => (
     <div className="bg-white border-2 border-mono-200 rounded-lg p-4 hover:border-mono-800 hover:shadow-md transition-all duration-300 relative overflow-hidden">
-      {/* Badge góc trên bên ph?i */}
+      {/* Badge góc trên bên phải */}
       <div className="absolute top-0 right-0 bg-mono-800 text-white text-xs px-2 py-1">
-        {coupon.type === "percent" ? "GI?M %" : "GI?M TI?N"}
+        {coupon.type === "percent" ? "GIẢM %" : "GIẢM TIỀN"}
       </div>
 
       <div className="flex flex-col h-full">
-        {/* Giá trở giảm giá */}
+        {/* Giá trị giảm giá */}
         <div className="mb-3">
           <div className="text-2xl font-bold text-mono-900 flex items-center">
             {coupon.type === "percent" ? (
@@ -126,23 +126,23 @@ const CouponsPage: React.FC = () => {
           </div>
           {coupon.maxDiscount && coupon.type === "percent" && (
             <div className="text-sm text-mono-600 mt-1">
-              Tại đã {formatCurrency(coupon.maxDiscount)}
+              Tối đa {formatCurrency(coupon.maxDiscount)}
             </div>
           )}
         </div>
 
-        {/* Mô từ */}
+        {/* Mô tả */}
         <div className="mb-3 flex-grow">
           <p className="text-sm text-mono-700 line-clamp-2 leading-relaxed">
             {coupon.description}
           </p>
           <p className="text-xs text-mono-500 mt-2 flex items-center">
             <FiTag className="mr-1" />
-            Ðon tại thi?u {formatCurrency(coupon.minOrderValue)}
+            Đơn tối thiểu {formatCurrency(coupon.minOrderValue)}
           </p>
         </div>
 
-        {/* Ngày h?t hơn */}
+        {/* Ngày hết hạn */}
         <div className="mt-auto">
           <div className="flex items-center space-x-1 text-sm text-mono-600 mb-3">
             <FiCalendar size={14} />
@@ -165,22 +165,22 @@ const CouponsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-mono-50 py-10">
       <div className="container mx-auto px-4">
-        {/* Tiêu d? trang và nút quay v? trang chờ */}
+        {/* Tiêu đề trang và nút quay về trang chủ */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-mono-900 mb-3">Mã giảm giá</h1>
           <p className="text-mono-600 max-w-2xl mx-auto">
-            Khám phá các mã giảm giá hợp đến và áp dụng cho don hàng của bẩn d?
-            nhơn uu dãi t?t nh?t
+            Khám phá các mã giảm giá hấp dẫn và áp dụng cho đơn hàng của bạn để
+            nhận ưu đãi tốt nhất
           </p>
           <button
             onClick={() => navigate("/")}
             className="mt-4 text-mono-black hover:text-mono-800 flex items-center mx-auto"
           >
-            <span>&larr; Quay v? trang chỉ</span>
+            <span>&larr; Quay về trang chủ</span>
           </button>
         </div>
 
-        {/* Bỏ lọc và tìm kiếm */}
+        {/* Bộ lọc và tìm kiếm */}
         <div className="mb-8">
           <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
             {/* Thanh tìm kiếm */}
@@ -195,10 +195,10 @@ const CouponsPage: React.FC = () => {
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-mono-400" />
             </div>
 
-            {/* Bỏ lọc */}
+            {/* Bộ lọc */}
             <div className="flex items-center gap-4 w-full md:w-auto">
               <FiFilter className="text-mono-600" />
-              <span className="text-mono-600">Lo?i:</span>
+              <span className="text-mono-600">Loại:</span>
               <div className="flex gap-2">
                 <button
                   onClick={() => setFilterType("all")}
@@ -239,7 +239,7 @@ const CouponsPage: React.FC = () => {
         {loading ? (
           <div className="flex items-center justify-center h-60">
             <FiLoader className="animate-spin text-3xl text-mono-black" />
-            <span className="ml-2 text-lg">Ðang tại mã giảm giá...</span>
+            <span className="ml-2 text-lg">Đang tải mã giảm giá...</span>
           </div>
         ) : error ? (
           <div className="text-center py-10">
@@ -248,7 +248,7 @@ const CouponsPage: React.FC = () => {
               onClick={fetchCoupons}
               className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors"
             >
-              Thọ lỗi
+              Thử lại
             </button>
           </div>
         ) : filteredCoupons.length === 0 ? (
@@ -256,7 +256,7 @@ const CouponsPage: React.FC = () => {
             <FiTag className="mx-auto text-5xl text-mono-400 mb-3" />
             <p className="text-mono-600 text-lg">
               {searchTerm
-                ? "Không tìm thủy mã giảm giá phù hợp"
+                ? "Không tìm thấy mã giảm giá phù hợp"
                 : "Hiện không có mã giảm giá nào"}
             </p>
           </div>
@@ -313,10 +313,10 @@ const CouponsPage: React.FC = () => {
           </>
         )}
 
-        {/* Huẩng đến sử dụng - Simplify this section */}
+        {/* Hướng dẫn sử dụng - Simplify this section */}
         <div className="mt-16 bg-white p-6 rounded-lg shadow-sm">
           <h2 className="text-2xl font-bold text-mono-900 mb-4">
-            Huẩng đến sử dụng mã giảm giá
+            Hướng dẫn sử dụng mã giảm giá
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-start space-x-4">
@@ -343,8 +343,8 @@ const CouponsPage: React.FC = () => {
                   Thêm sản phẩm vào giỏ
                 </h3>
                 <p className="text-sm text-mono-600">
-                  Thêm sản phẩm bẩn muẩn mua vào giỏ hàng với giá trở don tại
-                  thi?u
+                  Thêm sản phẩm bạn muốn mua vào giỏ hàng với giá trị đơn tối
+                  thiểu
                 </p>
               </div>
             </div>
@@ -356,8 +356,8 @@ const CouponsPage: React.FC = () => {
               <div>
                 <h3 className="font-semibold text-mono-900 mb-2">Áp dụng mã</h3>
                 <p className="text-sm text-mono-600">
-                  Dán mã giảm giá vào ô nhập mã trong trang giỏ hàng và b?m áp
-                  đếng
+                  Dán mã giảm giá vào ô nhập mã trong trang giỏ hàng và bấm áp
+                  dụng
                 </p>
               </div>
             </div>
@@ -369,5 +369,3 @@ const CouponsPage: React.FC = () => {
 };
 
 export default CouponsPage;
-
-

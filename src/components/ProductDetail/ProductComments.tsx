@@ -171,20 +171,20 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-mono-black"></div>
         </div>
         <p className="text-center mt-3 text-mono-500 font-medium">
-          Ðang tại đánh giá...
+          Đang tải đánh giá...
         </p>
       </div>
     );
   }
 
-  // Hiện thọ danh sách đánh giá
+  // Hiển thị danh sách đánh giá
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
       {/* Header Section */}
       <div className="px-8 py-6 border-b border-mono-100 flex justify-between items-center">
         <div>
           <h3 className="text-2xl font-bold text-mono-800">
-            Ðánh giá sản phẩm
+            Đánh giá sản phẩm
           </h3>
           <p className="text-mono-500 mt-1 font-medium">
             {reviews.length} đánh giá từ khách hàng
@@ -408,6 +408,3 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
 };
 
 export default ProductComments;
-
-
-

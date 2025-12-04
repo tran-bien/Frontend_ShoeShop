@@ -195,7 +195,7 @@ const MainNavbar = () => {
             {loading ? (
               <div className="p-4 text-center text-mono-500">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-mono-500 mx-auto"></div>
-                <span className="mt-2 block">Ðang tìm kiếm...</span>
+                <span className="mt-2 block">Đang tìm kiếm...</span>
               </div>
             ) : (
               <ul className="py-2">
@@ -255,14 +255,14 @@ const MainNavbar = () => {
       </div>
 
       <ul className="flex gap-2 items-center flex-shrink-0">
-        {/* Loyalty Badge - Chờ hiện thọ khi dã đang nhập */}
+        {/* Loyalty Badge - Chỉ hiển thị khi đã đăng nhập */}
         {user && (
           <li>
             <LoyaltyBadge />
           </li>
         )}
 
-        {/* Notifications - Chờ hiện thọ khi dã đang nhập */}
+        {/* Notifications - Chỉ hiển thị khi đã đăng nhập */}
         {user && (
           <li>
             <NotificationBell />
@@ -307,4 +307,3 @@ const MainNavbar = () => {
 };
 
 export default MainNavbar;
-

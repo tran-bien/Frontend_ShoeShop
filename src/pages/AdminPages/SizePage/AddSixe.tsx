@@ -42,7 +42,7 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Giá trở size
+              Giá trị size
             </label>
             <input
               type="number"
@@ -51,14 +51,14 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
               onChange={(e) =>
                 setValue(e.target.value === "" ? "" : Number(e.target.value))
               }
-              placeholder="Nhập giá trở size (VD: 41.5)"
+              placeholder="Nhập giá trị size (VD: 41.5)"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Lo?i size
+              Loại size
             </label>
             <select
               value={type}
@@ -76,13 +76,13 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Mô t?
+              Mô tả
             </label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Nhập mô t?"
+              placeholder="Nhập mô tả"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -94,7 +94,7 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
               disabled={loading}
               className="bg-mono-700 hover:bg-mono-800 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Ðang thêm..." : "Thêm Size"}
+              {loading ? "Đang thêm..." : "Thêm Size"}
             </button>
             <button
               type="button"
@@ -111,4 +111,3 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
 };
 
 export default AddSize;
-

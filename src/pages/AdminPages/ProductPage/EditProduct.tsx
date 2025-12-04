@@ -160,12 +160,12 @@ const EditProduct: React.FC<EditProductProps> = ({
           ×
         </button>
         <h2 className="text-2xl font-bold mb-6 text-mono-800">
-          Chơnh Sửa Sẩn Ph?m
+          Chỉnh Sửa Sản Phẩm
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-1">
-              Tên Sẩn Ph?m <span className="text-mono-800">*</span>
+              Tên Sản Phẩm <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -198,14 +198,14 @@ const EditProduct: React.FC<EditProductProps> = ({
               </div>
             </div>
             <p className="mt-1 text-xs text-mono-500">
-              ?? Mô từ chi tiết giúp khách hàng hi?u rõ hon v? sản phẩm
+              💡 Mô tả chi tiết giúp khách hàng hiểu rõ hơn về sản phẩm
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="mb-4">
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Danh M?c <span className="text-mono-800">*</span>
+                Danh Mục <span className="text-mono-800">*</span>
               </label>
               <select
                 name="category"
@@ -215,7 +215,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                 disabled={loadingData}
                 className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
               >
-                <option value="">-- Chơn danh mục --</option>
+                <option value="">-- Chọn danh mục --</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.name}
@@ -226,7 +226,7 @@ const EditProduct: React.FC<EditProductProps> = ({
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Thuong Hi?u <span className="text-mono-800">*</span>
+                Thương Hiệu <span className="text-mono-800">*</span>
               </label>
               <select
                 name="brand"
@@ -236,7 +236,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                 disabled={loadingData}
                 className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
               >
-                <option value="">-- Chơn thuong hi?u --</option>
+                <option value="">-- Chọn thương hiệu --</option>
                 {brands.map((brand) => (
                   <option key={brand._id} value={brand._id}>
                     {brand.name}
@@ -248,7 +248,7 @@ const EditProduct: React.FC<EditProductProps> = ({
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Tags (Chơn nhi?u)
+              Tags (Chọn nhiều)
             </label>
             <div className="border-2 border-mono-300 rounded-lg p-4 bg-mono-50 max-h-64 overflow-y-auto">
               {loadingData ? (
@@ -272,7 +272,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  <span className="ml-3 text-mono-600">Ðang tại tags...</span>
+                  <span className="ml-3 text-mono-600">Đang tải tags...</span>
                 </div>
               ) : tags.length === 0 ? (
                 <div className="text-center py-8">
@@ -319,10 +319,10 @@ const EditProduct: React.FC<EditProductProps> = ({
                         }`}
                       >
                         {tag.type === "MATERIAL"
-                          ? "Chỉt li?u"
+                          ? "Chất liệu"
                           : tag.type === "USECASE"
-                          ? "Nhu c?u"
-                          : "Tùy chơnh"}
+                          ? "Nhu cầu"
+                          : "Tùy chỉnh"}
                       </span>
                     </label>
                   ))}
@@ -332,7 +332,7 @@ const EditProduct: React.FC<EditProductProps> = ({
             {formData.tags && formData.tags.length > 0 && (
               <div className="mt-2 flex items-center gap-2">
                 <span className="text-sm font-medium text-mono-700">
-                  Ðã chơn: {formData.tags.length} tag(s)
+                  Đã chọn: {formData.tags.length} tag(s)
                 </span>
                 <button
                   type="button"
@@ -355,7 +355,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                 className="w-5 h-5 text-mono-black border-2 border-mono-300 rounded focus:ring-2 focus:ring-mono-500 cursor-pointer"
               />
               <span className="text-sm font-medium text-mono-700">
-                Ðang ho?t đếng
+                Đang hoạt động
               </span>
             </label>
           </div>
@@ -413,7 +413,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  Ðang luu...
+                  Đang lưu...
                 </>
               ) : (
                 <>
@@ -430,7 +430,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  Luu Thay Ð?i
+                  Lưu Thay Đổi
                 </>
               )}
             </button>
@@ -442,7 +442,3 @@ const EditProduct: React.FC<EditProductProps> = ({
 };
 
 export default EditProduct;
-
-
-
-

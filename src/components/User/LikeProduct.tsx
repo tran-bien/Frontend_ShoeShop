@@ -45,13 +45,13 @@ const LikeProduct = () => {
         setWishlist((prev) =>
           prev.filter((item) => item._id !== wishlistItemId)
         );
-        toast.success("Ðã xóa kh?i danh sách yêu thích");
+        toast.success("Đã xóa khỏi danh sách yêu thích");
       } else {
-        toast.error("Xóa sản phẩm yêu thích thểt b?i!");
+        toast.error("Xóa sản phẩm yêu thích thất bại!");
       }
     } catch (error) {
-      console.error("Lỗi khi xóa kh?i wishlist:", error);
-      toast.error("Xóa sản phẩm yêu thích thểt b?i!");
+      console.error("Lỗi khi xóa khỏi wishlist:", error);
+      toast.error("Xóa sản phẩm yêu thích thất bại!");
     } finally {
       setRemovingItems((prev) => {
         const newSet = new Set(prev);
@@ -71,7 +71,7 @@ const LikeProduct = () => {
       {loading ? (
         <div className="py-10 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-mono-500 border-r-transparent"></div>
-          <p className="mt-4 text-mono-600">Ðang tại danh sách yêu thích...</p>
+          <p className="mt-4 text-mono-600">Đang tải danh sách yêu thích...</p>
         </div>
       ) : wishlist.length === 0 ? (
         <div className="py-10 text-center">
@@ -154,7 +154,3 @@ const LikeProduct = () => {
 };
 
 export default LikeProduct;
-
-
-
-

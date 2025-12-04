@@ -817,7 +817,7 @@ const UserReviewPage: React.FC = () => {
 
               <div className="mb-4 text-center">
                 <label className="block text-sm font-medium mb-2">
-                  M?c d? hài lòng của bẩn:
+                  Mức độ hài lòng của bạn:
                 </label>
                 <Rate value={rating} onChange={setRating} className="text-xl" />
               </div>

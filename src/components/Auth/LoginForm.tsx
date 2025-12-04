@@ -26,13 +26,13 @@ const LoginForm: React.FC = () => {
 
       // Validate input
       if (!loginEmail.trim() || !loginPassword.trim()) {
-        toast.error("Vui lòng nhập d?y d? email và mật khẩu!");
+        toast.error("Vui lòng nhập đầy đủ email và mật khẩu!");
         return;
       }
 
       const response = await login(loginEmail.trim(), loginPassword);
 
-      toast.success("Ðang nhập thành công!");
+      toast.success("Đăng nhập thành công!");
 
       if (response.user?.role === "admin") {
         navigate("/admin");
@@ -46,9 +46,9 @@ const LoginForm: React.FC = () => {
         navigate(redirectTo);
       }
     } catch (error: any) {
-      console.error("?? Ðang nhập thểt b?i:", error);
+      console.error("Đăng nhập thất bại:", error);
 
-      let errorMessage = "Ðang nhập thểt b?i!";
+      let errorMessage = "Đăng nhập thất bại!";
 
       if (
         error.response?.data?.errors &&
@@ -63,9 +63,9 @@ const LoginForm: React.FC = () => {
           error.code === "ERR_NETWORK"
         ) {
           errorMessage =
-            "Không thể k?t nội đến server. Vui lòng ki?m tra k?t nội mẩng!";
+            "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng!";
         } else if (error.message.includes("404")) {
-          errorMessage = "API đang nhập không tên tại. Vui lòng liên họ admin!";
+          errorMessage = "API đăng nhập không tồn tại. Vui lòng liên hệ admin!";
         } else {
           errorMessage = error.message;
         }
@@ -121,7 +121,7 @@ const LoginForm: React.FC = () => {
               ShoeStore
             </h1>
           </Link>
-          <p className="text-mono-500 mt-2">Chào mẩng bẩn đến với ShoeStore</p>
+          <p className="text-mono-500 mt-2">Chào mừng bạn đến với ShoeShop</p>
         </div>
 
         {/* Auth Card */}
@@ -136,7 +136,7 @@ const LoginForm: React.FC = () => {
                   : "text-mono-400 hover:text-mono-600"
               }`}
             >
-              Ðang nhập
+              Đăng nhập
             </button>
             <button
               onClick={() => setActiveTab("register")}
@@ -146,7 +146,7 @@ const LoginForm: React.FC = () => {
                   : "text-mono-400 hover:text-mono-600"
               }`}
             >
-              Ðang ký
+              Đăng ký
             </button>
           </div>
 
@@ -289,16 +289,16 @@ const LoginForm: React.FC = () => {
 
                 {/* Terms */}
                 <p className="text-center text-xs text-mono-500">
-                  Bảng vi?c đang ký, bẩn đếng ý với{" "}
+                  Bằng việc đăng ký, bạn đồng ý với{" "}
                   <Link to="/terms" className="text-mono-black hover:underline">
-                    Ði?u khoẩn sử dụng
+                    Điều khoản sử dụng
                   </Link>{" "}
                   và{" "}
                   <Link
                     to="/privacy"
                     className="text-mono-black hover:underline"
                   >
-                    Chính sách b?o m?t
+                    Chính sách bảo mật
                   </Link>
                 </p>
               </div>
@@ -312,7 +312,7 @@ const LoginForm: React.FC = () => {
             to="/"
             className="text-mono-600 hover:text-mono-black transition-colors"
           >
-            ? Quay lỗi trang chỉ
+            ← Quay lại trang chủ
           </Link>
         </div>
       </div>

@@ -31,11 +31,11 @@ const CouponsPage: React.FC = () => {
       if (response.data.success) {
         setCoupons(response.data.coupons || []);
       } else {
-        toast.error("Không thể tại danh sách mã giảm giá");
+        toast.error("Không thể tải danh sách mã giảm giá");
       }
     } catch (error: any) {
       console.error("Error fetching coupons:", error);
-      toast.error("Có lỗi x?y ra khi tại mã giảm giá");
+      toast.error("Có lỗi xảy ra khi tải mã giảm giá");
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,7 @@ const CouponsPage: React.FC = () => {
 
   const handleCollectCoupon = async (couponId: string) => {
     if (!isAuthenticated) {
-      toast.error("Vui lòng đang nhập d? thu thấp mã giảm giá");
+      toast.error("Vui lòng đăng nhập để thu thập mã giảm giá");
       return;
     }
 
@@ -52,11 +52,11 @@ const CouponsPage: React.FC = () => {
       const response = await userCouponService.collectCoupon(couponId);
 
       if (response.data.success) {
-        toast.success("Thu thấp mã giảm giá thành công!");
+        toast.success("Thu thập mã giảm giá thành công!");
       }
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Không thể thu thấp mã giảm giá";
+        error.response?.data?.message || "Không thể thu thập mã giảm giá";
       toast.error(errorMessage);
     } finally {
       setCollectingCouponId(null);
@@ -71,7 +71,7 @@ const CouponsPage: React.FC = () => {
     if (coupon.type === "percent") {
       return `${coupon.value}%`;
     } else {
-      return `${coupon.value.toLocaleString("vi-VN")}?`;
+      return `${coupon.value.toLocaleString("vi-VN")}đ`;
     }
   };
 
@@ -89,10 +89,10 @@ const CouponsPage: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-mono-900 mb-4">
-            Mã Giảm Giá Dành Cho Bẩn
+            Mã Giảm Giá Dành Cho Bạn
           </h1>
           <p className="text-lg text-mono-600">
-            Thu thấp các mã giảm giá hợp đến d? ti?t ki?m cho don hàng tiếp theo
+            Thu thập các mã giảm giá hấp dẫn để tiết kiệm cho đơn hàng tiếp theo
           </p>
         </div>
 
@@ -123,17 +123,17 @@ const CouponsPage: React.FC = () => {
                   {/* Coupon Details */}
                   <div className="space-y-2 mb-4">
                     <div className="text-sm text-mono-600">
-                      <span className="font-medium">Ðon tại thi?u:</span>{" "}
-                      {coupon.minOrderValue.toLocaleString("vi-VN")}?
+                      <span className="font-medium">Đơn tối thiểu:</span>{" "}
+                      {coupon.minOrderValue.toLocaleString("vi-VN")}đ
                     </div>
                     {coupon.maxDiscount && (
                       <div className="text-sm text-mono-600">
-                        <span className="font-medium">Giảm tại da:</span>{" "}
-                        {coupon.maxDiscount.toLocaleString("vi-VN")}?
+                        <span className="font-medium">Giảm tối đa:</span>{" "}
+                        {coupon.maxDiscount.toLocaleString("vi-VN")}đ
                       </div>
                     )}
                     <div className="text-sm text-mono-600">
-                      <span className="font-medium">Có hi?u lọc:</span>{" "}
+                      <span className="font-medium">Có hiệu lực:</span>{" "}
                       {formatDate(coupon.startDate)} -{" "}
                       {formatDate(coupon.endDate)}
                     </div>
@@ -154,10 +154,10 @@ const CouponsPage: React.FC = () => {
                     }`}
                   >
                     {collectingCouponId === coupon._id
-                      ? "Ðang thu thấp..."
+                      ? "Đang thu thập..."
                       : isAuthenticated
-                      ? "Thu thấp ngay"
-                      : "Ðang nhập d? thu thấp"}
+                      ? "Thu thập ngay"
+                      : "Đăng nhập để thu thập"}
                   </button>
                 </div>
               </div>
@@ -165,12 +165,12 @@ const CouponsPage: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="text-mono-400 text-6xl mb-4">??</div>
+            <div className="text-mono-400 text-6xl mb-4">🎟️</div>
             <h3 className="text-xl font-semibold text-mono-900 mb-2">
-              Hiện tại chua có mã giảm giá nào
+              Hiện tại chưa có mã giảm giá nào
             </h3>
             <p className="text-mono-600">
-              Hãy quay lỗi sau d? không bỏ lệ nhàng uu dãi hợp đến!
+              Hãy quay lại sau để không bỏ lỡ những ưu đãi hấp dẫn!
             </p>
           </div>
         )}
@@ -180,5 +180,3 @@ const CouponsPage: React.FC = () => {
 };
 
 export default CouponsPage;
-
-

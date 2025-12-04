@@ -23,16 +23,16 @@ const ProductComparePage: React.FC = () => {
         <div className="text-center">
           <Squares2X2Icon className="h-16 w-16 text-mono-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-mono-900 mb-2">
-            ChÆ°a cÃ³ sáº£n pháº©m Ä‘á»ƒ so sÃ¡nh
+            Chưa có sản phẩm để so sánh
           </h2>
           <p className="text-mono-600 mb-6">
-            ThÃªm sáº£n pháº©m vÃ o danh sÃ¡ch so sÃ¡nh Ä‘á»ƒ xem chi tiáº¿t
+            Thêm sản phẩm vào danh sách so sánh để xem chi tiết
           </p>
           <Link
             to="/products"
             className="inline-block bg-mono-black text-white px-6 py-3 rounded-lg hover:bg-mono-800 transition-colors"
           >
-            KhÃ¡m phÃ¡ sáº£n pháº©m
+            Khám phá sản phẩm
           </Link>
         </div>
       </div>
@@ -46,10 +46,10 @@ const ProductComparePage: React.FC = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-mono-900 mb-2">
-              So sÃ¡nh sáº£n pháº©m
+              So sánh sản phẩm
             </h1>
             <p className="text-mono-600">
-              So sÃ¡nh {validProducts.length} sáº£n pháº©m
+              So sánh {validProducts.length} sản phẩm
             </p>
           </div>
           <button
@@ -57,7 +57,7 @@ const ProductComparePage: React.FC = () => {
             className="bg-mono-100 hover:bg-mono-200 text-mono-700 px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
           >
             <XMarkIcon className="h-5 w-5" />
-            XÃ³a táº¥t cáº£
+            Xóa tất cả
           </button>
         </div>
 
@@ -67,7 +67,7 @@ const ProductComparePage: React.FC = () => {
             <thead>
               <tr className="border-b border-mono-200">
                 <th className="p-4 text-left text-mono-700 font-medium w-48 sticky left-0 bg-white z-10">
-                  ThÃ´ng tin
+                  Thông tin
                 </th>
                 {validProducts.map((product) => (
                   <th key={product._id} className="p-4 min-w-[280px]">
@@ -76,7 +76,7 @@ const ProductComparePage: React.FC = () => {
                       <button
                         onClick={() => removeFromCompare(product._id)}
                         className="absolute top-0 right-0 bg-mono-100 hover:bg-mono-200 text-mono-700 p-1 rounded-full transition-colors"
-                        title="XÃ³a"
+                        title="Xóa"
                       >
                         <XMarkIcon className="h-4 w-4" />
                       </button>
@@ -122,7 +122,8 @@ const ProductComparePage: React.FC = () => {
                         product.priceRange?.max && (
                           <span>
                             {" "}
-                            - {product.priceRange.max.toLocaleString("vi-VN")}â‚«
+                            - {product.priceRange.max.toLocaleString("vi-VN")}
+                            â‚«
                           </span>
                         )}
                     </div>
@@ -284,8 +285,8 @@ const ProductComparePage: React.FC = () => {
                       }`}
                     >
                       {product.totalQuantity && product.totalQuantity > 0
-                        ? "CÃ²n hÃ ng"
-                        : "Háº¿t hÃ ng"}
+                        ? "Còn hàng"
+                        : "Hết hàng"}
                     </span>
                   </td>
                 ))}
@@ -314,14 +315,14 @@ const ProductComparePage: React.FC = () => {
             to="/products"
             className="bg-mono-100 hover:bg-mono-200 text-mono-700 px-6 py-3 rounded-lg transition-colors font-medium"
           >
-            ThÃªm sáº£n pháº©m
+            Thêm sản phẩm
           </Link>
           {validProducts.length > 1 && (
             <button
               onClick={clearCompare}
               className="bg-mono-black hover:bg-mono-800 text-white px-6 py-3 rounded-lg transition-colors font-medium"
             >
-              Báº¯t Ä‘áº§u láº¡i
+              Bắt đầu lại
             </button>
           )}
         </div>
@@ -331,4 +332,3 @@ const ProductComparePage: React.FC = () => {
 };
 
 export default ProductComparePage;
-

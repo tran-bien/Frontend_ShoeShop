@@ -247,7 +247,7 @@ const EditColorModal: React.FC<{
               disabled={loading}
               className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Ðang cập nhật..." : "Cập nhật"}
+              {loading ? "Đang cập nhật..." : "Cập nhật"}
             </button>
             <button
               type="button"
@@ -333,7 +333,10 @@ const ColorPage: React.FC = () => {
   // Fetch stats with limit=100 for estimation
   const fetchStats = async () => {
     try {
-      const statsResponse = await adminColorService.getAll({ page: 1, limit: 100 });
+      const statsResponse = await adminColorService.getAll({
+        page: 1,
+        limit: 100,
+      });
       const statsData = statsResponse.data.data || [];
       const totalFromAPI = statsResponse.data.total || 0;
 
@@ -456,7 +459,7 @@ const ColorPage: React.FC = () => {
           </div>
           <div className="bg-gradient-to-br from-mono-100 to-mono-200 rounded-xl p-6 shadow-sm border border-mono-300">
             <h3 className="text-sm font-medium text-mono-600 mb-1">
-              Ðang ho?t đếng
+              Đang hoạt động
             </h3>
             <p className="text-3xl font-bold text-mono-900">{activeCount}</p>
           </div>
@@ -486,7 +489,7 @@ const ColorPage: React.FC = () => {
               setCurrentPage(1);
             }}
           >
-            Màu đang ho?t đếng
+            Màu đang hoạt động
           </button>
           <button
             className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
@@ -606,11 +609,11 @@ const ColorPage: React.FC = () => {
                 <td className="py-2 px-4 border-b text-center text-sm">
                   {item.deletedAt ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-300 text-mono-800">
-                      Ðã xóa
+                      Đã xóa
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-200 text-mono-900">
-                      Ho?t đếng
+                      Hoạt động
                     </span>
                   )}
                 </td>
@@ -838,4 +841,3 @@ const ColorPage: React.FC = () => {
 };
 
 export default ColorPage;
-

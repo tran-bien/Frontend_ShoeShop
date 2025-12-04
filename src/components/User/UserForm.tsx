@@ -353,7 +353,7 @@ const UserForm: React.FC = () => {
                         <span className="text-mono-600">{addr.phone}</span>
                         {addr.isDefault && (
                           <span className="px-2 py-0.5 bg-mono-800 text-white text-xs rounded-full">
-                            M?c đếnh
+                            Mặc định
                           </span>
                         )}
                       </div>
@@ -388,7 +388,7 @@ const UserForm: React.FC = () => {
           ) : (
             <div className="text-center py-8 bg-mono-50 rounded-xl">
               <FiMapPin className="mx-auto text-mono-300 mb-2" size={40} />
-              <p className="text-mono-500">Bẩn chua có địa chỉ nào</p>
+              <p className="text-mono-500">Bạn chưa có địa chỉ nào</p>
               <button
                 onClick={() => setIsAddModalOpen(true)}
                 className="mt-3 text-mono-800 hover:text-mono-black font-medium"
@@ -400,13 +400,13 @@ const UserForm: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal chơnh sửa địa chỉ */}
+      {/* Modal chỉnh sửa địa chỉ */}
       {isModalOpen && editingAddress && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
             <div className="p-6 border-b border-mono-100">
               <h3 className="text-xl font-bold text-mono-900">
-                Chơnh sửa địa chỉ
+                Chỉnh sửa địa chỉ
               </h3>
             </div>
             <form
@@ -533,7 +533,7 @@ const UserForm: React.FC = () => {
                   disabled={loading}
                   className="flex-1 px-4 py-2.5 bg-mono-black text-white rounded-xl hover:bg-mono-800 transition-colors font-medium disabled:opacity-50"
                 >
-                  {loading ? "Ðang thêm..." : "Thêm địa chỉ"}
+                  {loading ? "Đang thêm..." : "Thêm địa chỉ"}
                 </button>
               </div>
             </form>
@@ -545,5 +545,3 @@ const UserForm: React.FC = () => {
 };
 
 export default UserForm;
-
-

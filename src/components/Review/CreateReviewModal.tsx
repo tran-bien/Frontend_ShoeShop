@@ -66,7 +66,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
       const isSuccess = responseData.success === true;
 
       if (isSuccess) {
-        toast.success(responseData.message || "Ðánh giá sản phẩm thành công");
+        toast.success(responseData.message || "Đánh giá sản phẩm thành công");
         setRating(5);
         setContent("");
         onSuccess();
@@ -78,7 +78,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
     } catch (error: any) {
       console.error("Lỗi khi gửi đánh giá:", error);
 
-      let errorMessage = "Không thể t?o đánh giá";
+      let errorMessage = "Không thể tạo đánh giá";
 
       if (error.response) {
         const errorData = error.response.data;
@@ -87,9 +87,9 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
           errorData?.error ||
           `Lỗi server: ${error.response.status}`;
       } else if (error.request) {
-        errorMessage = "Lỗi k?t nội mẩng. Vui lòng thọ lỗi.";
+        errorMessage = "Lỗi kết nối mạng. Vui lòng thử lại.";
       } else {
-        errorMessage = error.message || "Ðã x?y ra lỗi không xác đếnh";
+        errorMessage = error.message || "Đã xảy ra lỗi không xác định";
       }
 
       toast.error(errorMessage);
@@ -100,22 +100,22 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
 
   const ratingText = [
     "",
-    "R?t không hài lòng",
+    "Rất không hài lòng",
     "Không hài lòng",
-    "Bình thuẩng",
+    "Bình thường",
     "Hài lòng",
-    "R?t hài lòng",
+    "Rất hài lòng",
   ];
 
   return (
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      contentLabel="Ðánh giá sản phẩm"
+      contentLabel="Đánh giá sản phẩm"
       className="max-w-md mx-auto mt-20 bg-white p-5 rounded-lg shadow-lg"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center"
     >
-      <h2 className="text-lg font-bold mb-3">Ðánh giá sản phẩm</h2>
+      <h2 className="text-lg font-bold mb-3">Đánh giá sản phẩm</h2>
 
       <div className="flex items-center space-x-3 mb-3 p-2 bg-mono-50 rounded-lg">
         <div className="w-12 h-12 bg-mono-100 rounded-md overflow-hidden flex-shrink-0">
@@ -139,7 +139,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label className="block text-sm font-medium mb-2">
-            Ðánh giá của bẩn:
+            Đánh giá của bạn:
           </label>
           <div className="flex items-center space-x-1 mb-2">
             {[1, 2, 3, 4, 5].map((star) => (
@@ -204,6 +204,3 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
 };
 
 export default CreateReviewModal;
-
-
-

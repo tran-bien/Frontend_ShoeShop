@@ -26,7 +26,7 @@ const ViewDetailModal: React.FC<{
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-mono-900 text-white p-6 rounded-t-xl">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Chi tiết Thuong hi?u</h2>
+            <h2 className="text-2xl font-bold">Chi tiết Thương hiệu</h2>
             <button
               onClick={onClose}
               className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
@@ -43,7 +43,7 @@ const ViewDetailModal: React.FC<{
             </div>
             <div>
               <p className="text-sm text-mono-500 font-medium">
-                Tên thuong hi?u
+                Tên thương hiệu
               </p>
               <p className="text-mono-800 font-semibold">{brand.name}</p>
             </div>
@@ -56,20 +56,20 @@ const ViewDetailModal: React.FC<{
               <div className="mt-1">
                 {brand.isActive ? (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
-                    Ho?t đếng
+                    Hoạt động
                   </span>
                 ) : (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
-                    Không ho?t đếng
+                    Không hoạt động
                   </span>
                 )}
               </div>
             </div>
           </div>
           <div>
-            <p className="text-sm text-mono-500 font-medium">Mô t?</p>
+            <p className="text-sm text-mono-500 font-medium">Mô tả</p>
             <p className="text-mono-800 mt-1">
-              {brand.description || "Không có mô t?"}
+              {brand.description || "Không có mô tả"}
             </p>
           </div>
           {brand.logo?.url && (
@@ -84,7 +84,7 @@ const ViewDetailModal: React.FC<{
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-mono-500 font-medium">Ngày t?o</p>
+              <p className="text-sm text-mono-500 font-medium">Ngày tạo</p>
               <p className="text-mono-800 text-sm">
                 {brand.createdAt
                   ? new Date(brand.createdAt).toLocaleString("vi-VN")
@@ -144,7 +144,7 @@ const EditBrand: React.FC<{
       onSuccess();
       onClose();
     } catch {
-      setError("Cập nhật thuong hi?u thểt b?i!");
+      setError("Cập nhật thương hiệu thất bại!");
     } finally {
       setLoading(false);
     }
@@ -161,12 +161,12 @@ const EditBrand: React.FC<{
           &times;
         </button>
         <h2 className="text-xl font-bold mb-6 text-center">
-          Cập nhật Thuong Hi?u
+          Cập nhật Thương Hiệu
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              Tên Thuong Hi?u
+              Tên Thương Hiệu
             </label>
             <input
               type="text"
@@ -196,7 +196,7 @@ const EditBrand: React.FC<{
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
-              {loading ? "Ðang cập nhật..." : "Cập nhật"}
+              {loading ? "Đang cập nhật..." : "Cập nhật"}
             </button>
           </div>
         </form>
@@ -281,7 +281,10 @@ const ListBrandsPage: React.FC = () => {
   // Fetch stats with limit=100 for estimation
   const fetchStats = async () => {
     try {
-      const statsResponse = await adminBrandService.getAll({ page: 1, limit: 100 });
+      const statsResponse = await adminBrandService.getAll({
+        page: 1,
+        limit: 100,
+      });
       const statsData = statsResponse.data.data || [];
       const totalFromAPI = statsResponse.data.total || 0;
 
@@ -355,7 +358,7 @@ const ListBrandsPage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      // Xử lý lỗi nếu cần
     }
   };
 
@@ -366,7 +369,7 @@ const ListBrandsPage: React.FC = () => {
       fetchBrands(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      // Xử lý lỗi nếu cần
     }
   };
 
@@ -376,7 +379,7 @@ const ListBrandsPage: React.FC = () => {
       fetchBrands(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      // Xử lý lỗi nếu cần
     }
   };
 
@@ -386,7 +389,7 @@ const ListBrandsPage: React.FC = () => {
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
-          Danh Sách Thuong Hi?u
+          Danh Sách Thương Hiệu
         </h2>
         {!isSearchVisible ? (
           <button
@@ -406,7 +409,7 @@ const ListBrandsPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Tìm theo tên thuong hi?u..."
+              placeholder="Tìm theo tên thương hiệu..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -418,30 +421,28 @@ const ListBrandsPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-black mb-1">
-              Tổng số thuong hi?u
+              Tổng số thương hiệu
             </h3>
             <p className="text-3xl font-bold text-mono-900">{totalCount}</p>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
-              Ðang ho?t đếng
+              Đang hoạt động
             </h3>
             <p className="text-3xl font-bold text-mono-800">{activeCount}</p>
           </div>
           <div className="bg-gradient-to-br from-mono-100 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-700 mb-1">
-              Không ho?t đếng
+              Không hoạt động
             </h3>
-            <p className="text-3xl font-bold text-mono-900">
-              {inactiveCount}
-            </p>
+            <p className="text-3xl font-bold text-mono-900">{inactiveCount}</p>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
           <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-mono-300">
             <h3 className="text-sm font-medium text-mono-900 mb-1">
-              Tổng số thuong hi?u dã xóa
+              Tổng số thương hiệu đã xóa
             </h3>
             <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
           </div>
@@ -462,7 +463,7 @@ const ListBrandsPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Thuong hi?u đang ho?t đếng
+            Thương hiệu đang hoạt động
           </button>
           <button
             onClick={() => {
@@ -475,7 +476,7 @@ const ListBrandsPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Thuong hi?u dã xóa
+            Thương hiệu đã xóa
           </button>
         </div>
         <div className="flex items-center gap-3 mb-2">
@@ -488,8 +489,8 @@ const ListBrandsPage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="created_at_desc">Mới nh?t</option>
-            <option value="created_at_asc">Cu nh?t</option>
+            <option value="created_at_desc">Mới nhất</option>
+            <option value="created_at_asc">Cũ nhất</option>
             <option value="name_asc">Tên A-Z</option>
             <option value="name_desc">Tên Z-A</option>
           </select>
@@ -498,7 +499,7 @@ const ListBrandsPage: React.FC = () => {
               className="px-4 py-2 bg-mono-800 text-white rounded-lg font-medium hover:bg-mono-900 transition-all shadow-md"
               onClick={() => setShowAddBrand(true)}
             >
-              + Thêm Thuong Hi?u
+              + Thêm Thương Hiệu
             </button>
           )}
         </div>
@@ -525,9 +526,9 @@ const ListBrandsPage: React.FC = () => {
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
-              <th className="py-3 px-4 text-left border-b">Tên Thuong Hi?u</th>
+              <th className="py-3 px-4 text-left border-b">Tên Thương Hiệu</th>
               <th className="py-3 px-4 text-left border-b">Slug</th>
-              <th className="py-3 px-4 text-left border-b">Mô T?</th>
+              <th className="py-3 px-4 text-left border-b">Mô Tả</th>
               <th className="py-3 px-4 text-center border-b">Logo</th>
               <th className="py-3 px-4 text-center border-b">Trống Thái</th>
               <th className="py-3 px-4 text-center border-b">Thao Tác</th>
@@ -559,15 +560,15 @@ const ListBrandsPage: React.FC = () => {
                 <td className="px-4 py-3 text-center">
                   {item.deletedAt ? (
                     <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-mono-200 text-mono-900 min-w-[120px] h-7 whitespace-nowrap">
-                      Ðã xóa
+                      Đã xóa
                     </span>
                   ) : item.isActive ? (
                     <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800 min-w-[120px] h-7 whitespace-nowrap">
-                      Ho?t đếng
+                      Hoạt động
                     </span>
                   ) : (
                     <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800 min-w-[120px] h-7 whitespace-nowrap">
-                      Không ho?t đếng
+                      Không hoạt động
                     </span>
                   )}
                 </td>
@@ -725,7 +726,7 @@ const ListBrandsPage: React.FC = () => {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
         <div className="text-sm text-mono-600">
-          Trang {currentPage} / {totalPages} • Tổng: {totalCount} thuong hi?u
+          Trang {currentPage} / {totalPages} • Tổng: {totalCount} thương hiệu
         </div>
         <div className="flex gap-2">
           <button
@@ -862,10 +863,3 @@ const ListBrandsPage: React.FC = () => {
 };
 
 export default ListBrandsPage;
-
-
-
-
-
-
-

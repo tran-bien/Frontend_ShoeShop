@@ -56,7 +56,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
         setTags(tagsData as Tag[]);
       } catch (err) {
         console.error("Error fetching data:", err);
-        setError("Không thể tại dữ liệu. Vui lòng thọ lỗi!");
+        setError("Không thể tải dữ liệu. Vui lòng thử lại!");
       } finally {
         setLoadingData(false);
       }
@@ -108,17 +108,17 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
       formData.description.trim().length < 10 ||
       formData.description.trim().length > 1000
     ) {
-      setError("Mô từ sản phẩm ph?i có từ 10-1000 ký t?!");
+      setError("Mô tả sản phẩm phải có từ 10-1000 ký tự!");
       setLoading(false);
       return;
     }
     if (!formData.category) {
-      setError("Vui lòng chơn danh mục!");
+      setError("Vui lòng chọn danh mục!");
       setLoading(false);
       return;
     }
     if (!formData.brand) {
-      setError("Vui lòng chơn thuong hi?u!");
+      setError("Vui lòng chọn thương hiệu!");
       setLoading(false);
       return;
     }
@@ -190,13 +190,13 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
               </div>
             </div>
             <p className="mt-1 text-xs text-mono-500">
-              ?? Mô từ chi tiết giúp khách hàng hi?u rõ hon v? sản phẩm
+              💡 Mô tả chi tiết giúp khách hàng hiểu rõ hơn về sản phẩm
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="mb-4">
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Danh M?c <span className="text-mono-800">*</span>
+                Danh Mục <span className="text-mono-800">*</span>
               </label>
               <select
                 name="category"
@@ -205,7 +205,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                 required
                 className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
               >
-                <option value="">-- Chơn danh mục --</option>
+                <option value="">-- Chọn danh mục --</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.name}
@@ -215,7 +215,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Thuong Hi?u <span className="text-mono-800">*</span>
+                Thương Hiệu <span className="text-mono-800">*</span>
               </label>
               <select
                 name="brand"
@@ -224,7 +224,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                 required
                 className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
               >
-                <option value="">-- Chơn thuong hi?u --</option>
+                <option value="">-- Chọn thương hiệu --</option>
                 {brands.map((brand) => (
                   <option key={brand._id} value={brand._id}>
                     {brand.name}
@@ -235,7 +235,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Tags (Chơn nhi?u)
+              Tags (Chọn nhiều)
             </label>
             <div className="border-2 border-mono-300 rounded-lg p-4 bg-mono-50 max-h-64 overflow-y-auto">
               {loadingData ? (
@@ -259,7 +259,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  <span className="ml-3 text-mono-600">Ðang tại tags...</span>
+                  <span className="ml-3 text-mono-600">Đang tải tags...</span>
                 </div>
               ) : tags.length === 0 ? (
                 <div className="text-center py-8">
@@ -306,10 +306,10 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                         }`}
                       >
                         {tag.type === "MATERIAL"
-                          ? "Chỉt li?u"
+                          ? "Chất liệu"
                           : tag.type === "USECASE"
-                          ? "Nhu c?u"
-                          : "Tùy chơnh"}
+                          ? "Nhu cầu"
+                          : "Tùy chỉnh"}
                       </span>
                     </label>
                   ))}
@@ -319,7 +319,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
             {formData.tags.length > 0 && (
               <div className="mt-2 flex items-center gap-2">
                 <span className="text-sm font-medium text-mono-700">
-                  Ðã chơn: {formData.tags.length} tag(s)
+                  Đã chọn: {formData.tags.length} tag(s)
                 </span>
                 <button
                   type="button"
@@ -374,7 +374,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  Ðang thêm...
+                  Đang thêm...
                 </>
               ) : (
                 <>
@@ -403,7 +403,3 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
 };
 
 export default AddProduct;
-
-
-
-

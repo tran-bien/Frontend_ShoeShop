@@ -95,7 +95,7 @@ const ShipperPage = () => {
                 : "bg-mono-200 text-mono-700"
             }`}
           >
-            Ðang ho?t đếng
+            Đang hoạt động
           </button>
           <button
             onClick={() => setFilterAvailable(false)}
@@ -105,7 +105,7 @@ const ShipperPage = () => {
                 : "bg-mono-200 text-mono-700"
             }`}
           >
-            Không ho?t đếng
+            Không hoạt động
           </button>
         </div>
       </div>
@@ -114,7 +114,7 @@ const ShipperPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
           <div className="col-span-full text-center py-8 text-mono-500">
-            Ðang tại...
+            Đang tải...
           </div>
         ) : shippers.length === 0 ? (
           <div className="col-span-full text-center py-8 text-mono-500">
@@ -155,19 +155,19 @@ const ShipperPage = () => {
                   {shipper.shipper.isAvailable ? (
                     <span className="flex items-center gap-1 text-mono-800 font-medium">
                       <FaUserCheck size={16} />
-                      Ðang ho?t đếng
+                      Đang hoạt động
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 text-mono-600 font-medium">
                       <FaUserTimes size={16} />
-                      Không ho?t đếng
+                      Không hoạt động
                     </span>
                   )}
                 </div>
 
                 {/* Active Orders */}
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-mono-600">Ðon đang giao</span>
+                  <span className="text-sm text-mono-600">Đơn đang giao</span>
                   <span className="font-bold text-mono-900">
                     {shipper.shipper.activeOrders} / {shipper.shipper.maxOrders}
                   </span>
@@ -264,5 +264,3 @@ const ShipperPage = () => {
 };
 
 export default ShipperPage;
-
-

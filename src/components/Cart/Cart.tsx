@@ -531,7 +531,7 @@ const Cart: React.FC = () => {
       <div className="min-h-screen bg-mono-50 flex items-center justify-center">
         <div className="flex items-center space-x-2">
           <FiLoader className="animate-spin text-2xl text-mono-black" />
-          <span className="text-lg">Ðang tại giỏ hàng...</span>
+          <span className="text-lg">Đang tải giỏ hàng...</span>
         </div>
       </div>
     );
@@ -892,6 +892,3 @@ const Cart: React.FC = () => {
 };
 
 export default Cart;
-
-
-

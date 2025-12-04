@@ -37,13 +37,13 @@ const RegisterForm: React.FC = () => {
 
       if (response.data.success) {
         toast.success(
-          "Ðang ký thành công! Vui lòng ki?m tra email d? nhơn mã OTP."
+          "Đăng ký thành công! Vui lòng kiểm tra email để nhận mã OTP."
         );
-        navigate("/otp-verification"); // Ði?u huẩng đến trang xác thực OTP
+        navigate("/otp-verification"); // Điều hướng đến trang xác thực OTP
       }
     } catch (error: any) {
       // Xử lý thông báo lỗi chi tiết từ backend
-      let errorMessage = "Ðang ký thểt b?i!";
+      let errorMessage = "Đăng ký thất bại!";
 
       if (
         error.response?.data?.errors &&
@@ -120,4 +120,3 @@ const RegisterForm: React.FC = () => {
 };
 
 export default RegisterForm;
-
