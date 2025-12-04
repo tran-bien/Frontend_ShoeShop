@@ -52,22 +52,22 @@ const MyOrdersPage = () => {
       { label: string; color: string; icon: JSX.Element }
     > = {
       assigned_to_shipper: {
-        label: "Ðã gán",
+        label: "Đã gán",
         color: "bg-mono-100 text-mono-800",
         icon: <FaHourglassHalf />,
       },
       out_for_delivery: {
-        label: "Ðang giao",
+        label: "Đang giao",
         color: "bg-mono-100 text-mono-800",
         icon: <FaTruck />,
       },
       delivered: {
-        label: "Ðã giao",
+        label: "Đã giao",
         color: "bg-mono-100 text-mono-800",
         icon: <FaCheckCircle />,
       },
       delivery_failed: {
-        label: "Thểt b?i",
+        label: "Thất bại",
         color: "bg-mono-200 text-mono-900",
         icon: <FaTimesCircle />,
       },
@@ -96,7 +96,7 @@ const MyOrdersPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">Ðang tại don hàng...</div>
+        <div className="text-mono-500">Đang tải đơn hàng...</div>
       </div>
     );
   }
@@ -106,7 +106,7 @@ const MyOrdersPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-mono-800">
-          Ðon hàng của tôi ({filteredOrders.length})
+          Đơn hàng của tôi ({filteredOrders.length})
         </h1>
       </div>
 
@@ -135,7 +135,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Ðã gán (
+            Đã gán (
             {orders.filter((o) => o.status === "assigned_to_shipper").length})
           </button>
           <button
@@ -146,7 +146,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Ðang giao (
+            Đang giao (
             {orders.filter((o) => o.status === "out_for_delivery").length})
           </button>
           <button
@@ -157,7 +157,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Ðã giao ({orders.filter((o) => o.status === "delivered").length})
+            Đã giao ({orders.filter((o) => o.status === "delivered").length})
           </button>
           <button
             onClick={() => setFilterStatus("delivery_failed")}
@@ -167,7 +167,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Thểt b?i (
+            Thất bại (
             {orders.filter((o) => o.status === "delivery_failed").length})
           </button>
         </div>
@@ -177,7 +177,7 @@ const MyOrdersPage = () => {
       {filteredOrders.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <FaTruck size={48} className="mx-auto text-mono-400 mb-4" />
-          <p className="text-mono-500 text-lg">Không có don hàng nào</p>
+          <p className="text-mono-500 text-lg">Không có đơn hàng nào</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -225,7 +225,7 @@ const MyOrdersPage = () => {
                 <div>
                   <p className="text-sm text-mono-600 mb-1 flex items-center gap-1">
                     <FaMapMarkerAlt className="text-mono-800" />
-                    Ð?a chờ giao hàng
+                    Địa chỉ giao hàng
                   </p>
                   <p className="text-mono-800">
                     {order.shippingAddress?.address || "N/A"}
@@ -244,13 +244,13 @@ const MyOrdersPage = () => {
                   <div>
                     <p className="text-sm text-mono-600">Số lượng sản phẩm</p>
                     <p className="font-semibold text-mono-800">
-                      {order.items?.length || 0} m?t hàng
+                      {order.items?.length || 0} mặt hàng
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-mono-600">Tổng tiền</p>
                     <p className="font-bold text-mono-black text-lg">
-                      {order.finalTotalệ.toLocaleString("vi-VN")}?
+                      {order.finalTotal?.toLocaleString("vi-VN")}đ
                     </p>
                   </div>
                 </div>
@@ -261,7 +261,7 @@ const MyOrdersPage = () => {
                     <div className="bg-mono-50 rounded-lg p-3">
                       <p className="text-sm text-mono-600 mb-2 flex items-center gap-1">
                         <FaClock />
-                        Lẩn giao gẩn nh?t
+                        Lần giao gần nhất
                       </p>
                       <p className="text-sm text-mono-800">
                         {new Date(
@@ -301,7 +301,3 @@ const MyOrdersPage = () => {
 };
 
 export default MyOrdersPage;
-
-
-
-

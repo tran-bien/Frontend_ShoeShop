@@ -24,7 +24,7 @@ const CancelRequestList: React.FC = () => {
   const handleApprove = async (id: string) => {
     await adminOrderService.processCancelRequest(id, {
       status: "approved",
-      adminResponse: "Chỉp nhơn cho phép hủy don",
+      adminResponse: "Chấp nhận cho phép hủy đơn",
     });
     fetchRequests();
   };
@@ -32,7 +32,7 @@ const CancelRequestList: React.FC = () => {
   const handleReject = async (id: string) => {
     await adminOrderService.processCancelRequest(id, {
       status: "rejected",
-      adminResponse: "Từ chỉi yêu c?u hủy don",
+      adminResponse: "Từ chối yêu cầu hủy đơn",
     });
     fetchRequests();
   };
@@ -50,13 +50,13 @@ const CancelRequestList: React.FC = () => {
 
   return (
     <div className="p-6 w-full font-sans">
-      <h2 className="text-2xl font-semibold mb-4">Danh sách yêu c?u hủy don</h2>
+      <h2 className="text-2xl font-semibold mb-4">Danh sách yêu cầu hủy đơn</h2>
       <div className="mb-4 flex items-center gap-4">
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Tìm mã don ho?c tên khách hàng"
+          placeholder="Tìm mã đơn hoặc tên khách hàng"
           className="px-4 py-2 w-1/3 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
         />
         <div className="flex items-center gap-2">
@@ -67,9 +67,9 @@ const CancelRequestList: React.FC = () => {
             value={statusFilter}
           >
             <option value="">Tất cả</option>
-            <option value="pending">Chờ duy?t</option>
-            <option value="approved">Ðã chỉp nhơn</option>
-            <option value="rejected">Ðã từ chỉi</option>
+            <option value="pending">Chờ duyệt</option>
+            <option value="approved">Đã chấp nhận</option>
+            <option value="rejected">Đã từ chối</option>
           </select>
         </div>
       </div>
@@ -77,25 +77,25 @@ const CancelRequestList: React.FC = () => {
         <table className="min-w-full bg-white rounded-md overflow-hidden border">
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
-              <th className="py-3 px-4 text-left border-b">Mã don</th>
+              <th className="py-3 px-4 text-left border-b">Mã đơn</th>
               <th className="py-3 px-4 text-left border-b">Khách hàng</th>
-              <th className="py-3 px-4 text-left border-b">Lý đo hủy</th>
+              <th className="py-3 px-4 text-left border-b">Lý do hủy</th>
               <th className="py-3 px-4 text-left border-b">Trạng thái</th>
-              <th className="py-3 px-4 text-left border-b">Phần h?i admin</th>
+              <th className="py-3 px-4 text-left border-b">Phản hồi admin</th>
               <th className="py-3 px-4 text-center border-b">Thao tác</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? (
+            ) : loading ? (
               <tr>
                 <td colSpan={6} className="text-center py-4">
-                  Ðang tại...
+                  Đang tải...
                 </td>
               </tr>
             ) : filteredRequests.length === 0 ? (
               <tr>
                 <td colSpan={6} className="text-center py-4">
-                  Không có yêu c?u
+                  Không có yêu cầu
                 </td>
               </tr>
             ) : (
@@ -114,11 +114,11 @@ const CancelRequestList: React.FC = () => {
                   <td className="py-2 px-4 border-b text-sm">{req.reason}</td>
                   <td className="py-2 px-4 border-b text-sm">
                     {req.status === "pending"
-                      ? "Chờ duy?t"
+                      ? "Chờ duyệt"
                       : req.status === "approved"
-                      ? "Ðã chỉp nhơn"
+                      ? "Đã chấp nhận"
                       : req.status === "rejected"
-                      ? "Ðã từ chỉi"
+                      ? "Đã từ chối"
                       : req.status}
                   </td>
                   <td className="py-2 px-4 border-b text-sm">
@@ -132,13 +132,13 @@ const CancelRequestList: React.FC = () => {
                             className="inline-flex items-center justify-center bg-mono-700 hover:bg-mono-800 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                             onClick={() => handleApprove(req._id)}
                           >
-                            Duy?t
+                            Duyệt
                           </button>
                           <button
                             className="inline-flex items-center justify-center bg-mono-800 hover:bg-mono-900 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                             onClick={() => handleReject(req._id)}
                           >
-                            Từ chỉi
+                            Từ chối
                           </button>
                         </>
                       ) : (

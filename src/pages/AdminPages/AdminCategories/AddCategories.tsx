@@ -37,7 +37,7 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Thêm danh mục thểt b?i!");
+      setError("Thêm danh mục thất bại!");
     } finally {
       setLoading(false);
     }
@@ -53,14 +53,14 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Thêm Danh M?c</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Thêm Danh Mục</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="categoryName"
               className="block text-sm font-bold text-mono-600"
             >
-              Tên Danh M?c
+              Tên Danh Mục
             </label>
             <input
               type="text"
@@ -77,13 +77,13 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
               htmlFor="categoryDescription"
               className="block text-sm font-bold text-mono-600"
             >
-              Mô t?
+              Mô tả
             </label>
             <textarea
               id="categoryDescription"
               value={categoryDescription}
               onChange={handleCategoryDescriptionChange}
-              placeholder="Nhập mô từ danh mục"
+              placeholder="Nhập mô tả danh mục"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -95,7 +95,7 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
               disabled={loading}
               className="bg-mono-800 hover:bg-mono-900 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Ðang thêm..." : "Thêm Danh M?c"}
+              {loading ? "Đang thêm..." : "Thêm Danh Mục"}
             </button>
             <button
               type="button"
@@ -112,6 +112,3 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
 };
 
 export default AddCategoryPage;
-
-
-

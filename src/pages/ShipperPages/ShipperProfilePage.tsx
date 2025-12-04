@@ -84,13 +84,13 @@ const ShipperProfilePage = () => {
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
       alert(
-        `Trạng thái dã được cập nhật thành: ${
-          newAvailability ? "Sẩn sàng" : "Không sẩn sàng"
+        `Trạng thái đã được cập nhật thành: ${
+          newAvailability ? "Sẵn sàng" : "Không sẵn sàng"
         }`
       );
     } catch (error: any) {
       alert(
-        error.response?.data?.message || "Có lỗi x?y ra khi cập nhật trạng thái"
+        error.response?.data?.message || "Có lỗi xảy ra khi cập nhật trạng thái"
       );
     } finally {
       setUpdating(false);
@@ -100,7 +100,7 @@ const ShipperProfilePage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">Ðang tại...</div>
+        <div className="text-mono-500">Đang tải...</div>
       </div>
     );
   }
@@ -140,12 +140,12 @@ const ShipperProfilePage = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-mono-800 mb-2">
-              Trạng thái sẩn sàng
+              Trạng thái sẵn sàng
             </h2>
             <p className="text-mono-600">
               {user?.shipper?.isAvailable
-                ? "Bẩn đang sẩn sàng nhơn don hàng mới"
-                : "Bẩn hiện không nhơn don hàng mới"}
+                ? "Bạn đang sẵn sàng nhận đơn hàng mới"
+                : "Bạn hiện không nhận đơn hàng mới"}
             </p>
           </div>
           <button
@@ -160,12 +160,12 @@ const ShipperProfilePage = () => {
             {user?.shipper?.isAvailable ? (
               <>
                 <FaToggleOn size={24} />
-                <span>Ðang ho?t đếng</span>
+                <span>Đang hoạt động</span>
               </>
             ) : (
               <>
                 <FaToggleOff size={24} />
-                <span>Không ho?t đếng</span>
+                <span>Không hoạt động</span>
               </>
             )}
           </button>
@@ -175,17 +175,17 @@ const ShipperProfilePage = () => {
       {/* Capacity Info */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold text-mono-800 mb-4">
-          Công su?t làm vi?c
+          Công suất làm việc
         </h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <p className="text-sm text-mono-600">Ðon đang giao</p>
+            <p className="text-sm text-mono-600">Đơn đang giao</p>
             <p className="text-2xl font-bold text-mono-black">
               {stats?.active || 0}
             </p>
           </div>
           <div>
-            <p className="text-sm text-mono-600">Giới hơn don</p>
+            <p className="text-sm text-mono-600">Giới hạn đơn</p>
             <p className="text-2xl font-bold text-mono-800">
               {user?.shipper?.maxOrders || 0}
             </p>
@@ -195,7 +195,7 @@ const ShipperProfilePage = () => {
         {/* Capacity Bar */}
         <div>
           <div className="flex justify-between text-sm text-mono-600 mb-2">
-            <span>Công su?t</span>
+            <span>Công suất</span>
             <span>
               {user?.shipper?.maxOrders > 0
                 ? (
@@ -231,7 +231,7 @@ const ShipperProfilePage = () => {
       {/* Statistics */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold text-mono-800 mb-4">
-          Thàng kê giao hàng
+          Thống kê giao hàng
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {/* Total Orders */}
@@ -242,7 +242,7 @@ const ShipperProfilePage = () => {
             <p className="text-3xl font-bold text-mono-800">
               {stats?.totalOrders || 0}
             </p>
-            <p className="text-sm text-mono-600 mt-1">Tổng don</p>
+            <p className="text-sm text-mono-600 mt-1">Tổng đơn</p>
           </div>
 
           {/* Completed */}
@@ -253,7 +253,7 @@ const ShipperProfilePage = () => {
             <p className="text-3xl font-bold text-mono-800">
               {stats?.completed || 0}
             </p>
-            <p className="text-sm text-mono-600 mt-1">Ðã giao</p>
+            <p className="text-sm text-mono-600 mt-1">Đã giao</p>
           </div>
 
           {/* Failed */}
@@ -264,7 +264,7 @@ const ShipperProfilePage = () => {
             <p className="text-3xl font-bold text-mono-900">
               {stats?.failed || 0}
             </p>
-            <p className="text-sm text-mono-600 mt-1">Thểt b?i</p>
+            <p className="text-sm text-mono-600 mt-1">Thất bại</p>
           </div>
 
           {/* Success Rate */}
@@ -275,7 +275,7 @@ const ShipperProfilePage = () => {
             <p className="text-3xl font-bold text-mono-900">
               {stats?.successRate}%
             </p>
-            <p className="text-sm text-mono-600 mt-1">Từ lệ TC</p>
+            <p className="text-sm text-mono-600 mt-1">Tỷ lệ TC</p>
           </div>
         </div>
       </div>
@@ -283,7 +283,7 @@ const ShipperProfilePage = () => {
       {/* Account Info */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold text-mono-800 mb-4">
-          Thông tin tài khoẩn
+          Thông tin tài khoản
         </h2>
         <div className="space-y-3 text-mono-700">
           <div className="flex justify-between">
@@ -291,7 +291,7 @@ const ShipperProfilePage = () => {
             <span className="font-semibold capitalize">{user?.role}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-mono-600">Ngày t?o:</span>
+            <span className="text-mono-600">Ngày tạo:</span>
             <span className="font-semibold">
               {user?.createdAt
                 ? new Date(user.createdAt).toLocaleDateString("vi-VN")
@@ -299,13 +299,13 @@ const ShipperProfilePage = () => {
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-mono-600">Trạng thái tài khoẩn:</span>
+            <span className="text-mono-600">Trạng thái tài khoản:</span>
             <span
               className={`font-semibold ${
                 user?.isActive ? "text-mono-800" : "text-mono-900"
               }`}
             >
-              {user?.isActive ? "Ho?t đếng" : "Tạm khóa"}
+              {user?.isActive ? "Hoạt động" : "Tạm khóa"}
             </span>
           </div>
         </div>
@@ -315,4 +315,3 @@ const ShipperProfilePage = () => {
 };
 
 export default ShipperProfilePage;
-

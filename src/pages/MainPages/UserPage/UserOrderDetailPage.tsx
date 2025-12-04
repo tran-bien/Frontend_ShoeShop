@@ -35,8 +35,8 @@ const UserOrderDetailPage: React.FC = () => {
       const res = await userOrderService.getOrderById(orderId);
       setOrder(res.data.data);
     } catch (error: any) {
-      console.error("Lỗi khi tại chi tiết don hàng:", error);
-      toast.error("Không thể tại chi tiết don hàng");
+      console.error("Lỗi khi tải chi tiết đơn hàng:", error);
+      toast.error("Không thể tải chi tiết đơn hàng");
       navigate("/user-manage-order");
     } finally {
       setLoading(false);
@@ -61,15 +61,15 @@ const UserOrderDetailPage: React.FC = () => {
         reason: reason,
       });
 
-      // Hiện thọ thông báo chi tiết hon từ response
+      // Hiển thị thông báo chi tiết hơn từ response
       if (response.data && response.data.success) {
         const orderNumber = order.code || orderId;
         const statusMessage =
           response.data.message ||
-          "Yêu c?u hủy don hàng dã được gửi thành công";
+          "Yêu cầu hủy đơn hàng đã được gửi thành công";
 
-        // Hiện thọ toast với số don hàng d? người dùng d? nhơn bi?t
-        toast.success(`Ðon hàng #${orderNumber}: ${statusMessage}`, {
+        // Hiển thị toast với số đơn hàng để người dùng dễ nhận biết
+        toast.success(`Đơn hàng #${orderNumber}: ${statusMessage}`, {
           duration: 5000, // Tuong duong với autoClose: 5000 trong react-toastify
         });
       }
@@ -78,7 +78,7 @@ const UserOrderDetailPage: React.FC = () => {
       setShowCancelModal(false);
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Không thể hủy don hàng";
+        error.response?.data?.message || "Không thể hủy đơn hàng";
       toast.error(errorMessage);
     } finally {
       setCancelLoading(false);
@@ -104,13 +104,13 @@ const UserOrderDetailPage: React.FC = () => {
       if (response.data.data.paymentUrl) {
         window.location.href = response.data.data.paymentUrl;
       } else {
-        toast.success("Ðã gửi yêu c?u thanh toán lỗi");
+        toast.success("Đã gửi yêu cầu thanh toán lại");
         fetchOrderDetail();
       }
       setShowRepayModal(false);
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Không thể thanh toán lỗi don hàng";
+        error.response?.data?.message || "Không thể thanh toán lại đơn hàng";
       toast.error(errorMessage);
     } finally {
       setRepayLoading(false);
@@ -144,9 +144,9 @@ const UserOrderDetailPage: React.FC = () => {
       case "pending":
         return "Chờ xác nhận";
       case "confirmed":
-        return "Ðã xác nhận";
+        return "Đã xác nhận";
       case "shipping":
-        return "Ðang giao";
+        return "Đang giao";
       case "delivered":
         return "Ðã giao";
       case "cancelled":
@@ -545,8 +545,3 @@ const UserOrderDetailPage: React.FC = () => {
 };
 
 export default UserOrderDetailPage;
-
-
-
-
-

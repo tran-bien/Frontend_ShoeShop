@@ -45,11 +45,11 @@ const UserSessionsPage: React.FC = () => {
                     }}
                   >
                     <SecurityScanOutlined style={{ color: "#1890ff" }} />
-                    B?o m?t tài khoẩn
+                    Bảo mật tài khoản
                   </Title>
                   <Text type="secondary">
-                    Quận lý và giám sát các phiên đang nhập của bẩn trên tất cả
-                    thi?t b?
+                    Quản lý và giám sát các phiên đăng nhập của bạn trên tất cả
+                    thiết bị
                   </Text>
                 </div>
 
@@ -66,7 +66,7 @@ const UserSessionsPage: React.FC = () => {
                     }}
                   >
                     <DesktopOutlined />
-                    Quận lý phiên đang nhập
+                    Quản lý phiên đăng nhập
                   </Title>
 
                   <Space
@@ -85,13 +85,13 @@ const UserSessionsPage: React.FC = () => {
                       <Space>
                         <InfoCircleOutlined style={{ color: "#52c41a" }} />
                         <div>
-                          <Text strong>Thông tin b?o m?t</Text>
+                          <Text strong>Thông tin bảo mật</Text>
                           <br />
                           <Text type="secondary">
-                            Bẩn có thọ xem và quận lý tất cả các thi?t bỏ đang
-                            đang nhập vào tài khoẩn của mình. N?u phát hiện ho?t
-                            đếng dáng ng?, hãy đang xuất kh?i các phiên không
-                            xác đếnh ngay lệp t?c.
+                            Bạn có thể xem và quản lý tất cả các thiết bị đang
+                            đăng nhập vào tài khoản của mình. Nếu phát hiện hoạt
+                            động đáng ngờ, hãy đăng xuất khỏi các phiên không
+                            xác định ngay lập tức.
                           </Text>
                         </div>
                       </Space>
@@ -104,7 +104,7 @@ const UserSessionsPage: React.FC = () => {
                         icon={<DesktopOutlined />}
                         onClick={handleOpen}
                       >
-                        Xem tất cả phiên đang nhập
+                        Xem tất cả phiên đăng nhập
                       </Button>
                     </Space>
                   </Space>
@@ -112,7 +112,7 @@ const UserSessionsPage: React.FC = () => {
 
                 {/* Security Tips Section */}
                 <div>
-                  <Title level={4}>M?o b?o m?t</Title>
+                  <Title level={4}>Mẹo bảo mật</Title>
                   <div
                     style={{
                       background: "#fff7e6",
@@ -122,19 +122,19 @@ const UserSessionsPage: React.FC = () => {
                     }}
                   >
                     <Space direction="vertical" style={{ width: "100%" }}>
-                      <Text strong>Ð? b?o v? tài khoẩn của bẩn:</Text>
+                      <Text strong>Để bảo vệ tài khoản của bạn:</Text>
                       <ul style={{ margin: "8px 0", paddingLeft: "20px" }}>
                         <li>
-                          <Text>Thuẩng xuyên ki?m tra các phiên đang nhập</Text>
+                          <Text>Thường xuyên kiểm tra các phiên đăng nhập</Text>
                         </li>
                         <li>
-                          <Text>Ðang xuất kh?i các thi?t bỏ không sử dụng</Text>
+                          <Text>Đăng xuất khỏi các thiết bị không sử dụng</Text>
                         </li>
                         <li>
-                          <Text>Không đang nhập trên máy tính công cẩng</Text>
+                          <Text>Không đăng nhập trên máy tính công cộng</Text>
                         </li>
                         <li>
-                          <Text>Sử dụng mật khẩu mẩnh và duy nh?t</Text>
+                          <Text>Sử dụng mật khẩu mạnh và duy nhất</Text>
                         </li>
                       </ul>
                     </Space>
@@ -153,4 +153,3 @@ const UserSessionsPage: React.FC = () => {
 };
 
 export default UserSessionsPage;
-

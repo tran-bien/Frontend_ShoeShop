@@ -75,22 +75,22 @@ const ShipperDashboardPage = () => {
   const getStatusBadge = (status: string) => {
     const statusMap: any = {
       assigned_to_shipper: {
-        label: "Ðã gán",
+        label: "Đã gán",
         color: "bg-mono-200 text-mono-800",
         icon: <FaHourglassHalf />,
       },
       out_for_delivery: {
-        label: "Ðang giao",
+        label: "Đang giao",
         color: "bg-mono-200 text-mono-800",
         icon: <FaTruck />,
       },
       delivered: {
-        label: "Ðã giao",
+        label: "Đã giao",
         color: "bg-mono-200 text-mono-800",
         icon: <FaCheckCircle />,
       },
       delivery_failed: {
-        label: "Thểt b?i",
+        label: "Thất bại",
         color: "bg-mono-300 text-mono-900",
         icon: <FaTimesCircle />,
       },
@@ -115,7 +115,7 @@ const ShipperDashboardPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">Ðang tại...</div>
+        <div className="text-mono-500">Đang tải...</div>
       </div>
     );
   }
@@ -128,7 +128,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">Tổng don hàng</p>
+              <p className="text-mono-600 text-sm mb-1">Tổng đơn hàng</p>
               <p className="text-3xl font-bold text-mono-800">
                 {stats?.totalOrders || 0}
               </p>
@@ -143,7 +143,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">Ðã giao</p>
+              <p className="text-mono-600 text-sm mb-1">Đã giao</p>
               <p className="text-3xl font-bold text-mono-800">
                 {stats?.completed || 0}
               </p>
@@ -158,7 +158,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">Thểt b?i</p>
+              <p className="text-mono-600 text-sm mb-1">Thất bại</p>
               <p className="text-3xl font-bold text-mono-900">
                 {stats?.failed || 0}
               </p>
@@ -173,7 +173,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">Từ lệ thành công</p>
+              <p className="text-mono-600 text-sm mb-1">Tỷ lệ thành công</p>
               <p className="text-3xl font-bold text-mono-700">
                 {stats?.successRate}%
               </p>
@@ -190,13 +190,13 @@ const ShipperDashboardPage = () => {
         <div className="px-6 py-4 border-b border-mono-200">
           <h2 className="text-xl font-bold text-mono-800 flex items-center gap-2">
             <FaTruck className="text-mono-black" />
-            Ðon hàng đang giao ({activeOrders.length})
+            Đơn hàng đang giao ({activeOrders.length})
           </h2>
         </div>
         <div className="p-6">
           {activeOrders.length === 0 ? (
             <div className="text-center py-8 text-mono-500">
-              Không có don hàng nào đang giao
+              Không có đơn hàng nào đang giao
             </div>
           ) : (
             <div className="space-y-4">
@@ -234,7 +234,7 @@ const ShipperDashboardPage = () => {
 
                   <div className="mt-3 flex items-center justify-between">
                     <p className="font-bold text-mono-black">
-                      {order.finalTotalệ.toLocaleString("vi-VN")}?
+                      {order.finalTotal?.toLocaleString("vi-VN")}đ
                     </p>
                     <button
                       onClick={() =>
@@ -257,13 +257,13 @@ const ShipperDashboardPage = () => {
         <div className="px-6 py-4 border-b border-mono-200">
           <h2 className="text-xl font-bold text-mono-800 flex items-center gap-2">
             <FaClock className="text-mono-800" />
-            Ðon hàng hôm nay ({todayOrders.length})
+            Đơn hàng hôm nay ({todayOrders.length})
           </h2>
         </div>
         <div className="p-6">
           {todayOrders.length === 0 ? (
             <div className="text-center py-8 text-mono-500">
-              Không có don hàng nào hôm nay
+              Không có đơn hàng nào hôm nay
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -271,13 +271,13 @@ const ShipperDashboardPage = () => {
                 <thead className="bg-mono-50">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      Mã don
+                      Mã đơn
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                       Khách hàng
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      Ð?a chỉ
+                      Địa chỉ
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                       Tổng tiền
@@ -300,7 +300,7 @@ const ShipperDashboardPage = () => {
                         {order.shippingAddress?.address || "N/A"}
                       </td>
                       <td className="px-4 py-3 text-sm font-semibold text-mono-black">
-                        {order.finalTotalệ.toLocaleString("vi-VN")}?
+                        {order.finalTotal?.toLocaleString("vi-VN")}đ
                       </td>
                       <td className="px-4 py-3 text-sm">
                         {getStatusBadge(order.status)}
@@ -318,6 +318,3 @@ const ShipperDashboardPage = () => {
 };
 
 export default ShipperDashboardPage;
-
-
-

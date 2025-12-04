@@ -48,25 +48,25 @@ const ViewDetailModal: React.FC<{
               <div className="mt-1">
                 {category.isActive ? (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
-                    Ho?t đếng
+                    Hoạt động
                   </span>
                 ) : (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
-                    Không ho?t đếng
+                    Không hoạt động
                   </span>
                 )}
               </div>
             </div>
           </div>
           <div>
-            <p className="text-sm text-mono-500 font-medium">Mô t?</p>
+            <p className="text-sm text-mono-500 font-medium">Mô tả</p>
             <p className="text-mono-800 mt-1">
-              {category.description || "Không có mô t?"}
+              {category.description || "Không có mô tả"}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-mono-500 font-medium">Ngày t?o</p>
+              <p className="text-sm text-mono-500 font-medium">Ngày tạo</p>
               <p className="text-mono-800 text-sm">
                 {category.createdAt
                   ? new Date(category.createdAt).toLocaleString("vi-VN")
@@ -75,7 +75,7 @@ const ViewDetailModal: React.FC<{
             </div>
             <div>
               <p className="text-sm text-mono-500 font-medium">
-                Cập nhật lẩn cuối
+                Cập nhật lần cuối
               </p>
               <p className="text-mono-800 text-sm">
                 {category.updatedAt
@@ -126,7 +126,7 @@ const EditCategoryModal: React.FC<{
       onSuccess();
       onClose();
     } catch {
-      setError("Cập nhật danh mục thểt b?i!");
+      setError("Cập nhật danh mục thất bại!");
     } finally {
       setLoading(false);
     }
@@ -143,12 +143,12 @@ const EditCategoryModal: React.FC<{
           &times;
         </button>
         <h2 className="text-xl font-bold mb-6 text-center">
-          Cập nhật Danh M?c
+          Cập nhật Danh Mục
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              Tên Danh M?c
+              Tên Danh Mục
             </label>
             <input
               type="text"
@@ -161,7 +161,7 @@ const EditCategoryModal: React.FC<{
           </div>
           <div>
             <label className="block text-sm font-medium text-black">
-              Mô T?
+              Mô Tả
             </label>
             <textarea
               name="description"
@@ -178,7 +178,7 @@ const EditCategoryModal: React.FC<{
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
-              {loading ? "Ðang cập nhật..." : "Cập nhật"}
+              {loading ? "Đang cập nhật..." : "Cập nhật"}
             </button>
           </div>
         </form>
@@ -329,7 +329,7 @@ const ListCategoriesPage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      // Xử lý lỗi nếu cần
     }
   };
 
@@ -340,7 +340,7 @@ const ListCategoriesPage: React.FC = () => {
       fetchCategories(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      // Xử lý lỗi nếu cần
     }
   };
 
@@ -350,7 +350,7 @@ const ListCategoriesPage: React.FC = () => {
       fetchCategories(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      // Xử lý lỗi nếu cần
     }
   };
 
@@ -360,7 +360,7 @@ const ListCategoriesPage: React.FC = () => {
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
-          Danh Sách Danh M?c
+          Danh Sách Danh Mục
         </h2>
         {!isSearchVisible ? (
           <button
@@ -398,13 +398,13 @@ const ListCategoriesPage: React.FC = () => {
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
-              Ðang ho?t đếng
+              Đang hoạt động
             </h3>
             <p className="text-3xl font-bold text-mono-800">{activeCount}</p>
           </div>
           <div className="bg-gradient-to-br from-mono-100 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-700 mb-1">
-              Không ho?t đếng
+              Không hoạt động
             </h3>
             <p className="text-3xl font-bold text-mono-900">
               {inactiveCount}
@@ -413,7 +413,7 @@ const ListCategoriesPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab chuyện đổi và Sort */}
+      {/* Tab chuyển đổi và Sort */}
       <div className="flex items-center justify-between border-b mb-4">
         <div className="flex">
           <button
@@ -441,7 +441,7 @@ const ListCategoriesPage: React.FC = () => {
                   : "text-mono-500 border-transparent hover:text-mono-black"
               }`}
             >
-              Danh mục dã xóa
+              Danh mục đã xóa
             </button>
           )}
         </div>
@@ -455,8 +455,8 @@ const ListCategoriesPage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="created_at_desc">Mới nh?t</option>
-            <option value="created_at_asc">Cu nh?t</option>
+            <option value="created_at_desc">Mới nhất</option>
+            <option value="created_at_asc">Cũ nhất</option>
             <option value="name_asc">Tên A-Z</option>
             <option value="name_desc">Tên Z-A</option>
           </select>
@@ -465,7 +465,7 @@ const ListCategoriesPage: React.FC = () => {
               className="px-4 py-2 bg-mono-800 text-white rounded-lg font-medium hover:bg-mono-900 transition-all shadow-md"
               onClick={() => setShowAddCategory(true)}
             >
-              + Thêm Danh M?c
+              + Thêm Danh Mục
             </button>
           )}
         </div>
@@ -493,10 +493,10 @@ const ListCategoriesPage: React.FC = () => {
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
-              <th className="py-3 px-4 text-left border-b">Tên Danh M?c</th>
+              <th className="py-3 px-4 text-left border-b">Tên Danh Mục</th>
               <th className="py-3 px-4 text-left border-b">Slug</th>
-              <th className="py-3 px-4 text-left border-b">Mô T?</th>
-              <th className="py-3 px-4 text-center border-b">Trống Thái</th>
+              <th className="py-3 px-4 text-left border-b">Mô Tả</th>
+              <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
 
               <th className="py-3 px-4 text-center border-b">Thao Tác</th>
             </tr>
@@ -512,20 +512,20 @@ const ListCategoriesPage: React.FC = () => {
                 <td className="px-4 py-3 text-sm">
                   {item.description && item.description.length > 50
                     ? `${item.description.substring(0, 50)}...`
-                    : item.description || "Không có mô t?"}
+                    : item.description || "Không có mô tả"}
                 </td>
                 <td className="px-4 py-3 text-center">
                   {item.deletedAt ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-200 text-mono-900">
-                      Ðã xóa
+                      Đã xóa
                     </span>
                   ) : item.isActive ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
-                      Ho?t đếng
+                      Hoạt động
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
-                      Không ho?t đếng
+                      Không hoạt động
                     </span>
                   )}
                 </td>
@@ -625,7 +625,7 @@ const ListCategoriesPage: React.FC = () => {
                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                               />
                             </svg>
-                            {item.isActive ? "T?t" : "B?t"}
+                            {item.isActive ? "Tắt" : "Bật"}
                           </button>
                         )}
                       </>
@@ -648,7 +648,7 @@ const ListCategoriesPage: React.FC = () => {
                               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
-                          Khôi ph?c
+                          Khôi phục
                         </button>
                       )
                     )}

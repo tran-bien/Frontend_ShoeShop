@@ -28,43 +28,43 @@ const UnauthorizedPage: React.FC = () => {
 
           <h1 className="text-4xl font-bold text-mono-800 mb-2">403</h1>
           <h2 className="text-xl font-semibold text-mono-800 mb-4">
-            Không có quyẩn truy c?p
+            Không có quyền truy cập
           </h2>
           <p className="text-mono-600 mb-2">
-            Bẩn không có quyẩn truy c?p vào trang này.
+            Bạn không có quyền truy cập vào trang này.
           </p>
           {user && (
             <p className="text-sm text-mono-500">
-              Ðang nhập với tài khoẩn:{" "}
+              Đăng nhập với tài khoản:{" "}
               <span className="font-medium">{user.name}</span> ({user.role})
             </p>
           )}
         </div>
 
         <div className="space-y-3">
-          {/* Nút quay lỗi dành cho staff/admin */}
+          {/* Nút quay lại dành cho staff/admin */}
           {hasStaffAccess() && (
             <Link
               to="/admin/dashboard"
               className="block w-full bg-mono-500 text-white py-2 px-4 rounded hover:bg-mono-black transition-colors duration-200"
             >
-              Quay lỗi Dashboard
+              Quay lại Dashboard
             </Link>
           )}
 
-          {/* Nút v? trang chờ */}
+          {/* Nút về trang chủ */}
           <Link
             to="/"
             className="block w-full bg-mono-500 text-white py-2 px-4 rounded hover:bg-mono-600 transition-colors duration-200"
           >
-            V? trang chỉ
+            Về trang chủ
           </Link>
         </div>
 
-        {/* Thông tin họ trở */}
+        {/* Thông tin hỗ trợ */}
         <div className="mt-6 pt-4 border-t border-mono-200">
           <p className="text-xs text-mono-500">
-            N?u bẩn cho rẩng dây là lỗi, vui lòng liên họ quận trở viên.
+            Nếu bạn cho rằng đây là lỗi, vui lòng liên hệ quản trị viên.
           </p>
         </div>
       </div>
@@ -73,4 +73,3 @@ const UnauthorizedPage: React.FC = () => {
 };
 
 export default UnauthorizedPage;
-
