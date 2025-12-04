@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 interface SectionProps {
   children: React.ReactNode;
@@ -85,3 +85,4 @@ const Section: React.FC<SectionProps> = ({
 };
 
 export default Section;
+

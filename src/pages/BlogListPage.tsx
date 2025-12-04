@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { publicBlogService } from "../services/BlogService";
 import type { BlogPost, BlogCategory } from "../types/blog";
 import { Link } from "react-router-dom";
@@ -60,7 +60,7 @@ const BlogListPage = () => {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-mono-black mb-4">Blog</h1>
           <p className="text-lg text-mono-600 max-w-2xl mx-auto">
-            Khám phá xu hướng thời trang, cách phối đồ và bí quyết chọn giày
+            KhÃ¡m phÃ¡ xu hÆ°á»›ng thá»i trang, cÃ¡ch phá»‘i Ä‘á»“ vÃ  bÃ­ quyáº¿t chá»n giÃ y
           </p>
         </div>
 
@@ -74,7 +74,7 @@ const BlogListPage = () => {
                 : "bg-white text-mono-700 border border-mono-200 hover:border-mono-black"
             }`}
           >
-            Tất cả
+            Táº¥t cáº£
           </button>
           {categories.map((category) => (
             <button
@@ -94,7 +94,7 @@ const BlogListPage = () => {
         {/* Posts Grid */}
         {posts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-mono-600">Chưa có bài viết nào</p>
+            <p className="text-mono-600">ChÆ°a cÃ³ bÃ i viáº¿t nÃ o</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -160,3 +160,4 @@ const BlogListPage = () => {
 };
 
 export default BlogListPage;
+

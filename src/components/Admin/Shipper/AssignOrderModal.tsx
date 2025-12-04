@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+Ôªøimport { useState, useEffect } from "react";
 import { adminShipperService } from "../../../services/ShipperService";
 import type { Shipper } from "../../../types/shipper";
 
@@ -30,12 +30,12 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
     e.preventDefault();
 
     if (!formData.orderId.trim()) {
-      setError("Vui lÚng nh?p m„ don h‡ng");
+      setError("Vui l√≤ng nh·∫≠p m√£ don h√†ng");
       return;
     }
 
     if (!formData.shipperId) {
-      setError("Vui lÚng ch?n shipper");
+      setError("Vui l√≤ng ch∆°n shipper");
       return;
     }
 
@@ -45,11 +45,11 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
       await adminShipperService.assignOrderToShipper(formData.orderId, {
         shipperId: formData.shipperId,
       });
-      alert("G·n don h‡ng cho shipper th‡nh cÙng!");
+      alert("G√°n don h√†ng cho shipper th√†nh c√¥ng!");
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "CÛ l?i x?y ra");
+      setError(error.response?.data?.message || "C√≥ l·ªói x?y ra");
     } finally {
       setLoading(false);
     }
@@ -62,23 +62,23 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
   };
 
   const getCapacityColor = (percentage: number) => {
-    if (percentage >= 80) return "bg-red-200 text-red-800";
-    if (percentage >= 50) return "bg-yellow-200 text-yellow-800";
-    return "bg-green-200 text-green-800";
+    if (percentage >= 80) return "bg-mono-300 text-mono-900";
+    if (percentage >= 50) return "bg-mono-200 text-mono-800";
+    return "bg-mono-200 text-mono-800";
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full">
         <h2 className="text-xl font-bold mb-4 text-mono-800">
-          ?? G·n don h‡ng cho Shipper
+          ?? G√°n don h√†ng cho Shipper
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Order ID */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              M„ don h‡ng <span className="text-mono-800">*</span>
+              M√£ don h√†ng <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -87,7 +87,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                 setFormData({ ...formData, orderId: e.target.value })
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
-              placeholder="Nh?p ID ho?c m„ don h‡ng"
+              placeholder="Nh·∫≠p ID ho?c m√£ don h√†ng"
               required
             />
           </div>
@@ -95,13 +95,13 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
           {/* Shipper Selection */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Ch?n Shipper <span className="text-mono-800">*</span>
+              Ch∆°n Shipper <span className="text-mono-800">*</span>
             </label>
 
             {availableShippers.length === 0 ? (
-              <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm">
-                ?? KhÙng cÛ shipper kh? d?ng. T?t c? shipper dang b?n ho?c d„
-                d?t gi?i h?n don h‡ng.
+              <div className="bg-mono-100 border border-mono-200 text-mono-800 px-4 py-3 rounded-lg text-sm">
+                ?? Kh√¥ng c√≥ shipper kh·ªç ƒë·∫øng. T·∫•t c·∫£ shipper ƒëang b·∫©n ho?c d√£
+                ƒë·∫∑t gi·ªõi h∆°n don h√†ng.
               </div>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto border border-mono-200 rounded-lg p-2">
@@ -153,7 +153,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                                 shipper.shipper.deliveryStats
                                   .successfulDeliveries
                               }{" "}
-                              th‡nh cÙng
+                              th√†nh c√¥ng
                             </p>
                           </div>
                         </div>
@@ -166,7 +166,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                                 capacity >= 80
                                   ? "bg-mono-800"
                                   : capacity >= 50
-                                  ? "bg-yellow-500"
+                                  ? "bg-mono-1000"
                                   : "bg-mono-700"
                               }`}
                               style={{ width: `${capacity}%` }}
@@ -183,7 +183,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-mono-100 border border-mono-300 text-mono-800 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -193,16 +193,16 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
             <button
               type="submit"
               disabled={loading || availableShippers.length === 0}
-              className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+              className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-mono-800 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "–ang x? l˝..." : "G·n don h‡ng"}
+              {loading ? "√êang x·ª≠ l√Ω..." : "G√°n don h√†ng"}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
-              H?y
+              H·ªßy
             </button>
           </div>
         </form>
@@ -212,3 +212,8 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
 };
 
 export default AssignOrderModal;
+
+
+
+
+

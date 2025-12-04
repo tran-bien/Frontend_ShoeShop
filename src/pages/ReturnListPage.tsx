@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   FiPackage,
   FiRefreshCw,
@@ -45,22 +45,22 @@ const ReturnListPage: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching return requests:", error);
-      toast.error("Không thể tải danh sách yêu cầu");
+      toast.error("KhÃ´ng thá»ƒ táº£i danh sÃ¡ch yÃªu cáº§u");
     } finally {
       setLoading(false);
     }
   };
 
   const handleCancel = async (id: string) => {
-    if (!window.confirm("Bạn có chắc muốn hủy yêu cầu này?")) return;
+    if (!window.confirm("Báº¡n cÃ³ cháº¯c muá»‘n há»§y yÃªu cáº§u nÃ y?")) return;
 
     try {
       await customerReturnService.cancelReturnRequest(id);
-      toast.success("Đã hủy yêu cầu");
+      toast.success("ÄÃ£ há»§y yÃªu cáº§u");
       fetchRequests();
     } catch (error) {
       console.error("Error canceling request:", error);
-      toast.error("Không thể hủy yêu cầu");
+      toast.error("KhÃ´ng thá»ƒ há»§y yÃªu cáº§u");
     }
   };
 
@@ -70,23 +70,23 @@ const ReturnListPage: React.FC = () => {
       { bg: string; text: string; label: string }
     > = {
       pending: {
-        bg: "bg-yellow-100",
-        text: "text-yellow-700",
-        label: "Chờ duyệt",
+        bg: "bg-mono-100",
+        text: "text-mono-700",
+        label: "Chá» duyá»‡t",
       },
-      approved: { bg: "bg-blue-100", text: "text-blue-700", label: "Đã duyệt" },
-      rejected: { bg: "bg-red-100", text: "text-red-700", label: "Từ chối" },
+      approved: { bg: "bg-mono-100", text: "text-mono-700", label: "ÄÃ£ duyá»‡t" },
+      rejected: { bg: "bg-mono-200", text: "text-mono-800", label: "Tá»« chá»‘i" },
       processing: {
-        bg: "bg-purple-100",
-        text: "text-purple-700",
-        label: "Đang xử lý",
+        bg: "bg-mono-200",
+        text: "text-mono-800",
+        label: "Äang xá»­ lÃ½",
       },
       completed: {
-        bg: "bg-green-100",
-        text: "text-green-700",
-        label: "Hoàn tất",
+        bg: "bg-mono-100",
+        text: "text-mono-700",
+        label: "HoÃ n táº¥t",
       },
-      cancelled: { bg: "bg-gray-100", text: "text-gray-700", label: "Đã hủy" },
+      cancelled: { bg: "bg-gray-100", text: "text-gray-700", label: "ÄÃ£ há»§y" },
     };
     return styles[status] || styles.pending;
   };
@@ -108,7 +108,7 @@ const ReturnListPage: React.FC = () => {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tải...</p>
+          <p className="mt-4 text-gray-600">Äang táº£i...</p>
         </div>
       </div>
     );
@@ -121,10 +121,10 @@ const ReturnListPage: React.FC = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black mb-2 flex items-center gap-2">
             <FiPackage className="w-8 h-8" />
-            Yêu Cầu Trả Hàng/Đổi Hàng
+            YÃªu Cáº§u Tráº£ HÃ ng/Äá»•i HÃ ng
           </h1>
           <p className="text-gray-600">
-            Quản lý các yêu cầu trả/đổi hàng của bạn
+            Quáº£n lÃ½ cÃ¡c yÃªu cáº§u tráº£/Ä‘á»•i hÃ ng cá»§a báº¡n
           </p>
         </div>
 
@@ -138,20 +138,20 @@ const ReturnListPage: React.FC = () => {
             }}
             className="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
           >
-            <option value="all">Tất cả trạng thái</option>
-            <option value="pending">Chờ duyệt</option>
-            <option value="approved">Đã duyệt</option>
-            <option value="processing">Đang xử lý</option>
-            <option value="completed">Hoàn tất</option>
-            <option value="rejected">Từ chối</option>
-            <option value="canceled">Đã hủy</option>
+            <option value="all">Táº¥t cáº£ tráº¡ng thÃ¡i</option>
+            <option value="pending">Chá» duyá»‡t</option>
+            <option value="approved">ÄÃ£ duyá»‡t</option>
+            <option value="processing">Äang xá»­ lÃ½</option>
+            <option value="completed">HoÃ n táº¥t</option>
+            <option value="rejected">Tá»« chá»‘i</option>
+            <option value="canceled">ÄÃ£ há»§y</option>
           </select>
 
           <button
             onClick={() => navigate("/returns/create")}
             className="w-full sm:w-auto px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
           >
-            Tạo yêu cầu mới
+            Táº¡o yÃªu cáº§u má»›i
           </button>
         </div>
 
@@ -160,16 +160,16 @@ const ReturnListPage: React.FC = () => {
           <div className="text-center py-16 bg-gray-50 rounded-lg">
             <FiPackage className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-              Chưa có yêu cầu nào
+              ChÆ°a cÃ³ yÃªu cáº§u nÃ o
             </h3>
             <p className="text-gray-500 mb-6">
-              Các yêu cầu trả/đổi hàng sẽ hiển thị ở đây
+              CÃ¡c yÃªu cáº§u tráº£/Ä‘á»•i hÃ ng sáº½ hiá»ƒn thá»‹ á»Ÿ Ä‘Ã¢y
             </p>
             <button
               onClick={() => navigate("/returns/create")}
               className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
             >
-              Tạo yêu cầu đầu tiên
+              Táº¡o yÃªu cáº§u Ä‘áº§u tiÃªn
             </button>
           </div>
         ) : (
@@ -197,12 +197,12 @@ const ReturnListPage: React.FC = () => {
                           {request.type === "RETURN" ? (
                             <>
                               <FiPackage className="inline w-4 h-4 mr-1" />
-                              Trả hàng
+                              Tráº£ hÃ ng
                             </>
                           ) : (
                             <>
                               <FiRefreshCw className="inline w-4 h-4 mr-1" />
-                              Đổi hàng
+                              Äá»•i hÃ ng
                             </>
                           )}
                         </span>
@@ -219,7 +219,7 @@ const ReturnListPage: React.FC = () => {
                       {/* Items */}
                       <div className="mb-4">
                         <p className="text-sm font-medium text-gray-700 mb-2">
-                          Sản phẩm ({request.items.length}):
+                          Sáº£n pháº©m ({request.items.length}):
                         </p>
                         <div className="space-y-2">
                           {request.items.map((item, index) => (
@@ -252,7 +252,7 @@ const ReturnListPage: React.FC = () => {
                       {/* Reason */}
                       <div className="mb-4">
                         <p className="text-sm font-medium text-gray-700 mb-1">
-                          Lý do:
+                          LÃ½ do:
                         </p>
                         <p className="text-sm text-gray-600">
                           {request.reason}
@@ -263,9 +263,9 @@ const ReturnListPage: React.FC = () => {
                       {request.type === "RETURN" && request.refundAmount && (
                         <div className="mb-4">
                           <p className="text-sm font-medium text-gray-700">
-                            Số tiền hoàn:{" "}
+                            Sá»‘ tiá»n hoÃ n:{" "}
                             <span className="text-black">
-                              {request.refundAmount.toLocaleString("vi-VN")}₫
+                              {request.refundAmount.toLocaleString("vi-VN")}â‚«
                             </span>
                           </p>
                         </div>
@@ -279,15 +279,15 @@ const ReturnListPage: React.FC = () => {
                         className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors"
                       >
                         <FiEye className="w-4 h-4" />
-                        <span className="text-sm">Chi tiết</span>
+                        <span className="text-sm">Chi tiáº¿t</span>
                       </button>
                       {request.status === "pending" && (
                         <button
                           onClick={() => handleCancel(request._id)}
-                          className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors border-l border-gray-200 text-red-600"
+                          className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors border-l border-gray-200 text-mono-700"
                         >
                           <FiXCircle className="w-4 h-4" />
-                          <span className="text-sm">Hủy</span>
+                          <span className="text-sm">Há»§y</span>
                         </button>
                       )}
                     </div>
@@ -304,7 +304,7 @@ const ReturnListPage: React.FC = () => {
                   disabled={page === 1}
                   className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
-                  Trước
+                  TrÆ°á»›c
                 </button>
 
                 <span className="text-gray-600">
@@ -328,3 +328,7 @@ const ReturnListPage: React.FC = () => {
 };
 
 export default ReturnListPage;
+
+
+
+

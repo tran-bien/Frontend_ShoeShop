@@ -90,7 +90,7 @@ const TermsPage: React.FC = () => {
                 Thời gian giao hàng phụ thuộc vào địa điểm và phương thức vận
                 chuyển bạn chọn. Chúng tôi sẽ cố gắng giao hàng trong thời gian
                 đã thông báo, tuy nhiên không thể cam kết thời gian giao hàng
-                chính xác do các yếu tố bất khả kháng.
+                chính xác đo các yếu tố bất khả kháng.
               </p>
             </section>
 
@@ -108,7 +108,7 @@ const TermsPage: React.FC = () => {
                 <li>Sản phẩm phải còn nguyên tem, nhãn và chưa qua sử dụng</li>
                 <li>Hoàn tiền sẽ được thực hiện trong 5-7 ngày làm việc</li>
                 <li>
-                  Phí vận chuyển đổi trả do khách hàng chịu trách nhiệm (trừ lỗi
+                  Phí vận chuyển đổi trả đo khách hàng chịu trách nhiệm (trừ lỗi
                   từ phía chúng tôi)
                 </li>
               </ul>
@@ -132,7 +132,7 @@ const TermsPage: React.FC = () => {
               </h2>
               <p className="text-mono-700 leading-relaxed">
                 ShoeStore không chịu trách nhiệm về bất kỳ thiệt hại trực tiếp,
-                gián tiếp, ngẫu nhiên hoặc do hậu quả phát sinh từ việc sử dụng
+                gián tiếp, ngẫu nhiên hoặc đo hậu quả phát sinh từ việc sử dụng
                 hoặc không thể sử dụng dịch vụ của chúng tôi.
               </p>
             </section>
@@ -167,3 +167,4 @@ const TermsPage: React.FC = () => {
 };
 
 export default TermsPage;
+

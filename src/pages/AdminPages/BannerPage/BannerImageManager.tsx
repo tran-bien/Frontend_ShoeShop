@@ -27,15 +27,15 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Kiểm tra kích thước file (5MB max)
+      // Ki?m tra kích thước file (5MB max)
       if (file.size > 5 * 1024 * 1024) {
-        setError("Kích thước ảnh không được vượt quá 5MB");
+        setError("Kích thước ẩnh không được vu?t quá 5MB");
         return;
       }
 
-      // Kiểm tra loại file
+      // Ki?m tra lo?i file
       if (!file.type.startsWith("image/")) {
-        setError("Vui lòng chọn file ảnh");
+        setError("Vui lòng chơn file ẩnh");
         return;
       }
 
@@ -46,7 +46,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      setError("Vui lòng chọn ảnh mới");
+      setError("Vui lòng chơn ẩnh mới");
       return;
     }
 
@@ -62,7 +62,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
     } catch (err: unknown) {
       const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Cập nhật ảnh thất bại!";
+          ?.message || "Cập nhật ẩnh thểt b?i!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -81,13 +81,13 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
         </button>
 
         <h3 className="text-lg font-bold mb-4 text-center">
-          Thay đổi ảnh Banner
+          Thay đổi ẩnh Banner
         </h3>
 
-        {/* Ảnh hiện tại */}
+        {/* ẩnh hiện tại */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-black mb-2">
-            Ảnh hiện tại:
+            ẩnh hiện tại:
           </label>
           <div className="flex justify-center">
             <img
@@ -98,10 +98,10 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
           </div>
         </div>
 
-        {/* Upload ảnh mới */}
+        {/* Upload ẩnh mới */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-black mb-2">
-            Chọn ảnh mới <span className="text-mono-800">*</span>
+            Chơn ẩnh mới <span className="text-mono-800">*</span>
           </label>
           <input
             type="file"
@@ -110,16 +110,16 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
             className="block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
           />
           <p className="text-xs text-mono-500 mt-1">
-            Chấp nhận: JPG, PNG, WEBP. Tối đa 5MB. Kích thước khuyến nghị:
+            Chỉp nhơn: JPG, PNG, WEBP. Tại đã 5MB. Kích thước khuyện ngh?:
             1920x400px
           </p>
         </div>
 
-        {/* Preview ảnh mới */}
+        {/* Preview ẩnh mới */}
         {selectedFile && (
           <div className="mb-4">
             <label className="block text-sm font-medium text-black mb-2">
-              Xem trước ảnh mới:
+              Xem trước ẩnh mới:
             </label>
             <div className="flex justify-center">
               <img
@@ -129,7 +129,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
               />
             </div>
             <p className="text-xs text-mono-800 text-center mt-1">
-              ✓ Ảnh đã chọn: {selectedFile.name}
+              ? ẩnh dã chơn: {selectedFile.name}
             </p>
           </div>
         )}
@@ -149,7 +149,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
             disabled={loading || !selectedFile}
             className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition disabled:opacity-50"
           >
-            {loading ? "Đang cập nhật..." : "Cập nhật ảnh"}
+            {loading ? "Ðang cập nhật..." : "Cập nhật ẩnh"}
           </button>
         </div>
       </div>
@@ -158,3 +158,4 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
 };
 
 export default BannerImageManager;
+

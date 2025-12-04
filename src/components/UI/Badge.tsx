@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 interface BadgeProps {
   children: React.ReactNode;
@@ -66,3 +66,4 @@ const Badge: React.FC<BadgeProps> = ({
 };
 
 export default Badge;
+

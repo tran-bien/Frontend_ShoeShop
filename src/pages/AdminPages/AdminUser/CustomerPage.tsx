@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import {
   adminSessionService,
@@ -7,7 +7,7 @@ import {
 import type { User } from "../../../types/user";
 import type { Session } from "../../../types/session";
 
-// Alias cho r� nghia
+// Alias cho rï¿½ nghia
 type Customer = User;
 
 const ListCustomerPage: React.FC = () => {
@@ -48,7 +48,7 @@ const ListCustomerPage: React.FC = () => {
   const filteredCustomers = customers.filter(
     (customer) =>
       customer.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      customer.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,25 +67,25 @@ const ListCustomerPage: React.FC = () => {
   const getStatus = (customer: Customer) => {
     if (customer.blockedAt)
       return (
-        <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-semibold">
-          �� kh�a
+        <span className="bg-mono-200 text-mono-800 px-2 py-1 rounded-full text-xs font-semibold">
+          ï¿½ï¿½ khï¿½a
         </span>
       );
     if (!customer.isActive)
       return (
         <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
-          Ng?ng ho?t d?ng
+          Ngẩng ho?t đếng
         </span>
       );
     if (!customer.isVerified)
       return (
-        <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-semibold">
-          Chua x�c th?c
+        <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
+          Chua xï¿½c thực
         </span>
       );
     return (
-      <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
-        �ang ho?t d?ng
+      <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
+        ï¿½ang ho?t đếng
       </span>
     );
   };
@@ -93,7 +93,7 @@ const ListCustomerPage: React.FC = () => {
   const getRoleBadge = (role: string) => {
     if (role === "admin")
       return (
-        <span className="bg-mono-100 text-blue-700 px-2 py-1 rounded-full text-xs font-semibold">
+        <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
           Admin
         </span>
       );
@@ -133,7 +133,7 @@ const ListCustomerPage: React.FC = () => {
     <div className="p-6 w-full ">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug font-sans">
-          Danh S�ch Kh�ch H�ng
+          Danh Sï¿½ch Khï¿½ch Hï¿½ng
         </h2>
 
         {!isSearchVisible ? (
@@ -142,7 +142,7 @@ const ListCustomerPage: React.FC = () => {
             className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
             <IoIosSearch className="text-xl text-mono-500" />
-            <span className="font-medium">T�m ki?m</span>
+            <span className="font-medium">Tï¿½m ki?m</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
@@ -154,7 +154,7 @@ const ListCustomerPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="T�m theo t�n ho?c email..."
+              placeholder="Tï¿½m theo tï¿½n ho?c email..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -167,13 +167,13 @@ const ListCustomerPage: React.FC = () => {
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
               <th className="py-3 px-4 text-left border-b">Avatar</th>
-              <th className="py-3 px-4 text-left border-b">T�n Kh�ch H�ng</th>
+              <th className="py-3 px-4 text-left border-b">Tï¿½n Khï¿½ch Hï¿½ng</th>
               <th className="py-3 px-4 text-left border-b">Email</th>
-              <th className="py-3 px-4 text-left border-b">S? �T</th>
-              <th className="py-3 px-4 text-left border-b">Tr?ng th�i</th>
-              <th className="py-3 px-4 text-left border-b">Vai tr�</th>
+              <th className="py-3 px-4 text-left border-b">Số ï¿½T</th>
+              <th className="py-3 px-4 text-left border-b">Trống thï¿½i</th>
+              <th className="py-3 px-4 text-left border-b">Vai trï¿½</th>
               <th className="py-3 px-4 text-left border-b">Session</th>
-              <th className="py-3 px-4 text-left border-b">Thao T�c</th>
+              <th className="py-3 px-4 text-left border-b">Thao Tï¿½c</th>
             </tr>
           </thead>
           <tbody>
@@ -224,7 +224,7 @@ const ListCustomerPage: React.FC = () => {
                         ))}
                     </>
                   ) : (
-                    <span className="text-mono-400">Kh�ng c� session</span>
+                    <span className="text-mono-400">Khï¿½ng cï¿½ session</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
@@ -239,10 +239,10 @@ const ListCustomerPage: React.FC = () => {
                       >
                         {loadingUserId === customer._id ? (
                           <span className="animate-pulse">
-                            �ang dang xu?t...
+                            ï¿½ang đang xuất...
                           </span>
                         ) : (
-                          "�ang xu?t"
+                          "ï¿½ang xuất"
                         )}
                       </button>
                     )}
@@ -250,18 +250,18 @@ const ListCustomerPage: React.FC = () => {
                     <button
                       className={`inline-flex items-center justify-center text-xs px-3 py-1 rounded-full shadow-sm transition-all disabled:opacity-60 disabled:cursor-not-allowed ${
                         customer.blockedAt
-                          ? "bg-green-300 hover:bg-green-300 text-white"
+                          ? "bg-mono-700 hover:bg-mono-800 text-white"
                           : "bg-mono-400 hover:bg-mono-400 text-white"
                       }`}
                       disabled={loadingUserId === customer._id}
                       onClick={() => handleBlockUser(customer)}
                     >
                       {loadingUserId === customer._id ? (
-                        <span className="animate-pulse">�ang x? l�...</span>
+                        <span className="animate-pulse">ï¿½ang x? lï¿½...</span>
                       ) : customer.blockedAt ? (
-                        "M? kh�a"
+                        "M? khï¿½a"
                       ) : (
-                        "Kh�a"
+                        "Khï¿½a"
                       )}
                     </button>
                   </div>
@@ -276,3 +276,8 @@ const ListCustomerPage: React.FC = () => {
 };
 
 export default ListCustomerPage;
+
+
+
+
+

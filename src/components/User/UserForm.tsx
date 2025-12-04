@@ -21,10 +21,10 @@ type Address = UserAddress;
 const fieldLabels: Record<string, string> = {
   name: "Họ và tên",
   phone: "Số điện thoại",
-  province: "Tỉnh/Thành phố",
+  province: "Tính/Thành phố",
   district: "Quận/Huyện",
   ward: "Phường/Xã",
-  detail: "Địa chỉ chi tiết",
+  detail: "Ð?a chờ chi tiết",
 };
 
 const UserForm: React.FC = () => {
@@ -79,9 +79,9 @@ const UserForm: React.FC = () => {
         const res = await profileService.getProfile();
         setUser(res.data.data);
         setEditName(res.data.data.name);
-        toast.success("Cập nhật ảnh đại diện thành công");
+        toast.success("Cập nhật ẩnh đổi diẩn thành công");
       } catch {
-        toast.error("Không thể cập nhật ảnh đại diện");
+        toast.error("Không thể cập nhật ẩnh đổi diẩn");
       } finally {
         setLoading(false);
       }
@@ -96,9 +96,9 @@ const UserForm: React.FC = () => {
       const res = await profileService.getProfile();
       setUser(res.data.data);
       setEditName(res.data.data.name);
-      toast.success("Đã xóa ảnh đại diện");
+      toast.success("Ðã xóa ẩnh đổi diẩn");
     } catch {
-      toast.error("Không thể xóa ảnh đại diện");
+      toast.error("Không thể xóa ẩnh đổi diẩn");
     } finally {
       setLoading(false);
     }
@@ -187,7 +187,7 @@ const UserForm: React.FC = () => {
       await addressService.deleteAddress(addressId);
       const res = await profileService.getProfile();
       setUser(res.data.data);
-      toast.success("Đã xóa địa chỉ");
+      toast.success("Ðã xóa địa chỉ");
     } catch {
       toast.error("Không thể xóa địa chỉ");
     } finally {
@@ -207,8 +207,8 @@ const UserForm: React.FC = () => {
     <div className="bg-white rounded-2xl shadow-lg border border-mono-100 w-full max-w-2xl mx-auto overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-mono-800 to-mono-black p-6">
-        <h2 className="text-2xl font-bold text-white">Thông tin tài khoản</h2>
-        <p className="text-mono-300 mt-1">Quản lý thông tin cá nhân của bạn</p>
+        <h2 className="text-2xl font-bold text-white">Thông tin tài khoẩn</h2>
+        <p className="text-mono-300 mt-1">Quận lý thông tin cá nhân của bẩn</p>
       </div>
 
       <div className="p-6 space-y-8">
@@ -219,7 +219,7 @@ const UserForm: React.FC = () => {
             <img
               src={
                 user.avatar?.url ||
-                "https://ui-avatars.com/api/?name=" +
+                "https://ui-avatars.com/api/ẩname=" +
                   encodeURIComponent(user.name) +
                   "&background=171717&color=fff"
               }
@@ -230,7 +230,7 @@ const UserForm: React.FC = () => {
               <button
                 onClick={() => document.getElementById("avatarInput")?.click()}
                 className="p-2 bg-white rounded-full text-mono-800 hover:bg-mono-100 transition-colors"
-                title="Đổi ảnh"
+                title="Ð?i ẩnh"
                 disabled={loading}
               >
                 <FiCamera size={18} />
@@ -238,8 +238,8 @@ const UserForm: React.FC = () => {
               {user.avatar?.url && (
                 <button
                   onClick={handleDeleteAvatar}
-                  className="p-2 bg-white rounded-full text-red-600 hover:bg-mono-100 transition-colors"
-                  title="Xóa ảnh"
+                  className="p-2 bg-white rounded-full text-mono-700 hover:bg-mono-100 transition-colors"
+                  title="Xóa ẩnh"
                   disabled={loading}
                 >
                   <FiTrash2 size={18} />
@@ -305,7 +305,7 @@ const UserForm: React.FC = () => {
             {user.role && (
               <span className="inline-block mt-2 px-3 py-1 bg-mono-100 text-mono-700 text-sm rounded-full capitalize">
                 {user.role === "admin"
-                  ? "Quản trị viên"
+                  ? "Quận trở viên"
                   : user.role === "staff"
                   ? "Nhân viên"
                   : "Khách hàng"}
@@ -320,7 +320,7 @@ const UserForm: React.FC = () => {
             <div className="flex items-center gap-2">
               <FiMapPin className="text-mono-700" size={20} />
               <h3 className="text-lg font-semibold text-mono-900">
-                Địa chỉ của tôi
+                Ð?a chờ của tôi
               </h3>
             </div>
             <button
@@ -353,7 +353,7 @@ const UserForm: React.FC = () => {
                         <span className="text-mono-600">{addr.phone}</span>
                         {addr.isDefault && (
                           <span className="px-2 py-0.5 bg-mono-800 text-white text-xs rounded-full">
-                            Mặc định
+                            M?c đếnh
                           </span>
                         )}
                       </div>
@@ -373,7 +373,7 @@ const UserForm: React.FC = () => {
                         <FiEdit2 size={16} />
                       </button>
                       <button
-                        className="p-2 text-mono-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-mono-500 hover:text-mono-700 hover:bg-mono-100 rounded-lg transition-colors"
                         onClick={() =>
                           addr._id && handleDeleteAddress(addr._id)
                         }
@@ -388,7 +388,7 @@ const UserForm: React.FC = () => {
           ) : (
             <div className="text-center py-8 bg-mono-50 rounded-xl">
               <FiMapPin className="mx-auto text-mono-300 mb-2" size={40} />
-              <p className="text-mono-500">Bạn chưa có địa chỉ nào</p>
+              <p className="text-mono-500">Bẩn chua có địa chỉ nào</p>
               <button
                 onClick={() => setIsAddModalOpen(true)}
                 className="mt-3 text-mono-800 hover:text-mono-black font-medium"
@@ -400,13 +400,13 @@ const UserForm: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal chỉnh sửa địa chỉ */}
+      {/* Modal chơnh sửa địa chỉ */}
       {isModalOpen && editingAddress && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
             <div className="p-6 border-b border-mono-100">
               <h3 className="text-xl font-bold text-mono-900">
-                Chỉnh sửa địa chỉ
+                Chơnh sửa địa chỉ
               </h3>
             </div>
             <form
@@ -452,7 +452,7 @@ const UserForm: React.FC = () => {
                   }
                   className="w-5 h-5 rounded border-mono-300 text-mono-black focus:ring-mono-black"
                 />
-                <span className="text-mono-700">Đặt làm địa chỉ mặc định</span>
+                <span className="text-mono-700">Ð?t làm địa chỉ m?c đếnh</span>
               </label>
               <div className="flex gap-3 pt-4">
                 <button
@@ -467,7 +467,7 @@ const UserForm: React.FC = () => {
                   disabled={loading}
                   className="flex-1 px-4 py-2.5 bg-mono-black text-white rounded-xl hover:bg-mono-800 transition-colors font-medium disabled:opacity-50"
                 >
-                  {loading ? "Đang lưu..." : "Lưu thay đổi"}
+                  {loading ? "Ðang luu..." : "Luu thay đổi"}
                 </button>
               </div>
             </form>
@@ -518,7 +518,7 @@ const UserForm: React.FC = () => {
                   }
                   className="w-5 h-5 rounded border-mono-300 text-mono-black focus:ring-mono-black"
                 />
-                <span className="text-mono-700">Đặt làm địa chỉ mặc định</span>
+                <span className="text-mono-700">Ð?t làm địa chỉ m?c đếnh</span>
               </label>
               <div className="flex gap-3 pt-4">
                 <button
@@ -533,7 +533,7 @@ const UserForm: React.FC = () => {
                   disabled={loading}
                   className="flex-1 px-4 py-2.5 bg-mono-black text-white rounded-xl hover:bg-mono-800 transition-colors font-medium disabled:opacity-50"
                 >
-                  {loading ? "Đang thêm..." : "Thêm địa chỉ"}
+                  {loading ? "Ðang thêm..." : "Thêm địa chỉ"}
                 </button>
               </div>
             </form>
@@ -545,3 +545,5 @@ const UserForm: React.FC = () => {
 };
 
 export default UserForm;
+
+

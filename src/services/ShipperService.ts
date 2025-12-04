@@ -1,4 +1,4 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type {
   ShipperInfo,
   AssignOrderData,
@@ -23,26 +23,26 @@ interface GetShippersResponse {
 
 // Admin Shipper Service
 export const adminShipperService = {
-  // Lấy danh sách shipper
+  // Láº¥y danh sÃ¡ch shipper
   getShippers: (params?: {
     available?: boolean;
   }): Promise<{ data: ApiResponse<GetShippersResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/shippers", { params }),
 
-  // Phân công đơn hàng cho shipper
+  // PhÃ¢n cÃ´ng Ä‘Æ¡n hÃ ng cho shipper
   assignOrderToShipper: (
     orderId: string,
     data: AssignOrderData
   ): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.post(`/api/v1/admin/shippers/assign/${orderId}`, data),
 
-  // Lấy thống kê của shipper
+  // Láº¥y thá»‘ng kÃª cá»§a shipper
   getShipperStats: (
     shipperId: string
   ): Promise<{ data: ShipperStatsResponse }> =>
     axiosInstanceAuth.get(`/api/v1/admin/shippers/${shipperId}/stats`),
 
-  // Lấy chi tiết shipper
+  // Láº¥y chi tiáº¿t shipper
   getShipperDetail: (
     shipperId: string
   ): Promise<{ data: ApiResponse<ShipperInfo> }> =>
@@ -51,24 +51,24 @@ export const adminShipperService = {
 
 // Shipper Service (for shipper role)
 export const shipperService = {
-  // Lấy danh sách đơn hàng của shipper
+  // Láº¥y danh sÃ¡ch Ä‘Æ¡n hÃ ng cá»§a shipper
   getMyOrders: (params?: {
     status?: string;
   }): Promise<{ data: ApiResponse<Order[]> }> =>
     axiosInstanceAuth.get("/api/v1/shipper/my-orders", { params }),
 
-  // Cập nhật trạng thái giao hàng
+  // Cáº­p nháº­t tráº¡ng thÃ¡i giao hÃ ng
   updateDeliveryStatus: (
     orderId: string,
     data: UpdateDeliveryStatusData
   ): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch(`/api/v1/shipper/delivery-status/${orderId}`, data),
 
-  // Cập nhật vị trí
+  // Cáº­p nháº­t vá»‹ trÃ­
   updateLocation: (data: UpdateLocationData): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch("/api/v1/shipper/location", data),
 
-  // Cập nhật trạng thái sẵn sàng
+  // Cáº­p nháº­t tráº¡ng thÃ¡i sáºµn sÃ ng
   updateAvailability: (isAvailable: boolean): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch("/api/v1/shipper/availability", { isAvailable }),
 };

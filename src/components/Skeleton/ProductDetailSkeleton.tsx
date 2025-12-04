@@ -133,3 +133,4 @@ const ProductDetailSkeleton: React.FC = () => {
 };
 
 export default ProductDetailSkeleton;
+

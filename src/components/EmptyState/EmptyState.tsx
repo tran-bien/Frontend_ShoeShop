@@ -5,7 +5,7 @@ interface EmptyStateProps {
   icon?: React.ReactNode;
   title: string;
   description?: string;
-  actionLabel?: string;
+  actionLabel: string;
   actionLink?: string;
   onAction?: () => void;
   className?: string;
@@ -66,3 +66,4 @@ const EmptyState: React.FC<EmptyStateProps> = ({
 };
 
 export default EmptyState;
+

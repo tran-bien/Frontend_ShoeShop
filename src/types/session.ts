@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Session Types
- * Định nghĩa các interface liên quan đến Phiên đăng nhập
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n PhiÃªn Ä‘Äƒng nháº­p
  */
 
 // =======================

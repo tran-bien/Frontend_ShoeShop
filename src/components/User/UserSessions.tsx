@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import {
   Modal,
   Button,
@@ -48,7 +48,7 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
         setSessions(response.data.data);
       }
     } catch (_) {
-      message.error("Không thể tải danh sách phiên đăng nhập");
+      message.error("KhÃ´ng thá»ƒ táº£i danh sÃ¡ch phiÃªn Ä‘Äƒng nháº­p");
     } finally {
       setLoading(false);
     }
@@ -91,31 +91,31 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
   const handleLogoutSession = async (sessionId: string) => {
     try {
       await authService.logoutSession(sessionId);
-      message.success("Đã đăng xuất phiên thành công");
+      message.success("ÄÃ£ Ä‘Äƒng xuáº¥t phiÃªn thÃ nh cÃ´ng");
       fetchSessions();
     } catch (error) {
-      message.error("Không thể đăng xuất phiên này");
+      message.error("KhÃ´ng thá»ƒ Ä‘Äƒng xuáº¥t phiÃªn nÃ y");
     }
   };
 
   const handleLogoutAllOthers = async () => {
     try {
       await authService.logoutAllOtherSessions();
-      message.success("Đã đăng xuất tất cả phiên khác");
+      message.success("ÄÃ£ Ä‘Äƒng xuáº¥t táº¥t cáº£ phiÃªn khÃ¡c");
       fetchSessions();
     } catch (error) {
-      message.error("Không thể đăng xuất các phiên khác");
+      message.error("KhÃ´ng thá»ƒ Ä‘Äƒng xuáº¥t cÃ¡c phiÃªn khÃ¡c");
     }
   };
 
   const handleLogoutAll = async () => {
     try {
       await authService.logoutAll();
-      message.success("Đã đăng xuất tất cả phiên");
-      logout(); // Đăng xuất user hiện tại
+      message.success("ÄÃ£ Ä‘Äƒng xuáº¥t táº¥t cáº£ phiÃªn");
+      logout(); // ÄÄƒng xuáº¥t user hiá»‡n táº¡i
       onClose();
     } catch (_) {
-      message.error("Không thể đăng xuất tất cả phiên");
+      message.error("KhÃ´ng thá»ƒ Ä‘Äƒng xuáº¥t táº¥t cáº£ phiÃªn");
     }
   };
 
@@ -127,10 +127,10 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffMinutes < 1) return "Vừa xong";
-    if (diffMinutes < 60) return `${diffMinutes} phút trước`;
-    if (diffHours < 24) return `${diffHours} giờ trước`;
-    return `${diffDays} ngày trước`;
+    if (diffMinutes < 1) return "Vá»«a xong";
+    if (diffMinutes < 60) return `${diffMinutes} phÃºt trÆ°á»›c`;
+    if (diffHours < 24) return `${diffHours} giá» trÆ°á»›c`;
+    return `${diffDays} ngÃ y trÆ°á»›c`;
   };
 
   return (
@@ -138,7 +138,7 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
       title={
         <Space>
           <DesktopOutlined />
-          <span>Quản lý phiên đăng nhập</span>
+          <span>Quáº£n lÃ½ phiÃªn Ä‘Äƒng nháº­p</span>
         </Space>
       }
       open={visible}
@@ -151,38 +151,38 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
             onClick={fetchSessions}
             loading={loading}
           >
-            Làm mới
+            LÃ m má»›i
           </Button>
           <Popconfirm
-            title="Đăng xuất tất cả phiên khác?"
-            description="Bạn sẽ được giữ lại phiên hiện tại"
+            title="ÄÄƒng xuáº¥t táº¥t cáº£ phiÃªn khÃ¡c?"
+            description="Báº¡n sáº½ Ä‘Æ°á»£c giá»¯ láº¡i phiÃªn hiá»‡n táº¡i"
             onConfirm={handleLogoutAllOthers}
-            okText="Đồng ý"
-            cancelText="Hủy"
+            okText="Äá»“ng Ã½"
+            cancelText="Há»§y"
           >
             <Button type="primary" icon={<LogoutOutlined />}>
-              Đăng xuất phiên khác
+              ÄÄƒng xuáº¥t phiÃªn khÃ¡c
             </Button>
           </Popconfirm>
           <Popconfirm
-            title="Đăng xuất tất cả phiên?"
-            description="Bạn sẽ bị đăng xuất khỏi tất cả thiết bị"
+            title="ÄÄƒng xuáº¥t táº¥t cáº£ phiÃªn?"
+            description="Báº¡n sáº½ bá»‹ Ä‘Äƒng xuáº¥t khá»i táº¥t cáº£ thiáº¿t bá»‹"
             onConfirm={handleLogoutAll}
-            okText="Đồng ý"
-            cancelText="Hủy"
+            okText="Äá»“ng Ã½"
+            cancelText="Há»§y"
           >
             <Button danger icon={<DeleteOutlined />}>
-              Đăng xuất tất cả
+              ÄÄƒng xuáº¥t táº¥t cáº£
             </Button>
           </Popconfirm>
-          <Button onClick={onClose}>Đóng</Button>
+          <Button onClick={onClose}>ÄÃ³ng</Button>
         </Space>
       }
     >
       <div style={{ maxHeight: "500px", overflowY: "auto" }}>
         {loading ? (
           <div style={{ textAlign: "center", padding: "50px" }}>
-            Đang tải...
+            Äang táº£i...
           </div>
         ) : (
           <Space direction="vertical" style={{ width: "100%" }} size="middle">
@@ -192,10 +192,10 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
                 size="small"
                 extra={
                   <Popconfirm
-                    title="Đăng xuất phiên này?"
+                    title="ÄÄƒng xuáº¥t phiÃªn nÃ y?"
                     onConfirm={() => handleLogoutSession(session._id)}
-                    okText="Đồng ý"
-                    cancelText="Hủy"
+                    okText="Äá»“ng Ã½"
+                    cancelText="Há»§y"
                   >
                     <Button
                       type="text"
@@ -203,7 +203,7 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
                       icon={<DeleteOutlined />}
                       size="small"
                     >
-                      Đăng xuất
+                      ÄÄƒng xuáº¥t
                     </Button>
                   </Popconfirm>
                 }
@@ -217,9 +217,9 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
                     {getDeviceIcon(session.userAgent)}
                     <Text strong>{getBrowserInfo(session.userAgent)}</Text>
                     {session.isActive ? (
-                      <Tag color="green">Đang hoạt động</Tag>
+                      <Tag color="green">Äang hoáº¡t Ä‘á»™ng</Tag>
                     ) : (
-                      <Tag color="red">Không hoạt động</Tag>
+                      <Tag color="red">KhÃ´ng hoáº¡t Ä‘á»™ng</Tag>
                     )}
                   </Space>
 
@@ -228,18 +228,18 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
                       <strong>IP:</strong> {session.ip}
                     </Text>
                     <Text type="secondary">
-                      <strong>Hoạt động lần cuối:</strong>{" "}
+                      <strong>Hoáº¡t Ä‘á»™ng láº§n cuá»‘i:</strong>{" "}
                       {formatLastActive(session.lastActive)}
                     </Text>
                     <Text type="secondary">
-                      <strong>Hết hạn:</strong>{" "}
+                      <strong>Háº¿t háº¡n:</strong>{" "}
                       {new Date(session.expiresAt).toLocaleString("vi-VN")}
                     </Text>
                   </Space>
 
                   {session.device && (
                     <Text type="secondary" style={{ fontSize: "12px" }}>
-                      <strong>Thiết bị:</strong>{" "}
+                      <strong>Thiáº¿t bá»‹:</strong>{" "}
                       {typeof session.device.os === "string"
                         ? session.device.os
                         : session.device.os?.name || "Unknown"}{" "}
@@ -255,7 +255,7 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
 
             {sessions.length === 0 && (
               <div style={{ textAlign: "center", padding: "50px" }}>
-                <Text type="secondary">Không có phiên đăng nhập nào</Text>
+                <Text type="secondary">KhÃ´ng cÃ³ phiÃªn Ä‘Äƒng nháº­p nÃ o</Text>
               </div>
             )}
           </Space>
@@ -266,3 +266,4 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
 };
 
 export default UserSessions;
+

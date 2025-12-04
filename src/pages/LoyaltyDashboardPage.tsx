@@ -65,7 +65,7 @@ const LoyaltyDashboard: React.FC = () => {
   }, [page]);
 
   const getTransactionColor = (type: string) => {
-    return type === "earn" ? "text-green-600" : "text-red-600";
+    return type === "earn" ? "text-mono-600" : "text-mono-700";
   };
 
   const getTransactionPrefix = (type: string) => {
@@ -219,9 +219,9 @@ const LoyaltyDashboard: React.FC = () => {
 
         {/* Expiring Points */}
         {stats.expiringPoints && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-8">
+          <div className="bg-mono-100 border border-mono-200 rounded-lg p-6 mb-8">
             <div className="flex items-center gap-2 mb-4">
-              <FiClock className="w-5 h-5 text-yellow-600" />
+              <FiClock className="w-5 h-5 text-mono-700" />
               <h3 className="font-semibold text-black">Điểm sắp hết hạn</h3>
             </div>
             <div className="flex justify-between items-center py-2">
@@ -315,3 +315,6 @@ const LoyaltyDashboard: React.FC = () => {
 };
 
 export default LoyaltyDashboard;
+
+
+

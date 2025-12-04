@@ -26,7 +26,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   const { isAuthenticated, user, isLoading } = useAuth();
   const location = useLocation();
 
-  // Hiển thị loading trong khi kiểm tra authentication
+  // Hiện thọ loading trong khi ki?m tra authentication
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -35,33 +35,33 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
     );
   }
 
-  // Nếu yêu cầu authentication nhưng user chưa đăng nhập
+  // N?u yêu c?u authentication nhung user chua đang nhập
   if (requireAuth && !isAuthenticated) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
-  // Nếu không yêu cầu authentication nhưng user đã đăng nhập (ví dụ: trang login)
+  // N?u không yêu c?u authentication nhung user dã đang nhập (ví d?: trang login)
   if (!requireAuth && isAuthenticated) {
     const from = location.state?.from?.pathname || "/";
     return <Navigate to={from} replace />;
   }
 
-  // Kiểm tra role nếu được yêu cầu
+  // Ki?m tra role n?u được yêu c?u
   if (requireRole.length > 0 && user && !requireRole.includes(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Kiểm tra quyền staff (cho phép cả staff và admin)
+  // Ki?m tra quyẩn staff (cho phép c? staff và admin)
   if (requireStaff && user && !roleHelpers.hasStaffAccess(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Kiểm tra quyền admin only (chỉ admin)
+  // Ki?m tra quyẩn admin only (chờ admin)
   if (requireAdminOnly && user && !roleHelpers.hasAdminOnlyAccess(user.role)) {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  // Kiểm tra quyền shipper only (chỉ shipper)
+  // Ki?m tra quyẩn shipper only (chờ shipper)
   if (requireShipper && user && user.role !== "shipper") {
     return <Navigate to="/unauthorized" replace />;
   }
@@ -70,3 +70,4 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
 };
 
 export default AuthGuard;
+

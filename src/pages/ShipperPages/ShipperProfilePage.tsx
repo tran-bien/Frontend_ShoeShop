@@ -84,13 +84,13 @@ const ShipperProfilePage = () => {
       localStorage.setItem("user", JSON.stringify(updatedUser));
 
       alert(
-        `Trạng thái đã được cập nhật thành: ${
-          newAvailability ? "Sẵn sàng" : "Không sẵn sàng"
+        `Trạng thái dã được cập nhật thành: ${
+          newAvailability ? "Sẩn sàng" : "Không sẩn sàng"
         }`
       );
     } catch (error: any) {
       alert(
-        error.response?.data?.message || "Có lỗi xảy ra khi cập nhật trạng thái"
+        error.response?.data?.message || "Có lỗi x?y ra khi cập nhật trạng thái"
       );
     } finally {
       setUpdating(false);
@@ -100,7 +100,7 @@ const ShipperProfilePage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">Đang tải...</div>
+        <div className="text-mono-500">Ðang tại...</div>
       </div>
     );
   }
@@ -108,7 +108,7 @@ const ShipperProfilePage = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       {/* Profile Header */}
-      <div className="bg-gradient-to-r from-mono-black to-blue-800 text-white rounded-lg shadow-lg p-8">
+      <div className="bg-mono-900 text-white rounded-lg shadow-lg p-8">
         <div className="flex items-center gap-6">
           <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center">
             {user?.avatar ? (
@@ -140,12 +140,12 @@ const ShipperProfilePage = () => {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-mono-800 mb-2">
-              Trạng thái sẵn sàng
+              Trạng thái sẩn sàng
             </h2>
             <p className="text-mono-600">
               {user?.shipper?.isAvailable
-                ? "Bạn đang sẵn sàng nhận đơn hàng mới"
-                : "Bạn hiện không nhận đơn hàng mới"}
+                ? "Bẩn đang sẩn sàng nhơn don hàng mới"
+                : "Bẩn hiện không nhơn don hàng mới"}
             </p>
           </div>
           <button
@@ -153,19 +153,19 @@ const ShipperProfilePage = () => {
             disabled={updating}
             className={`flex items-center gap-3 px-6 py-3 rounded-lg font-medium transition-all ${
               user?.shipper?.isAvailable
-                ? "bg-green-100 text-green-700 hover:bg-green-200"
+                ? "bg-mono-800 text-white hover:bg-mono-700"
                 : "bg-mono-100 text-mono-700 hover:bg-mono-200"
             } disabled:opacity-50`}
           >
             {user?.shipper?.isAvailable ? (
               <>
                 <FaToggleOn size={24} />
-                <span>Đang hoạt động</span>
+                <span>Ðang ho?t đếng</span>
               </>
             ) : (
               <>
                 <FaToggleOff size={24} />
-                <span>Không hoạt động</span>
+                <span>Không ho?t đếng</span>
               </>
             )}
           </button>
@@ -175,17 +175,17 @@ const ShipperProfilePage = () => {
       {/* Capacity Info */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold text-mono-800 mb-4">
-          Công suất làm việc
+          Công su?t làm vi?c
         </h2>
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
-            <p className="text-sm text-mono-600">Đơn đang giao</p>
+            <p className="text-sm text-mono-600">Ðon đang giao</p>
             <p className="text-2xl font-bold text-mono-black">
               {stats?.active || 0}
             </p>
           </div>
           <div>
-            <p className="text-sm text-mono-600">Giới hạn đơn</p>
+            <p className="text-sm text-mono-600">Giới hơn don</p>
             <p className="text-2xl font-bold text-mono-800">
               {user?.shipper?.maxOrders || 0}
             </p>
@@ -195,7 +195,7 @@ const ShipperProfilePage = () => {
         {/* Capacity Bar */}
         <div>
           <div className="flex justify-between text-sm text-mono-600 mb-2">
-            <span>Công suất</span>
+            <span>Công su?t</span>
             <span>
               {user?.shipper?.maxOrders > 0
                 ? (
@@ -213,7 +213,7 @@ const ShipperProfilePage = () => {
                   ? "bg-mono-800"
                   : (stats?.active || 0) / (user?.shipper?.maxOrders || 1) >=
                     0.5
-                  ? "bg-yellow-500"
+                  ? "bg-mono-600"
                   : "bg-mono-700"
               }`}
               style={{
@@ -231,7 +231,7 @@ const ShipperProfilePage = () => {
       {/* Statistics */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold text-mono-800 mb-4">
-          Thống kê giao hàng
+          Thàng kê giao hàng
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {/* Total Orders */}
@@ -242,40 +242,40 @@ const ShipperProfilePage = () => {
             <p className="text-3xl font-bold text-mono-800">
               {stats?.totalOrders || 0}
             </p>
-            <p className="text-sm text-mono-600 mt-1">Tổng đơn</p>
+            <p className="text-sm text-mono-600 mt-1">Tổng don</p>
           </div>
 
           {/* Completed */}
           <div className="text-center">
-            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+            <div className="bg-mono-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
               <FaCheckCircle size={28} className="text-mono-800" />
             </div>
             <p className="text-3xl font-bold text-mono-800">
               {stats?.completed || 0}
             </p>
-            <p className="text-sm text-mono-600 mt-1">Đã giao</p>
+            <p className="text-sm text-mono-600 mt-1">Ðã giao</p>
           </div>
 
           {/* Failed */}
           <div className="text-center">
-            <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+            <div className="bg-mono-200 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
               <FaTimesCircle size={28} className="text-mono-900" />
             </div>
             <p className="text-3xl font-bold text-mono-900">
               {stats?.failed || 0}
             </p>
-            <p className="text-sm text-mono-600 mt-1">Thất bại</p>
+            <p className="text-sm text-mono-600 mt-1">Thểt b?i</p>
           </div>
 
           {/* Success Rate */}
           <div className="text-center">
-            <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
-              <FaCheckCircle size={28} className="text-purple-600" />
+            <div className="bg-mono-300 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
+              <FaCheckCircle size={28} className="text-mono-900" />
             </div>
-            <p className="text-3xl font-bold text-purple-600">
+            <p className="text-3xl font-bold text-mono-900">
               {stats?.successRate}%
             </p>
-            <p className="text-sm text-mono-600 mt-1">Tỷ lệ TC</p>
+            <p className="text-sm text-mono-600 mt-1">Từ lệ TC</p>
           </div>
         </div>
       </div>
@@ -283,7 +283,7 @@ const ShipperProfilePage = () => {
       {/* Account Info */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-bold text-mono-800 mb-4">
-          Thông tin tài khoản
+          Thông tin tài khoẩn
         </h2>
         <div className="space-y-3 text-mono-700">
           <div className="flex justify-between">
@@ -291,7 +291,7 @@ const ShipperProfilePage = () => {
             <span className="font-semibold capitalize">{user?.role}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-mono-600">Ngày tạo:</span>
+            <span className="text-mono-600">Ngày t?o:</span>
             <span className="font-semibold">
               {user?.createdAt
                 ? new Date(user.createdAt).toLocaleDateString("vi-VN")
@@ -299,13 +299,13 @@ const ShipperProfilePage = () => {
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-mono-600">Trạng thái tài khoản:</span>
+            <span className="text-mono-600">Trạng thái tài khoẩn:</span>
             <span
               className={`font-semibold ${
                 user?.isActive ? "text-mono-800" : "text-mono-900"
               }`}
             >
-              {user?.isActive ? "Hoạt động" : "Tạm khóa"}
+              {user?.isActive ? "Ho?t đếng" : "Tạm khóa"}
             </span>
           </div>
         </div>
@@ -315,3 +315,4 @@ const ShipperProfilePage = () => {
 };
 
 export default ShipperProfilePage;
+

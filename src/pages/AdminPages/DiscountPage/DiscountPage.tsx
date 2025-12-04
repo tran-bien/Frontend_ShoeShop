@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { adminCouponService } from "../../../services/CouponService";
 import AddDiscount from "./AddDiscount";
@@ -78,7 +78,7 @@ const DiscountPage = () => {
     }
   };
 
-  // S?a
+  // Sửa
   const handleEditDiscount = (discount: Discount) => {
     setEditDiscount(discount);
     setForm({
@@ -120,22 +120,22 @@ const DiscountPage = () => {
       setForm(initialForm);
       fetchDiscounts();
     } catch {
-      alert("C?p nh?t coupon th?t b?i!");
+      alert("Cập nhật coupon thểt b?i!");
     }
   };
 
-  // X�a
+  // Xóa
   const handleDeleteDiscount = async (discount: Discount) => {
-    if (!window.confirm("B?n ch?c ch?n mu?n x�a coupon n�y?")) return;
+    if (!window.confirm("Bẩn chỉc chơn muẩn xóa coupon này?")) return;
     try {
       await adminCouponService.deleteCoupon(discount.id);
       fetchDiscounts();
     } catch {
-      alert("X�a coupon th?t b?i!");
+      alert("Xóa coupon thểt b?i!");
     }
   };
 
-  // �?i tr?ng th�i
+  // Ð?i trạng thái
   const handleUpdateStatus = async (
     discount: Discount,
     status: "active" | "inactive" | "archived"
@@ -144,7 +144,7 @@ const DiscountPage = () => {
       await adminCouponService.updateCouponStatus(discount.id, { status });
       fetchDiscounts();
     } catch {
-      alert("C?p nh?t tr?ng th�i th?t b?i!");
+      alert("Cập nhật trạng thái thểt b?i!");
     }
   };
 
@@ -178,7 +178,7 @@ const DiscountPage = () => {
     }
   };
 
-  // L?c theo t�m ki?m
+  // Lọc theo tìm kiếm
   const filteredDiscounts = discounts.filter(
     (d) =>
       d.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -189,7 +189,7 @@ const DiscountPage = () => {
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
-          Danh S�ch Coupon
+          Danh Sách Coupon
         </h2>
         {!isSearchVisible ? (
           <button
@@ -197,7 +197,7 @@ const DiscountPage = () => {
             className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
             <IoIosSearch className="text-xl text-mono-500" />
-            <span className="font-medium">T�m ki?m</span>
+            <span className="font-medium">Tìm kiếm</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
@@ -212,7 +212,7 @@ const DiscountPage = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="T�m theo m� ho?c m� t?..."
+              placeholder="Tìm theo mã ho?c mô t?..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -227,7 +227,7 @@ const DiscountPage = () => {
               setForm(initialForm);
             }}
           >
-            Th�m Coupon
+            Thêm Coupon
           </button>
         )}
       </div>
@@ -235,19 +235,19 @@ const DiscountPage = () => {
         <table className="min-w-full bg-white rounded-md overflow-hidden border">
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
-              <th className="py-3 px-4 text-center border-b">M�</th>
-              <th className="py-3 px-4 text-center border-b">M� t?</th>
+              <th className="py-3 px-4 text-center border-b">Mã</th>
+              <th className="py-3 px-4 text-center border-b">Mô t?</th>
               <th className="py-3 px-4 text-center border-b">Lo?i</th>
-              <th className="py-3 px-4 text-center border-b">Gi� tr?</th>
-              <th className="py-3 px-4 text-center border-b">Gi?m t?i da</th>
-              <th className="py-3 px-4 text-center border-b">�on t?i thi?u</th>
-              <th className="py-3 px-4 text-center border-b">Ng�y b?t d?u</th>
-              <th className="py-3 px-4 text-center border-b">Ng�y k?t th�c</th>
-              <th className="py-3 px-4 text-center border-b">Lu?t d�ng</th>
-              <th className="py-3 px-4 text-center border-b">T?i da</th>
-              <th className="py-3 px-4 text-center border-b">Tr?ng th�i</th>
-              <th className="py-3 px-4 text-center border-b">C�ng khai</th>
-              <th className="py-3 px-4 text-center border-b">Thao t�c</th>
+              <th className="py-3 px-4 text-center border-b">Giá trở</th>
+              <th className="py-3 px-4 text-center border-b">Giảm tại da</th>
+              <th className="py-3 px-4 text-center border-b">Ðon tại thi?u</th>
+              <th className="py-3 px-4 text-center border-b">Ngày b?t đầu</th>
+              <th className="py-3 px-4 text-center border-b">Ngày k?t thúc</th>
+              <th className="py-3 px-4 text-center border-b">Lu?t dùng</th>
+              <th className="py-3 px-4 text-center border-b">Tại da</th>
+              <th className="py-3 px-4 text-center border-b">Trạng thái</th>
+              <th className="py-3 px-4 text-center border-b">Công khai</th>
+              <th className="py-3 px-4 text-center border-b">Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -260,7 +260,7 @@ const DiscountPage = () => {
                   {discount.description}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
-                  {discount.type === "percent" ? "Ph?n tram" : "C? d?nh"}
+                  {discount.type === "percent" ? "Phần tram" : "C? đếnh"}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
                   {discount.type === "percent"
@@ -289,17 +289,17 @@ const DiscountPage = () => {
                 </td>
                 <td className="py-2 px-4 border-b text-center">
                   {discount.status === "active" ? (
-                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
-                      �ang ho?t d?ng
+                    <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
+                      Ðang ho?t đếng
                     </span>
                   ) : (
                     <span className="bg-mono-200 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
-                      Ng?ng
+                      Ngẩng
                     </span>
                   )}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
-                  {discount.isPublic ? "C�" : "Kh�ng"}
+                  {discount.isPublic ? "Có" : "Không"}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
                   <div className="flex flex-col gap-2 min-w-[120px]">
@@ -308,7 +308,7 @@ const DiscountPage = () => {
                         onClick={() => handleEditDiscount(discount)}
                         className="inline-flex items-center justify-center bg-mono-500 hover:bg-mono-black text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                       >
-                        S?a
+                        Sửa
                       </button>
                     )}
                     {canDelete() && (
@@ -316,14 +316,14 @@ const DiscountPage = () => {
                         onClick={() => handleDeleteDiscount(discount)}
                         className="inline-flex items-center justify-center bg-mono-800 hover:bg-mono-900 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all"
                       >
-                        X�a
+                        Xóa
                       </button>
                     )}
                     {canToggleStatus() && (
                       <button
                         className={`text-xs px-2 py-1 rounded-full ${
                           discount.status === "active"
-                            ? "bg-yellow-400 hover:bg-yellow-500 text-white"
+                            ? "bg-mono-400 hover:bg-mono-1000 text-white"
                             : "bg-mono-700 hover:bg-mono-800 text-white"
                         }`}
                         onClick={() =>
@@ -333,7 +333,7 @@ const DiscountPage = () => {
                           )
                         }
                       >
-                        {discount.status === "active" ? "Ng?ng" : "K�ch ho?t"}
+                        {discount.status === "active" ? "Ngẩng" : "Kích ho?t"}
                       </button>
                     )}
                   </div>
@@ -344,7 +344,7 @@ const DiscountPage = () => {
         </table>
       </div>
 
-      {/* Modal Th�m */}
+      {/* Modal Thêm */}
       {showAdd && (
         <AddDiscount
           handleClose={() => {
@@ -354,7 +354,7 @@ const DiscountPage = () => {
         />
       )}
 
-      {/* Modal S?a */}
+      {/* Modal Sửa */}
       {showEdit && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
           <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md relative text-black overflow-y-auto max-h-[90vh]">
@@ -365,16 +365,16 @@ const DiscountPage = () => {
             >
               &times;
             </button>
-            <h3 className="text-xl font-bold mb-6 text-center">S?a Coupon</h3>
+            <h3 className="text-xl font-bold mb-6 text-center">Sửa Coupon</h3>
             <form onSubmit={handleUpdateDiscount}>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  M� coupon
+                  Mã coupon
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="code"
-                  placeholder="M� coupon"
+                  placeholder="Mã coupon"
                   value={form.code}
                   onChange={handleChange}
                   required
@@ -382,12 +382,12 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  M� t?
+                  Mô t?
                 </label>
                 <textarea
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="description"
-                  placeholder="M� t?"
+                  placeholder="Mô t?"
                   value={form.description}
                   onChange={handleChange}
                   required
@@ -395,7 +395,7 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Lo?i gi?m gi�
+                  Lo?i giảm giá
                 </label>
                 <select
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
@@ -403,20 +403,20 @@ const DiscountPage = () => {
                   value={form.type}
                   onChange={handleChange}
                 >
-                  <option value="percent">Ph?n tram (%)</option>
-                  <option value="fixed">S? ti?n c? d?nh</option>
+                  <option value="percent">Phần tram (%)</option>
+                  <option value="fixed">Số tiền c? đếnh</option>
                 </select>
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Gi� tr?
+                  Giá trở
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="value"
                   type="number"
                   placeholder={
-                    form.type === "percent" ? "Gi� tr? (%)" : "S? ti?n gi?m"
+                    form.type === "percent" ? "Giá trở (%)" : "Số tiền giảm"
                   }
                   value={form.value}
                   onChange={handleChange}
@@ -427,13 +427,13 @@ const DiscountPage = () => {
               {form.type === "percent" && (
                 <div className="mb-4">
                   <label className="block text-sm font-bold text-mono-600">
-                    Gi?m t?i da (VND)
+                    Giảm tại đã (VND)
                   </label>
                   <input
                     className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                     name="maxDiscount"
                     type="number"
-                    placeholder="Gi?m t?i da"
+                    placeholder="Giảm tại da"
                     value={form.maxDiscount}
                     onChange={handleChange}
                     min={0}
@@ -442,13 +442,13 @@ const DiscountPage = () => {
               )}
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  �on t?i thi?u (VND)
+                  Ðon tại thi?u (VND)
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="minOrderValue"
                   type="number"
-                  placeholder="�on t?i thi?u"
+                  placeholder="Ðon tại thi?u"
                   value={form.minOrderValue}
                   onChange={handleChange}
                   min={0}
@@ -456,7 +456,7 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Ng�y b?t d?u
+                  Ngày b?t đầu
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
@@ -469,7 +469,7 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Ng�y k?t th�c
+                  Ngày k?t thúc
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
@@ -482,13 +482,13 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  S? lu?t s? d?ng t?i da
+                  Số lu?t sử dụng tại da
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="maxUses"
                   type="number"
-                  placeholder="S? lu?t s? d?ng t?i da"
+                  placeholder="Số lu?t sử dụng tại da"
                   value={form.maxUses}
                   onChange={handleChange}
                   min={1}
@@ -502,7 +502,7 @@ const DiscountPage = () => {
                   onChange={handleChange}
                   className="mr-2"
                 />
-                <span className="text-sm text-mono-700">C�ng khai</span>
+                <span className="text-sm text-mono-700">Công khai</span>
               </div>
               <div className="flex justify-end gap-4">
                 <button
@@ -516,7 +516,7 @@ const DiscountPage = () => {
                   onClick={() => setShowEdit(false)}
                   className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
                 >
-                  H?y
+                  Hủy
                 </button>
               </div>
             </form>
@@ -528,3 +528,6 @@ const DiscountPage = () => {
 };
 
 export default DiscountPage;
+
+
+

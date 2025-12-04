@@ -21,7 +21,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
 }) => {
   return (
     <div className="flex items-center gap-4 p-4 border border-mono-200 rounded-lg hover:shadow-md transition-shadow">
-      {/* Ảnh sản phẩm */}
+      {/* ẩnh sản phẩm */}
       <div className="w-16 h-16 bg-mono-200 flex items-center justify-center rounded-lg overflow-hidden flex-shrink-0">
         {image ? (
           <img src={image} alt={name} className="w-full h-full object-cover" />
@@ -50,11 +50,11 @@ const OrderCard: React.FC<OrderCardProps> = ({
         </div>
         <div className="flex items-center justify-between">
           <span className="text-sm text-mono-600">
-            Đơn giá: {price?.toLocaleString()}đ
+            Ðon giá: {price?.toLocaleString()}d
           </span>
           {showTotal && (
             <span className="text-mono-800 font-semibold">
-              Tổng: {(price * quantity).toLocaleString()}đ
+              Tổng: {(price * quantity).toLocaleString()}d
             </span>
           )}
         </div>
@@ -64,3 +64,4 @@ const OrderCard: React.FC<OrderCardProps> = ({
 };
 
 export default OrderCard;
+

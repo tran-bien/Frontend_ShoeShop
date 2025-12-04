@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Inventory Types
- * Định nghĩa các interface liên quan đến Kho hàng
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Kho hÃ ng
  */
 
 // =======================
@@ -137,7 +137,7 @@ export interface InventoryTransaction {
   performedBy: {
     _id: string;
     name?: string;
-    email?: string;
+    email: string;
   };
   createdAt: string;
   updatedAt?: string;

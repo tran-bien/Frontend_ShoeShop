@@ -153,7 +153,7 @@ const LoyaltyTiersManagement: React.FC = () => {
                   </div>
                   {tier.benefits.prioritySupport && (
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-2 h-2 bg-mono-500 rounded-full"></div>
                       <span className="text-sm text-gray-700">
                         Hỗ trợ ưu tiên
                       </span>
@@ -167,7 +167,7 @@ const LoyaltyTiersManagement: React.FC = () => {
                     onClick={() => handleToggleActive(tier)}
                     className={`w-full px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       tier.isActive
-                        ? "bg-green-100 text-green-700 hover:bg-green-200"
+                        ? "bg-mono-100 text-mono-700 hover:bg-mono-200"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
@@ -190,7 +190,7 @@ const LoyaltyTiersManagement: React.FC = () => {
                 </button>
                 <button
                   onClick={() => handleDelete(tier._id)}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors text-red-600"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors text-mono-700"
                 >
                   <FiTrash2 className="w-4 h-4" />
                   <span className="text-sm">Xóa</span>
@@ -241,3 +241,6 @@ const LoyaltyTiersManagement: React.FC = () => {
 };
 
 export default LoyaltyTiersManagement;
+
+
+

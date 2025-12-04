@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Size Guide Types
- * Định nghĩa các interface liên quan đến Hướng dẫn Size
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n HÆ°á»›ng dáº«n Size
  */
 
 // =======================

@@ -11,10 +11,10 @@ const RegisterPage: React.FC = () => {
 
       {/* Nội dung chính */}
       <div className="w-full max-w-2xl text-center">
-        {/* Tiêu đề */}
-        <h2 className="text-4xl font-bold text-mono-900 mb-8">ĐĂNG KÝ</h2>
+        {/* Tiêu d? */}
+        <h2 className="text-4xl font-bold text-mono-900 mb-8">ÐANG KÝ</h2>
 
-        {/* Form đăng ký */}
+        {/* Form đang ký */}
         <RegisterForm />
       </div>
     </div>
@@ -22,3 +22,4 @@ const RegisterPage: React.FC = () => {
 };
 
 export default RegisterPage;
+

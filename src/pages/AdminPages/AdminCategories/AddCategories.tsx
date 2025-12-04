@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { adminCategoryService } from "../../../services/CategoryService";
 
 interface AddCategoryProps {
@@ -37,7 +37,7 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Th�m danh m?c th?t b?i!");
+      setError("Thêm danh mục thểt b?i!");
     } finally {
       setLoading(false);
     }
@@ -53,21 +53,21 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Th�m Danh M?c</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Thêm Danh M?c</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="categoryName"
               className="block text-sm font-bold text-mono-600"
             >
-              T�n Danh M?c
+              Tên Danh M?c
             </label>
             <input
               type="text"
               id="categoryName"
               value={categoryName}
               onChange={handleCategoryNameChange}
-              placeholder="Nh?p t�n danh m?c"
+              placeholder="Nhập tên danh mục"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -77,13 +77,13 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
               htmlFor="categoryDescription"
               className="block text-sm font-bold text-mono-600"
             >
-              M� t?
+              Mô t?
             </label>
             <textarea
               id="categoryDescription"
               value={categoryDescription}
               onChange={handleCategoryDescriptionChange}
-              placeholder="Nh?p m� t? danh m?c"
+              placeholder="Nhập mô từ danh mục"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -93,16 +93,16 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-md"
+              className="bg-mono-800 hover:bg-mono-900 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "�ang th�m..." : "Th�m Danh M?c"}
+              {loading ? "Ðang thêm..." : "Thêm Danh M?c"}
             </button>
             <button
               type="button"
               onClick={handleClose}
               className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
-              H?y
+              Hủy
             </button>
           </div>
         </form>
@@ -112,3 +112,6 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
 };
 
 export default AddCategoryPage;
+
+
+

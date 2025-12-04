@@ -1,4 +1,4 @@
-import { axiosInstanceAuth, axiosInstance } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth, axiosInstance } from "../utils/axiosIntance";
 import type {
   Order,
   CreateOrderData,
@@ -33,30 +33,30 @@ export type {
 // =======================
 
 export const userOrderService = {
-  // Lấy danh sách đơn hàng của người dùng với phân trang và filter
+  // Láº¥y danh sÃ¡ch Ä‘Æ¡n hÃ ng cá»§a ngÆ°á»i dÃ¹ng vá»›i phÃ¢n trang vÃ  filter
   getOrders: (
     params: OrderQueryParams = {}
   ): Promise<{ data: OrdersResponse }> =>
     axiosInstanceAuth.get("/api/v1/users/orders", { params }),
 
-  // Tạo đơn hàng mới
+  // Táº¡o Ä‘Æ¡n hÃ ng má»›i
   createOrder: (
     data: CreateOrderData
   ): Promise<{ data: CreateOrderResponse }> =>
     axiosInstanceAuth.post("/api/v1/users/orders", data),
 
-  // Lấy chi tiết đơn hàng
+  // Láº¥y chi tiáº¿t Ä‘Æ¡n hÃ ng
   getOrderById: (orderId: string): Promise<{ data: OrderDetailResponse }> =>
     axiosInstanceAuth.get(`/api/v1/users/orders/${orderId}`),
 
-  // Gửi yêu cầu hủy đơn hàng
+  // Gá»­i yÃªu cáº§u há»§y Ä‘Æ¡n hÃ ng
   cancelOrder: (
     orderId: string,
     data: CancelOrderData
   ): Promise<{ data: CancelOrderResponse }> =>
     axiosInstanceAuth.post(`/api/v1/users/orders/${orderId}/cancel`, data),
 
-  // Lấy danh sách yêu cầu hủy đơn hàng của user
+  // Láº¥y danh sÃ¡ch yÃªu cáº§u há»§y Ä‘Æ¡n hÃ ng cá»§a user
   getUserCancelRequests: (params?: {
     page?: number;
     limit?: number;
@@ -66,7 +66,7 @@ export const userOrderService = {
       params,
     }),
 
-  // Thanh toán lại đơn hàng
+  // Thanh toÃ¡n láº¡i Ä‘Æ¡n hÃ ng
   repayOrder: (orderId: string): Promise<{ data: CreateOrderResponse }> =>
     axiosInstanceAuth.post(`/api/v1/users/orders/${orderId}/repay`),
 };
@@ -76,17 +76,17 @@ export const userOrderService = {
 // =======================
 
 export const adminOrderService = {
-  // Lấy danh sách tất cả đơn hàng (admin)
+  // Láº¥y danh sÃ¡ch táº¥t cáº£ Ä‘Æ¡n hÃ ng (admin)
   getAllOrders: (
     params: OrderQueryParams = {}
   ): Promise<{ data: OrdersResponse }> =>
     axiosInstanceAuth.get("/api/v1/admin/orders", { params }),
 
-  // Lấy chi tiết đơn hàng (admin)
+  // Láº¥y chi tiáº¿t Ä‘Æ¡n hÃ ng (admin)
   getOrderDetail: (orderId: string): Promise<{ data: OrderDetailResponse }> =>
     axiosInstanceAuth.get(`/api/v1/admin/orders/${orderId}`),
 
-  // Cập nhật trạng thái đơn hàng
+  // Cáº­p nháº­t tráº¡ng thÃ¡i Ä‘Æ¡n hÃ ng
   updateOrderStatus: (
     orderId: string,
     data: {
@@ -96,7 +96,7 @@ export const adminOrderService = {
   ): Promise<{ data: UpdateOrderStatusResponse }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/orders/${orderId}/status`, data),
 
-  // Lấy danh sách yêu cầu hủy đơn hàng
+  // Láº¥y danh sÃ¡ch yÃªu cáº§u há»§y Ä‘Æ¡n hÃ ng
   getCancelRequests: (params?: {
     page?: number;
     limit?: number;
@@ -104,7 +104,7 @@ export const adminOrderService = {
   }): Promise<{ data: CancelRequestsResponse }> =>
     axiosInstanceAuth.get("/api/v1/admin/orders/cancel-requests", { params }),
 
-  // Xử lý yêu cầu hủy đơn hàng
+  // Xá»­ lÃ½ yÃªu cáº§u há»§y Ä‘Æ¡n hÃ ng
   processCancelRequest: (
     requestId: string,
     data: {
@@ -123,17 +123,17 @@ export const adminOrderService = {
 // =======================
 
 export const paymentService = {
-  // Xử lý callback từ VNPAY
+  // Xá»­ lÃ½ callback tá»« VNPAY
   vnpayCallback: (
     params: VnpayCallbackParams
   ): Promise<{ data: VnpayResponse }> =>
     axiosInstance.get("/api/v1/users/orders/vnpay/callback", { params }),
 
-  // Xử lý IPN từ VNPAY
+  // Xá»­ lÃ½ IPN tá»« VNPAY
   vnpayIpn: (data: VnpayCallbackParams): Promise<{ data: VnpayResponse }> =>
     axiosInstance.post("/api/v1/users/orders/vnpay/ipn", data),
 
-  // Test callback từ VNPAY
+  // Test callback tá»« VNPAY
   testVnpayCallback: (): Promise<{ data: VnpayResponse }> =>
     axiosInstance.get("/api/v1/users/orders/vnpay/test-callback"),
 };

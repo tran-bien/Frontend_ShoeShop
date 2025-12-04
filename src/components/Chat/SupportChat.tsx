@@ -6,6 +6,7 @@ import {
   FiLoader,
   FiUser,
   FiHeadphones,
+  FiImage,
 } from "react-icons/fi";
 import {
   chatService,
@@ -29,8 +30,11 @@ const SupportChat: React.FC = () => {
   const [isSending, setIsSending] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Auto scroll to bottom
@@ -184,10 +188,17 @@ const SupportChat: React.FC = () => {
   };
 
   const sendMessage = async () => {
-    if (!inputMessage.trim() || !activeConversation || isSending) return;
+    const hasText = inputMessage.trim();
+    const hasImages = selectedImages.length > 0;
+
+    if ((!hasText && !hasImages) || !activeConversation || isSending) return;
 
     const messageText = inputMessage.trim();
+    const imagesToSend = [...selectedImages];
+
     setInputMessage("");
+    setSelectedImages([]);
+    setPreviewImages([]);
     setIsSending(true);
 
     // Stop typing indicator
@@ -196,14 +207,18 @@ const SupportChat: React.FC = () => {
     }
 
     try {
+      // Determine message type
+      const messageType = hasImages ? "image" : "text";
+
       // Prefer Socket.IO for real-time
       if (socket?.connected) {
         socket.emit(
           "chat:sendMessage",
           {
             conversationId: activeConversation._id,
-            type: "text",
+            type: messageType,
             text: messageText,
+            images: imagesToSend,
           },
           (response: {
             success: boolean;
@@ -219,8 +234,11 @@ const SupportChat: React.FC = () => {
       } else {
         // HTTP fallback
         const response = await chatService.sendMessage(activeConversation._id, {
-          type: "text",
+          type: messageType,
           text: messageText,
+          images: hasImages
+            ? imagesToSend.map((img) => ({ url: img, public_id: "" }))
+            : undefined,
         });
         if (response.data.success) {
           setMessages((prev) => [...prev, response.data.data]);
@@ -455,9 +473,100 @@ const SupportChat: React.FC = () => {
                 <div ref={messagesEndRef} />
               </div>
 
+              {/* Image Preview */}
+              {previewImages.length > 0 && (
+                <div className="px-4 py-2 border-t border-mono-200 bg-mono-50">
+                  <div className="flex flex-wrap gap-2">
+                    {previewImages.map((img, idx) => (
+                      <div key={idx} className="relative">
+                        <img
+                          src={img}
+                          alt={`Preview ${idx + 1}`}
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
+                        <button
+                          onClick={() => {
+                            setPreviewImages((prev) =>
+                              prev.filter((_, i) => i !== idx)
+                            );
+                            setSelectedImages((prev) =>
+                              prev.filter((_, i) => i !== idx)
+                            );
+                          }}
+                          className="absolute -top-1 -right-1 w-5 h-5 bg-mono-1000 text-white rounded-full text-xs flex items-center justify-center hover:bg-mono-700"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Input */}
               <div className="p-4 border-t border-mono-200 bg-white">
                 <div className="flex items-center gap-2">
+                  {/* Hidden file input */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      if (files) {
+                        const newImages: string[] = [];
+                        const newPreviews: string[] = [];
+
+                        const remainingSlots = 10 - selectedImages.length;
+                        const filesToProcess = Math.min(
+                          files.length,
+                          remainingSlots
+                        );
+
+                        if (files.length > remainingSlots) {
+                          toast.error(`Chỉ được gửi tối đa 10 ảnh`);
+                        }
+
+                        for (let i = 0; i < filesToProcess; i++) {
+                          const file = files[i];
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            const base64 = event.target?.result as string;
+                            newImages.push(base64);
+                            newPreviews.push(base64);
+
+                            if (newImages.length === filesToProcess) {
+                              setSelectedImages((prev) => [
+                                ...prev,
+                                ...newImages,
+                              ]);
+                              setPreviewImages((prev) => [
+                                ...prev,
+                                ...newPreviews,
+                              ]);
+                            }
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }
+                      // Reset input
+                      e.target.value = "";
+                    }}
+                  />
+
+                  {/* Image upload button */}
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isSending || selectedImages.length >= 10}
+                    className="p-2.5 text-mono-600 hover:text-mono-900 hover:bg-mono-100 rounded-full disabled:text-mono-300 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Đính kèm ảnh"
+                    title="Đính kèm ảnh (tối đa 10 ảnh)"
+                  >
+                    <FiImage className="w-5 h-5" />
+                  </button>
+
                   <input
                     ref={inputRef}
                     type="text"
@@ -473,7 +582,10 @@ const SupportChat: React.FC = () => {
                   />
                   <button
                     onClick={sendMessage}
-                    disabled={!inputMessage.trim() || isSending}
+                    disabled={
+                      (!inputMessage.trim() && selectedImages.length === 0) ||
+                      isSending
+                    }
                     className="p-2.5 bg-mono-900 text-white rounded-full hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-colors"
                     aria-label="Gửi tin nhắn"
                   >
@@ -494,3 +606,6 @@ const SupportChat: React.FC = () => {
 };
 
 export default SupportChat;
+
+
+

@@ -11,7 +11,7 @@ const LikeProduct = () => {
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
 
-  // Lấy danh sách sản phẩm yêu thích từ API
+  // L?y danh sách sản phẩm yêu thích từ API
   useEffect(() => {
     const fetchWishlist = async () => {
       setLoading(true);
@@ -23,9 +23,9 @@ const LikeProduct = () => {
           setWishlist([]);
         }
       } catch (error) {
-        console.error("Lỗi khi tải danh sách yêu thích:", error);
+        console.error("Lỗi khi tại danh sách yêu thích:", error);
         setWishlist([]);
-        toast.error("Không thể tải danh sách yêu thích");
+        toast.error("Không thể tại danh sách yêu thích");
       } finally {
         setLoading(false);
       }
@@ -34,9 +34,9 @@ const LikeProduct = () => {
     fetchWishlist();
   }, []);
 
-  // Hàm xóa sản phẩm khỏi wishlist
+  // Hàm xóa sản phẩm kh?i wishlist
   const removeProduct = async (wishlistItemId: string) => {
-    if (removingItems.has(wishlistItemId)) return; // Tránh click nhiều lần
+    if (removingItems.has(wishlistItemId)) return; // Tránh click nhi?u lẩn
 
     setRemovingItems((prev) => new Set([...prev, wishlistItemId]));
     try {
@@ -45,13 +45,13 @@ const LikeProduct = () => {
         setWishlist((prev) =>
           prev.filter((item) => item._id !== wishlistItemId)
         );
-        toast.success("Đã xóa khỏi danh sách yêu thích");
+        toast.success("Ðã xóa kh?i danh sách yêu thích");
       } else {
-        toast.error("Xóa sản phẩm yêu thích thất bại!");
+        toast.error("Xóa sản phẩm yêu thích thểt b?i!");
       }
     } catch (error) {
-      console.error("Lỗi khi xóa khỏi wishlist:", error);
-      toast.error("Xóa sản phẩm yêu thích thất bại!");
+      console.error("Lỗi khi xóa kh?i wishlist:", error);
+      toast.error("Xóa sản phẩm yêu thích thểt b?i!");
     } finally {
       setRemovingItems((prev) => {
         const newSet = new Set(prev);
@@ -61,7 +61,7 @@ const LikeProduct = () => {
     }
   };
 
-  // Hàm di chuyển đến trang chi tiết sản phẩm
+  // Hàm di chuyện đến trang chi tiết sản phẩm
   const navigateToProduct = (productId: string) => {
     navigate(`/product/${productId}`);
   };
@@ -71,15 +71,15 @@ const LikeProduct = () => {
       {loading ? (
         <div className="py-10 text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-mono-500 border-r-transparent"></div>
-          <p className="mt-4 text-mono-600">Đang tải danh sách yêu thích...</p>
+          <p className="mt-4 text-mono-600">Ðang tại danh sách yêu thích...</p>
         </div>
       ) : wishlist.length === 0 ? (
         <div className="py-10 text-center">
-          <div className="text-5xl text-mono-300 mb-4">❤️</div>
-          <p className="text-mono-600">Bạn chưa có sản phẩm yêu thích nào.</p>
+          <div className="text-5xl text-mono-300 mb-4">??</div>
+          <p className="text-mono-600">Bẩn chua có sản phẩm yêu thích nào.</p>
           <button
             onClick={() => navigate("/products")}
-            className="mt-4 px-4 py-2 bg-mono-black text-white rounded hover:bg-blue-700 transition-colors"
+            className="mt-4 px-4 py-2 bg-mono-black text-white rounded hover:bg-mono-800 transition-colors"
           >
             Khám phá sản phẩm
           </button>
@@ -90,7 +90,7 @@ const LikeProduct = () => {
             key={item._id}
             className="flex items-center bg-white shadow-md rounded-lg p-4 w-[400px] hover:shadow-lg transition-shadow duration-200"
           >
-            {/* Ảnh sản phẩm */}
+            {/* ẩnh sản phẩm */}
             <div
               className="w-16 h-16 bg-mono-100 flex items-center justify-center rounded-md font-bold text-lg overflow-hidden cursor-pointer"
               onClick={() => navigateToProduct(item.product._id)}
@@ -117,18 +117,18 @@ const LikeProduct = () => {
               {item.variant ? (
                 <>
                   <p className="text-mono-800 font-semibold">
-                    {item.variant.priceFinal?.toLocaleString()}đ
+                    {item.variant.priceFinal.toLocaleString()}d
                   </p>
                   {item.variant.percentDiscount &&
                     item.variant.percentDiscount > 0 && (
                       <span className="text-xs text-mono-500 line-through">
-                        {item.variant.price?.toLocaleString()}đ
+                        {item.variant.price?.toLocaleString()}d
                       </span>
                     )}
                 </>
               ) : (
                 <p className="text-mono-800 font-semibold">
-                  {item.product.price?.toLocaleString() || "Liên hệ"}đ
+                  {item.product.price?.toLocaleString() || "Liên h?"}d
                 </p>
               )}
             </div>
@@ -136,8 +136,8 @@ const LikeProduct = () => {
             {/* Icon thùng rác */}
             <button
               onClick={() => removeProduct(item._id)}
-              className="text-mono-800 hover:text-red-700 p-2 rounded-full hover:bg-mono-100 transition-colors"
-              title="Xóa khỏi yêu thích"
+              className="text-mono-800 hover:text-mono-800 p-2 rounded-full hover:bg-mono-100 transition-colors"
+              title="Xóa kh?i yêu thích"
               disabled={removingItems.has(item._id)}
             >
               {removingItems.has(item._id) ? (
@@ -154,3 +154,7 @@ const LikeProduct = () => {
 };
 
 export default LikeProduct;
+
+
+
+

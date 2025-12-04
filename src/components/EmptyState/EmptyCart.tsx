@@ -15,3 +15,4 @@ const EmptyCart: React.FC = () => {
 };
 
 export default EmptyCart;
+

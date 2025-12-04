@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { FiLoader } from "react-icons/fi";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -56,7 +56,7 @@ const Button: React.FC<ButtonProps> = ({
       {isLoading ? (
         <>
           <FiLoader className="animate-spin" />
-          <span>Đang xử lý...</span>
+          <span>Äang xá»­ lÃ½...</span>
         </>
       ) : (
         <>
@@ -70,3 +70,4 @@ const Button: React.FC<ButtonProps> = ({
 };
 
 export default Button;
+

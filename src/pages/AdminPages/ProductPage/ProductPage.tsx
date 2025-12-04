@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { productAdminService } from "../../../services/ProductService";
 import { adminBrandService } from "../../../services/BrandService";
 import { adminCategoryService } from "../../../services/CategoryService";
@@ -40,14 +40,14 @@ const ProductPage = () => {
   const [sortOption, setSortOption] = useState("created_at_desc");
   const limit = 10;
 
-  // Modal c?p nh?t tr?ng th�i active
+  // Modal cập nhật trống thï¿½i active
   const [showActiveModal, setShowActiveModal] = useState(false);
   const [activeForm, setActiveForm] = useState({
     isActive: false,
     cascade: true,
   });
 
-  // State cho form s?a
+  // State cho form sửa
   const [editForm, setEditForm] = useState({
     name: "",
     description: "",
@@ -175,7 +175,7 @@ const ProductPage = () => {
       setShowEdit(false);
       fetchProducts();
     } catch {
-      setEditError("C?p nh?t s?n ph?m th?t b?i!");
+      setEditError("Cập nhật sản phẩm thểt b?i!");
     } finally {
       setEditLoading(false);
     }
@@ -198,14 +198,14 @@ const ProductPage = () => {
     fetchProducts();
   };
 
-  // M? modal c?p nh?t tr?ng th�i active
+  // M? modal cập nhật trống thï¿½i active
   const openActiveModal = (product: Product) => {
     setSelectedProduct(product);
     setActiveForm({ isActive: !product.isActive, cascade: true });
     setShowActiveModal(true);
   };
 
-  // G?i c?p nh?t tr?ng th�i active
+  // Gửi cập nhật trống thï¿½i active
   const handleActiveSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedProduct) return;
@@ -274,10 +274,10 @@ const ProductPage = () => {
   return (
     <div className="p-6 w-full font-sans bg-mono-50 min-h-screen">
       <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug mb-6">
-        Qu?n L� S?n Ph?m
+        Quận Lï¿½ Sẩn Ph?m
       </h2>
 
-      {/* Tab chuy?n d?i */}
+      {/* Tab chuyện đổi */}
       <div className="flex border-b mb-6 bg-white rounded-t-lg">
         <button
           onClick={() => {
@@ -290,7 +290,7 @@ const ProductPage = () => {
               : "text-mono-500 border-transparent hover:text-mono-black"
           }`}
         >
-          S?n ph?m
+          Sản phẩm
           {!showDeleted && totalProducts > 0 ? ` (${totalProducts})` : ""}
         </button>
         {hasStaffAccess() && (
@@ -305,15 +305,15 @@ const ProductPage = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            S?n ph?m d� x�a
+            Sản phẩm dï¿½ xï¿½a
           </button>
         )}
         {!showDeleted && canCreate() && (
           <button
-            className="ml-auto px-6 py-3 bg-mono-black hover:bg-blue-700 text-white rounded-lg font-medium mr-3 my-2 transition-colors shadow-sm"
+            className="ml-auto px-6 py-3 bg-mono-black hover:bg-mono-800 text-white rounded-lg font-medium mr-3 my-2 transition-colors shadow-sm"
             onClick={() => openModal("add")}
           >
-            + Th�m S?n Ph?m
+            + Thï¿½m Sẩn Ph?m
           </button>
         )}
       </div>
@@ -326,7 +326,7 @@ const ProductPage = () => {
             <div className="flex-1">
               <input
                 type="text"
-                placeholder="?? T�m ki?m s?n ph?m theo t�n..."
+                placeholder="?? Tï¿½m ki?m sản phẩm theo tï¿½n..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -348,7 +348,7 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">T?t c? danh m?c</option>
+              <option value="all">Tất cả danh mục</option>
               {categories.map((cat) => (
                 <option key={cat._id} value={cat._id}>
                   {cat.name}
@@ -365,7 +365,7 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">T?t c? thuong hi?u</option>
+              <option value="all">Tất cả thuong hi?u</option>
               {brands.map((brand) => (
                 <option key={brand._id} value={brand._id}>
                   {brand.name}
@@ -382,10 +382,10 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">T?t c? t?n kho</option>
-              <option value="in_stock">C�n h�ng</option>
+              <option value="all">Tất cả tên kho</option>
+              <option value="in_stock">Cï¿½n hï¿½ng</option>
               <option value="low_stock">S?p h?t</option>
-              <option value="out_of_stock">H?t h�ng</option>
+              <option value="out_of_stock">H?t hï¿½ng</option>
             </select>
 
             {/* Active Status Filter */}
@@ -397,9 +397,9 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">T?t c? tr?ng th�i</option>
-              <option value="true">�ang b�n</option>
-              <option value="false">?n</option>
+              <option value="all">Tất cả trống thï¿½i</option>
+              <option value="true">ï¿½ang bï¿½n</option>
+              <option value="false">ẩn</option>
             </select>
 
             {/* Sort */}
@@ -411,10 +411,10 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="created_at_desc">M?i nh?t</option>
+              <option value="created_at_desc">Mới nh?t</option>
               <option value="created_at_asc">Cu nh?t</option>
-              <option value="name_asc">T�n A-Z</option>
-              <option value="name_desc">T�n Z-A</option>
+              <option value="name_asc">Tï¿½n A-Z</option>
+              <option value="name_desc">Tï¿½n Z-A</option>
             </select>
           </div>
 
@@ -435,9 +435,9 @@ const ProductPage = () => {
                 setSortOption("created_at_desc");
                 setCurrentPage(1);
               }}
-              className="text-sm text-mono-black hover:text-blue-800 font-medium"
+              className="text-sm text-mono-black hover:text-mono-800 font-medium"
             >
-              ? X�a b? l?c
+              ? Xï¿½a bỏ lọc
             </button>
           )}
         </div>
@@ -446,7 +446,7 @@ const ProductPage = () => {
       {loading ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-mono-black"></div>
-          <p className="mt-4 text-mono-600">�ang t?i d? li?u...</p>
+          <p className="mt-4 text-mono-600">ï¿½ang tại dữ liệu...</p>
         </div>
       ) : products.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
@@ -465,15 +465,15 @@ const ProductPage = () => {
           </svg>
           <h3 className="text-lg font-medium text-mono-900 mb-2">
             {showDeleted
-              ? "Kh�ng c� s?n ph?m n�o d� x�a"
-              : "Kh�ng t�m th?y s?n ph?m"}
+              ? "Khï¿½ng cï¿½ sản phẩm nï¿½o dï¿½ xï¿½a"
+              : "Khï¿½ng tï¿½m thủy sản phẩm"}
           </h3>
           <p className="text-mono-500">
             {showDeleted
-              ? "Chua c� s?n ph?m n�o b? x�a trong h? th?ng"
+              ? "Chua cï¿½ sản phẩm nï¿½o bỏ xï¿½a trong họ thàng"
               : searchQuery || categoryFilter !== "all" || brandFilter !== "all"
-              ? "Th? thay d?i b? l?c ho?c t? kh�a t�m ki?m"
-              : "H�y th�m s?n ph?m d?u ti�n c?a b?n"}
+              ? "Thọ thay đổi bỏ lọc ho?c từ khï¿½a tï¿½m ki?m"
+              : "Hï¿½y thï¿½m sản phẩm đầu tiï¿½n của bẩn"}
           </p>
         </div>
       ) : (
@@ -483,25 +483,25 @@ const ProductPage = () => {
               <thead className="bg-gradient-to-r from-mono-50 to-mono-100">
                 <tr>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    S?n ph?m
+                    Sản phẩm
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Danh m?c
+                    Danh mục
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Thuong hi?u
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Gi� b�n
+                    Giï¿½ bï¿½n
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    T?n kho
+                    Tên kho
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Tr?ng th�i
+                    Trống thï¿½i
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    H�nh d?ng
+                    Hï¿½nh đếng
                   </th>
                 </tr>
               </thead>
@@ -518,7 +518,7 @@ const ProductPage = () => {
                     totalQuantity,
                   } = product;
 
-                  // S? d?ng variantSummary n?u c�, n?u kh�ng th� fallback v? price
+                  // Sử dụng variantSummary n?u cï¿½, n?u khï¿½ng thï¿½ fallback v? price
                   const priceRange = product.variantSummary?.priceRange || {
                     min: product.price || 0,
                     max: product.price || 0,
@@ -581,7 +581,7 @@ const ProductPage = () => {
                         }`}
                         title={
                           !showDeleted && canUpdate()
-                            ? "Nh?n d? c?p nh?t tr?ng th�i t?n kho"
+                            ? "Nhơn d? cập nhật trống thï¿½i tên kho"
                             : ""
                         }
                         onClick={() => {
@@ -593,18 +593,18 @@ const ProductPage = () => {
                           {
                             {
                               in_stock: (
-                                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold inline-block">
-                                  C�n h�ng
+                                <span className="bg-mono-100 text-mono-800 px-3 py-1 rounded-full text-xs font-semibold inline-block">
+                                  Cï¿½n hï¿½ng
                                 </span>
                               ),
                               low_stock: (
-                                <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold inline-block">
+                                <span className="bg-mono-100 text-mono-800 px-3 py-1 rounded-full text-xs font-semibold inline-block">
                                   S?p h?t
                                 </span>
                               ),
                               out_of_stock: (
-                                <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold inline-block">
-                                  H?t h�ng
+                                <span className="bg-mono-200 text-mono-900 px-3 py-1 rounded-full text-xs font-semibold inline-block">
+                                  H?t hï¿½ng
                                 </span>
                               ),
                             }[stockStatus || "out_of_stock"]
@@ -620,24 +620,24 @@ const ProductPage = () => {
                             type="button"
                             className={`inline-block px-3 py-1.5 rounded-full text-xs font-semibold focus:outline-none transition-all transform hover:scale-105 ${
                               isActive
-                                ? "bg-green-100 text-green-700 hover:bg-green-200"
+                                ? "bg-mono-100 text-mono-700 hover:bg-mono-200"
                                 : "bg-mono-100 text-mono-700 hover:bg-mono-200"
                             }`}
                             onClick={() => openActiveModal(product)}
-                            title="C?p nh?t tr?ng th�i"
+                            title="Cập nhật trống thï¿½i"
                           >
-                            {isActive ? "? �ang b�n" : "? ?n"}
+                            {isActive ? "? ï¿½ang bï¿½n" : "? ẩn"}
                           </button>
                         )}
                         {!showDeleted && !canToggleStatus() && (
                           <span
                             className={`inline-block px-3 py-1.5 rounded-full text-xs font-semibold ${
                               isActive
-                                ? "bg-green-100 text-green-700"
+                                ? "bg-mono-100 text-mono-700"
                                 : "bg-mono-100 text-mono-700"
                             }`}
                           >
-                            {isActive ? "? �ang b�n" : "? ?n"}
+                            {isActive ? "? ï¿½ang bï¿½n" : "? ẩn"}
                           </span>
                         )}
                       </td>
@@ -646,9 +646,9 @@ const ProductPage = () => {
                           {!showDeleted ? (
                             <>
                               <button
-                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                 onClick={() => openModal("detail", product)}
-                                title="Xem chi ti?t"
+                                title="Xem chi tiết"
                               >
                                 <svg
                                   className="w-3.5 h-3.5"
@@ -669,14 +669,14 @@ const ProductPage = () => {
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                   />
                                 </svg>
-                                Chi ti?t
+                                Chi tiết
                               </button>
                               {canUpdate() && (
                                 <>
                                   <button
                                     className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                     onClick={() => openModal("edit", product)}
-                                    title="S?a s?n ph?m"
+                                    title="Sửa sản phẩm"
                                   >
                                     <svg
                                       className="w-3.5 h-3.5"
@@ -691,12 +691,12 @@ const ProductPage = () => {
                                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                       />
                                     </svg>
-                                    S?a
+                                    Sửa
                                   </button>
                                   <button
-                                    className="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-medium rounded-lg border border-purple-200 transition-colors flex items-center gap-1.5"
+                                    className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                     onClick={() => openModal("images", product)}
-                                    title="Qu?n l� ?nh s?n ph?m"
+                                    title="Quận lï¿½ ẩnh sản phẩm"
                                   >
                                     <svg
                                       className="w-3.5 h-3.5"
@@ -711,15 +711,15 @@ const ProductPage = () => {
                                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                       />
                                     </svg>
-                                    ?nh
+                                    ẩnh
                                   </button>
                                 </>
                               )}
                               {canDelete() && (
                                 <button
-                                  className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-1.5"
+                                  className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                                   onClick={() => openModal("delete", product)}
-                                  title="X�a s?n ph?m"
+                                  title="Xï¿½a sản phẩm"
                                 >
                                   <svg
                                     className="w-3.5 h-3.5"
@@ -734,16 +734,16 @@ const ProductPage = () => {
                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                     />
                                   </svg>
-                                  X�a
+                                  Xï¿½a
                                 </button>
                               )}
                             </>
                           ) : (
                             hasAdminOnlyAccess() && (
                               <button
-                                className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-1.5"
+                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                 onClick={() => handleRestore(product._id)}
-                                title="Kh�i ph?c s?n ph?m"
+                                title="Khï¿½i ph?c sản phẩm"
                               >
                                 <svg
                                   className="w-3.5 h-3.5"
@@ -758,7 +758,7 @@ const ProductPage = () => {
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                                   />
                                 </svg>
-                                Kh�i ph?c
+                                Khï¿½i ph?c
                               </button>
                             )
                           )}
@@ -782,7 +782,7 @@ const ProductPage = () => {
                   disabled={currentPage === 1}
                   className="relative inline-flex items-center px-4 py-2 border border-mono-300 text-sm font-medium rounded-md text-mono-700 bg-white hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Tru?c
+                  Trước
                 </button>
                 <button
                   onClick={() =>
@@ -797,16 +797,16 @@ const ProductPage = () => {
               <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm text-mono-700">
-                    Hi?n th?{" "}
+                    Hiện thể{" "}
                     <span className="font-medium">
                       {(currentPage - 1) * limit + 1}
                     </span>{" "}
-                    d?n{" "}
+                    đến{" "}
                     <span className="font-medium">
                       {Math.min(currentPage * limit, totalProducts)}
                     </span>{" "}
-                    trong t?ng s?{" "}
-                    <span className="font-medium">{totalProducts}</span> s?n
+                    trong tổng s?{" "}
+                    <span className="font-medium">{totalProducts}</span> sẩn
                     ph?m
                   </p>
                 </div>
@@ -885,31 +885,31 @@ const ProductPage = () => {
             >
               &times;
             </button>
-            <h2 className="text-xl font-bold mb-8 text-center">S?a S?n Ph?m</h2>
+            <h2 className="text-xl font-bold mb-8 text-center">Sửa Sẩn Ph?m</h2>
             <form className="space-y-4" onSubmit={handleEditSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  T�n s?n ph?m
+                  Tï¿½n sản phẩm
                 </label>
                 <input
                   type="text"
                   name="name"
                   value={editForm.name}
                   onChange={handleEditChange}
-                  placeholder="Nh?p t�n s?n ph?m"
+                  placeholder="Nhập tï¿½n sản phẩm"
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   required
                 />
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  M� t?
+                  Mï¿½ t?
                 </label>
                 <textarea
                   name="description"
                   value={editForm.description}
                   onChange={handleEditChange}
-                  placeholder="Nh?p m� t?"
+                  placeholder="Nhập mï¿½ t?"
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   rows={3}
                   required
@@ -917,7 +917,7 @@ const ProductPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Danh m?c
+                  Danh mục
                 </label>
                 <select
                   name="category"
@@ -926,7 +926,7 @@ const ProductPage = () => {
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   required
                 >
-                  <option value="">Ch?n danh m?c</option>
+                  <option value="">Chơn danh mục</option>
                   {categories.map((cat) => (
                     <option key={cat._id} value={cat._id}>
                       {cat.name}
@@ -945,7 +945,7 @@ const ProductPage = () => {
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   required
                 >
-                  <option value="">Ch?n thuong hi?u</option>
+                  <option value="">Chơn thuong hi?u</option>
                   {brands.map((brand) => (
                     <option key={brand._id} value={brand._id}>
                       {brand.name}
@@ -962,14 +962,14 @@ const ProductPage = () => {
                   onClick={() => closeModal("edit")}
                   className="bg-mono-500 hover:bg-mono-600 text-white px-6 py-2 rounded-md"
                 >
-                  H?y
+                  Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={editLoading}
                   className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-md"
                 >
-                  {editLoading ? "�ang c?p nh?t..." : "C?p nh?t"}
+                  {editLoading ? "ï¿½ang cập nhật..." : "Cập nhật"}
                 </button>
               </div>
             </form>
@@ -980,43 +980,43 @@ const ProductPage = () => {
       {showDelete && selectedProduct && (
         <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-2xl shadow-lg w-auto relative text-black">
-            <h2 className="text-xl font-bold mb-4 text-center">X�c nh?n x�a</h2>
+            <h2 className="text-xl font-bold mb-4 text-center">Xï¿½c nhơn xï¿½a</h2>
             <p className="text-center mb-6">
-              B?n c� ch?c ch?n mu?n x�a s?n ph?m "{selectedProduct.name}"?
+              Bẩn cï¿½ chỉc chơn muẩn xï¿½a sản phẩm "{selectedProduct.name}"?
             </p>
             <div className="flex justify-center gap-4">
               <button
                 onClick={() => closeModal("delete")}
                 className="bg-mono-500 hover:bg-mono-600 text-white px-6 py-2 rounded-md"
               >
-                H?y
+                Hủy
               </button>
               <button
                 onClick={handleDelete}
                 className="bg-mono-800 hover:bg-mono-900 text-white px-6 py-2 rounded-md"
               >
-                X�a
+                Xï¿½a
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal c?p nh?t tr?ng th�i active */}
+      {/* Modal cập nhật trống thï¿½i active */}
       {showActiveModal && selectedProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md relative animate-fadeIn">
             {/* Header */}
             <div className="px-6 py-4 border-b border-mono-200">
               <h2 className="text-lg font-semibold text-mono-900">
-                C?p nh?t tr?ng th�i s?n ph?m
+                Cập nhật trống thï¿½i sản phẩm
               </h2>
             </div>
 
             {/* Body */}
             <form onSubmit={handleActiveSubmit}>
               <div className="px-6 py-5 space-y-4">
-                {/* Checkbox ?n/Hi?n s?n ph?m */}
+                {/* Checkbox ẩn/Hiện sản phẩm */}
                 <div className="flex items-start space-x-3">
                   <div className="flex items-center h-5">
                     <input
@@ -1037,7 +1037,7 @@ const ProductPage = () => {
                       htmlFor="isActive"
                       className="text-sm font-medium text-mono-700 cursor-pointer select-none"
                     >
-                      ?n
+                      ẩn
                     </label>
                   </div>
                 </div>
@@ -1063,7 +1063,7 @@ const ProductPage = () => {
                       htmlFor="cascade"
                       className="text-sm font-medium text-mono-700 cursor-pointer select-none"
                     >
-                      C?p nh?t cho bi?n th?
+                      Cập nhật cho biẩn thể
                     </label>
                   </div>
                 </div>
@@ -1076,11 +1076,11 @@ const ProductPage = () => {
                   className="px-4 py-2 text-sm font-medium text-mono-700 bg-white border border-mono-300 rounded-lg hover:bg-mono-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mono-500 transition-colors"
                   onClick={() => closeModal("active")}
                 >
-                  H?y
+                  Hủy
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm font-medium text-white bg-mono-black rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mono-500 transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-white bg-mono-black rounded-lg hover:bg-mono-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mono-500 transition-colors"
                 >
                   Luu
                 </button>
@@ -1097,7 +1097,7 @@ const ProductPage = () => {
         />
       )}
 
-      {/* Modal Qu?n L� ?nh */}
+      {/* Modal Quận Lï¿½ ẩnh */}
       {showImageManager && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-4 w-full max-w-xl relative">
@@ -1105,7 +1105,7 @@ const ProductPage = () => {
               className="absolute top-2 right-2 text-xl font-bold hover:text-mono-900"
               onClick={() => closeModal("images")}
             >
-              �
+              ï¿½
             </button>
             <ProductImagesManager
               productId={showImageManager}
@@ -1128,3 +1128,10 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
+
+
+
+
+
+
+

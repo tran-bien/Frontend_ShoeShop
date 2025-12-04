@@ -1,7 +1,7 @@
-/**
+﻿/**
  * Variant Types
- * Định nghĩa các interface liên quan đến Biến thể sản phẩm
- * Giá và số lượng giờ được quản lý trong Inventory, không còn trong Variant
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Biáº¿n thá»ƒ sáº£n pháº©m
+ * GiÃ¡ vÃ  sá»‘ lÆ°á»£ng giá» Ä‘Æ°á»£c quáº£n lÃ½ trong Inventory, khÃ´ng cÃ²n trong Variant
  */
 
 import type { ProductImage } from "./common";
@@ -37,10 +37,10 @@ export interface Variant {
   updatedAt?: string;
   imagesvariant?: ProductImage[];
 
-  // REMOVED từ BE schema: price, costPrice, percentDiscount, priceFinal, profit, profitPercentage
-  // Giá và lợi nhuận giờ được quản lý qua InventoryItem và InventoryTransaction
+  // REMOVED tá»« BE schema: price, costPrice, percentDiscount, priceFinal, profit, profitPercentage
+  // GiÃ¡ vÃ  lá»£i nhuáº­n giá» Ä‘Æ°á»£c quáº£n lÃ½ qua InventoryItem vÃ  InventoryTransaction
 
-  // Inventory summary từ BE (cho admin view)
+  // Inventory summary tá»« BE (cho admin view)
   inventorySummary?: {
     totalQuantity: number;
     availableSizes: number;
@@ -92,5 +92,5 @@ export interface VariantQueryParams {
   includeDeleted?: boolean;
   sort?: string;
   // REMOVED: costPriceMin, costPriceMax, priceMin, priceMax, finalPriceMin, finalPriceMax
-  // Giá giờ không filter ở Variant nữa
+  // GiÃ¡ giá» khÃ´ng filter á»Ÿ Variant ná»¯a
 }

@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FiChevronRight, FiHome } from "react-icons/fi";
 
@@ -28,24 +28,24 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
     const breadcrumbs: BreadcrumbItem[] = [];
 
     const pathMap: { [key: string]: string } = {
-      products: "Sản phẩm",
-      product: "Chi tiết sản phẩm",
-      cart: "Giỏ hàng",
-      checkout: "Thanh toán",
-      "order-confirmation": "Xác nhận đơn hàng",
-      "user-information": "Thông tin tài khoản",
-      "user-manage-order": "Quản lý đơn hàng",
-      "user-reviews": "Đánh giá của tôi",
+      products: "Sáº£n pháº©m",
+      product: "Chi tiáº¿t sáº£n pháº©m",
+      cart: "Giá» hÃ ng",
+      checkout: "Thanh toÃ¡n",
+      "order-confirmation": "XÃ¡c nháº­n Ä‘Æ¡n hÃ ng",
+      "user-information": "ThÃ´ng tin tÃ i khoáº£n",
+      "user-manage-order": "Quáº£n lÃ½ Ä‘Æ¡n hÃ ng",
+      "user-reviews": "ÄÃ¡nh giÃ¡ cá»§a tÃ´i",
       blog: "Blog",
-      coupons: "Mã giảm giá",
-      compare: "So sánh sản phẩm",
-      wishlist: "Yêu thích",
-      "like-page": "Sản phẩm yêu thích",
-      notifications: "Thông báo",
+      coupons: "MÃ£ giáº£m giÃ¡",
+      compare: "So sÃ¡nh sáº£n pháº©m",
+      wishlist: "YÃªu thÃ­ch",
+      "like-page": "Sáº£n pháº©m yÃªu thÃ­ch",
+      notifications: "ThÃ´ng bÃ¡o",
       loyalty: "Loyalty",
-      returns: "Đổi trả",
-      recommendations: "Gợi ý cho bạn",
-      "view-history": "Lịch sử xem",
+      returns: "Äá»•i tráº£",
+      recommendations: "Gá»£i Ã½ cho báº¡n",
+      "view-history": "Lá»‹ch sá»­ xem",
     };
 
     let currentPath = "";
@@ -77,7 +77,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
               className="flex items-center gap-1 text-mono-500 hover:text-mono-900 transition-colors"
             >
               <FiHome className="w-4 h-4" />
-              <span>Trang chủ</span>
+              <span>Trang chá»§</span>
             </Link>
             {breadcrumbItems.length > 0 && (
               <FiChevronRight className="mx-2 text-mono-400 w-4 h-4" />
@@ -110,3 +110,4 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 };
 
 export default Breadcrumb;
+

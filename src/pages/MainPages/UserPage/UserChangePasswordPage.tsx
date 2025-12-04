@@ -25,7 +25,7 @@ const UserChangePasswordPage: React.FC = () => {
       [name]: value,
     });
 
-    // Xóa lỗi khi người dùng bắt đầu nhập
+    // Xóa lỗi khi người dùng b?t đầu nhập
     if (errors[name]) {
       setErrors({
         ...errors,
@@ -46,15 +46,15 @@ const UserChangePasswordPage: React.FC = () => {
     if (!formData.newPassword) {
       newErrors.newPassword = "Vui lòng nhập mật khẩu mới";
     } else if (formData.newPassword.length < 8) {
-      newErrors.newPassword = "Mật khẩu mới phải có ít nhất 8 ký tự";
+      newErrors.newPassword = "Mật khẩu mới ph?i có ít nh?t 8 ký t?";
     } else if (!/[A-Za-z]/.test(formData.newPassword)) {
-      newErrors.newPassword = "Mật khẩu mới phải có ít nhất 1 chữ cái";
+      newErrors.newPassword = "Mật khẩu mới ph?i có ít nh?t 1 chờ cái";
     } else if (!/\d/.test(formData.newPassword)) {
-      newErrors.newPassword = "Mật khẩu mới phải có ít nhất 1 số";
+      newErrors.newPassword = "Mật khẩu mới ph?i có ít nh?t 1 s?";
     } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.newPassword)) {
-      newErrors.newPassword = "Mật khẩu mới phải có ít nhất 1 ký tự đặc biệt";
+      newErrors.newPassword = "Mật khẩu mới ph?i có ít nh?t 1 ký từ d?c bi?t";
     } else if (formData.newPassword === formData.currentPassword) {
-      newErrors.newPassword = "Mật khẩu mới phải khác mật khẩu hiện tại";
+      newErrors.newPassword = "Mật khẩu mới ph?i khác mật khẩu hiện tại";
     }
 
     // Validate confirmPassword
@@ -62,7 +62,7 @@ const UserChangePasswordPage: React.FC = () => {
       newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
     } else if (formData.confirmPassword !== formData.newPassword) {
       newErrors.confirmPassword =
-        "Mật khẩu mới và xác nhận mật khẩu không khớp";
+        "Mật khẩu mới và xác nhận mật khẩu không khợp";
     }
 
     setErrors(newErrors);
@@ -86,7 +86,7 @@ const UserChangePasswordPage: React.FC = () => {
 
       if (response.success) {
         toast.success(
-          response.message || "Mật khẩu đã được thay đổi thành công"
+          response.message || "Mật khẩu dã được thay đổi thành công"
         );
 
         // Reset form sau khi thay đổi thành công
@@ -96,21 +96,21 @@ const UserChangePasswordPage: React.FC = () => {
           confirmPassword: "",
         });
 
-        // Đăng xuất sau vài giây vì backend cũng đã logout hết các phiên
+        // Ðang xuất sau vài giây vì backend cung dã logout h?t các phiên
         setTimeout(() => {
-          toast.success("Hệ thống sẽ đăng xuất để áp dụng thay đổi mật khẩu");
+          toast.success("Họ thàng số đang xuất d? áp dụng thay đổi mật khẩu");
           setTimeout(() => {
             // Redirect to login
             window.location.href = "/login";
-          }, 5000); // 4 giây để người dùng đọc thông báo
+          }, 5000); // 4 giây d? người dùng d?c thông báo
         }, 1000);
       }
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Có lỗi xảy ra khi thay đổi mật khẩu";
+        error.response?.data?.message || "Có lỗi x?y ra khi thay đổi mật khẩu";
       toast.error(errorMessage);
 
-      // Thêm lỗi cụ thể vào form nếu API trả về
+      // Thêm lỗi c? thọ vào form n?u API trở về
       if (error.response?.data?.errors) {
         const apiErrors: Record<string, string> = {};
         error.response.data.errors.forEach((err: any) => {
@@ -133,7 +133,7 @@ const UserChangePasswordPage: React.FC = () => {
           <div className="max-w-2xl mx-auto">
             <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
               <FaKey className="text-mono-black" />
-              Đổi mật khẩu
+              Ð?i mật khẩu
             </h1>
 
             <div className="bg-white rounded-lg shadow-md p-6">
@@ -262,19 +262,19 @@ const UserChangePasswordPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Hướng dẫn mật khẩu */}
+                {/* Huẩng đến mật khẩu */}
                 <div className="bg-mono-50 p-4 rounded-lg">
-                  <h3 className="text-sm font-medium text-blue-800 mb-2">
-                    Yêu cầu mật khẩu:
+                  <h3 className="text-sm font-medium text-mono-800 mb-2">
+                    Yêu c?u mật khẩu:
                   </h3>
-                  <ul className="text-xs text-blue-700 list-disc pl-5 space-y-1">
-                    <li>Ít nhất 8 ký tự</li>
-                    <li>Ít nhất 1 chữ cái</li>
-                    <li>Ít nhất 1 số</li>
+                  <ul className="text-xs text-mono-700 list-disc pl-5 space-y-1">
+                    <li>Ít nh?t 8 ký t?</li>
+                    <li>Ít nh?t 1 chờ cái</li>
+                    <li>Ít nh?t 1 s?</li>
                     <li>
-                      Ít nhất 1 ký tự đặc biệt (!@#$%^&*(),.?":{}|&lt;&gt;)
+                      Ít nh?t 1 ký từ d?c bi?t (!@#$%^&*(),.?":{}|&lt;&gt;)
                     </li>
-                    <li>Phải khác mật khẩu hiện tại</li>
+                    <li>Ph?i khác mật khẩu hiện tại</li>
                   </ul>
                 </div>
 
@@ -283,18 +283,18 @@ const UserChangePasswordPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full px-4 py-3 bg-mono-black text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full px-4 py-3 bg-mono-black text-white font-medium rounded-lg hover:bg-mono-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? "Đang xử lý..." : "Đổi mật khẩu"}
+                    {loading ? "Ðang xử lý..." : "Ð?i mật khẩu"}
                   </button>
                 </div>
 
-                {/* Thông báo quan trọng */}
-                <div className="bg-yellow-50 p-4 rounded-lg">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Lưu ý:</strong> Sau khi đổi mật khẩu thành công, bạn
-                    sẽ được đăng xuất khỏi tất cả các thiết bị và cần đăng nhập
-                    lại.
+                {/* Thông báo quan trống */}
+                <div className="bg-mono-100 p-4 rounded-lg">
+                  <p className="text-sm text-mono-800">
+                    <strong>Luu ý:</strong> Sau khi đổi mật khẩu thành công, bẩn
+                    số được đang xuất kh?i tất cả các thi?t bỏ và cẩn đang nhập
+                    lỗi.
                   </p>
                 </div>
               </form>
@@ -307,3 +307,6 @@ const UserChangePasswordPage: React.FC = () => {
 };
 
 export default UserChangePasswordPage;
+
+
+

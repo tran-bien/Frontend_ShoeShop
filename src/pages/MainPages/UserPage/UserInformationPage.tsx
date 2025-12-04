@@ -21,7 +21,7 @@ const UserInformation: React.FC = () => {
           {/*<div className="w-56 flex justify-center items-center">
             <img
               src={banner}
-              alt="Quảng cáo"
+              alt="Quậng cáo"
               className="rounded-lg shadow-lg object-contain w-full"
             />
           </div>*/}
@@ -32,3 +32,4 @@ const UserInformation: React.FC = () => {
 };
 
 export default UserInformation;
+

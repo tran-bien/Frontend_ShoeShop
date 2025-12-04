@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import EmptyState from "./EmptyState";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
@@ -16,11 +16,11 @@ const EmptySearchResults: React.FC<EmptySearchResultsProps> = ({
       icon={<MagnifyingGlassIcon className="h-24 w-24" />}
       title={
         searchQuery
-          ? `Không tìm thấy "${searchQuery}"`
-          : "Không tìm thấy sản phẩm"
+          ? `KhÃ´ng tÃ¬m tháº¥y "${searchQuery}"`
+          : "KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m"
       }
-      description="Không có sản phẩm nào phù hợp với tìm kiếm của bạn. Hãy thử từ khóa khác hoặc xóa bộ lọc."
-      actionLabel={onClearFilters ? "Xóa bộ lọc" : "Xem tất cả sản phẩm"}
+      description="KhÃ´ng cÃ³ sáº£n pháº©m nÃ o phÃ¹ há»£p vá»›i tÃ¬m kiáº¿m cá»§a báº¡n. HÃ£y thá»­ tá»« khÃ³a khÃ¡c hoáº·c xÃ³a bá»™ lá»c."
+      actionLabel={onClearFilters ? "XÃ³a bá»™ lá»c" : "Xem táº¥t cáº£ sáº£n pháº©m"}
       actionLink={onClearFilters ? undefined : "/products"}
       onAction={onClearFilters}
     />
@@ -28,3 +28,4 @@ const EmptySearchResults: React.FC<EmptySearchResultsProps> = ({
 };
 
 export default EmptySearchResults;
+

@@ -15,3 +15,4 @@ const EmptyOrders: React.FC = () => {
 };
 
 export default EmptyOrders;
+

@@ -31,7 +31,7 @@ interface LinkProps {
   href?: string;
   icon: React.ElementType;
   subLinks?: { name: string; href: string }[];
-  adminOnly?: boolean; // Chỉ admin mới thấy
+  adminOnly?: boolean; // Chờ admin mới thủy
 }
 
 const AdminSidebar = () => {
@@ -61,13 +61,13 @@ const AdminSidebar = () => {
       name: "Dashboard",
       href: "/admin/dashboard",
       icon: GrDashboard,
-      adminOnly: true, // Chỉ admin mới thấy dashboard
+      adminOnly: true, // Chờ admin mới thủy dashboard
     },
     {
       name: "Users",
       href: "/admin/users",
       icon: GrUser,
-      adminOnly: true, // Chỉ admin mới thấy
+      adminOnly: true, // Chờ admin mới thủy
       subLinks: [
         { name: "All Users", href: "/admin/users" },
         //{ name: "Add User", href: "/admin/users/add" },
@@ -105,11 +105,11 @@ const AdminSidebar = () => {
       name: "Settings",
       href: "/admin/settings",
       icon: GrSettingsOption,
-      adminOnly: true, // Chỉ admin mới thấy
+      adminOnly: true, // Chờ admin mới thủy
     },
   ];
 
-  // Lọc menu items theo quyền
+  // Lọc menu items theo quyẩn
   const filteredLinks = links.filter((link) => {
     if (link.adminOnly) {
       return hasAdminOnlyAccess();
@@ -184,3 +184,4 @@ const AdminSidebar = () => {
 };
 
 export default AdminSidebar;
+

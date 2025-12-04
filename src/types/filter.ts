@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Filter Types
- * Định nghĩa các interface liên quan đến Filter/Search sản phẩm
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Filter/Search sáº£n pháº©m
  */
 
 import type { ColorFilter } from "./color";

@@ -128,7 +128,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 2. Mục đích sử dụng thông tin
               </h2>
               <p className="text-mono-700 leading-relaxed mb-4">
-                Chúng tôi sử dụng thông tin của bạn để:
+                Chúng tôi sử dụng thông tin của bạn đ?:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-mono-700">
                 <li>Xử lý và giao đơn hàng của bạn</li>
@@ -194,7 +194,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 5. Cookies và công nghệ theo dõi
               </h2>
               <p className="text-mono-700 leading-relaxed mb-4">
-                Chúng tôi sử dụng cookies để:
+                Chúng tôi sử dụng cookies đ?:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-mono-700">
                 <li>Duy trì phiên đăng nhập của bạn</li>
@@ -247,7 +247,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 Chúng tôi lưu trữ dữ liệu của bạn trong thời gian cần thiết để
                 cung cấp dịch vụ và tuân thủ các nghĩa vụ pháp lý. Khi bạn yêu
                 cầu xóa tài khoản, chúng tôi sẽ xóa hoặc ẩn danh hóa dữ liệu của
-                bạn trong vòng 30 ngày, trừ trường hợp cần giữ lại vì lý do pháp
+                bạn trong vòng 30 ngày, trừ trường hợp cần giữ lại vì lý đo pháp
                 lý.
               </p>
             </section>
@@ -270,7 +270,7 @@ const PrivacyPolicyPage: React.FC = () => {
               </h2>
               <p className="text-mono-700 leading-relaxed mb-4">
                 Nếu bạn có câu hỏi về chính sách bảo mật hoặc muốn thực hiện các
-                quyền của mình, vui lòng liên hệ:
+                quyền của mình, vui lòng liên h?:
               </p>
               <div className="bg-mono-50 rounded-xl p-6">
                 <p className="text-mono-700">
@@ -279,7 +279,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 <p className="text-mono-700">Email: privacy@shoestore.com</p>
                 <p className="text-mono-700">Hotline: 1900 xxxx</p>
                 <p className="text-mono-700">
-                  Địa chỉ: 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh
+                  Địa ch?: 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh
                 </p>
               </div>
             </section>
@@ -291,3 +291,4 @@ const PrivacyPolicyPage: React.FC = () => {
 };
 
 export default PrivacyPolicyPage;
+

@@ -1,4 +1,4 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type { ApiResponse } from "../types/api";
 
 // =======================
@@ -59,7 +59,7 @@ interface InventoryReportResponse {
 // =======================
 
 export const adminReportService = {
-  // Báo cáo tồn kho chi tiết
+  // BÃ¡o cÃ¡o tá»“n kho chi tiáº¿t
   getInventoryReport: (
     params?: InventoryReportParams
   ): Promise<{ data: ApiResponse<InventoryReportResponse> }> =>

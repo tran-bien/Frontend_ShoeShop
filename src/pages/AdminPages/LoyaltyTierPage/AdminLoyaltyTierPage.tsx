@@ -61,10 +61,10 @@ const AdminLoyaltyTierPage = () => {
   const getTierColor = (tier: LoyaltyTier) => {
     const colors = {
       bronze: {
-        bg: "bg-orange-50",
-        text: "text-orange-700",
-        border: "border-orange-200",
-        icon: "text-orange-500",
+        bg: "bg-mono-100",
+        text: "text-mono-700",
+        border: "border-mono-300",
+        icon: "text-mono-600",
       },
       silver: {
         bg: "bg-mono-100",
@@ -75,19 +75,19 @@ const AdminLoyaltyTierPage = () => {
       gold: {
         bg: "bg-mono-100",
         text: "text-mono-800",
-        border: "border-yellow-200",
+        border: "border-mono-200",
         icon: "text-mono-700",
       },
       platinum: {
         bg: "bg-mono-200",
         text: "text-mono-900",
-        border: "border-blue-200",
+        border: "border-mono-300",
         icon: "text-mono-800",
       },
       diamond: {
         bg: "bg-mono-300",
         text: "text-mono-900",
-        border: "border-purple-200",
+        border: "border-mono-200",
         icon: "text-mono-800",
       },
     };
@@ -471,4 +471,9 @@ const AdminLoyaltyTierPage = () => {
 };
 
 export default AdminLoyaltyTierPage;
+
+
+
+
+
 

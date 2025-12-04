@@ -15,3 +15,4 @@ const EmptyViewHistory: React.FC = () => {
 };
 
 export default EmptyViewHistory;
+

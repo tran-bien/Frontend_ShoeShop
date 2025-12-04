@@ -1,28 +1,28 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type { Variant, VariantQueryParams } from "../types/variant";
 import { ApiResponse } from "../types/api";
 
 // Admin Variant Service
 export const adminVariantService = {
-  // Lấy danh sách tất cả variant
+  // Láº¥y danh sÃ¡ch táº¥t cáº£ variant
   getAllVariants: (
     params?: VariantQueryParams
   ): Promise<{ data: ApiResponse<Variant[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/variants", { params }),
 
-  // Lấy danh sách variant đã xóa
+  // Láº¥y danh sÃ¡ch variant Ä‘Ã£ xÃ³a
   getDeletedVariants: (
     params?: VariantQueryParams
   ): Promise<{ data: ApiResponse<Variant[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/variants/deleted", { params }),
 
-  // Lấy variant theo ID
+  // Láº¥y variant theo ID
   getVariantById: (
     variantId: string
   ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/variants/${variantId}`),
 
-  // Thêm variant mới
+  // ThÃªm variant má»›i
   createVariant: (data: {
     product: string;
     color: string;
@@ -32,7 +32,7 @@ export const adminVariantService = {
   }): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.post("/api/v1/admin/variants", data),
 
-  // Cập nhật variant
+  // Cáº­p nháº­t variant
   updateVariant: (
     variantId: string,
     data: {
@@ -44,17 +44,17 @@ export const adminVariantService = {
   ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/variants/${variantId}`, data),
 
-  // Xóa mềm variant
+  // XÃ³a má»m variant
   deleteVariant: (variantId: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/variants/${variantId}`),
 
-  // Khôi phục variant đã xóa
+  // KhÃ´i phá»¥c variant Ä‘Ã£ xÃ³a
   restoreVariant: (
     variantId: string
   ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.post(`/api/v1/admin/variants/${variantId}/restore`),
 
-  // Chỉnh sửa trạng thái isActive
+  // Chá»‰nh sá»­a tráº¡ng thÃ¡i isActive
   updateStatus: (
     variantId: string,
     isActive: boolean

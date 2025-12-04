@@ -103,7 +103,7 @@ const FAQPage: React.FC = () => {
         {
           question: "Phí đổi trả hàng ai chịu?",
           answer:
-            "Nếu lỗi từ shop (gửi sai size, màu, sản phẩm lỗi), ShoeStore sẽ chịu toàn bộ phí vận chuyển đổi trả. Nếu đổi trả vì lý do cá nhân (không vừa, không thích), khách hàng sẽ chịu phí vận chuyển 2 chiều.",
+            "Nếu lỗi từ shop (gửi sai size, màu, sản phẩm lỗi), ShoeStore sẽ chịu toàn bộ phí vận chuyển đổi trả. Nếu đổi trả vì lý đo cá nhân (không vừa, không thích), khách hàng sẽ chịu phí vận chuyển 2 chiều.",
         },
         {
           question: "Thời gian hoàn tiền mất bao lâu?",
@@ -459,3 +459,4 @@ const FAQPage: React.FC = () => {
 };
 
 export default FAQPage;
+

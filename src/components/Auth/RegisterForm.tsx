@@ -20,7 +20,7 @@ const RegisterForm: React.FC = () => {
 
   const handleRegister = async () => {
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Mật khẩu và xác nhận mật khẩu không khớp!");
+      toast.error("Mật khẩu và xác nhận mật khẩu không khợp!");
       return;
     }
 
@@ -37,19 +37,19 @@ const RegisterForm: React.FC = () => {
 
       if (response.data.success) {
         toast.success(
-          "Đăng ký thành công! Vui lòng kiểm tra email để nhận mã OTP."
+          "Ðang ký thành công! Vui lòng ki?m tra email d? nhơn mã OTP."
         );
-        navigate("/otp-verification"); // Điều hướng đến trang xác thực OTP
+        navigate("/otp-verification"); // Ði?u huẩng đến trang xác thực OTP
       }
     } catch (error: any) {
       // Xử lý thông báo lỗi chi tiết từ backend
-      let errorMessage = "Đăng ký thất bại!";
+      let errorMessage = "Ðang ký thểt b?i!";
 
       if (
         error.response?.data?.errors &&
         error.response.data.errors.length > 0
       ) {
-        // Lấy thông báo lỗi đầu tiên từ validation error
+        // L?y thông báo lỗi đầu tiên từ validation error
         errorMessage = error.response.data.errors[0].msg;
       } else if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
@@ -100,7 +100,7 @@ const RegisterForm: React.FC = () => {
         <input
           type="password"
           name="confirmPassword"
-          placeholder="Nhập lại mật khẩu"
+          placeholder="Nhập lỗi mật khẩu"
           className="w-full border border-mono-300 p-3 text-lg rounded outline-none"
           value={formData.confirmPassword}
           onChange={handleChange}
@@ -112,7 +112,7 @@ const RegisterForm: React.FC = () => {
         onClick={handleRegister}
         disabled={loading}
       >
-        {loading ? "Đang xử lý..." : "Đăng ký"}
+        {loading ? "Ðang xử lý..." : "Ðang ký"}
       </button>
       <ToastContainer />
     </div>
@@ -120,3 +120,4 @@ const RegisterForm: React.FC = () => {
 };
 
 export default RegisterForm;
+

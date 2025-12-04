@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+Ôªøimport { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaTruck,
@@ -52,23 +52,23 @@ const MyOrdersPage = () => {
       { label: string; color: string; icon: JSX.Element }
     > = {
       assigned_to_shipper: {
-        label: "–„ g·n",
-        color: "bg-mono-100 text-blue-800",
+        label: "√ê√£ g√°n",
+        color: "bg-mono-100 text-mono-800",
         icon: <FaHourglassHalf />,
       },
       out_for_delivery: {
-        label: "–ang giao",
-        color: "bg-yellow-100 text-yellow-800",
+        label: "√êang giao",
+        color: "bg-mono-100 text-mono-800",
         icon: <FaTruck />,
       },
       delivered: {
-        label: "–„ giao",
-        color: "bg-green-100 text-green-800",
+        label: "√ê√£ giao",
+        color: "bg-mono-100 text-mono-800",
         icon: <FaCheckCircle />,
       },
       delivery_failed: {
-        label: "Th?t b?i",
-        color: "bg-red-100 text-red-800",
+        label: "Th·ªÉt b?i",
+        color: "bg-mono-200 text-mono-900",
         icon: <FaTimesCircle />,
       },
     };
@@ -96,7 +96,7 @@ const MyOrdersPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">–ang t?i don h‡ng...</div>
+        <div className="text-mono-500">√êang t·∫°i don h√†ng...</div>
       </div>
     );
   }
@@ -106,7 +106,7 @@ const MyOrdersPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-mono-800">
-          –on h‡ng c?a tÙi ({filteredOrders.length})
+          √êon h√†ng c·ªßa t√¥i ({filteredOrders.length})
         </h1>
       </div>
 
@@ -115,7 +115,7 @@ const MyOrdersPage = () => {
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2 text-mono-700 font-medium">
             <FaFilter />
-            <span>L?c theo tr?ng th·i:</span>
+            <span>L·ªçc theo tr·∫°ng th√°i:</span>
           </div>
           <button
             onClick={() => setFilterStatus("")}
@@ -125,7 +125,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            T?t c? ({orders.length})
+            T·∫•t c·∫£ ({orders.length})
           </button>
           <button
             onClick={() => setFilterStatus("assigned_to_shipper")}
@@ -135,18 +135,18 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            –„ g·n (
+            √ê√£ g√°n (
             {orders.filter((o) => o.status === "assigned_to_shipper").length})
           </button>
           <button
             onClick={() => setFilterStatus("out_for_delivery")}
             className={`px-4 py-2 rounded-lg ${
               filterStatus === "out_for_delivery"
-                ? "bg-yellow-600 text-white"
+                ? "bg-mono-700 text-white"
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            –ang giao (
+            √êang giao (
             {orders.filter((o) => o.status === "out_for_delivery").length})
           </button>
           <button
@@ -157,7 +157,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            –„ giao ({orders.filter((o) => o.status === "delivered").length})
+            √ê√£ giao ({orders.filter((o) => o.status === "delivered").length})
           </button>
           <button
             onClick={() => setFilterStatus("delivery_failed")}
@@ -167,7 +167,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Th?t b?i (
+            Th·ªÉt b?i (
             {orders.filter((o) => o.status === "delivery_failed").length})
           </button>
         </div>
@@ -177,7 +177,7 @@ const MyOrdersPage = () => {
       {filteredOrders.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <FaTruck size={48} className="mx-auto text-mono-400 mb-4" />
-          <p className="text-mono-500 text-lg">KhÙng cÛ don h‡ng n‡o</p>
+          <p className="text-mono-500 text-lg">Kh√¥ng c√≥ don h√†ng n√†o</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -205,7 +205,7 @@ const MyOrdersPage = () => {
               <div className="p-6 space-y-4">
                 {/* Customer Info */}
                 <div>
-                  <p className="text-sm text-mono-600 mb-1">Kh·ch h‡ng</p>
+                  <p className="text-sm text-mono-600 mb-1">Kh√°ch h√†ng</p>
                   <div className="flex items-center gap-2">
                     <p className="font-semibold text-mono-800">
                       {order.user?.name || "N/A"}
@@ -225,7 +225,7 @@ const MyOrdersPage = () => {
                 <div>
                   <p className="text-sm text-mono-600 mb-1 flex items-center gap-1">
                     <FaMapMarkerAlt className="text-mono-800" />
-                    –?a ch? giao h‡ng
+                    √ê?a ch·ªù giao h√†ng
                   </p>
                   <p className="text-mono-800">
                     {order.shippingAddress?.address || "N/A"}
@@ -242,15 +242,15 @@ const MyOrdersPage = () => {
                 {/* Order Items Count */}
                 <div className="flex items-center justify-between pt-4 border-t border-mono-200">
                   <div>
-                    <p className="text-sm text-mono-600">S? lu?ng s?n ph?m</p>
+                    <p className="text-sm text-mono-600">S·ªë l∆∞·ª£ng s·∫£n ph·∫©m</p>
                     <p className="font-semibold text-mono-800">
-                      {order.items?.length || 0} m?t h‡ng
+                      {order.items?.length || 0} m?t h√†ng
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-mono-600">T?ng ti?n</p>
+                    <p className="text-sm text-mono-600">T·ªïng ti·ªÅn</p>
                     <p className="font-bold text-mono-black text-lg">
-                      {order.finalTotal?.toLocaleString("vi-VN")}?
+                      {order.finalTotal·ªá.toLocaleString("vi-VN")}?
                     </p>
                   </div>
                 </div>
@@ -261,7 +261,7 @@ const MyOrdersPage = () => {
                     <div className="bg-mono-50 rounded-lg p-3">
                       <p className="text-sm text-mono-600 mb-2 flex items-center gap-1">
                         <FaClock />
-                        L?n giao g?n nh?t
+                        L·∫©n giao g·∫©n nh?t
                       </p>
                       <p className="text-sm text-mono-800">
                         {new Date(
@@ -273,7 +273,7 @@ const MyOrdersPage = () => {
                       {order.deliveryAttempts[order.deliveryAttempts.length - 1]
                         .note && (
                         <p className="text-sm text-mono-600 mt-1">
-                          Ghi ch˙:{" "}
+                          Ghi ch√∫:{" "}
                           {
                             order.deliveryAttempts[
                               order.deliveryAttempts.length - 1
@@ -287,9 +287,9 @@ const MyOrdersPage = () => {
                 {/* Action Button */}
                 <button
                   onClick={() => handleViewDetail(order._id)}
-                  className="w-full bg-mono-black hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
+                  className="w-full bg-mono-black hover:bg-mono-800 text-white py-3 rounded-lg font-medium transition-colors"
                 >
-                  Xem chi ti?t & C?p nh?t
+                  Xem chi ti·∫øt & C·∫≠p nh·∫≠t
                 </button>
               </div>
             </div>
@@ -301,3 +301,7 @@ const MyOrdersPage = () => {
 };
 
 export default MyOrdersPage;
+
+
+
+

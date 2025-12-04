@@ -12,7 +12,7 @@ const ForgotPasswordForm = () => {
     {}
   );
 
-  // Validate email với regex đơn giản
+  // Validate email với regex don giẩn
   const isValidEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
@@ -23,7 +23,7 @@ const ForgotPasswordForm = () => {
 
     // Validate email
     if (!email) {
-      newErrors.email = "Vui lòng cung cấp email";
+      newErrors.email = "Vui lòng cung c?p email";
       isValid = false;
     } else if (!isValidEmail(email)) {
       newErrors.email = "Email không hợp lệ";
@@ -32,7 +32,7 @@ const ForgotPasswordForm = () => {
 
     // Validate captcha
     if (!isHuman) {
-      newErrors.captcha = "Vui lòng xác nhận bạn không phải là người máy";
+      newErrors.captcha = "Vui lòng xác nhận bẩn không ph?i là người máy";
       isValid = false;
     }
 
@@ -47,7 +47,7 @@ const ForgotPasswordForm = () => {
 
     setLoading(true);
     try {
-      console.log("Đang gửi yêu cầu quên mật khẩu với email:", email);
+      console.log("Ðang gửi yêu c?u quên mật khẩu với email:", email);
 
       const response = await axios.post(
         "http://localhost:5005/api/v1/auth/forgot-password",
@@ -56,28 +56,28 @@ const ForgotPasswordForm = () => {
 
       console.log("Response từ server:", response.data);
 
-      // Kiểm tra response thành công
+      // Ki?m tra response thành công
       if (response.status === 200 || response.data.success) {
         const message =
           response.data.message ||
-          "Link đặt lại mật khẩu đã được gửi đến email của bạn!";
-        console.log("Hiển thị thông báo thành công:", message);
+          "Link đặt lỗi mật khẩu dã được gửi đến email của bẩn!";
+        console.log("Hiện thọ thông báo thành công:", message);
 
         toast.success(message);
 
-        // Chuyển hướng sau khi gửi thành công
+        // Chuyện huẩng sau khi gửi thành công
         setTimeout(() => {
           navigate("/login");
         }, 3000);
       } else {
-        // Trường hợp response không thành công
+        // Truẩng hợp response không thành công
         const errorMessage =
-          response.data.message || "Có lỗi xảy ra khi gửi yêu cầu";
+          response.data.message || "Có lỗi x?y ra khi gửi yêu c?u";
         console.log("Response không thành công:", errorMessage);
         toast.error(errorMessage);
       }
     } catch (error: any) {
-      console.error("Lỗi khi gửi yêu cầu quên mật khẩu:", error);
+      console.error("Lỗi khi gửi yêu c?u quên mật khẩu:", error);
 
       // Xử lý thông báo lỗi chi tiết từ BE
       let errorMessage = "Không thể gửi yêu cầu đặt lại mật khẩu!";
@@ -88,14 +88,14 @@ const ForgotPasswordForm = () => {
         error.response.data.errors.length > 0
       ) {
         const backendErrors = error.response.data.errors;
-        // Xử lý từng loại lỗi theo path
+        // Xử lý tổng lo?i lỗi theo path
         backendErrors.forEach((err: any) => {
           if (err.path === "email") {
             fieldErrors.email = err.msg;
           }
         });
 
-        // Sử dụng thông báo lỗi đầu tiên nếu không có lỗi cụ thể
+        // Sử dụng thông báo lỗi đầu tiên n?u không có lỗi c? thể
         errorMessage = backendErrors[0].msg;
       } else if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
@@ -105,15 +105,15 @@ const ForgotPasswordForm = () => {
           error.code === "ERR_NETWORK"
         ) {
           errorMessage =
-            "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng!";
+            "Không thể k?t nội đến server. Vui lòng ki?m tra k?t nội mẩng!";
         } else {
           errorMessage = error.message;
         }
       }
 
-      console.log("Hiển thị thông báo lỗi:", errorMessage);
+      console.log("Hiện thọ thông báo lỗi:", errorMessage);
 
-      // Hiển thị lỗi
+      // Hiện thọ lỗi
       setErrors({ ...errors, ...fieldErrors });
       toast.error(errorMessage);
     } finally {
@@ -124,7 +124,7 @@ const ForgotPasswordForm = () => {
   return (
     <div className="w-[100%] flex items-center justify-center h-screen bg-white">
       <div className="w-[35%] p-8 bg-white rounded-lg flex flex-col items-center justify-center h-auto">
-        <h2 className="text-2xl mb-6 text-center">LẤY LẠI MẬT KHẨU</h2>
+        <h2 className="text-2xl mb-6 text-center">L?Y L?I M?T KH?U</h2>
 
         {/* Email */}
         <div className="w-full mb-4">
@@ -149,7 +149,7 @@ const ForgotPasswordForm = () => {
           )}
         </div>
 
-        {/* Tôi không phải là người máy */}
+        {/* Tôi không ph?i là người máy */}
         <div className="w-[40%] mb-2 flex items-center border border-black rounded-md p-2 bg-mono-100 justify-start self-start">
           <input
             type="checkbox"
@@ -167,7 +167,7 @@ const ForgotPasswordForm = () => {
             htmlFor="notRobot"
             className="text-base text-mono-500 font-light"
           >
-            Tôi không phải là người máy
+            Tôi không ph?i là người máy
           </label>
         </div>
 
@@ -185,14 +185,14 @@ const ForgotPasswordForm = () => {
             onClick={handleForgotPassword}
             disabled={loading}
           >
-            {loading ? "Đang xử lý..." : "Lấy lại mật khẩu"}
+            {loading ? "Ðang xử lý..." : "L?y lỗi mật khẩu"}
           </button>
           <button
             className="text-black text-base ml-[5cm] transition-all duration-300 hover:text-mono-600 hover:scale-105"
             onClick={() => navigate("/login")}
             disabled={loading}
           >
-            Đăng nhập
+            Ðang nhập
           </button>
         </div>
       </div>

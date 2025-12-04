@@ -140,8 +140,8 @@ const ContactPage: React.FC = () => {
 
             {submitted ? (
               <div className="text-center py-12">
-                <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                  <FiSend className="w-8 h-8 text-green-600" />
+                <div className="w-16 h-16 rounded-full bg-mono-100 flex items-center justify-center mx-auto mb-4">
+                  <FiSend className="w-8 h-8 text-mono-600" />
                 </div>
                 <h3 className="text-xl font-semibold text-mono-black mb-2">
                   Gửi tin nhắn thành công!
@@ -397,3 +397,5 @@ const ContactPage: React.FC = () => {
 };
 
 export default ContactPage;
+
+

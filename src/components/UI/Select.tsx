@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+﻿import React, { forwardRef } from "react";
 import { FiChevronDown } from "react-icons/fi";
 
 interface SelectOption {
@@ -24,7 +24,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       error,
       helperText,
       options,
-      placeholder = "Chọn một tùy chọn",
+      placeholder = "Chá»n má»™t tÃ¹y chá»n",
       variant = "default",
       className = "",
       id,
@@ -95,3 +95,4 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 Select.displayName = "Select";
 
 export default Select;
+

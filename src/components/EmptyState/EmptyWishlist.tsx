@@ -15,3 +15,4 @@ const EmptyWishlist: React.FC = () => {
 };
 
 export default EmptyWishlist;
+

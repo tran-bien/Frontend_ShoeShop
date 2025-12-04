@@ -17,7 +17,7 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string().required("Mật khẩu là bắt buộc"),
 });
 
-// Định nghĩa type cho form values
+// Ðẩnh nghia type cho form values
 interface LoginFormValues {
   email: string;
   password: string;
@@ -30,38 +30,38 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Lấy returnUrl từ query params
+  // L?y returnUrl từ query params
   const params = new URLSearchParams(location.search);
   const returnUrl = params.get("returnUrl") || "/";
 
   const handleLogin = async (values: { email: string; password: string }) => {
-    if (isSubmitting) return; // Tránh gửi nhiều lần
+    if (isSubmitting) return; // Tránh gửi nhi?u lẩn
 
     setIsSubmitting(true);
     try {
       console.log("Login attempt with:", values.email);
       await login(values.email, values.password);
-      toast.success("Đăng nhập thành công!");
-      navigate(returnUrl); // Chuyển hướng sau đăng nhập thành công
+      toast.success("Ðang nhập thành công!");
+      navigate(returnUrl); // Chuyện huẩng sau đang nhập thành công
     } catch (error: any) {
-      console.error("🚨 Đăng nhập thất bại:", error);
+      console.error("?? Ðang nhập thểt b?i:", error);
 
-      // Hiển thị lỗi cụ thể từ server
-      const errorMessage = error.message || "Đăng nhập thất bại";
+      // Hiện thọ lỗi c? thọ từ server
+      const errorMessage = error.message || "Ðang nhập thểt b?i";
 
-      // Kiểm tra các dạng lỗi cụ thể để hiển thị thông báo thân thiện hơn
+      // Ki?m tra các đếng lỗi c? thọ d? hiện thọ thông báo thân thiện hon
       if (
-        errorMessage.includes("Tài khoản không tồn tại") ||
-        errorMessage.includes("Email không tồn tại")
+        errorMessage.includes("Tài khoẩn không tên tại") ||
+        errorMessage.includes("Email không tên tại")
       ) {
-        toast.error("Email không tồn tại trong hệ thống");
+        toast.error("Email không tên tại trong họ thàng");
       } else if (errorMessage.includes("Mật khẩu không chính xác")) {
         toast.error("Mật khẩu không chính xác");
       } else if (
-        errorMessage.includes("không được kích hoạt") ||
-        errorMessage.includes("chưa kích hoạt")
+        errorMessage.includes("không được kích ho?t") ||
+        errorMessage.includes("chua kích ho?t")
       ) {
-        toast.error("Tài khoản chưa được kích hoạt, vui lòng kiểm tra email");
+        toast.error("Tài khoẩn chua được kích ho?t, vui lòng ki?m tra email");
       } else {
         toast.error(errorMessage);
       }
@@ -73,7 +73,7 @@ const LoginForm: React.FC = () => {
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md mx-auto">
       <h2 className="text-2xl font-bold text-center mb-6 text-mono-800">
-        Đăng nhập
+        Ðang nhập
       </h2>
       <Formik
         initialValues={{ email: "", password: "" }}
@@ -123,7 +123,7 @@ const LoginForm: React.FC = () => {
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-mono-black hover:text-blue-800"
+                  className="text-sm text-mono-black hover:text-mono-800"
                 >
                   Quên mật khẩu?
                 </Link>
@@ -152,16 +152,16 @@ const LoginForm: React.FC = () => {
               className={`w-full bg-mono-black text-white py-3 rounded-lg font-medium ${
                 isSubmitting
                   ? "opacity-70 cursor-not-allowed"
-                  : "hover:bg-blue-700"
+                  : "hover:bg-mono-800"
               } transition-colors duration-300`}
             >
               {isSubmitting ? (
                 <div className="flex items-center justify-center">
                   <div className="w-5 h-5 border-t-2 border-r-2 border-white rounded-full animate-spin mr-2"></div>
-                  Đang xử lý...
+                  Ðang xử lý...
                 </div>
               ) : (
-                "Đăng nhập"
+                "Ðang nhập"
               )}
             </button>
           </Form>
@@ -170,16 +170,16 @@ const LoginForm: React.FC = () => {
 
       <div className="mt-6 text-center">
         <p className="text-mono-600">
-          Chưa có tài khoản?{" "}
-          <Link to="/register" className="text-mono-black hover:text-blue-800">
-            Đăng ký ngay
+          Chua có tài khoẩn?{" "}
+          <Link to="/register" className="text-mono-black hover:text-mono-800">
+            Ðang ký ngay
           </Link>
         </p>
       </div>
 
       <div className="flex items-center my-6">
         <div className="flex-1 border-t border-mono-300"></div>
-        <span className="px-3 text-mono-500 text-sm">Hoặc đăng nhập với</span>
+        <span className="px-3 text-mono-500 text-sm">Ho?c đang nhập với</span>
         <div className="flex-1 border-t border-mono-300"></div>
       </div>
 
@@ -187,14 +187,14 @@ const LoginForm: React.FC = () => {
         {/* Social login buttons */}
         <button
           className="flex-1 flex justify-center items-center gap-2 border border-mono-300 p-2 rounded-lg hover:bg-mono-50"
-          onClick={() => toast.success("Đang xử lý đăng nhập bằng Google...")}
+          onClick={() => toast.success("Ðang xử lý đang nhập bảng Google...")}
         >
           <img src="/google-icon.svg" alt="Google" className="w-5 h-5" />
           <span>Google</span>
         </button>
         <button
           className="flex-1 flex justify-center items-center gap-2 border border-mono-300 p-2 rounded-lg hover:bg-mono-50"
-          onClick={() => toast.success("Đang xử lý đăng nhập bằng Facebook...")}
+          onClick={() => toast.success("Ðang xử lý đang nhập bảng Facebook...")}
         >
           <img src="/facebook-icon.svg" alt="Facebook" className="w-5 h-5" />
           <span>Facebook</span>
@@ -205,3 +205,5 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
+
+

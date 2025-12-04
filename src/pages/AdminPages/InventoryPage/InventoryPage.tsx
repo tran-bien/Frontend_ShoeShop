@@ -133,10 +133,10 @@ const InventoryPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-mono-800">Quản lý Kho hàng</h1>
+        <h1 className="text-3xl font-bold text-mono-800">Quận lý Kho hàng</h1>
         <button
           onClick={handleStockIn}
-          className="bg-mono-black hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          className="bg-mono-black hover:bg-mono-800 text-white px-4 py-2 rounded-lg flex items-center gap-2"
         >
           <FaPlus size={20} />
           Nhập kho
@@ -161,8 +161,8 @@ const InventoryPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Tồn kho thấp</p>
-                <p className="text-2xl font-bold text-orange-600">
+                <p className="text-mono-500 text-sm">Tên kho thấp</p>
+                <p className="text-2xl font-bold text-mono-700">
                   {stats.lowStockItems || 0}
                 </p>
               </div>
@@ -173,7 +173,7 @@ const InventoryPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Hết hàng</p>
+                <p className="text-mono-500 text-sm">H?t hàng</p>
                 <p className="text-2xl font-bold text-mono-900">
                   {stats.outOfStockItems || 0}
                 </p>
@@ -185,9 +185,9 @@ const InventoryPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Giá trị tồn kho</p>
+                <p className="text-mono-500 text-sm">Giá trở tên kho</p>
                 <p className="text-2xl font-bold text-mono-800">
-                  {stats.totalValue?.toLocaleString("vi-VN")}₫
+                  {stats.totalValue?.toLocaleString("vi-VN")}?
                 </p>
               </div>
               <FaDollarSign className="text-mono-700" size={40} />
@@ -208,7 +208,7 @@ const InventoryPage = () => {
               }
               className="w-4 h-4"
             />
-            <span className="text-sm text-mono-700">Tồn kho thấp</span>
+            <span className="text-sm text-mono-700">Tên kho thấp</span>
           </label>
 
           <label className="flex items-center gap-2 cursor-pointer">
@@ -220,7 +220,7 @@ const InventoryPage = () => {
               }
               className="w-4 h-4"
             />
-            <span className="text-sm text-mono-700">Hết hàng</span>
+            <span className="text-sm text-mono-700">H?t hàng</span>
           </label>
         </div>
       </div>
@@ -234,22 +234,22 @@ const InventoryPage = () => {
                 Sản phẩm
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Hình ảnh
+                Hình ẩnh
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Biến thể / Size
+                Biẩn thọ / Size
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Tồn kho
+                Tên kho
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Giá vốn TB
+                Giá vẩn TB
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Trạng thái
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Hành động
+                Hành đếng
               </th>
             </tr>
           </thead>
@@ -257,7 +257,7 @@ const InventoryPage = () => {
             {loading ? (
               <tr>
                 <td colSpan={6} className="px-6 py-4 text-center text-mono-500">
-                  Đang tải...
+                  Ðang tại...
                 </td>
               </tr>
             ) : inventoryList.length === 0 ? (
@@ -276,7 +276,7 @@ const InventoryPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      {/* Hiển thị ảnh biến thể nếu có */}
+                      {/* Hiện thọ ẩnh biẩn thọ n?u có */}
                       {item.variant?.imagesvariant?.[0]?.url ? (
                         <img
                           src={item.variant.imagesvariant[0].url}
@@ -292,7 +292,7 @@ const InventoryPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-1">
-                      {/* Hiển thị màu sắc với color swatch */}
+                      {/* Hiện thọ màu sắc với color swatch */}
                       <div className="flex items-center gap-2">
                         {item.variant?.color?.hexCode && (
                           <div
@@ -307,7 +307,7 @@ const InventoryPage = () => {
                           {item.variant?.color?.name || "N/A"}
                         </span>
                       </div>
-                      {/* Hiển thị size */}
+                      {/* Hiện thọ size */}
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-mono-600">Size:</span>
                         <span className="text-sm font-bold text-mono-900 bg-mono-100 px-2 py-0.5 rounded">
@@ -323,21 +323,21 @@ const InventoryPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-mono-900">
-                      {item.averageCostPrice?.toLocaleString("vi-VN")}₫
+                      {item.averageCostPrice?.toLocaleString("vi-VN")}?
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     {item.isOutOfStock ? (
-                      <span className="px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded">
-                        Hết hàng
+                      <span className="px-2 py-1 text-xs font-semibold text-mono-900 bg-mono-200 rounded">
+                        H?t hàng
                       </span>
                     ) : item.isLowStock ? (
-                      <span className="px-2 py-1 text-xs font-semibold text-orange-800 bg-orange-100 rounded">
-                        Tồn kho thấp
+                      <span className="px-2 py-1 text-xs font-semibold text-mono-800 bg-mono-200 rounded">
+                        Tên kho thấp
                       </span>
                     ) : (
-                      <span className="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded">
-                        Bình thường
+                      <span className="px-2 py-1 text-xs font-semibold text-mono-800 bg-mono-100 rounded">
+                        Bình thuẩng
                       </span>
                     )}
                   </td>
@@ -361,15 +361,15 @@ const InventoryPage = () => {
                       <button
                         onClick={() => handleAdjustStock(item)}
                         className="px-3 py-1.5 text-xs font-medium text-mono-700 bg-white hover:bg-mono-50 rounded border border-mono-300 transition-colors"
-                        title="Điều chỉnh tồn kho"
+                        title="Ði?u chơnh tên kho"
                       >
-                        Điều chỉnh
+                        Ði?u chơnh
                       </button>
                       <button
                         onClick={() => handleViewTransactions(item)}
                         className="px-3 py-1.5 text-xs font-medium text-white bg-mono-black hover:bg-mono-800 rounded border border-mono-black transition-colors"
                       >
-                        Lịch sử
+                        Lọch s?
                       </button>
                     </div>
                   </td>
@@ -445,3 +445,7 @@ const InventoryPage = () => {
 };
 
 export default InventoryPage;
+
+
+
+

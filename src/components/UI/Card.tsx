@@ -70,3 +70,4 @@ export const CardFooter: React.FC<{
 );
 
 export default Card;
+

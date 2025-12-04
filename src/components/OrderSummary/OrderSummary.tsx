@@ -56,13 +56,13 @@ const OrderSummary: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<CartItem[]>([]);
   const navigate = useNavigate();
 
-  // Lấy giỏ hàng và preview đơn hàng
+  // L?y giỏ hàng và preview don hàng
   useEffect(() => {
     const fetchCartAndPreview = async () => {
       try {
         setCartLoading(true);
 
-        // Lấy giỏ hàng
+        // L?y giỏ hàng
         const cartRes = await cartService.getCart();
         const cart = cartRes.data.cart;
 
@@ -72,28 +72,28 @@ const OrderSummary: React.FC = () => {
           return;
         }
 
-        // Lọc các sản phẩm đã chọn và có sẵn
+        // Lọc các sản phẩm dã chơn và có sẩn
         const selected = cart.cartItems.filter(
           (item: CartItem) => item.isSelected && item.isAvailable
         );
 
         if (selected.length === 0) {
-          toast.error("Vui lòng chọn ít nhất một sản phẩm để thanh toán");
+          toast.error("Vui lòng chơn ít nh?t m?t sản phẩm d? thanh toán");
           navigate("/cart");
           return;
         }
 
         setSelectedItems(selected);
 
-        // Preview đơn hàng KHÔNG có mã giảm giá ban đầu
+        // Preview don hàng KHÔNG có mã giảm giá ban đầu
         const previewRes = await cartService.previewBeforeOrder({});
 
         if (previewRes.data.success && previewRes.data.preview) {
           setPreviewData(previewRes.data.preview);
         }
       } catch (error: any) {
-        console.error("Lỗi khi tải giỏ hàng:", error);
-        toast.error("Không thể tải thông tin giỏ hàng");
+        console.error("Lỗi khi tại giỏ hàng:", error);
+        toast.error("Không thể tại thông tin giỏ hàng");
         navigate("/cart");
       } finally {
         setCartLoading(false);
@@ -101,9 +101,9 @@ const OrderSummary: React.FC = () => {
     };
 
     fetchCartAndPreview();
-  }, [navigate]); // Loại bỏ couponCode khỏi dependency array
+  }, [navigate]); // Lo?i bỏ couponCode kh?i dependency array
 
-  // Lấy danh sách địa chỉ từ API user
+  // L?y danh sách địa chỉ từ API user
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
@@ -111,11 +111,11 @@ const OrderSummary: React.FC = () => {
         const userAddresses = res.data.data.addresses || [];
         setAddresses(userAddresses);
 
-        // Chọn địa chỉ mặc định hoặc địa chỉ đầu tiên
+        // Chơn địa chỉ m?c đếnh ho?c địa chỉ đầu tiên
         const defaultAddr = userAddresses.find((a: Address) => a.isDefault);
         setAddressId(defaultAddr?._id || userAddresses[0]?._id || "");
       } catch (error) {
-        console.error("Lỗi khi tải địa chỉ:", error);
+        console.error("Lỗi khi tại địa ch?:", error);
         setAddresses([]);
       }
     };
@@ -153,7 +153,7 @@ const OrderSummary: React.FC = () => {
 
   const handleOrder = async () => {
     if (!addressId) {
-      toast.error("Vui lòng chọn địa chỉ giao hàng");
+      toast.error("Vui lòng chơn địa chỉ giao hàng");
       return;
     }
 
@@ -169,18 +169,18 @@ const OrderSummary: React.FC = () => {
       const res = await userOrderService.createOrder(orderData);
 
       if (res.data.success) {
-        // Nếu chọn VNPAY và có paymentUrl thì chuyển hướng
+        // N?u chơn VNPAY và có paymentUrl thì chuyện huẩng
         if (paymentMethod === "VNPAY" && res.data.data?.paymentUrl) {
           window.location.href = res.data.data.paymentUrl;
           return;
         }
 
-        toast.success("Đặt hàng thành công!");
+        toast.success("Ð?t hàng thành công!");
         navigate("/user-manage-order");
       }
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Đặt hàng thất bại! Vui lòng thử lại.";
+        error.response?.data?.message || "Ð?t hàng thểt b?i! Vui lòng thọ lỗi.";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -192,7 +192,7 @@ const OrderSummary: React.FC = () => {
       <div className="max-w-4xl mx-auto p-6">
         <div className="text-center py-12">
           <FaSpinner className="animate-spin text-4xl text-mono-500 mx-auto mb-4" />
-          <p className="text-mono-600">Đang tải thông tin đơn hàng...</p>
+          <p className="text-mono-600">Ðang tại thông tin don hàng...</p>
         </div>
       </div>
     );
@@ -202,21 +202,21 @@ const OrderSummary: React.FC = () => {
     <div className="max-w-6xl mx-auto p-6 bg-mono-50 min-h-screen">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-mono-black to-blue-700 text-white p-6">
-          <h1 className="text-2xl font-bold">Xác nhận đơn hàng</h1>
+        <div className="bg-mono-900 text-white p-6">
+          <h1 className="text-2xl font-bold">Xác nhận don hàng</h1>
           <p className="text-mono-100 mt-1">
-            Vui lòng kiểm tra thông tin trước khi đặt hàng
+            Vui lòng ki?m tra thông tin trước khi đặt hàng
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
-          {/* Cột trái - Thông tin đơn hàng */}
+          {/* C?t trái - Thông tin don hàng */}
           <div className="lg:col-span-2 space-y-6">
             {/* Danh sách sản phẩm */}
             <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
                 <FaCreditCard className="mr-2 text-mono-black" />
-                Sản phẩm đã chọn ({selectedItems.length} sản phẩm)
+                Sản phẩm dã chơn ({selectedItems.length} sản phẩm)
               </h3>
               <div className="space-y-3 max-h-60 overflow-y-auto">
                 {selectedItems.map((item) => (
@@ -241,7 +241,7 @@ const OrderSummary: React.FC = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-mono-black">
-                        {(item.price * item.quantity).toLocaleString()}đ
+                        {(item.price * item.quantity).toLocaleString()}d
                       </p>
                     </div>
                   </div>
@@ -249,21 +249,21 @@ const OrderSummary: React.FC = () => {
               </div>
             </div>
 
-            {/* Địa chỉ giao hàng */}
+            {/* Ð?a chờ giao hàng */}
             <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
                 <FaMapMarkerAlt className="mr-2 text-mono-900" />
-                Địa chỉ giao hàng
+                Ð?a chờ giao hàng
               </h3>
               {addresses.length === 0 ? (
                 <div className="text-center py-6 border-2 border-dashed border-mono-300 rounded-lg">
-                  <FaExclamationTriangle className="text-yellow-500 text-3xl mx-auto mb-2" />
+                  <FaExclamationTriangle className="text-mono-600 text-3xl mx-auto mb-2" />
                   <p className="text-mono-600 mb-3">
-                    Bạn chưa có địa chỉ giao hàng
+                    Bẩn chua có địa chỉ giao hàng
                   </p>
                   <Link
                     to="/user-information"
-                    className="inline-flex items-center px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="inline-flex items-center px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors"
                   >
                     <FaPlus className="mr-2" />
                     Thêm địa chỉ
@@ -276,18 +276,18 @@ const OrderSummary: React.FC = () => {
                     value={addressId}
                     onChange={(e) => setAddressId(e.target.value)}
                   >
-                    <option value="">Chọn địa chỉ giao hàng</option>
+                    <option value="">Chơn địa chỉ giao hàng</option>
                     {addresses.map((addr) => (
                       <option key={addr._id} value={addr._id}>
                         {addr.name} - {addr.phone} | {addr.detail}, {addr.ward},{" "}
                         {addr.district}, {addr.province}
-                        {addr.isDefault ? " [Mặc định]" : ""}
+                        {addr.isDefault ? " [M?c đếnh]" : ""}
                       </option>
                     ))}
                   </select>
                   <Link
                     to="/user-information"
-                    className="inline-flex items-center text-mono-black hover:text-blue-800 text-sm"
+                    className="inline-flex items-center text-mono-black hover:text-mono-800 text-sm"
                   >
                     <FaPlus className="mr-1" />
                     Thêm địa chỉ mới
@@ -296,11 +296,11 @@ const OrderSummary: React.FC = () => {
               )}
             </div>
 
-            {/* Phương thức thanh toán */}
+            {/* Phuong thực thanh toán */}
             <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
                 <FaCreditCard className="mr-2 text-mono-800" />
-                Phương thức thanh toán
+                Phuong thực thanh toán
               </h3>
               <div className="space-y-3">
                 <label className="flex items-center space-x-3 cursor-pointer">
@@ -312,7 +312,7 @@ const OrderSummary: React.FC = () => {
                     onChange={() => setPaymentMethod("COD")}
                     className="text-mono-black focus:ring-mono-500"
                   />
-                  <span>Thanh toán khi nhận hàng (COD)</span>
+                  <span>Thanh toán khi nhơn hàng (COD)</span>
                 </label>
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
@@ -331,28 +331,28 @@ const OrderSummary: React.FC = () => {
             {/* Ghi chú */}
             <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
-                <FaStickyNote className="mr-2 text-yellow-600" />
-                Ghi chú đơn hàng
+                <FaStickyNote className="mr-2 text-mono-700" />
+                Ghi chú don hàng
               </h3>
               <textarea
                 className="w-full border border-mono-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-mono-500 focus:border-transparent"
                 rows={3}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Nhập ghi chú cho đơn hàng (không bắt buộc)..."
+                placeholder="Nhập ghi chú cho don hàng (không bắt buộc)..."
               />
             </div>
           </div>
 
-          {/* Cột phải - Tóm tắt đơn hàng */}
+          {/* C?t ph?i - Tóm t?t don hàng */}
           <div className="lg:col-span-1">
             <div className="bg-mono-50 rounded-lg p-4 sticky top-6">
-              <h3 className="font-semibold text-lg mb-4">Tóm tắt đơn hàng</h3>
+              <h3 className="font-semibold text-lg mb-4">Tóm t?t don hàng</h3>
 
               {/* Mã giảm giá */}
               <div className="mb-4 p-3 border border-mono-200 rounded-lg bg-white">
                 <h4 className="font-medium mb-2 flex items-center">
-                  <FaPercent className="mr-2 text-orange-600" />
+                  <FaPercent className="mr-2 text-mono-700" />
                   Mã giảm giá
                 </h4>
                 <div className="flex space-x-2">
@@ -365,14 +365,14 @@ const OrderSummary: React.FC = () => {
                   />
                   <button
                     onClick={handleApplyCoupon}
-                    className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition-colors text-sm"
+                    className="px-4 py-2 bg-mono-700 text-white rounded hover:bg-mono-800 transition-colors text-sm"
                   >
                     Áp dụng
                   </button>
                 </div>
                 {previewData?.couponApplied && previewData?.couponDetail && (
-                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded text-sm text-green-700">
-                    Đã áp dụng mã:{" "}
+                  <div className="mt-2 p-2 bg-mono-50 border border-mono-200 rounded text-sm text-mono-700">
+                    Ðã áp dụng mã:{" "}
                     <strong>{previewData.couponDetail.code}</strong>
                   </div>
                 )}
@@ -383,27 +383,27 @@ const OrderSummary: React.FC = () => {
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
                     <span>Tạm tính ({previewData.items} sản phẩm):</span>
-                    <span>{previewData.subTotal.toLocaleString()}đ</span>
+                    <span>{previewData.subTotal.toLocaleString()}d</span>
                   </div>
                   {previewData.discount > 0 && (
                     <div className="flex justify-between text-sm text-mono-800">
                       <span>Giảm giá:</span>
-                      <span>-{previewData.discount.toLocaleString()}đ</span>
+                      <span>-{previewData.discount.toLocaleString()}d</span>
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
-                    <span>Phí vận chuyển:</span>
+                    <span>Phí vẩn chuyện:</span>
                     <span>
                       {previewData.shippingFee > 0
-                        ? `${previewData.shippingFee.toLocaleString()}đ`
-                        : "Miễn phí"}
+                        ? `${previewData.shippingFee.toLocaleString()}d`
+                        : "Miẩn phí"}
                     </span>
                   </div>
                   <hr className="border-mono-300" />
                   <div className="flex justify-between font-semibold text-lg">
-                    <span>Tổng cộng:</span>
+                    <span>Tổng cẩng:</span>
                     <span className="text-mono-900">
-                      {previewData.totalPrice.toLocaleString()}đ
+                      {previewData.totalPrice.toLocaleString()}d
                     </span>
                   </div>
                 </div>
@@ -413,21 +413,21 @@ const OrderSummary: React.FC = () => {
               <button
                 onClick={handleOrder}
                 disabled={loading || !addressId || selectedItems.length === 0}
-                className="w-full bg-gradient-to-r from-mono-black to-blue-700 text-white font-bold py-3 rounded-lg text-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-mono-900 text-white font-bold py-3 rounded-lg text-lg hover:bg-mono-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {loading ? (
                   <>
                     <FaSpinner className="animate-spin mr-2" />
-                    Đang xử lý...
+                    Ðang xử lý...
                   </>
                 ) : (
-                  "XÁC NHẬN ĐẶT HÀNG"
+                  "XÁC NH?N Ð?T HÀNG"
                 )}
               </button>
 
               {paymentMethod === "VNPAY" && (
                 <p className="text-xs text-mono-600 mt-2 text-center">
-                  Bạn sẽ được chuyển đến trang thanh toán VNPAY
+                  Bẩn số được chuyện đến trang thanh toán VNPAY
                 </p>
               )}
             </div>
@@ -439,3 +439,9 @@ const OrderSummary: React.FC = () => {
 };
 
 export default OrderSummary;
+
+
+
+
+
+

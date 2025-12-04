@@ -67,8 +67,8 @@ class ErrorBoundary extends Component<Props, State> {
           <div className="max-w-md w-full bg-white rounded-lg shadow-soft p-8 text-center">
             {/* Error Icon */}
             <div className="mb-6 flex justify-center">
-              <div className="bg-red-100 rounded-full p-4">
-                <ExclamationTriangleIcon className="h-12 w-12 text-red-600" />
+              <div className="bg-mono-200 rounded-full p-4">
+                <ExclamationTriangleIcon className="h-12 w-12 text-mono-700" />
               </div>
             </div>
 
@@ -84,7 +84,7 @@ class ErrorBoundary extends Component<Props, State> {
             {/* Error Details (Development Only) */}
             {import.meta.env.DEV && this.state.error && (
               <div className="mb-6 text-left bg-mono-100 rounded-lg p-4 max-h-48 overflow-auto">
-                <p className="text-sm font-mono text-red-700 mb-2">
+                <p className="text-sm font-mono text-mono-800 mb-2">
                   {this.state.error.toString()}
                 </p>
                 {this.state.errorInfo && (
@@ -131,3 +131,5 @@ class ErrorBoundary extends Component<Props, State> {
 }
 
 export default ErrorBoundary;
+
+

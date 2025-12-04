@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Utility to handle API errors in a consistent way
  */
 
@@ -27,7 +27,7 @@ export const getErrorMessage = (error: any): string => {
     }
   }
 
-  return error.message || "Đã xảy ra lỗi, vui lòng thử lại sau";
+  return error.message || "ÄÃ£ xáº£y ra lá»—i, vui lÃ²ng thá»­ láº¡i sau";
 };
 
 /**

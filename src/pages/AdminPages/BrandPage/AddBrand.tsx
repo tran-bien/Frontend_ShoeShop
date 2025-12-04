@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+Ôªøimport React, { useState } from "react";
 import { adminBrandService } from "../../../services/BrandService";
 
 interface AddBrandProps {
@@ -30,7 +30,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("ThÍm thuong hi?u th?t b?i!");
+      setError("Th√™m thuong hi?u th·ªÉt b?i!");
     } finally {
       setLoading(false);
     }
@@ -46,11 +46,11 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">ThÍm Thuong Hi?u</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Th√™m Thuong Hi?u</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              TÍn Thuong Hi?u
+              T√™n Thuong Hi?u
             </label>
             <input
               type="text"
@@ -63,7 +63,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-black">
-              MÙ T?
+              M√¥ T?
             </label>
             <textarea
               name="description"
@@ -80,7 +80,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
-              {loading ? "–ang thÍm..." : "ThÍm"}
+              {loading ? "√êang th√™m..." : "Th√™m"}
             </button>
           </div>
         </form>
@@ -90,3 +90,4 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
 };
 
 export default AddBrand;
+

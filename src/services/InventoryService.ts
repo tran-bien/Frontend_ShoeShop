@@ -1,4 +1,4 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import { ApiResponse } from "../types/api";
 import type {
   InventoryItem,
@@ -34,7 +34,7 @@ export type {
 
 export const adminInventoryService = {
   /**
-   * Lấy danh sách tồn kho với phân trang và filter
+   * Láº¥y danh sÃ¡ch tá»“n kho vá»›i phÃ¢n trang vÃ  filter
    */
   getInventoryList: (
     params?: InventoryListParams
@@ -42,7 +42,7 @@ export const adminInventoryService = {
     axiosInstanceAuth.get("/api/v1/admin/inventory", { params }),
 
   /**
-   * Lấy chi tiết một mục tồn kho
+   * Láº¥y chi tiáº¿t má»™t má»¥c tá»“n kho
    */
   getInventoryDetail: (
     id: string
@@ -50,13 +50,13 @@ export const adminInventoryService = {
     axiosInstanceAuth.get(`/api/v1/admin/inventory/${id}`),
 
   /**
-   * Lấy thống kê kho hàng tổng quan
+   * Láº¥y thá»‘ng kÃª kho hÃ ng tá»•ng quan
    */
   getInventoryStats: (): Promise<{ data: ApiResponse<InventoryStats> }> =>
     axiosInstanceAuth.get("/api/v1/admin/inventory/stats"),
 
   /**
-   * Lấy lịch sử giao dịch kho
+   * Láº¥y lá»‹ch sá»­ giao dá»‹ch kho
    */
   getTransactionHistory: (
     params?: TransactionHistoryParams
@@ -64,7 +64,7 @@ export const adminInventoryService = {
     axiosInstanceAuth.get("/api/v1/admin/inventory/transactions", { params }),
 
   /**
-   * Nhập hàng vào kho
+   * Nháº­p hÃ ng vÃ o kho
    */
   stockIn: (
     data: StockInData
@@ -72,7 +72,7 @@ export const adminInventoryService = {
     axiosInstanceAuth.post("/api/v1/admin/inventory/stock-in", data),
 
   /**
-   * Xuất hàng khỏi kho
+   * Xuáº¥t hÃ ng khá»i kho
    */
   stockOut: (
     data: StockOutData
@@ -80,7 +80,7 @@ export const adminInventoryService = {
     axiosInstanceAuth.post("/api/v1/admin/inventory/stock-out", data),
 
   /**
-   * Điều chỉnh số lượng tồn kho
+   * Äiá»u chá»‰nh sá»‘ lÆ°á»£ng tá»“n kho
    */
   adjustStock: (
     data: AdjustStockData
@@ -88,7 +88,7 @@ export const adminInventoryService = {
     axiosInstanceAuth.post("/api/v1/admin/inventory/adjust", data),
 
   /**
-   * Tính toán giá bán từ giá vốn
+   * TÃ­nh toÃ¡n giÃ¡ bÃ¡n tá»« giÃ¡ vá»‘n
    */
   calculatePrice: (
     data: CalculatePriceData
@@ -96,7 +96,7 @@ export const adminInventoryService = {
     axiosInstanceAuth.post("/api/v1/admin/inventory/calculate-price", data),
 
   /**
-   * Cập nhật ngưỡng cảnh báo tồn kho thấp
+   * Cáº­p nháº­t ngÆ°á»¡ng cáº£nh bÃ¡o tá»“n kho tháº¥p
    */
   updateLowStockThreshold: (
     id: string,

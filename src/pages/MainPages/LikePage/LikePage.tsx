@@ -32,11 +32,11 @@ const LikePage: React.FC = () => {
       if (response.data && response.data.success) {
         setWishlist(response.data.wishlist || []);
       } else {
-        toast.error("Không thể tải danh sách yêu thích");
+        toast.error("Không thể tại danh sách yêu thích");
       }
     } catch (error) {
-      console.error("Lỗi khi tải wishlist:", error);
-      toast.error("Không thể tải danh sách yêu thích");
+      console.error("Lỗi khi tại wishlist:", error);
+      toast.error("Không thể tại danh sách yêu thích");
     } finally {
       setLoading(false);
     }
@@ -56,13 +56,13 @@ const LikePage: React.FC = () => {
         setWishlist((prev) =>
           prev.filter((item) => item._id !== wishlistItemId)
         );
-        toast.success("Đã xóa sản phẩm khỏi danh sách yêu thích");
+        toast.success("Ðã xóa sản phẩm kh?i danh sách yêu thích");
       } else {
-        toast.error("Xóa sản phẩm yêu thích thất bại!");
+        toast.error("Xóa sản phẩm yêu thích thểt b?i!");
       }
     } catch (error) {
-      console.error("Lỗi khi xóa khỏi wishlist:", error);
-      toast.error("Xóa sản phẩm yêu thích thất bại!");
+      console.error("Lỗi khi xóa kh?i wishlist:", error);
+      toast.error("Xóa sản phẩm yêu thích thểt b?i!");
     } finally {
       setRemovingItems((prev) => {
         const newSet = new Set(prev);
@@ -72,11 +72,11 @@ const LikePage: React.FC = () => {
     }
   };
 
-  // Chuyển đổi dữ liệu wishlist item thành ProductCardProduct
+  // Chuyện đổi dữ liệu wishlist item thành ProductCardProduct
   const convertWishlistToProductCard = (wishlistItem: any) => {
     const baseProduct = wishlistItem.product;
 
-    // Sử dụng hàm convertToProductCardProduct và ghi đè một số giá trị
+    // Sử dụng hàm convertToProductCardProduct và ghi dè m?t số giá trở
     const productCardData = convertToProductCardProduct({
       ...baseProduct,
       price: wishlistItem.variant?.priceFinal || baseProduct.price || 0,
@@ -102,18 +102,18 @@ const LikePage: React.FC = () => {
     if (wishlist.length === 0) {
       return (
         <div className="text-center py-16 bg-white rounded-lg shadow-sm">
-          <div className="text-6xl text-red-200 mb-4 flex justify-center">
+          <div className="text-6xl text-mono-300 mb-4 flex justify-center">
             <FaHeart />
           </div>
           <h2 className="text-2xl font-semibold text-mono-700 mb-3">
             Danh sách yêu thích trống
           </h2>
           <p className="text-mono-500 mb-6">
-            Bạn chưa thêm sản phẩm nào vào danh sách yêu thích
+            Bẩn chua thêm sản phẩm nào vào danh sách yêu thích
           </p>
           <button
             onClick={() => navigate("/products")}
-            className="px-6 py-3 bg-mono-black text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-3 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors"
           >
             Khám phá sản phẩm ngay
           </button>
@@ -133,15 +133,15 @@ const LikePage: React.FC = () => {
               }
             />
 
-            {/* Nút xóa - Đặt ở góc dưới bên phải và làm to hơn */}
+            {/* Nút xóa - Ð?t ? góc du?i bên ph?i và làm to hon */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 removeProduct(item._id);
               }}
               disabled={removingItems.has(item._id)}
-              className="absolute bottom-2 right-2 z-10 bg-white p-3 rounded-full shadow-lg hover:bg-red-100 transition-colors"
-              title="Xóa khỏi yêu thích"
+              className="absolute bottom-2 right-2 z-10 bg-white p-3 rounded-full shadow-lg hover:bg-mono-200 transition-colors"
+              title="Xóa kh?i yêu thích"
             >
               {removingItems.has(item._id) ? (
                 <div className="h-6 w-6 border-2 border-mono-800 border-t-transparent rounded-full animate-spin"></div>
@@ -176,3 +176,6 @@ const LikePage: React.FC = () => {
 };
 
 export default LikePage;
+
+
+

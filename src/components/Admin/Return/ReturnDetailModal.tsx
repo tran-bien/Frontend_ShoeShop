@@ -9,14 +9,14 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold mb-4">Chi tiết yêu cầu đổi trả</h2>
+        <h2 className="text-xl font-bold mb-4">Chi tiết yêu c?u đổi trở</h2>
         <div className="space-y-3">
           <p>
             <strong>Mã:</strong> #{returnRequest._id.slice(-8)}
           </p>
           <p>
-            <strong>Loại:</strong>{" "}
-            {returnRequest.type === "RETURN" ? "Hoàn trả" : "Đổi hàng"}
+            <strong>Lo?i:</strong>{" "}
+            {returnRequest.type === "RETURN" ? "Hoàn trở" : "Ð?i hàng"}
           </p>
           <p>
             <strong>Trạng thái:</strong> {returnRequest.status}
@@ -30,7 +30,7 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
               {returnRequest.items.map((item, idx) => (
                 <li key={idx} className="bg-mono-50 p-2 rounded">
                   Số lượng: {item.quantity} - Giá:{" "}
-                  {item.priceAtPurchase?.toLocaleString()}₫
+                  {item.priceAtPurchase?.toLocaleString()}?
                 </li>
               ))}
             </ul>
@@ -40,7 +40,7 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
           onClick={onClose}
           className="mt-4 bg-mono-200 px-4 py-2 rounded"
         >
-          Đóng
+          Ðóng
         </button>
       </div>
     </div>
@@ -48,3 +48,4 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
 };
 
 export default ReturnDetailModal;
+

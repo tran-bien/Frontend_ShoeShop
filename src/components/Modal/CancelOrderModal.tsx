@@ -26,17 +26,17 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 
     // Validation
     if (!reason.trim()) {
-      setError("Vui lòng nhập lý do hủy đơn hàng");
+      setError("Vui lòng nhập lý đo hủy don hàng");
       return;
     }
 
     if (reason.trim().length < 3) {
-      setError("Lý do hủy phải có ít nhất 3 ký tự");
+      setError("Lý đo hủy ph?i có ít nh?t 3 ký t?");
       return;
     }
 
     if (reason.trim().length > 500) {
-      setError("Lý do hủy không được vượt quá 500 ký tự");
+      setError("Lý đo hủy không được vu?t quá 500 ký t?");
       return;
     }
 
@@ -47,13 +47,13 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
       // Reset form sau khi thành công
       setReason("");
       setError("");
-      // Không cần toast ở đây vì đã được xử lý trong component cha (UserOrderDetailPage)
+      // Không cẩn toast ? dây vì dã được xử lý trong component cha (UserOrderDetailPage)
     } catch (error: any) {
-      // Đã có xử lý lỗi ở component cha, nhưng thêm xử lý ở đây để đảm bảo
+      // Ðã có xử lý lỗi ? component cha, nhung thêm xử lý ? dây d? d?m b?o
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Có lỗi xảy ra khi hủy đơn hàng";
+        "Có lỗi x?y ra khi hủy don hàng";
       toast.error(errorMessage);
     }
   };
@@ -67,11 +67,11 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   };
 
   const predefinedReasons = [
-    "Thay đổi ý định mua hàng",
-    "Tìm được sản phẩm tương tự với giá tốt hơn",
+    "Thay đổi ý đếnh mua hàng",
+    "Tìm được sản phẩm tuong từ với giá t?t hon",
     "Thay đổi sản phẩm/kích thước/màu sắc",
-    "Sản phẩm bị lỗi hoặc không đúng mô tả",
-    "Khác (nhập lý do cụ thể)",
+    "Sản phẩm bỏ lỗi ho?c không dúng mô t?",
+    "Khác (nhập lý đo c? thể)",
   ];
 
   if (!isOpen) return null;
@@ -84,7 +84,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
           <div className="flex items-center gap-3">
             <FaExclamationTriangle className="text-mono-800 text-xl" />
             <h2 className="text-xl font-semibold text-mono-800">
-              Hủy đơn hàng
+              Hủy don hàng
             </h2>
           </div>
           <button
@@ -100,18 +100,18 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6">
           <div className="mb-4">
             <p className="text-mono-700 mb-2">
-              Bạn có chắc chắn muốn hủy đơn hàng{" "}
+              Bẩn có chỉc chơn muẩn hủy don hàng{" "}
               <span className="font-semibold text-mono-black">{orderCode}</span>?
             </p>
             <p className="text-sm text-mono-500">
-              Vui lòng cho biết lý do để shop có thể cải thiện dịch vụ.
+              Vui lòng cho bi?t lý đo d? shop có thọ c?i thiện d?ch v?.
             </p>
           </div>
 
           {/* Predefined reasons */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Chọn lý do có sẵn:
+              Chơn lý đo có sẩn:
             </label>
             <div className="space-y-2">
               {predefinedReasons.map((predefinedReason, index) => (
@@ -142,7 +142,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
           {/* Custom reason input */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Hoặc nhập lý do cụ thể:
+              Ho?c nhập lý đo c? th?:
             </label>
             <textarea
               value={reason}
@@ -150,7 +150,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 setReason(e.target.value);
                 setError("");
               }}
-              placeholder="Nhập lý do hủy đơn hàng của bạn..."
+              placeholder="Nhập lý đo hủy don hàng của bẩn..."
               className="w-full p-3 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent resize-none"
               rows={4}
               maxLength={500}
@@ -158,21 +158,21 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
             />
             <div className="flex justify-between items-center mt-1">
               <span className="text-xs text-mono-500">
-                {reason.length}/500 ký tự
+                {reason.length}/500 ký t?
               </span>
               {error && <span className="text-xs text-mono-800">{error}</span>}
             </div>
           </div>
 
           {/* Warning */}
-          <div className="mb-6 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              <strong>Lưu ý:</strong> Sau khi gửi yêu cầu hủy đơn hàng:
+          <div className="mb-6 p-3 bg-mono-100 border border-mono-200 rounded-lg">
+            <p className="text-sm text-mono-800">
+              <strong>Luu ý:</strong> Sau khi gửi yêu c?u hủy don hàng:
             </p>
-            <ul className="text-sm text-yellow-700 mt-1 ml-4 list-disc">
-              <li>Đơn hàng chờ xác nhận sẽ được hủy ngay lập tức</li>
-              <li>Đơn hàng đã xác nhận cần chờ admin phê duyệt</li>
-              <li>Bạn không thể thay đổi lý do sau khi gửi</li>
+            <ul className="text-sm text-mono-700 mt-1 ml-4 list-disc">
+              <li>Ðon hàng chờ xác nhận số được hủy ngay lệp t?c</li>
+              <li>Ðon hàng dã xác nhận cẩn chờ admin phê duy?t</li>
+              <li>Bẩn không thể thay đổi lý đo sau khi gửi</li>
             </ul>
           </div>
 
@@ -184,14 +184,14 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
               disabled={loading}
               className="flex-1 px-4 py-2 text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Hủy bỏ
+              Hủy b?
             </button>
             <button
               type="submit"
               disabled={loading || !reason.trim()}
               className="flex-1 px-4 py-2 bg-mono-800 text-white rounded-lg hover:bg-mono-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? "Đang xử lý..." : "Xác nhận hủy đơn"}
+              {loading ? "Ðang xử lý..." : "Xác nhận hủy don"}
             </button>
           </div>
         </form>
@@ -201,3 +201,5 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 };
 
 export default CancelOrderModal;
+
+

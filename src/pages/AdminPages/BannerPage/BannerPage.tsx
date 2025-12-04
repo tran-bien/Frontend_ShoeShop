@@ -42,7 +42,7 @@ const BannerPage: React.FC = () => {
       const banner = banners.find((b) => b._id === bannerId);
       if (!banner) return;
 
-      // Nếu đang ẩn và muốn hiện, kiểm tra xung đột vị trí
+      // N?u đang ẩn và muẩn hiện, ki?m tra xung đặt v? trí
       if (!banner.isActive) {
         const conflictingBanner = banners.find(
           (b) =>
@@ -53,7 +53,7 @@ const BannerPage: React.FC = () => {
 
         if (conflictingBanner) {
           toast.error(
-            `Không thể hiện banner. Vị trí ${banner.displayOrder} đã được sử dụng bởi banner "${conflictingBanner.title}".`
+            `Không thể hiện banner. V? trí ${banner.displayOrder} dã được sử dụng b?i banner "${conflictingBanner.title}".`
           );
           return;
         }
@@ -61,7 +61,7 @@ const BannerPage: React.FC = () => {
 
       await bannerAdminService.toggleBannerStatus(bannerId);
       toast.success(
-        `${banner.isActive ? "Ẩn" : "Hiện"} banner "${
+        `${banner.isActive ? "ẩn" : "Hiện"} banner "${
           banner.title
         }" thành công!`
       );
@@ -77,16 +77,16 @@ const BannerPage: React.FC = () => {
         if (axiosError.response?.status === 409) {
           toast.error(
             axiosError.response?.data?.message ||
-              "Không thể thay đổi trạng thái do xung đột vị trí."
+              "Không thể thay đổi trạng thái đo xung đặt v? trí."
           );
         } else {
           toast.error(
-            "Có lỗi xảy ra khi thay đổi trạng thái banner. Vui lòng thử lại."
+            "Có lỗi x?y ra khi thay đổi trạng thái banner. Vui lòng thọ lỗi."
           );
         }
       } else {
         toast.error(
-          "Có lỗi xảy ra khi thay đổi trạng thái banner. Vui lòng thử lại."
+          "Có lỗi x?y ra khi thay đổi trạng thái banner. Vui lòng thọ lỗi."
         );
       }
     }
@@ -112,7 +112,7 @@ const BannerPage: React.FC = () => {
       setSelectedBanner(null);
     } catch (error) {
       console.error("Error deleting banner:", error);
-      toast.error("Có lỗi xảy ra khi xóa banner");
+      toast.error("Có lỗi x?y ra khi xóa banner");
     } finally {
       setSubmitting(false);
     }
@@ -124,20 +124,20 @@ const BannerPage: React.FC = () => {
       const currentBanner = banners.find((b) => b._id === bannerId);
       if (!currentBanner) return;
 
-      // Kiểm tra nếu vị trí không thay đổi
+      // Ki?m tra n?u v? trí không thay đổi
       if (currentBanner.displayOrder === newOrder) {
-        toast.error("Banner đã ở vị trí này rồi!");
-        return; // Không cần cập nhật nếu vị trí giống nhau
+        toast.error("Banner dã ? v? trí này r?i!");
+        return; // Không cẩn cập nhật n?u v? trí giẩng nhau
       }
 
-      // Kiểm tra xung đột vị trí với banner active khác trên frontend trước khi gọi API
+      // Ki?m tra xung đặt v? trí với banner active khác trên frontend trước khi gửi API
       const conflictingBanner = banners.find(
         (b) => b._id !== bannerId && b.displayOrder === newOrder && b.isActive
       );
 
       if (conflictingBanner) {
         toast.error(
-          `Vị trí ${newOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
+          `V? trí ${newOrder} dã được sử dụng b?i banner "${conflictingBanner.title}". Vui lòng chơn v? trí khác.`
         );
         return;
       }
@@ -147,7 +147,7 @@ const BannerPage: React.FC = () => {
         displayOrder: newOrder,
       });
       toast.success(
-        `Đã chuyển banner "${currentBanner.title}" đến vị trí ${newOrder}`
+        `Ðã chuyện banner "${currentBanner.title}" đến v? trí ${newOrder}`
       );
       fetchBanners();
     } catch (error: unknown) {
@@ -161,16 +161,16 @@ const BannerPage: React.FC = () => {
         if (axiosError.response?.status === 409) {
           toast.error(
             axiosError.response?.data?.message ||
-              `Vị trí ${newOrder} đã được sử dụng. Vui lòng chọn vị trí khác.`
+              `V? trí ${newOrder} dã được sử dụng. Vui lòng chơn v? trí khác.`
           );
         } else {
           toast.error(
-            "Có lỗi xảy ra khi thay đổi vị trí banner. Vui lòng thử lại."
+            "Có lỗi x?y ra khi thay đổi v? trí banner. Vui lòng thọ lỗi."
           );
         }
       } else {
         toast.error(
-          "Có lỗi xảy ra khi thay đổi vị trí banner. Vui lòng thử lại."
+          "Có lỗi x?y ra khi thay đổi v? trí banner. Vui lòng thọ lỗi."
         );
       }
     }
@@ -189,11 +189,11 @@ const BannerPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!formData.banner) {
-        toast.error("Vui lòng chọn ảnh banner");
+        toast.error("Vui lòng chơn ẩnh banner");
         return;
       }
 
-      // Kiểm tra xung đột vị trí trên frontend trước khi gọi API
+      // Ki?m tra xung đặt v? trí trên frontend trước khi gửi API
       if (formData.isActive) {
         const conflictingBanner = banners.find(
           (b) => b.displayOrder === formData.displayOrder && b.isActive
@@ -201,7 +201,7 @@ const BannerPage: React.FC = () => {
 
         if (conflictingBanner) {
           toast.error(
-            `Vị trí ${formData.displayOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
+            `V? trí ${formData.displayOrder} dã được sử dụng b?i banner "${conflictingBanner.title}". Vui lòng chơn v? trí khác.`
           );
           return;
         }
@@ -226,7 +226,7 @@ const BannerPage: React.FC = () => {
           banner: null,
         });
         fetchBanners();
-        toast.success("Tạo banner thành công!");
+        toast.success("T?o banner thành công!");
       } catch (error: unknown) {
         console.error("Error creating banner:", error);
 
@@ -238,13 +238,13 @@ const BannerPage: React.FC = () => {
           if (axiosError.response?.status === 409) {
             toast.error(
               axiosError.response?.data?.message ||
-                `Vị trí ${formData.displayOrder} đã được sử dụng. Vui lòng chọn vị trí khác.`
+                `V? trí ${formData.displayOrder} dã được sử dụng. Vui lòng chơn v? trí khác.`
             );
           } else {
-            toast.error("Có lỗi xảy ra khi tạo banner. Vui lòng thử lại.");
+            toast.error("Có lỗi x?y ra khi t?o banner. Vui lòng thọ lỗi.");
           }
         } else {
-          toast.error("Có lỗi xảy ra khi tạo banner. Vui lòng thử lại.");
+          toast.error("Có lỗi x?y ra khi t?o banner. Vui lòng thọ lỗi.");
         }
       } finally {
         setSubmitting(false);
@@ -256,11 +256,11 @@ const BannerPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">Tạo Banner Mới</h3>
+          <h3 className="text-xl font-bold mb-4">T?o Banner Mới</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Tiêu đề
+                Tiêu d?
               </label>
               <input
                 type="text"
@@ -274,7 +274,7 @@ const BannerPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Vị trí hiển thị
+                V? trí hiện thể
               </label>
               <select
                 value={formData.displayOrder}
@@ -288,14 +288,14 @@ const BannerPage: React.FC = () => {
               >
                 {[1, 2, 3, 4, 5].map((num) => (
                   <option key={num} value={num}>
-                    Vị trí {num}
+                    V? trí {num}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Liên kết (tùy chọn)
+                Liên k?t (tùy chơn)
               </label>
               <input
                 type="url"
@@ -309,7 +309,7 @@ const BannerPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Ảnh Banner
+                ẩnh Banner
               </label>
               <input
                 type="file"
@@ -335,7 +335,7 @@ const BannerPage: React.FC = () => {
                 className="h-4 w-4 text-mono-black focus:ring-mono-500 border-mono-300 rounded"
               />
               <label htmlFor="isActive" className="ml-2 text-sm text-mono-700">
-                Hiển thị ngay lập tức
+                Hiện thọ ngay lệp t?c
               </label>
             </div>
             <div className="flex gap-3 pt-4">
@@ -350,9 +350,9 @@ const BannerPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 disabled:opacity-50"
               >
-                {submitting ? "Đang tạo..." : "Tạo Banner"}
+                {submitting ? "Ðang t?o..." : "T?o Banner"}
               </button>
             </div>
           </form>
@@ -374,7 +374,7 @@ const BannerPage: React.FC = () => {
       e.preventDefault();
       if (!selectedBanner) return;
 
-      // Kiểm tra xung đột vị trí trên frontend trước khi gọi API
+      // Ki?m tra xung đặt v? trí trên frontend trước khi gửi API
       if (
         formData.isActive &&
         formData.displayOrder !== selectedBanner.displayOrder
@@ -388,7 +388,7 @@ const BannerPage: React.FC = () => {
 
         if (conflictingBanner) {
           toast.error(
-            `Vị trí ${formData.displayOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
+            `V? trí ${formData.displayOrder} dã được sử dụng b?i banner "${conflictingBanner.title}". Vui lòng chơn v? trí khác.`
           );
           return;
         }
@@ -412,13 +412,13 @@ const BannerPage: React.FC = () => {
           if (axiosError.response?.status === 409) {
             toast.error(
               axiosError.response?.data?.message ||
-                `Vị trí ${formData.displayOrder} đã được sử dụng. Vui lòng chọn vị trí khác.`
+                `V? trí ${formData.displayOrder} dã được sử dụng. Vui lòng chơn v? trí khác.`
             );
           } else {
-            toast.error("Có lỗi xảy ra khi cập nhật banner. Vui lòng thử lại.");
+            toast.error("Có lỗi x?y ra khi cập nhật banner. Vui lòng thọ lỗi.");
           }
         } else {
-          toast.error("Có lỗi xảy ra khi cập nhật banner. Vui lòng thử lại.");
+          toast.error("Có lỗi x?y ra khi cập nhật banner. Vui lòng thọ lỗi.");
         }
       } finally {
         setSubmitting(false);
@@ -430,11 +430,11 @@ const BannerPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">Chỉnh sửa Banner</h3>
+          <h3 className="text-xl font-bold mb-4">Chơnh sửa Banner</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Tiêu đề
+                Tiêu d?
               </label>
               <input
                 type="text"
@@ -448,7 +448,7 @@ const BannerPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Vị trí hiển thị
+                V? trí hiện thể
               </label>
               <select
                 value={formData.displayOrder}
@@ -462,14 +462,14 @@ const BannerPage: React.FC = () => {
               >
                 {[1, 2, 3, 4, 5].map((num) => (
                   <option key={num} value={num}>
-                    Vị trí {num}
+                    V? trí {num}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Liên kết (tùy chọn)
+                Liên k?t (tùy chơn)
               </label>
               <input
                 type="url"
@@ -495,7 +495,7 @@ const BannerPage: React.FC = () => {
                 htmlFor="editIsActive"
                 className="ml-2 text-sm text-mono-700"
               >
-                Hiển thị banner
+                Hiện thọ banner
               </label>
             </div>
             <div className="flex gap-3 pt-4">
@@ -513,9 +513,9 @@ const BannerPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 disabled:opacity-50"
               >
-                {submitting ? "Đang cập nhật..." : "Cập nhật"}
+                {submitting ? "Ðang cập nhật..." : "Cập nhật"}
               </button>
             </div>
           </form>
@@ -545,10 +545,10 @@ const BannerPage: React.FC = () => {
         setSelectedBanner(null);
         setNewImage(null);
         fetchBanners();
-        toast.success("Cập nhật ảnh banner thành công!");
+        toast.success("Cập nhật ẩnh banner thành công!");
       } catch (error: unknown) {
         console.error("Error updating banner image:", error);
-        alert("Có lỗi xảy ra khi cập nhật ảnh");
+        alert("Có lỗi x?y ra khi cập nhật ẩnh");
       } finally {
         setSubmitting(false);
       }
@@ -559,11 +559,11 @@ const BannerPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">Đổi ảnh Banner</h3>
+          <h3 className="text-xl font-bold mb-4">Ð?i ẩnh Banner</h3>
 
           {/* Current Image */}
           <div className="mb-4">
-            <p className="text-sm text-mono-600 mb-2">Ảnh hiện tại:</p>
+            <p className="text-sm text-mono-600 mb-2">ẩnh hiện tại:</p>
             <img
               src={selectedBanner.image.url}
               alt={selectedBanner.title}
@@ -574,7 +574,7 @@ const BannerPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Chọn ảnh mới
+                Chơn ẩnh mới
               </label>
               <input
                 type="file"
@@ -587,7 +587,7 @@ const BannerPage: React.FC = () => {
 
             {newImage && (
               <div>
-                <p className="text-sm text-mono-600 mb-2">Ảnh mới:</p>
+                <p className="text-sm text-mono-600 mb-2">ẩnh mới:</p>
                 <img
                   src={URL.createObjectURL(newImage)}
                   alt="Preview"
@@ -612,9 +612,9 @@ const BannerPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={submitting || !newImage}
-                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 disabled:opacity-50"
               >
-                {submitting ? "Đang cập nhật..." : "Cập nhật ảnh"}
+                {submitting ? "Ðang cập nhật..." : "Cập nhật ẩnh"}
               </button>
             </div>
           </form>
@@ -632,7 +632,7 @@ const BannerPage: React.FC = () => {
         <div className="bg-white rounded-xl max-w-md w-full p-6">
           <div className="text-center">
             {/* Warning Icon */}
-            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-mono-200 mb-4">
               <svg
                 className="h-8 w-8 text-mono-900"
                 fill="none"
@@ -654,7 +654,7 @@ const BannerPage: React.FC = () => {
 
             <div className="mb-4">
               <p className="text-mono-600 mb-3">
-                Bạn có chắc chắn muốn xóa banner này không?
+                Bẩn có chỉc chơn muẩn xóa banner này không?
               </p>
 
               {/* Banner Preview */}
@@ -668,12 +668,12 @@ const BannerPage: React.FC = () => {
                   {selectedBanner.title}
                 </p>
                 <p className="text-mono-500 text-xs">
-                  Vị trí {selectedBanner.displayOrder}
+                  V? trí {selectedBanner.displayOrder}
                 </p>
               </div>
 
               <p className="text-mono-900 text-sm font-medium">
-                ⚠️ Hành động này không thể hoàn tác
+                ?? Hành đếng này không thể hoàn tác
               </p>
             </div>
 
@@ -693,9 +693,9 @@ const BannerPage: React.FC = () => {
                 type="button"
                 onClick={confirmDeleteBanner}
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                className="flex-1 px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 disabled:opacity-50 transition-colors"
               >
-                {submitting ? "Đang xóa..." : "Xóa banner"}
+                {submitting ? "Ðang xóa..." : "Xóa banner"}
               </button>
             </div>
           </div>
@@ -719,10 +719,10 @@ const BannerPage: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-mono-900 mb-2">
-              Quản lý Banner
+              Quận lý Banner
             </h1>
             <p className="text-mono-600">
-              Quản lý banner hiển thị trên trang chủ website (tối đa 5 banner)
+              Quận lý banner hiện thọ trên trang chờ website (tại đã 5 banner)
             </p>
           </div>
 
@@ -730,7 +730,7 @@ const BannerPage: React.FC = () => {
             {canCreate() && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-gradient-to-r from-mono-black to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                className="px-6 py-3 bg-mono-800 hover:bg-mono-900 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
               >
                 <svg
                   className="w-5 h-5"
@@ -787,7 +787,7 @@ const BannerPage: React.FC = () => {
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-mono-100 rounded-lg flex items-center justify-center">
                 <svg
                   className="w-5 h-5 text-mono-800"
                   fill="none"
@@ -811,7 +811,7 @@ const BannerPage: React.FC = () => {
             </div>
             <div className="ml-4">
               <h3 className="text-lg font-semibold text-mono-900">
-                Đang Hiển Thị
+                Ðang Hiện Thể
               </h3>
               <p className="text-2xl font-bold text-mono-800">
                 {banners.filter((b) => b.isActive).length}
@@ -840,7 +840,7 @@ const BannerPage: React.FC = () => {
               </div>
             </div>
             <div className="ml-4">
-              <h3 className="text-lg font-semibold text-mono-900">Đã Ẩn</h3>
+              <h3 className="text-lg font-semibold text-mono-900">Ðã ẩn</h3>
               <p className="text-2xl font-bold text-mono-600">
                 {banners.filter((b) => !b.isActive).length}
               </p>
@@ -868,15 +868,15 @@ const BannerPage: React.FC = () => {
             </svg>
           </div>
           <h3 className="text-xl font-semibold text-mono-900 mb-2">
-            Chưa có banner nào
+            Chua có banner nào
           </h3>
           <p className="text-mono-500 mb-6">
-            Hãy tạo banner đầu tiên để quảng bá sản phẩm trên trang chủ
+            Hãy t?o banner đầu tiên d? quậng bá sản phẩm trên trang chỉ
           </p>
           {canCreate() && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-gradient-to-r from-mono-black to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 inline-flex items-center gap-2"
+              className="px-6 py-3 bg-mono-800 hover:bg-mono-900 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 inline-flex items-center gap-2"
             >
               <svg
                 className="w-5 h-5"
@@ -891,7 +891,7 @@ const BannerPage: React.FC = () => {
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              Tạo Banner Đầu Tiên
+              T?o Banner Ð?u Tiên
             </button>
           )}
         </div>
@@ -930,14 +930,14 @@ const BannerPage: React.FC = () => {
                         </h3>
                         <div className="flex items-center gap-2 ml-4">
                           {banner.isActive ? (
-                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-mono-100 text-mono-800">
                               <div className="w-2 h-2 bg-mono-700 rounded-full"></div>
-                              Đang hiển thị
+                              Ðang hiện thể
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-mono-100 text-mono-600">
                               <div className="w-2 h-2 bg-mono-400 rounded-full"></div>
-                              Đã ẩn
+                              Ðã ẩn
                             </span>
                           )}
                         </div>
@@ -945,7 +945,7 @@ const BannerPage: React.FC = () => {
 
                       {/* Meta Info */}
                       <div className="flex flex-wrap items-center gap-3 mb-4">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium bg-mono-50 text-blue-700 border border-mono-200">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium bg-mono-50 text-mono-700 border border-mono-200">
                           <svg
                             className="w-4 h-4"
                             fill="none"
@@ -965,11 +965,11 @@ const BannerPage: React.FC = () => {
                               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                          Vị trí {banner.displayOrder}
+                          V? trí {banner.displayOrder}
                         </span>
 
                         {banner.link && (
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium bg-purple-50 text-purple-700 border border-purple-200">
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-sm font-medium bg-mono-100 text-mono-800 border border-mono-200">
                             <svg
                               className="w-4 h-4"
                               fill="none"
@@ -983,12 +983,12 @@ const BannerPage: React.FC = () => {
                                 d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                               />
                             </svg>
-                            Có liên kết
+                            Có liên k?t
                           </span>
                         )}
 
                         <span className="text-sm text-mono-500">
-                          Tạo:{" "}
+                          T?o:{" "}
                           {new Date(banner.createdAt).toLocaleDateString(
                             "vi-VN"
                           )}
@@ -1020,7 +1020,7 @@ const BannerPage: React.FC = () => {
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                               />
                             </svg>
-                            Chỉnh sửa
+                            Chơnh sửa
                           </button>
 
                           <button
@@ -1043,10 +1043,10 @@ const BannerPage: React.FC = () => {
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                               />
                             </svg>
-                            Đổi ảnh
+                            Ð?i ẩnh
                           </button>
 
-                          {/* Dropdown đổi vị trí */}
+                          {/* Dropdown đổi v? trí */}
                           <select
                             value={banner.displayOrder}
                             onChange={(e) =>
@@ -1059,7 +1059,7 @@ const BannerPage: React.FC = () => {
                           >
                             {[1, 2, 3, 4, 5].map((position) => (
                               <option key={position} value={position}>
-                                Vị trí {position}
+                                V? trí {position}
                               </option>
                             ))}
                           </select>
@@ -1070,8 +1070,8 @@ const BannerPage: React.FC = () => {
                         onClick={() => handleToggleStatus(banner._id)}
                         className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${
                           banner.isActive
-                            ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border border-yellow-200"
-                            : "bg-green-50 hover:bg-green-100 text-green-700 border border-green-200"
+                            ? "bg-mono-100 hover:bg-mono-100 text-mono-700 border border-mono-200"
+                            : "bg-mono-50 hover:bg-mono-100 text-mono-700 border border-mono-200"
                         }`}
                       >
                         {banner.isActive ? (
@@ -1089,7 +1089,7 @@ const BannerPage: React.FC = () => {
                                 d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
                               />
                             </svg>
-                            Ẩn banner
+                            ẩn banner
                           </>
                         ) : (
                           <>
@@ -1120,7 +1120,7 @@ const BannerPage: React.FC = () => {
                       {canDelete() && (
                         <button
                           onClick={() => handleDeleteBanner(banner._id)}
-                          className="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-2"
+                          className="px-4 py-2 bg-mono-100 hover:bg-mono-200 text-mono-800 text-sm font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-2"
                         >
                           <svg
                             className="w-4 h-4"
@@ -1157,3 +1157,9 @@ const BannerPage: React.FC = () => {
 };
 
 export default BannerPage;
+
+
+
+
+
+

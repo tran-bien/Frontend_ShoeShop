@@ -1,4 +1,4 @@
-import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
 import { toast } from "react-hot-toast";
 import {
   Product,
@@ -49,40 +49,40 @@ export const convertToProductCardProduct: ProductToCardProduct = (product) => {
 
 // Admin Product Service
 export const productAdminService = {
-  // Lấy danh sách sản phẩm (có phân trang và filter)
+  // Láº¥y danh sÃ¡ch sáº£n pháº©m (cÃ³ phÃ¢n trang vÃ  filter)
   getProducts: (
     params?: ProductQueryParams
   ): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/products", { params }),
 
-  // Lấy danh sách sản phẩm đã xóa
+  // Láº¥y danh sÃ¡ch sáº£n pháº©m Ä‘Ã£ xÃ³a
   getDeletedProducts: (
     params?: ProductQueryParams
   ): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/products/deleted", { params }),
 
-  // Lấy chi tiết sản phẩm theo ID
+  // Láº¥y chi tiáº¿t sáº£n pháº©m theo ID
   getProductById: (id: string): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/products/${id}`),
 
-  // Tạo sản phẩm mới
+  // Táº¡o sáº£n pháº©m má»›i
   createProduct: (
     data: CreateProductData
   ): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.post("/api/v1/admin/products", data),
 
-  // Cập nhật sản phẩm
+  // Cáº­p nháº­t sáº£n pháº©m
   updateProduct: (
     id: string,
     data: UpdateProductData
   ): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/products/${id}`, data),
 
-  // Xóa mềm sản phẩm
+  // XÃ³a má»m sáº£n pháº©m
   deleteProduct: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/products/${id}`),
 
-  // Khôi phục sản phẩm đã xóa
+  // KhÃ´i phá»¥c sáº£n pháº©m Ä‘Ã£ xÃ³a
   restoreProduct: (
     id: string,
     restoreVariants: boolean = true
@@ -91,7 +91,7 @@ export const productAdminService = {
       restoreVariants,
     }),
 
-  // Cập nhật trạng thái active
+  // Cáº­p nháº­t tráº¡ng thÃ¡i active
   updateProductStatus: (
     id: string,
     data: {
@@ -101,25 +101,25 @@ export const productAdminService = {
   ): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/products/${id}/status`, data),
 
-  // Cập nhật trạng thái tồn kho
+  // Cáº­p nháº­t tráº¡ng thÃ¡i tá»“n kho
   updateStockStatus: (id: string): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.post(`/api/v1/admin/products/${id}/update-stock-status`),
 };
 
 // Public Product Service
 export const productPublicService = {
-  // Lấy danh sách sản phẩm công khai với filter phức tạp
+  // Láº¥y danh sÃ¡ch sáº£n pháº©m cÃ´ng khai vá»›i filter phá»©c táº¡p
   getProducts: (
     params?: ProductQueryParams
   ): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstance.get("/api/v1/products", { params }),
 
-  // Lấy sản phẩm nổi bật
+  // Láº¥y sáº£n pháº©m ná»•i báº­t
   getFeaturedProducts: (params?: {
     limit?: number;
   }): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstance.get("/api/v1/products/featured", { params }),
-  // Lấy chi tiết sản phẩm theo slug
+  // Láº¥y chi tiáº¿t sáº£n pháº©m theo slug
   getProductBySlug: async (slug: string) => {
     try {
       const response = await axiosInstance.get(`/api/v1/products/slug/${slug}`);
@@ -128,26 +128,26 @@ export const productPublicService = {
       console.error("Error fetching product by slug:", error);
       const axiosError = error as { response?: { status?: number } };
       if (axiosError.response?.status === 404) {
-        toast.error("Không tìm thấy sản phẩm");
+        toast.error("KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m");
       } else {
-        toast.error("Lỗi khi tải sản phẩm");
+        toast.error("Lá»—i khi táº£i sáº£n pháº©m");
       }
       throw error;
     }
   },
 
-  // Lấy sản phẩm mới nhất
+  // Láº¥y sáº£n pháº©m má»›i nháº¥t
   getNewArrivals: (params?: {
     limit?: number;
   }): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstance.get("/api/v1/products/new-arrivals", { params }),
 
-  // Lấy sản phẩm bán chạy
+  // Láº¥y sáº£n pháº©m bÃ¡n cháº¡y
   getBestSellers: (params?: {
     limit?: number;
   }): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstance.get("/api/v1/products/best-sellers", { params }),
-  // Lấy sản phẩm liên quan
+  // Láº¥y sáº£n pháº©m liÃªn quan
   getRelatedProducts: async (id: string, params?: { limit?: number }) => {
     try {
       const response = await axiosInstance.get(
@@ -157,11 +157,11 @@ export const productPublicService = {
       return response;
     } catch (error: unknown) {
       console.error("Error fetching related products:", error);
-      // Không hiển thị toast error cho related products vì đây là tính năng phụ
+      // KhÃ´ng hiá»ƒn thá»‹ toast error cho related products vÃ¬ Ä‘Ã¢y lÃ  tÃ­nh nÄƒng phá»¥
       throw error;
     }
   },
-  // Lấy chi tiết sản phẩm theo ID
+  // Láº¥y chi tiáº¿t sáº£n pháº©m theo ID
   getProductById: async (id: string) => {
     try {
       const response = await axiosInstance.get(`/api/v1/products/${id}`);
@@ -170,9 +170,9 @@ export const productPublicService = {
       console.error("Error fetching product by ID:", error);
       const axiosError = error as { response?: { status?: number } };
       if (axiosError.response?.status === 404) {
-        toast.error("Không tìm thấy sản phẩm");
+        toast.error("KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m");
       } else {
-        toast.error("Lỗi khi tải sản phẩm");
+        toast.error("Lá»—i khi táº£i sáº£n pháº©m");
       }
       throw error;
     }

@@ -39,7 +39,7 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
           <div className="flex items-center gap-3">
             <FaCreditCard className="text-mono-500 text-xl" />
             <h2 className="text-xl font-semibold text-mono-800">
-              Thanh toán lại đơn hàng
+              Thanh toán lỗi don hàng
             </h2>
           </div>
           <button
@@ -55,41 +55,41 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6">
           <div className="mb-6">
             <div className="flex items-start gap-3 mb-4">
-              <FaExclamationCircle className="text-yellow-500 text-lg mt-0.5" />
+              <FaExclamationCircle className="text-mono-600 text-lg mt-0.5" />
               <div>
                 <p className="text-mono-700 mb-2">
-                  Bạn có chắc chắn muốn thanh toán lại đơn hàng{" "}
+                  Bẩn có chỉc chơn muẩn thanh toán lỗi don hàng{" "}
                   <span className="font-semibold text-mono-black">
                     {orderCode}
                   </span>
                   ?
                 </p>
                 <p className="text-sm text-mono-500">
-                  Bạn sẽ được chuyển hướng đến trang thanh toán VNPAY để hoàn
-                  tất giao dịch.
+                  Bẩn số được chuyện huẩng đến trang thanh toán VNPAY d? hoàn
+                  t?t giao d?ch.
                 </p>
               </div>
             </div>
 
-            {/* Thông tin đơn hàng */}
+            {/* Thông tin don hàng */}
             <div className="bg-mono-50 border border-mono-200 rounded-lg p-4">
-              <h3 className="font-semibold text-blue-800 mb-2">
+              <h3 className="font-semibold text-mono-800 mb-2">
                 Thông tin thanh toán
               </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-mono-600">Mã đơn hàng:</span>
+                  <span className="text-mono-600">Mã don hàng:</span>
                   <span className="font-medium">{orderCode}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-mono-600">Phương thức:</span>
+                  <span className="text-mono-600">Phuong thực:</span>
                   <span className="font-medium">VNPAY</span>
                 </div>
                 <hr className="border-mono-200" />
                 <div className="flex justify-between">
                   <span className="text-mono-600 font-medium">Số tiền:</span>
                   <span className="font-bold text-mono-900">
-                    {orderAmount.toLocaleString()}đ
+                    {orderAmount.toLocaleString()}d
                   </span>
                 </div>
               </div>
@@ -97,14 +97,14 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
           </div>
 
           {/* Warning */}
-          <div className="mb-6 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              <strong>Lưu ý:</strong>
+          <div className="mb-6 p-3 bg-mono-100 border border-mono-200 rounded-lg">
+            <p className="text-sm text-mono-800">
+              <strong>Luu ý:</strong>
             </p>
-            <ul className="text-sm text-yellow-700 mt-1 ml-4 list-disc">
-              <li>Giao dịch sẽ được xử lý qua cổng thanh toán VNPAY</li>
-              <li>Vui lòng hoàn tất thanh toán trong thời gian quy định</li>
-              <li>Đơn hàng sẽ được xử lý sau khi thanh toán thành công</li>
+            <ul className="text-sm text-mono-700 mt-1 ml-4 list-disc">
+              <li>Giao d?ch số được xử lý qua cẩng thanh toán VNPAY</li>
+              <li>Vui lòng hoàn tất thanh toán trong thời gian quy đếnh</li>
+              <li>Ðon hàng số được xử lý sau khi thanh toán thành công</li>
             </ul>
           </div>
 
@@ -116,14 +116,14 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
               disabled={loading}
               className="flex-1 px-4 py-2 text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Hủy bỏ
+              Hủy b?
             </button>
             <button
               type="submit"
               disabled={loading}
               className="flex-1 px-4 py-2 bg-mono-500 text-white rounded-lg hover:bg-mono-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? "Đang xử lý..." : "Thanh toán ngay"}
+              {loading ? "Ðang xử lý..." : "Thanh toán ngay"}
             </button>
           </div>
         </form>
@@ -133,3 +133,6 @@ const RepayOrderModal: React.FC<RepayOrderModalProps> = ({
 };
 
 export default RepayOrderModal;
+
+
+

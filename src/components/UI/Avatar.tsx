@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 interface AvatarProps {
   src?: string | null;
@@ -117,3 +117,4 @@ export const AvatarGroup: React.FC<{
 };
 
 export default Avatar;
+

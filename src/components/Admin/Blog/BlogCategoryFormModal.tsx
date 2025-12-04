@@ -70,7 +70,7 @@ const BlogCategoryFormModal: React.FC<BlogCategoryFormModalProps> = ({
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Tên danh mục <span className="text-red-500">*</span>
+              Tên danh mục <span className="text-mono-500">*</span>
             </label>
             <input
               type="text"
@@ -144,3 +144,6 @@ const BlogCategoryFormModal: React.FC<BlogCategoryFormModalProps> = ({
 };
 
 export default BlogCategoryFormModal;
+
+
+

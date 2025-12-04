@@ -1,8 +1,8 @@
-import React from "react";
+﻿import React from "react";
 
 interface SkeletonProps {
   className?: string;
-  variant?: "text" | "circular" | "rectangular";
+  variant?: "text" | "circular" | "rectăngular";
   width?: string | number;
   height?: string | number;
   animation?: "pulse" | "wave" | "none";
@@ -10,7 +10,7 @@ interface SkeletonProps {
 
 const Skeleton: React.FC<SkeletonProps> = ({
   className = "",
-  variant = "rectangular",
+  variant = "rectăngular",
   width,
   height,
   animation = "pulse",
@@ -21,7 +21,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
         return "h-4 rounded";
       case "circular":
         return "rounded-full";
-      case "rectangular":
+      case "rectăngular":
         return "rounded-lg";
       default:
         return "rounded-lg";
@@ -55,3 +55,4 @@ const Skeleton: React.FC<SkeletonProps> = ({
 };
 
 export default Skeleton;
+

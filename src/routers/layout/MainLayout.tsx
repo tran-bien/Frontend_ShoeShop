@@ -1,4 +1,4 @@
-﻿import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import MainNavbar from "../../components/Navbar/MainNavbar";
 import { Footer } from "../../components/Layout";
 import AIChatbot from "../../components/Chat/AIChatbot";
@@ -20,3 +20,4 @@ const MainLayout = () => {
 };
 
 export default MainLayout;
+

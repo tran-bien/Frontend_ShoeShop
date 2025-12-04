@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+﻿import { useState, useRef } from "react";
 import { adminBlogService } from "../../../services/BlogService";
 import { blogImageService } from "../../../services/ImageService";
 import type {
@@ -48,13 +48,13 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Vui lòng chọn file ảnh");
+      toast.error("Vui lÃ²ng chá»n file áº£nh");
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Kích thước ảnh tối đa là 5MB");
+      toast.error("KÃ­ch thÆ°á»›c áº£nh tá»‘i Ä‘a lÃ  5MB");
       return;
     }
 
@@ -75,10 +75,10 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
             public_id: response.data.public_id || "",
           },
         });
-        toast.success("Tải ảnh đại diện thành công");
+        toast.success("Táº£i áº£nh Ä‘áº¡i diá»‡n thÃ nh cÃ´ng");
       } catch (error) {
         console.error("Failed to upload featured image:", error);
-        toast.error("Không thể tải ảnh lên");
+        toast.error("KhÃ´ng thá»ƒ táº£i áº£nh lÃªn");
       } finally {
         setUploadingImage(false);
       }
@@ -90,7 +90,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
         featuredImage: { url: previewUrl, public_id: "" },
       });
       toast.success(
-        "Ảnh sẽ được tải lên sau khi tạo bài viết. Vui lòng tạo bài viết trước."
+        "áº¢nh sáº½ Ä‘Æ°á»£c táº£i lÃªn sau khi táº¡o bÃ i viáº¿t. Vui lÃ²ng táº¡o bÃ i viáº¿t trÆ°á»›c."
       );
     }
     // Reset input
@@ -119,17 +119,17 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
     e.preventDefault();
 
     if (!formData.title.trim()) {
-      toast.error("Vui lòng nhập tiêu đề");
+      toast.error("Vui lÃ²ng nháº­p tiÃªu Ä‘á»");
       return;
     }
 
     if (!formData.category) {
-      toast.error("Vui lòng chọn danh mục");
+      toast.error("Vui lÃ²ng chá»n danh má»¥c");
       return;
     }
 
     if (!formData.content.trim()) {
-      toast.error("Vui lòng nhập nội dung");
+      toast.error("Vui lÃ²ng nháº­p ná»™i dung");
       return;
     }
 
@@ -142,16 +142,16 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
 
       if (post) {
         await adminBlogService.updatePost(post._id, submitData);
-        toast.success("Cập nhật bài viết thành công");
+        toast.success("Cáº­p nháº­t bÃ i viáº¿t thÃ nh cÃ´ng");
       } else {
         await adminBlogService.createPost(submitData);
-        toast.success("Tạo bài viết thành công");
+        toast.success("Táº¡o bÃ i viáº¿t thÃ nh cÃ´ng");
       }
       onSuccess();
     } catch (error) {
       console.error("Failed to save post:", error);
       const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || "Không thể lưu bài viết");
+      toast.error(err?.response?.data?.message || "KhÃ´ng thá»ƒ lÆ°u bÃ i viáº¿t");
     } finally {
       setLoading(false);
     }
@@ -163,7 +163,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-mono-200 sticky top-0 bg-white z-10 rounded-t-xl">
           <h2 className="text-2xl font-bold text-mono-black">
-            {post ? "Cập nhật Bài viết" : "Tạo Bài viết Mới"}
+            {post ? "Cáº­p nháº­t BÃ i viáº¿t" : "Táº¡o BÃ i viáº¿t Má»›i"}
           </h2>
           <button
             onClick={onClose}
@@ -178,7 +178,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Tiêu đề <span className="text-red-500">*</span>
+              TiÃªu Ä‘á» <span className="text-mono-500">*</span>
             </label>
             <input
               type="text"
@@ -186,7 +186,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              placeholder="Nhập tiêu đề bài viết..."
+              placeholder="Nháº­p tiÃªu Ä‘á» bÃ i viáº¿t..."
               className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
               required
             />
@@ -196,7 +196,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                Danh mục <span className="text-red-500">*</span>
+                Danh má»¥c <span className="text-mono-500">*</span>
               </label>
               <select
                 value={formData.category}
@@ -206,7 +206,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                 className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
                 required
               >
-                <option value="">Chọn danh mục</option>
+                <option value="">Chá»n danh má»¥c</option>
                 {categories
                   .filter((cat) => cat.isActive)
                   .map((cat) => (
@@ -219,7 +219,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                Trạng thái
+                Tráº¡ng thÃ¡i
               </label>
               <select
                 value={formData.status}
@@ -234,9 +234,9 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                 }
                 className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
               >
-                <option value="draft">Bản nháp</option>
-                <option value="published">Xuất bản</option>
-                <option value="archived">Lưu trữ</option>
+                <option value="draft">Báº£n nhÃ¡p</option>
+                <option value="published">Xuáº¥t báº£n</option>
+                <option value="archived">LÆ°u trá»¯</option>
               </select>
             </div>
           </div>
@@ -244,7 +244,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           {/* Excerpt */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Tóm tắt
+              TÃ³m táº¯t
             </label>
             <textarea
               value={formData.excerpt}
@@ -252,7 +252,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                 setFormData({ ...formData, excerpt: e.target.value })
               }
               rows={3}
-              placeholder="Tóm tắt ngắn gọn về bài viết (hiển thị trong danh sách)..."
+              placeholder="TÃ³m táº¯t ngáº¯n gá»n vá» bÃ i viáº¿t (hiá»ƒn thá»‹ trong danh sÃ¡ch)..."
               className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
             />
           </div>
@@ -260,7 +260,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           {/* Content */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Nội dung <span className="text-red-500">*</span>
+              Ná»™i dung <span className="text-mono-500">*</span>
             </label>
             <textarea
               value={formData.content}
@@ -268,19 +268,19 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                 setFormData({ ...formData, content: e.target.value })
               }
               rows={12}
-              placeholder="Nhập nội dung bài viết (hỗ trợ Markdown)..."
+              placeholder="Nháº­p ná»™i dung bÃ i viáº¿t (há»— trá»£ Markdown)..."
               className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black font-mono text-sm"
               required
             />
             <p className="text-xs text-mono-500 mt-1">
-              Hỗ trợ Markdown: **bold**, *italic*, [link](url), ![image](url)
+              Há»— trá»£ Markdown: **bold**, *italic*, [link](url), ![image](url)
             </p>
           </div>
 
           {/* Featured Image */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Ảnh đại diện
+              áº¢nh Ä‘áº¡i diá»‡n
             </label>
             <div className="flex gap-2">
               <input
@@ -331,7 +331,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                    Đang tải...
+                    Äang táº£i...
                   </>
                 ) : (
                   <>
@@ -353,7 +353,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                   onClick={() =>
                     setFormData({ ...formData, featuredImage: undefined })
                   }
-                  className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                  className="absolute top-2 right-2 p-1 bg-mono-1000 text-white rounded-full hover:bg-mono-700"
                 >
                   <XMarkIcon className="w-4 h-4" />
                 </button>
@@ -379,7 +379,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                     <button
                       type="button"
                       onClick={() => removeTag(tag)}
-                      className="hover:text-red-600 transition-colors"
+                      className="hover:text-mono-700 transition-colors"
                     >
                       <XMarkIcon className="w-4 h-4" />
                     </button>
@@ -400,7 +400,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                     addTag();
                   }
                 }}
-                placeholder="Nhập tag và nhấn Enter..."
+                placeholder="Nháº­p tag vÃ  nháº¥n Enter..."
                 className="flex-1 px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
               />
               <button
@@ -408,7 +408,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                 onClick={addTag}
                 className="px-4 py-2 text-sm font-medium text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 transition-colors"
               >
-                Thêm
+                ThÃªm
               </button>
             </div>
           </div>
@@ -428,7 +428,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
               htmlFor="isHighlighted"
               className="text-sm font-medium text-mono-700 cursor-pointer"
             >
-              Bài viết nổi bật (hiển thị ở trang chủ)
+              BÃ i viáº¿t ná»•i báº­t (hiá»ƒn thá»‹ á»Ÿ trang chá»§)
             </label>
           </div>
 
@@ -440,14 +440,14 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
               className="px-6 py-2 text-sm font-medium text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 transition-colors"
               disabled={loading}
             >
-              Hủy
+              Há»§y
             </button>
             <button
               type="submit"
               className="px-6 py-2 text-sm font-medium text-white bg-mono-black rounded-lg hover:bg-mono-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
-              {loading ? "Đang lưu..." : post ? "Cập nhật" : "Tạo mới"}
+              {loading ? "Äang lÆ°u..." : post ? "Cáº­p nháº­t" : "Táº¡o má»›i"}
             </button>
           </div>
         </form>
@@ -457,3 +457,6 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
 };
 
 export default BlogPostFormModal;
+
+
+

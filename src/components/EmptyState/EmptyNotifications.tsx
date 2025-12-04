@@ -15,3 +15,4 @@ const EmptyNotifications: React.FC = () => {
 };
 
 export default EmptyNotifications;
+

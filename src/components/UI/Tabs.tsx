@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 interface TabItem {
   id: string;
@@ -92,3 +92,4 @@ const Tabs: React.FC<TabsProps> = ({
 };
 
 export default Tabs;
+

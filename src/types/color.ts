@@ -1,7 +1,7 @@
-/**
+﻿/**
  * Color Types
- * Định nghĩa các interface liên quan đến Màu sắc
- * Note: Backend sử dụng "solid" (1 màu với code) và "half" (2+ màu với colors array)
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n MÃ u sáº¯c
+ * Note: Backend sá»­ dá»¥ng "solid" (1 mÃ u vá»›i code) vÃ  "half" (2+ mÃ u vá»›i colors array)
  */
 
 export type ColorType = "solid" | "half";

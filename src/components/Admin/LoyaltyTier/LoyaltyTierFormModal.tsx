@@ -100,7 +100,7 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
             {/* Name */}
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                Tên hạng <span className="text-red-500">*</span>
+                Tên hạng <span className="text-mono-500">*</span>
               </label>
               <input
                 type="text"
@@ -118,7 +118,7 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-mono-700 mb-2">
-                  Điểm tối thiểu <span className="text-red-500">*</span>
+                  Điểm tối thiểu <span className="text-mono-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -186,7 +186,7 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
             {/* Points Multiplier */}
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                Hệ số nhân điểm (1-5) <span className="text-red-500">*</span>
+                Hệ số nhân điểm (1-5) <span className="text-mono-500">*</span>
               </label>
               <input
                 type="number"
@@ -262,3 +262,6 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
 };
 
 export default LoyaltyTierFormModal;
+
+
+

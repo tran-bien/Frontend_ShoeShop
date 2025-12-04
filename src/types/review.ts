@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Review Types
- * Định nghĩa các interface liên quan đến Đánh giá sản phẩm
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n ÄÃ¡nh giÃ¡ sáº£n pháº©m
  */
 
 // =======================
@@ -32,6 +32,24 @@ export interface ReviewProduct {
 }
 
 // =======================
+// REVIEW REPLY TYPES
+// =======================
+
+export interface ReviewReply {
+  content: string;
+  repliedBy: {
+    _id: string;
+    name: string;
+    role: "admin" | "staff";
+    avatar?: {
+      url: string;
+      public_id: string;
+    };
+  };
+  repliedAt: string;
+}
+
+// =======================
 // MAIN REVIEW INTERFACE
 // =======================
 
@@ -44,6 +62,7 @@ export interface Review {
   content: string;
   numberOfLikes: number;
   isActive: boolean;
+  reply?: ReviewReply;
   deletedAt: string | null;
   deletedBy: string | null;
   createdAt: string;

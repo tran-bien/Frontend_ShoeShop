@@ -133,9 +133,9 @@ const AdminSizeGuidePage = () => {
                   {stats.active}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-mono-50 rounded-xl flex items-center justify-center">
                 <svg
-                  className="w-6 h-6 text-green-600"
+                  className="w-6 h-6 text-mono-600"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -161,8 +161,8 @@ const AdminSizeGuidePage = () => {
                   {stats.withImages}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center">
-                <PhotoIcon className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-mono-100 rounded-xl flex items-center justify-center">
+                <PhotoIcon className="w-6 h-6 text-mono-700" />
               </div>
             </div>
           </div>
@@ -230,7 +230,7 @@ const AdminSizeGuidePage = () => {
                     <span
                       className={`inline-block px-2 py-1 text-xs rounded ${
                         guide.isActive
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-mono-100 text-mono-700"
                           : "bg-mono-100 text-mono-500"
                       }`}
                     >
@@ -253,7 +253,7 @@ const AdminSizeGuidePage = () => {
                     {canDelete() && (
                       <button
                         onClick={() => handleDelete(guide._id)}
-                        className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-mono-700 hover:text-mono-800 hover:bg-mono-100 rounded-lg transition-colors"
                         title="Xóa"
                       >
                         <TrashIcon className="w-5 h-5" />
@@ -349,3 +349,7 @@ const AdminSizeGuidePage = () => {
 };
 
 export default AdminSizeGuidePage;
+
+
+
+

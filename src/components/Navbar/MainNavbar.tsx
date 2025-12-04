@@ -70,7 +70,7 @@ const MainNavbar = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/products?name=${encodeURIComponent(searchQuery.trim())}`);
+      navigate(`/productsẩname=${encodeURIComponent(searchQuery.trim())}`);
       setShowSuggestions(false);
       setSearchQuery("");
     }
@@ -84,7 +84,7 @@ const MainNavbar = () => {
     if (suggestion.type === "product") {
       navigate(`/product/${suggestion.slug || suggestion.id}`);
     } else if (suggestion.type === "category") {
-      navigate(`/products?category=${suggestion.id}`);
+      navigate(`/productsắcategory=${suggestion.id}`);
     } else if (suggestion.type === "brand") {
       navigate(`/products?brand=${suggestion.id}`);
     }
@@ -126,7 +126,7 @@ const MainNavbar = () => {
             to="/products?sort=newest"
             className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
-            SẢN PHẨM MỚI
+            S?N PH?M M?I
           </Link>
         </li>
         <li>
@@ -134,7 +134,7 @@ const MainNavbar = () => {
             to="/products?sort=popular"
             className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
-            SẢN PHẨM PHỔ BIẾN
+            S?N PH?M PHọ BI?N
           </Link>
         </li>
         <li>
@@ -150,7 +150,7 @@ const MainNavbar = () => {
             to="/products?gender=female"
             className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
-            GIÀY NỮ
+            GIÀY N?
           </Link>
         </li>
         <li>
@@ -171,7 +171,7 @@ const MainNavbar = () => {
         <form onSubmit={handleSearch} className="w-full relative">
           <input
             type="text"
-            placeholder="Tìm kiếm sản phẩm, thương hiệu..."
+            placeholder="Tìm kiếm sản phẩm, thuong hi?u..."
             className="border border-mono-300 p-2 px-5 rounded-3xl w-full pr-10 focus:outline-none focus:border-mono-500 focus:ring-1 focus:ring-mono-500"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -195,7 +195,7 @@ const MainNavbar = () => {
             {loading ? (
               <div className="p-4 text-center text-mono-500">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-mono-500 mx-auto"></div>
-                <span className="mt-2 block">Đang tìm kiếm...</span>
+                <span className="mt-2 block">Ðang tìm kiếm...</span>
               </div>
             ) : (
               <ul className="py-2">
@@ -226,7 +226,7 @@ const MainNavbar = () => {
                         <div className="text-sm text-mono-500 capitalize">
                           {suggestion.type === "product" && "Sản phẩm"}
                           {suggestion.type === "category" && "Danh mục"}
-                          {suggestion.type === "brand" && "Thương hiệu"}
+                          {suggestion.type === "brand" && "Thuong hi?u"}
                         </div>
                       </div>
                     </button>
@@ -245,7 +245,7 @@ const MainNavbar = () => {
                     }}
                     className="w-full px-4 py-3 hover:bg-mono-50 text-left transition-colors text-mono-black font-medium"
                   >
-                    Xem tất cả kết quả cho "{searchQuery}"
+                    Xem tất cả k?t qu? cho "{searchQuery}"
                   </button>
                 </li>
               </ul>
@@ -255,14 +255,14 @@ const MainNavbar = () => {
       </div>
 
       <ul className="flex gap-2 items-center flex-shrink-0">
-        {/* Loyalty Badge - Chỉ hiển thị khi đã đăng nhập */}
+        {/* Loyalty Badge - Chờ hiện thọ khi dã đang nhập */}
         {user && (
           <li>
             <LoyaltyBadge />
           </li>
         )}
 
-        {/* Notifications - Chỉ hiển thị khi đã đăng nhập */}
+        {/* Notifications - Chờ hiện thọ khi dã đang nhập */}
         {user && (
           <li>
             <NotificationBell />
@@ -288,7 +288,7 @@ const MainNavbar = () => {
             <AiOutlineUser className="text-xl xl:text-2xl text-mono-700 hover:text-mono-800 transition" />
           </Link>
         </li>
-        {/* Dashboard/Admin Panel - Hiển thị cho cả admin và staff */}
+        {/* Dashboard/Admin Panel - Hiện thọ cho c? admin và staff */}
         {(user?.role === "admin" || user?.role === "staff") && (
           <li>
             <Link
@@ -307,3 +307,4 @@ const MainNavbar = () => {
 };
 
 export default MainNavbar;
+

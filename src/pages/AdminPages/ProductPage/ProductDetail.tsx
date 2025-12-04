@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { productAdminService } from "../../../services/ProductService";
 import { Product } from "../../../types/product";
 import ProductImagesManager from "./ProductImagesManager";
@@ -25,7 +25,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
     productAdminService
       .getProductById(product._id) // Use admin API method
       .then((res: any) => {
-        // BE tr? v?: { success: true, data: Product }
+        // BE trở về: { success: true, data: Product }
         const productData = (res.data.data || res.data) as Product;
         console.log("Product detail loaded:", productData);
         setDetail(productData);
@@ -51,9 +51,9 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
             onClick={handleClose}
             className="absolute top-2 right-2 text-xl font-bold"
           >
-            �
+            ï¿½
           </button>
-          <div>�ang t?i chi ti?t s?n ph?m...</div>
+          <div>ï¿½ang tại chi tiết sản phẩm...</div>
         </div>
       </div>
     );
@@ -68,12 +68,12 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
             <h2 className="text-2xl font-bold text-mono-800 mb-1">
               {detail.name}
             </h2>
-            <p className="text-sm text-mono-500">Chi ti?t s?n ph?m</p>
+            <p className="text-sm text-mono-500">Chi tiết sản phẩm</p>
           </div>
           <button
             onClick={handleClose}
-            className="ml-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-red-50 text-mono-400 hover:text-mono-800 transition-all"
-            title="��ng"
+            className="ml-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-mono-100 text-mono-400 hover:text-mono-800 transition-all"
+            title="ï¿½ï¿½ng"
           >
             <svg
               className="w-6 h-6"
@@ -115,7 +115,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              H�nh ?nh ({detail.images?.length || 0})
+              Hï¿½nh ẩnh ({detail.images?.length || 0})
             </span>
           </button>
           <button
@@ -140,7 +140,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              Th�ng tin
+              Thï¿½ng tin
             </span>
           </button>
           <button
@@ -165,7 +165,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                   d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
                 />
               </svg>
-              Bi?n th? ({detail.variants?.length || 0})
+              Biẩn thọ ({detail.variants?.length || 0})
             </span>
           </button>
         </div>
@@ -206,7 +206,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                           />
                         </svg>
-                        Qu?n l� ?nh
+                        Quận lï¿½ ẩnh
                       </button>
                     )}
                   </div>
@@ -251,7 +251,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                  <p className="mt-4 text-mono-500">Chua c� h�nh ?nh</p>
+                  <p className="mt-4 text-mono-500">Chua cï¿½ hï¿½nh ẩnh</p>
                 </div>
               )}
             </div>
@@ -276,7 +276,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
-                  M� t? s?n ph?m
+                  Mï¿½ từ sản phẩm
                 </h3>
                 <p className="text-mono-700 leading-relaxed">
                   {detail.description}
@@ -287,7 +287,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white border border-mono-200 rounded-xl p-4">
                   <div className="text-xs text-mono-500 font-medium mb-1">
-                    Danh m?c
+                    Danh mục
                   </div>
                   <div className="text-sm font-semibold text-mono-800">
                     {typeof detail.category === "object"
@@ -317,45 +317,45 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                 </div>
                 <div className="bg-white border border-mono-200 rounded-xl p-4">
                   <div className="text-xs text-mono-500 font-medium mb-1">
-                    Tr?ng th�i
+                    Trống thï¿½i
                   </div>
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                       detail.isActive
-                        ? "bg-green-100 text-green-700"
+                        ? "bg-mono-100 text-mono-700"
                         : "bg-mono-100 text-mono-600"
                     }`}
                   >
-                    {detail.isActive ? "�ang ho?t d?ng" : "Ng?ng ho?t d?ng"}
+                    {detail.isActive ? "ï¿½ang ho?t đếng" : "Ngẩng ho?t đếng"}
                   </span>
                 </div>
                 <div className="bg-white border border-mono-200 rounded-xl p-4">
                   <div className="text-xs text-mono-500 font-medium mb-1">
-                    T?n kho
+                    Tên kho
                   </div>
                   <div className="flex items-center gap-2">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                         detail.stockStatus === "in_stock"
-                          ? "bg-green-100 text-green-700"
+                          ? "bg-mono-100 text-mono-700"
                           : detail.stockStatus === "low_stock"
-                          ? "bg-yellow-100 text-yellow-700"
-                          : "bg-red-100 text-red-700"
+                          ? "bg-mono-100 text-mono-700"
+                          : "bg-mono-200 text-mono-800"
                       }`}
                     >
                       {{
-                        in_stock: "C�n h�ng",
+                        in_stock: "Cï¿½n hï¿½ng",
                         low_stock: "S?p h?t",
-                        out_of_stock: "H?t h�ng",
+                        out_of_stock: "H?t hï¿½ng",
                       }[
                         detail.stockStatus as
                           | "in_stock"
                           | "low_stock"
                           | "out_of_stock"
-                      ] || "H?t h�ng"}
+                      ] || "H?t hï¿½ng"}
                     </span>
                     <span className="text-sm text-mono-600">
-                      ({detail.totalQuantity} s?n ph?m)
+                      ({detail.totalQuantity} sản phẩm)
                     </span>
                   </div>
                 </div>
@@ -365,7 +365,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
               {detail.tags && detail.tags.length > 0 && (
                 <div className="bg-white border border-mono-200 rounded-xl p-4">
                   <div className="text-xs text-mono-500 font-medium mb-3">
-                    Tags s?n ph?m
+                    Tags sản phẩm
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {detail.tags.map((tag, index) => {
@@ -377,10 +377,10 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                           key={tag._id || index}
                           className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                             tag.type === "MATERIAL"
-                              ? "bg-mono-100 text-blue-800"
+                              ? "bg-mono-100 text-mono-800"
                               : tag.type === "USECASE"
-                              ? "bg-green-100 text-green-800"
-                              : "bg-purple-100 text-purple-800"
+                              ? "bg-mono-100 text-mono-800"
+                              : "bg-mono-200 text-mono-800"
                           }`}
                         >
                           {tag.name}
@@ -407,13 +407,13 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                     </span>
                   </div>
                   <div>
-                    <span className="text-mono-500">Ng�y t?o:</span>
+                    <span className="text-mono-500">Ngï¿½y t?o:</span>
                     <span className="ml-2 text-mono-700">
                       {new Date(detail.createdAt).toLocaleDateString("vi-VN")}
                     </span>
                   </div>
                   <div>
-                    <span className="text-mono-500">C?p nh?t:</span>
+                    <span className="text-mono-500">Cập nhật:</span>
                     <span className="ml-2 text-mono-700">
                       {new Date(detail.updatedAt).toLocaleDateString("vi-VN")}
                     </span>
@@ -467,11 +467,11 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-semibold ${
                             variant.isActive
-                              ? "bg-green-100 text-green-700"
+                              ? "bg-mono-100 text-mono-700"
                               : "bg-mono-100 text-mono-600"
                           }`}
                         >
-                          {variant.isActive ? "? �ang b�n" : "? ?n"}
+                          {variant.isActive ? "? ï¿½ang bï¿½n" : "? ẩn"}
                         </span>
                       </div>
 
@@ -479,7 +479,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                         <div className="bg-white rounded-lg p-3 border border-mono-200">
                           <div className="text-xs text-mono-500 mb-1">
-                            Gi� g?c
+                            Giï¿½ g?c
                           </div>
                           <div className="text-sm font-bold text-mono-800">
                             {(variant as any).price?.toLocaleString() || "N/A"}{" "}
@@ -488,25 +488,25 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         </div>
                         <div className="bg-white rounded-lg p-3 border border-mono-200">
                           <div className="text-xs text-mono-500 mb-1">
-                            Gi� b�n
+                            Giï¿½ bï¿½n
                           </div>
                           <div className="text-sm font-bold text-mono-black">
-                            {(variant as any).priceFinal?.toLocaleString() ||
+                            {(variant as any).priceFinalệ.toLocaleString() ||
                               "N/A"}{" "}
                             ?
                           </div>
                         </div>
-                        <div className="bg-white rounded-lg p-3 border border-orange-200">
+                        <div className="bg-white rounded-lg p-3 border border-mono-300">
                           <div className="text-xs text-mono-500 mb-1">
-                            Gi?m gi�
+                            Giảm giï¿½
                           </div>
-                          <div className="text-sm font-bold text-orange-600">
+                          <div className="text-sm font-bold text-mono-700">
                             {(variant as any).percentDiscount || 0}%
                           </div>
                         </div>
-                        <div className="bg-white rounded-lg p-3 border border-green-200">
+                        <div className="bg-white rounded-lg p-3 border border-mono-200">
                           <div className="text-xs text-mono-500 mb-1">
-                            L?i nhu?n
+                            Lỗi nhuẩn
                           </div>
                           <div className="text-sm font-bold text-mono-800">
                             {(variant as any).profit?.toLocaleString() || "N/A"}{" "}
@@ -520,7 +520,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         variant.imagesvariant.length > 0 && (
                           <div className="mb-4">
                             <div className="text-xs text-mono-500 font-medium mb-2">
-                              ?nh bi?n th? ({variant.imagesvariant.length})
+                              ẩnh biẩn thọ ({variant.imagesvariant.length})
                             </div>
                             <div className="flex gap-2 flex-wrap">
                               {variant.imagesvariant.map((img) => (
@@ -538,7 +538,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       {/* Sizes */}
                       <div>
                         <div className="text-xs text-mono-500 font-medium mb-2">
-                          Size & S? lu?ng
+                          Size & Số lượng
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {variant.sizes && variant.sizes.length > 0 ? (
@@ -552,23 +552,23 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                                     ? sz.size.description || sz.size.value
                                     : sz.size}
                                 </span>
-                                <span className="text-mono-400">�</span>
+                                <span className="text-mono-400">ï¿½</span>
                                 <span
                                   className={`font-medium ${
                                     sz.quantity > 10
                                       ? "text-mono-800"
                                       : sz.quantity > 0
-                                      ? "text-yellow-600"
+                                      ? "text-mono-700"
                                       : "text-mono-900"
                                   }`}
                                 >
-                                  {sz.quantity} d�i
+                                  {sz.quantity} dï¿½i
                                 </span>
                               </span>
                             ))
                           ) : (
                             <span className="text-mono-400 text-sm">
-                              Chua c� size
+                              Chua cï¿½ size
                             </span>
                           )}
                         </div>
@@ -591,19 +591,19 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                     />
                   </svg>
-                  <p className="mt-4 text-mono-500">Chua c� bi?n th? n�o</p>
+                  <p className="mt-4 text-mono-500">Chua cï¿½ biẩn thọ nï¿½o</p>
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* Modal qu?n l� ?nh */}
+        {/* Modal quận lï¿½ ẩnh */}
         {showImageManager && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
             <div className="bg-white rounded-xl p-6 w-full max-w-2xl relative shadow-2xl">
               <button
-                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-mono-400 hover:text-mono-800 transition-all"
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-mono-100 text-mono-400 hover:text-mono-800 transition-all"
                 onClick={() => setShowImageManager(false)}
               >
                 <svg
@@ -640,3 +640,8 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
 };
 
 export default ProductDetail;
+
+
+
+
+

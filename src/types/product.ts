@@ -1,4 +1,4 @@
-import { PriceRange, ProductImage, StockStatus } from "./common";
+﻿import { PriceRange, ProductImage, StockStatus } from "./common";
 import type { Color } from "./color";
 import type { Size } from "./size";
 import type { Brand } from "./brand";
@@ -17,16 +17,16 @@ export interface VariantSize {
   description?: string;
   sku?: string;
 
-  // Thông tin giá từ InventoryItem (BE trả về trong variants.sizes)
-  price?: number; // sellingPrice từ InventoryItem
-  finalPrice?: number; // finalPrice từ InventoryItem
-  discountPercent?: number; // discountPercent từ InventoryItem
+  // ThÃ´ng tin giÃ¡ tá»« InventoryItem (BE tráº£ vá» trong variants.sizes)
+  price?: number; // sellingPrice tá»« InventoryItem
+  finalPrice?: number; // finalPrice tá»« InventoryItem
+  discountPercent?: number; // discountPercent tá»« InventoryItem
 
   // Stock status
   isAvailable?: boolean; // quantity > 0
   isLowStock?: boolean;
   isOutOfStock?: boolean;
-  isSizeAvailable?: boolean; // deprecated, dùng isAvailable
+  isSizeAvailable?: boolean; // deprecated, dÃ¹ng isAvailable
 }
 
 export interface Variant {
@@ -45,11 +45,11 @@ export interface Variant {
     displayOrder: number;
   }>;
 
-  // REMOVED: Các fields này đã bị xóa khỏi BE Variant schema
+  // REMOVED: CÃ¡c fields nÃ y Ä‘Ã£ bá»‹ xÃ³a khá»i BE Variant schema
   // price, costPrice, percentDiscount, priceFinal, profit, profitPercentage
-  // Giá giờ được lưu trong InventoryItem và trả về qua variants.sizes[]
+  // GiÃ¡ giá» Ä‘Æ°á»£c lÆ°u trong InventoryItem vÃ  tráº£ vá» qua variants.sizes[]
 
-  // ADDED: Inventory summary từ BE (cho admin view)
+  // ADDED: Inventory summary tá»« BE (cho admin view)
   inventorySummary?: {
     totalQuantity: number;
     availableSizes: number;
@@ -125,10 +125,10 @@ export interface ProductVariants {
     colorType?: string;
     colors?: string[];
     gender?: string;
-    sizes?: VariantSize[]; // Mỗi size có price, finalPrice, discountPercent
+    sizes?: VariantSize[]; // Má»—i size cÃ³ price, finalPrice, discountPercent
     totalQuantity?: number;
-    // REMOVED: price, priceFinal, percentDiscount ở variant level
-    // Giá được lưu ở từng size trong sizes[]
+    // REMOVED: price, priceFinal, percentDiscount á»Ÿ variant level
+    // GiÃ¡ Ä‘Æ°á»£c lÆ°u á»Ÿ tá»«ng size trong sizes[]
   };
 }
 

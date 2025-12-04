@@ -83,4 +83,29 @@ export const reviewApi = {
   }> => axiosInstanceAuth.get("/api/v1/users/reviews/reviewable-products"),
 };
 
+// Admin Review Service - Quản lý đánh giá cho admin/staff
+export const adminReviewApi = {
+  // Trả lời đánh giá
+  replyToReview: (
+    reviewId: string,
+    replyContent: string
+  ): Promise<{ data: ApiResponse<Review> }> =>
+    axiosInstanceAuth.post(`/api/v1/admin/reviews/${reviewId}/reply`, {
+      replyContent,
+    }),
+
+  // Cập nhật trả lời
+  updateReply: (
+    reviewId: string,
+    replyContent: string
+  ): Promise<{ data: ApiResponse<Review> }> =>
+    axiosInstanceAuth.put(`/api/v1/admin/reviews/${reviewId}/reply`, {
+      replyContent,
+    }),
+
+  // Xóa trả lời
+  deleteReply: (reviewId: string): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/admin/reviews/${reviewId}/reply`),
+};
+
 export default reviewApi;

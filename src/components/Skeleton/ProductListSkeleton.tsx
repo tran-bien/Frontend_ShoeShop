@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import ProductCardSkeleton from "./ProductCardSkeleton";
 import Skeleton from "./Skeleton";
 
@@ -39,7 +39,7 @@ const ProductListSkeleton: React.FC<ProductListSkeletonProps> = ({
                       {[...Array(5)].map((_, itemIdx) => (
                         <div key={itemIdx} className="flex items-center gap-2">
                           <Skeleton
-                            variant="rectangular"
+                            variant="rectăngular"
                             width={16}
                             height={16}
                           />
@@ -93,3 +93,4 @@ const ProductListSkeleton: React.FC<ProductListSkeletonProps> = ({
 };
 
 export default ProductListSkeleton;
+

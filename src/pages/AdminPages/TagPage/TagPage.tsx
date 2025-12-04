@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+Ôªøimport React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { Tag, TagType } from "../../../types/tag";
 import { adminTagService } from "../../../services/TagService";
@@ -17,9 +17,9 @@ const TAG_TYPES = {
 } as const;
 
 const TAG_TYPE_LABELS = {
-  MATERIAL: "Ch?t li?u",
-  USECASE: "Nhu c?u s? d?ng",
-  CUSTOM: "T˘y ch?nh",
+  MATERIAL: "Ch·ªât li?u",
+  USECASE: "Nhu c?u s·ª≠ d·ª•ng",
+  CUSTOM: "T√πy ch∆°nh",
 };
 
 const TagPage: React.FC = () => {
@@ -93,7 +93,7 @@ const TagPage: React.FC = () => {
       setTags(data);
       setTotalPages(response.data.totalPages || 1);
 
-      // L?y stats t?ng th?
+      // L?y stats t·ªïng th·ªÉ
       const statsResponse = await adminTagService.getAll({
         page: 1,
         limit: 100,
@@ -170,7 +170,7 @@ const TagPage: React.FC = () => {
     try {
       await adminTagService.toggleStatus(tagId, { isActive: !currentStatus });
       toast.success(
-        `${currentStatus ? "VÙ hi?u hÛa" : "KÌch ho?t"} tag th‡nh cÙng!`
+        `${currentStatus ? "V√¥ hi?u h√≥a" : "K√≠ch ho?t"} tag th√†nh c√¥ng!`
       );
       fetchTags();
     } catch (error: unknown) {
@@ -181,10 +181,10 @@ const TagPage: React.FC = () => {
         };
         toast.error(
           axiosError.response?.data?.message ||
-            "CÛ l?i x?y ra khi thay d?i tr?ng th·i."
+            "C√≥ l·ªói x?y ra khi thay ƒë·ªïi tr·∫°ng th√°i."
         );
       } else {
-        toast.error("CÛ l?i x?y ra khi thay d?i tr?ng th·i.");
+        toast.error("C√≥ l·ªói x?y ra khi thay ƒë·ªïi tr·∫°ng th√°i.");
       }
     }
   };
@@ -200,7 +200,7 @@ const TagPage: React.FC = () => {
     try {
       setSubmitting(true);
       await adminTagService.delete(selectedTag._id);
-      toast.success("XÛa tag th‡nh cÙng!");
+      toast.success("X√≥a tag th√†nh c√¥ng!");
       fetchTags();
       setShowDeleteModal(false);
       setSelectedTag(null);
@@ -211,10 +211,10 @@ const TagPage: React.FC = () => {
           response?: { data?: { message?: string } };
         };
         toast.error(
-          axiosError.response?.data?.message || "CÛ l?i x?y ra khi xÛa tag"
+          axiosError.response?.data?.message || "C√≥ l·ªói x?y ra khi x√≥a tag"
         );
       } else {
-        toast.error("CÛ l?i x?y ra khi xÛa tag");
+        toast.error("C√≥ l·ªói x?y ra khi x√≥a tag");
       }
     } finally {
       setSubmitting(false);
@@ -224,7 +224,7 @@ const TagPage: React.FC = () => {
   const handleRestoreTag = async (tagId: string) => {
     try {
       await adminTagService.restore(tagId);
-      toast.success("KhÙi ph?c tag th‡nh cÙng!");
+      toast.success("Kh√¥i ph?c tag th√†nh c√¥ng!");
       fetchDeletedTags();
     } catch (error: unknown) {
       console.error("Error restoring tag:", error);
@@ -234,10 +234,10 @@ const TagPage: React.FC = () => {
         };
         toast.error(
           axiosError.response?.data?.message ||
-            "CÛ l?i x?y ra khi khÙi ph?c tag"
+            "C√≥ l·ªói x?y ra khi kh√¥i ph?c tag"
         );
       } else {
-        toast.error("CÛ l?i x?y ra khi khÙi ph?c tag");
+        toast.error("C√≥ l·ªói x?y ra khi kh√¥i ph?c tag");
       }
     }
   };
@@ -269,7 +269,7 @@ const TagPage: React.FC = () => {
           isActive: true,
         });
         fetchTags();
-        toast.success("ThÍm tag th‡nh cÙng!");
+        toast.success("Th√™m tag th√†nh c√¥ng!");
       } catch (error: unknown) {
         console.error("Error creating tag:", error);
         if (error && typeof error === "object" && "response" in error) {
@@ -277,10 +277,10 @@ const TagPage: React.FC = () => {
             response?: { data?: { message?: string } };
           };
           toast.error(
-            axiosError.response?.data?.message || "CÛ l?i x?y ra khi thÍm tag."
+            axiosError.response?.data?.message || "C√≥ l·ªói x?y ra khi th√™m tag."
           );
         } else {
-          toast.error("CÛ l?i x?y ra khi thÍm tag.");
+          toast.error("C√≥ l·ªói x?y ra khi th√™m tag.");
         }
       } finally {
         setSubmitting(false);
@@ -292,11 +292,11 @@ const TagPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">ThÍm Tag M?i</h3>
+          <h3 className="text-xl font-bold mb-4">Th√™m Tag M·ªõi</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                TÍn tag
+                T√™n tag
               </label>
               <input
                 type="text"
@@ -331,7 +331,7 @@ const TagPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                MÙ t?
+                M√¥ t?
               </label>
               <textarea
                 value={formData.description}
@@ -356,14 +356,14 @@ const TagPage: React.FC = () => {
                 }}
                 className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
               >
-                H?y
+                H·ªßy
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-mono-400"
+                className="flex-1 px-4 py-2 bg-mono-black hover:bg-mono-800 text-white rounded-lg transition-colors disabled:bg-mono-400"
               >
-                {submitting ? "–ang thÍm..." : "ThÍm"}
+                {submitting ? "√êang th√™m..." : "Th√™m"}
               </button>
             </div>
           </form>
@@ -405,7 +405,7 @@ const TagPage: React.FC = () => {
         setShowEditModal(false);
         setSelectedTag(null);
         fetchTags();
-        toast.success("C?p nh?t tag th‡nh cÙng!");
+        toast.success("C·∫≠p nh·∫≠t tag th√†nh c√¥ng!");
       } catch (error: unknown) {
         console.error("Error updating tag:", error);
         if (error && typeof error === "object" && "response" in error) {
@@ -414,10 +414,10 @@ const TagPage: React.FC = () => {
           };
           toast.error(
             axiosError.response?.data?.message ||
-              "CÛ l?i x?y ra khi c?p nh?t tag."
+              "C√≥ l·ªói x?y ra khi c·∫≠p nh·∫≠t tag."
           );
         } else {
-          toast.error("CÛ l?i x?y ra khi c?p nh?t tag.");
+          toast.error("C√≥ l·ªói x?y ra khi c·∫≠p nh·∫≠t tag.");
         }
       } finally {
         setSubmitting(false);
@@ -429,11 +429,11 @@ const TagPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">Ch?nh S?a Tag</h3>
+          <h3 className="text-xl font-bold mb-4">Ch∆°nh S·ª≠a Tag</h3>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                TÍn tag
+                T√™n tag
               </label>
               <input
                 type="text"
@@ -468,7 +468,7 @@ const TagPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                MÙ t?
+                M√¥ t?
               </label>
               <textarea
                 value={formData.description}
@@ -488,14 +488,14 @@ const TagPage: React.FC = () => {
                 }}
                 className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
               >
-                H?y
+                H·ªßy
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 px-4 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg transition-colors disabled:bg-mono-400"
+                className="flex-1 px-4 py-2 bg-mono-black hover:bg-mono-800 text-white rounded-lg transition-colors disabled:bg-mono-400"
               >
-                {submitting ? "–ang c?p nh?t..." : "C?p nh?t"}
+                {submitting ? "√êang c·∫≠p nh·∫≠t..." : "C·∫≠p nh·∫≠t"}
               </button>
             </div>
           </form>
@@ -511,9 +511,9 @@ const TagPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4 text-mono-900">X·c Nh?n XÛa</h3>
+          <h3 className="text-xl font-bold mb-4 text-mono-900">X√°c Nh∆°n X√≥a</h3>
           <p className="text-mono-700 mb-6">
-            B?n cÛ ch?c ch?n mu?n xÛa tag <strong>"{selectedTag.name}"</strong>?
+            B·∫©n c√≥ ch·ªâc ch∆°n mu·∫©n x√≥a tag <strong>"{selectedTag.name}"</strong>?
           </p>
           <div className="flex gap-3">
             <button
@@ -524,14 +524,14 @@ const TagPage: React.FC = () => {
               disabled={submitting}
               className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
             >
-              H?y
+              H·ªßy
             </button>
             <button
               onClick={confirmDeleteTag}
               disabled={submitting}
-              className="flex-1 px-4 py-2 bg-mono-900 hover:bg-red-700 text-white rounded-lg transition-colors disabled:bg-mono-400"
+              className="flex-1 px-4 py-2 bg-mono-900 hover:bg-mono-800 text-white rounded-lg transition-colors disabled:bg-mono-400"
             >
-              {submitting ? "–ang xÛa..." : "XÛa"}
+              {submitting ? "√êang x√≥a..." : "X√≥a"}
             </button>
           </div>
         </div>
@@ -572,12 +572,12 @@ const TagPage: React.FC = () => {
           </div>
 
           <div className="space-y-6">
-            {/* TÍn v‡ Tr?ng th·i */}
+            {/* T√™n v√† Tr·∫°ng th√°i */}
             <div className="bg-gradient-to-r from-mono-50 to-purple-50 rounded-lg p-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <h4 className="text-sm font-medium text-mono-500 mb-1">
-                    TÍn Tag
+                    T√™n Tag
                   </h4>
                   <p className="text-xl font-bold text-mono-900">
                     {selectedTag.name}
@@ -591,35 +591,35 @@ const TagPage: React.FC = () => {
                 </div>
                 <div>
                   {selectedTag.deletedAt ? (
-                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800">
-                      –„ xÛa
+                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-mono-200 text-mono-900">
+                      √ê√£ x√≥a
                     </span>
                   ) : selectedTag.isActive ? (
-                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800">
-                      Ho?t d?ng
+                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-mono-100 text-mono-800">
+                      Ho?t ƒë·∫øng
                     </span>
                   ) : (
-                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-yellow-100 text-yellow-800">
-                      VÙ hi?u
+                    <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-mono-100 text-mono-800">
+                      V√¥ hi?u
                     </span>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* MÙ t? */}
+            {/* M√¥ t·ª´ */}
             <div className="border rounded-lg p-4">
-              <h4 className="text-sm font-medium text-mono-500 mb-2">MÙ T?</h4>
+              <h4 className="text-sm font-medium text-mono-500 mb-2">M√¥ T?</h4>
               <p className="text-mono-900">
-                {selectedTag.description || "KhÙng cÛ mÙ t?"}
+                {selectedTag.description || "Kh√¥ng c√≥ m√¥ t?"}
               </p>
             </div>
 
-            {/* ThÙng tin chi ti?t */}
+            {/* Th√¥ng tin chi ti·∫øt */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="border rounded-lg p-4">
                 <h4 className="text-sm font-medium text-mono-500 mb-2">
-                  Ng‡y T?o
+                  Ng√†y T?o
                 </h4>
                 <p className="text-mono-900">
                   {selectedTag.createdAt
@@ -629,7 +629,7 @@ const TagPage: React.FC = () => {
               </div>
               <div className="border rounded-lg p-4">
                 <h4 className="text-sm font-medium text-mono-500 mb-2">
-                  C?p Nh?t L?n Cu?i
+                  C?p Nh?t L·∫©n Cu·ªëi
                 </h4>
                 <p className="text-mono-900">
                   {selectedTag.updatedAt
@@ -640,18 +640,18 @@ const TagPage: React.FC = () => {
             </div>
 
             {selectedTag.deletedAt && (
-              <div className="border border-red-200 bg-red-50 rounded-lg p-4">
-                <h4 className="text-sm font-medium text-red-700 mb-2">
-                  ThÙng Tin XÛa
+              <div className="border border-mono-300 bg-mono-100 rounded-lg p-4">
+                <h4 className="text-sm font-medium text-mono-800 mb-2">
+                  Th√¥ng Tin X√≥a
                 </h4>
                 <div className="space-y-1">
-                  <p className="text-sm text-red-900">
-                    Ng‡y xÛa:{" "}
+                  <p className="text-sm text-mono-900">
+                    Ng√†y x√≥a:{" "}
                     {new Date(selectedTag.deletedAt).toLocaleString("vi-VN")}
                   </p>
                   {selectedTag.deletedBy && (
-                    <p className="text-sm text-red-900">
-                      Ngu?i xÛa:{" "}
+                    <p className="text-sm text-mono-900">
+                      Ng∆∞·ªùi x√≥a:{" "}
                       {typeof selectedTag.deletedBy === "object"
                         ? selectedTag.deletedBy.name || "N/A"
                         : selectedTag.deletedBy}
@@ -671,9 +671,9 @@ const TagPage: React.FC = () => {
                         setShowDetailModal(false);
                         setShowEditModal(true);
                       }}
-                      className="px-6 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg transition-colors"
+                      className="px-6 py-2 bg-mono-black hover:bg-mono-800 text-white rounded-lg transition-colors"
                     >
-                      Ch?nh S?a
+                      Ch∆°nh S·ª≠a
                     </button>
                   )}
                   {canToggleStatus() && (
@@ -688,11 +688,11 @@ const TagPage: React.FC = () => {
                       }}
                       className={`px-6 py-2 rounded-lg transition-colors ${
                         selectedTag.isActive
-                          ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                          ? "bg-mono-1000 hover:bg-mono-700 text-white"
                           : "bg-mono-700 hover:bg-mono-800 text-white"
                       }`}
                     >
-                      {selectedTag.isActive ? "VÙ hi?u hÛa" : "KÌch ho?t"}
+                      {selectedTag.isActive ? "V√¥ hi?u h√≥a" : "K√≠ch ho?t"}
                     </button>
                   )}
                 </>
@@ -704,7 +704,7 @@ const TagPage: React.FC = () => {
                 }}
                 className="px-6 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
               >
-                –Ûng
+                √ê√≥ng
               </button>
             </div>
           </div>
@@ -728,7 +728,7 @@ const TagPage: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
-          Qu?n L˝ Tags
+          Qu·∫≠n L√Ω Tags
         </h2>
         {!isSearchVisible ? (
           <div className="flex gap-3">
@@ -737,14 +737,14 @@ const TagPage: React.FC = () => {
               className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium"
             >
               <IoIosSearch className="text-xl" />
-              <span>TÏm ki?m</span>
+              <span>T√¨m ki·∫øm</span>
             </button>
             {canCreate() && !showDeleted && (
               <button
                 onClick={() => setShowCreateModal(true)}
-                className="px-5 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-3xl shadow transition-colors font-medium"
+                className="px-5 py-2 bg-mono-black hover:bg-mono-800 text-white rounded-3xl shadow transition-colors font-medium"
               >
-                + ThÍm Tag
+                + Th√™m Tag
               </button>
             )}
           </div>
@@ -758,7 +758,7 @@ const TagPage: React.FC = () => {
               type="text"
               value={searchInput}
               onChange={handleSearchChange}
-              placeholder="TÏm theo tÍn tag..."
+              placeholder="T√¨m theo t√™n tag..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -770,31 +770,31 @@ const TagPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-black mb-1">
-              T?ng s? tags
+              T·ªïng s·ªë tags
             </h3>
-            <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
+            <p className="text-3xl font-bold text-mono-900">{totalCount}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
-              Tags ho?t d?ng
+              Tags ho?t ƒë·∫øng
             </h3>
-            <p className="text-3xl font-bold text-green-900">{activeCount}</p>
+            <p className="text-3xl font-bold text-mono-800">{activeCount}</p>
           </div>
-          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-sm border border-yellow-200">
-            <h3 className="text-sm font-medium text-yellow-600 mb-1">
-              Tags vÙ hi?u
+          <div className="bg-gradient-to-br from-mono-100 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
+            <h3 className="text-sm font-medium text-mono-700 mb-1">
+              Tags v√¥ hi?u
             </h3>
-            <p className="text-3xl font-bold text-yellow-900">
+            <p className="text-3xl font-bold text-mono-900">
               {inactiveCount}
             </p>
           </div>
         </div>
       ) : (
-        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200 mb-6">
+        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-mono-300 mb-6">
           <h3 className="text-sm font-medium text-mono-900 mb-1">
-            Tags d„ xÛa
+            Tags d√£ x√≥a
           </h3>
-          <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
+          <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
         </div>
       )}
 
@@ -812,7 +812,7 @@ const TagPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Tags dang ho?t d?ng
+            Tags ƒëang ho?t ƒë·∫øng
           </button>
           <button
             onClick={() => {
@@ -825,7 +825,7 @@ const TagPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Tags d„ xÛa
+            Tags d√£ x√≥a
           </button>
         </div>
 
@@ -833,7 +833,7 @@ const TagPage: React.FC = () => {
         {!showDeleted && (
           <div className="flex gap-4 items-center">
             <label className="text-sm font-medium text-mono-700">
-              L?c theo lo?i:
+              L·ªçc theo lo?i:
             </label>
             <select
               value={typeFilter}
@@ -843,7 +843,7 @@ const TagPage: React.FC = () => {
               }}
               className="px-4 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="">T?t c?</option>
+              <option value="">T·∫•t c·∫£</option>
               {Object.entries(TAG_TYPE_LABELS).map(([key, label]) => (
                 <option key={key} value={key}>
                   {label}
@@ -852,17 +852,17 @@ const TagPage: React.FC = () => {
             </select>
 
             <label className="text-sm font-medium text-mono-700">
-              S?p x?p:
+              S·∫Øp x·∫øp:
             </label>
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
               className="px-4 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="created_at_desc">M?i nh?t</option>
+              <option value="created_at_desc">M·ªõi nh?t</option>
               <option value="created_at_asc">Cu nh?t</option>
-              <option value="name_asc">TÍn A-Z</option>
-              <option value="name_desc">TÍn Z-A</option>
+              <option value="name_asc">T√™n A-Z</option>
+              <option value="name_desc">T√™n Z-A</option>
             </select>
           </div>
         )}
@@ -885,12 +885,12 @@ const TagPage: React.FC = () => {
             />
           </svg>
           <p className="text-mono-500 text-lg mb-4">
-            {showDeleted ? "KhÙng cÛ tags d„ xÛa" : "Chua cÛ tags n‡o"}
+            {showDeleted ? "Kh√¥ng c√≥ tags d√£ x√≥a" : "Chua c√≥ tags n√†o"}
           </p>
           {canCreate() && !showDeleted && (
             <button
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-mono-black hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center gap-2"
+              className="px-6 py-3 bg-mono-black hover:bg-mono-800 text-white rounded-lg transition-colors inline-flex items-center gap-2"
             >
               <svg
                 className="w-5 h-5"
@@ -905,7 +905,7 @@ const TagPage: React.FC = () => {
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              T?o Tag –?u TiÍn
+              T?o Tag √ê?u Ti√™n
             </button>
           )}
         </div>
@@ -917,11 +917,11 @@ const TagPage: React.FC = () => {
               <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
                 <tr>
                   <th className="py-3 px-4 text-left border-b">ID</th>
-                  <th className="py-3 px-4 text-left border-b">TÍn Tag</th>
+                  <th className="py-3 px-4 text-left border-b">T√™n Tag</th>
                   <th className="py-3 px-4 text-left border-b">Lo?i</th>
-                  <th className="py-3 px-4 text-left border-b">MÙ T?</th>
-                  <th className="py-3 px-4 text-center border-b">Tr?ng Th·i</th>
-                  <th className="py-3 px-4 text-center border-b">Thao T·c</th>
+                  <th className="py-3 px-4 text-left border-b">M√¥ T?</th>
+                  <th className="py-3 px-4 text-center border-b">Tr·ªëng Th√°i</th>
+                  <th className="py-3 px-4 text-center border-b">Thao T√°c</th>
                 </tr>
               </thead>
               <tbody>
@@ -934,22 +934,22 @@ const TagPage: React.FC = () => {
                       {tag.name}
                     </td>
                     <td className="py-2 px-4 border-b text-sm">
-                      <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800">
+                      <span className="inline-flex px-2 py-1 text-xs font-medium rounded-full bg-mono-200 text-mono-800">
                         {TAG_TYPE_LABELS[tag.type]}
                       </span>
                     </td>
                     <td className="py-2 px-4 border-b text-sm text-mono-600">
-                      {tag.description?.substring(0, 50) || "ó"}
+                      {tag.description?.substring(0, 50) || "‚Äî"}
                       {tag.description && tag.description.length > 50 && "..."}
                     </td>
                     <td className="py-2 px-4 border-b text-center text-sm">
                       {tag.isActive ? (
-                        <span className="inline-flex items-center px-4 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                          Ho?t d?ng
+                        <span className="inline-flex items-center px-4 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
+                          Ho?t ƒë·∫øng
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-4 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                          VÙ hi?u
+                        <span className="inline-flex items-center px-4 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
+                          V√¥ hi?u
                         </span>
                       )}
                     </td>
@@ -962,7 +962,7 @@ const TagPage: React.FC = () => {
                                 setSelectedTag(tag);
                                 setShowDetailModal(true);
                               }}
-                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs rounded-lg border border-mono-200"
+                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs rounded-lg border border-mono-200"
                             >
                               Xem
                             </button>
@@ -972,17 +972,17 @@ const TagPage: React.FC = () => {
                                   setSelectedTag(tag);
                                   setShowEditModal(true);
                                 }}
-                                className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded-lg border border-green-200"
+                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs rounded-lg border border-mono-200"
                               >
-                                S?a
+                                S·ª≠a
                               </button>
                             )}
                             {canDelete() && (
                               <button
                                 onClick={() => handleDeleteTag(tag)}
-                                className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs rounded-lg border border-red-200"
+                                className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs rounded-lg border border-mono-300"
                               >
-                                XÛa
+                                X√≥a
                               </button>
                             )}
                             {canToggleStatus() && (
@@ -992,8 +992,8 @@ const TagPage: React.FC = () => {
                                 }
                                 className={`px-3 py-1.5 text-xs rounded-lg border ${
                                   tag.isActive
-                                    ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border-yellow-200"
-                                    : "bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                                    ? "bg-mono-100 hover:bg-mono-100 text-mono-700 border-mono-200"
+                                    : "bg-mono-50 hover:bg-mono-100 text-mono-700 border-mono-200"
                                 }`}
                               >
                                 {tag.isActive ? "T?t" : "B?t"}
@@ -1007,16 +1007,16 @@ const TagPage: React.FC = () => {
                                 setSelectedTag(tag);
                                 setShowDetailModal(true);
                               }}
-                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs rounded-lg border border-mono-200"
+                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs rounded-lg border border-mono-200"
                             >
                               Xem
                             </button>
                             {canDelete() && (
                               <button
                                 onClick={() => handleRestoreTag(tag._id)}
-                                className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs rounded-lg border border-green-200"
+                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs rounded-lg border border-mono-200"
                               >
-                                KhÙi ph?c
+                                Kh√¥i ph?c
                               </button>
                             )}
                           </>
@@ -1032,7 +1032,7 @@ const TagPage: React.FC = () => {
           {/* Pagination */}
           <div className="flex items-center justify-between mt-6">
             <div className="text-sm text-mono-600">
-              Trang {currentPage} / {totalPages} ï T?ng: {totalCount} tags
+              Trang {currentPage} / {totalPages} ‚Ä¢ T·ªïng: {totalCount} tags
             </div>
             <div className="flex gap-2">
               <button
@@ -1044,7 +1044,7 @@ const TagPage: React.FC = () => {
                     : "bg-mono-200 text-mono-700 hover:bg-mono-300"
                 }`}
               >
-                Tru?c
+                Tr∆∞·ªõc
               </button>
               <button
                 onClick={() =>
@@ -1057,7 +1057,7 @@ const TagPage: React.FC = () => {
                     : "bg-mono-200 text-mono-700 hover:bg-mono-300"
                 }`}
               >
-                Ti?p
+                Ti·∫øp
               </button>
             </div>
           </div>
@@ -1074,3 +1074,9 @@ const TagPage: React.FC = () => {
 };
 
 export default TagPage;
+
+
+
+
+
+

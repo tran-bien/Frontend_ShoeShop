@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+Ôªøimport { useState, useEffect } from "react";
 import {
   FaTruck,
   FaCheckCircle,
@@ -75,23 +75,23 @@ const ShipperDashboardPage = () => {
   const getStatusBadge = (status: string) => {
     const statusMap: any = {
       assigned_to_shipper: {
-        label: "–„ g·n",
-        color: "bg-mono-100 text-blue-800",
+        label: "√ê√£ g√°n",
+        color: "bg-mono-200 text-mono-800",
         icon: <FaHourglassHalf />,
       },
       out_for_delivery: {
-        label: "–ang giao",
-        color: "bg-yellow-100 text-yellow-800",
+        label: "√êang giao",
+        color: "bg-mono-200 text-mono-800",
         icon: <FaTruck />,
       },
       delivered: {
-        label: "–„ giao",
-        color: "bg-green-100 text-green-800",
+        label: "√ê√£ giao",
+        color: "bg-mono-200 text-mono-800",
         icon: <FaCheckCircle />,
       },
       delivery_failed: {
-        label: "Th?t b?i",
-        color: "bg-red-100 text-red-800",
+        label: "Th·ªÉt b?i",
+        color: "bg-mono-300 text-mono-900",
         icon: <FaTimesCircle />,
       },
     };
@@ -115,7 +115,7 @@ const ShipperDashboardPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">–ang t?i...</div>
+        <div className="text-mono-500">√êang t·∫°i...</div>
       </div>
     );
   }
@@ -128,7 +128,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">T?ng don h‡ng</p>
+              <p className="text-mono-600 text-sm mb-1">T·ªïng don h√†ng</p>
               <p className="text-3xl font-bold text-mono-800">
                 {stats?.totalOrders || 0}
               </p>
@@ -143,12 +143,12 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">–„ giao</p>
+              <p className="text-mono-600 text-sm mb-1">√ê√£ giao</p>
               <p className="text-3xl font-bold text-mono-800">
                 {stats?.completed || 0}
               </p>
             </div>
-            <div className="bg-green-100 p-4 rounded-full">
+            <div className="bg-mono-100 p-4 rounded-full">
               <FaCheckCircle size={24} className="text-mono-800" />
             </div>
           </div>
@@ -158,12 +158,12 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">Th?t b?i</p>
+              <p className="text-mono-600 text-sm mb-1">Th·ªÉt b?i</p>
               <p className="text-3xl font-bold text-mono-900">
                 {stats?.failed || 0}
               </p>
             </div>
-            <div className="bg-red-100 p-4 rounded-full">
+            <div className="bg-mono-200 p-4 rounded-full">
               <FaTimesCircle size={24} className="text-mono-900" />
             </div>
           </div>
@@ -173,13 +173,13 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">T? l? th‡nh cÙng</p>
-              <p className="text-3xl font-bold text-purple-600">
+              <p className="text-mono-600 text-sm mb-1">T·ª´ l·ªá th√†nh c√¥ng</p>
+              <p className="text-3xl font-bold text-mono-700">
                 {stats?.successRate}%
               </p>
             </div>
-            <div className="bg-purple-100 p-4 rounded-full">
-              <FaCheckCircle size={24} className="text-purple-600" />
+            <div className="bg-mono-200 p-4 rounded-full">
+              <FaCheckCircle size={24} className="text-mono-700" />
             </div>
           </div>
         </div>
@@ -190,13 +190,13 @@ const ShipperDashboardPage = () => {
         <div className="px-6 py-4 border-b border-mono-200">
           <h2 className="text-xl font-bold text-mono-800 flex items-center gap-2">
             <FaTruck className="text-mono-black" />
-            –on h‡ng dang giao ({activeOrders.length})
+            √êon h√†ng ƒëang giao ({activeOrders.length})
           </h2>
         </div>
         <div className="p-6">
           {activeOrders.length === 0 ? (
             <div className="text-center py-8 text-mono-500">
-              KhÙng cÛ don h‡ng n‡o dang giao
+              Kh√¥ng c√≥ don h√†ng n√†o ƒëang giao
             </div>
           ) : (
             <div className="space-y-4">
@@ -234,15 +234,15 @@ const ShipperDashboardPage = () => {
 
                   <div className="mt-3 flex items-center justify-between">
                     <p className="font-bold text-mono-black">
-                      {order.finalTotal?.toLocaleString("vi-VN")}?
+                      {order.finalTotal·ªá.toLocaleString("vi-VN")}?
                     </p>
                     <button
                       onClick={() =>
                         (window.location.href = `/shipper/orders/${order._id}`)
                       }
-                      className="px-4 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+                      className="px-4 py-2 bg-mono-black hover:bg-mono-800 text-white rounded-lg text-sm font-medium"
                     >
-                      Xem chi ti?t
+                      Xem chi ti·∫øt
                     </button>
                   </div>
                 </div>
@@ -257,13 +257,13 @@ const ShipperDashboardPage = () => {
         <div className="px-6 py-4 border-b border-mono-200">
           <h2 className="text-xl font-bold text-mono-800 flex items-center gap-2">
             <FaClock className="text-mono-800" />
-            –on h‡ng hÙm nay ({todayOrders.length})
+            √êon h√†ng h√¥m nay ({todayOrders.length})
           </h2>
         </div>
         <div className="p-6">
           {todayOrders.length === 0 ? (
             <div className="text-center py-8 text-mono-500">
-              KhÙng cÛ don h‡ng n‡o hÙm nay
+              Kh√¥ng c√≥ don h√†ng n√†o h√¥m nay
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -271,19 +271,19 @@ const ShipperDashboardPage = () => {
                 <thead className="bg-mono-50">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      M„ don
+                      M√£ don
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      Kh·ch h‡ng
+                      Kh√°ch h√†ng
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      –?a ch?
+                      √ê?a ch·ªâ
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      T?ng ti?n
+                      T·ªïng ti·ªÅn
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      Tr?ng th·i
+                      Tr·∫°ng th√°i
                     </th>
                   </tr>
                 </thead>
@@ -300,7 +300,7 @@ const ShipperDashboardPage = () => {
                         {order.shippingAddress?.address || "N/A"}
                       </td>
                       <td className="px-4 py-3 text-sm font-semibold text-mono-black">
-                        {order.finalTotal?.toLocaleString("vi-VN")}?
+                        {order.finalTotal·ªá.toLocaleString("vi-VN")}?
                       </td>
                       <td className="px-4 py-3 text-sm">
                         {getStatusBadge(order.status)}
@@ -318,3 +318,6 @@ const ShipperDashboardPage = () => {
 };
 
 export default ShipperDashboardPage;
+
+
+

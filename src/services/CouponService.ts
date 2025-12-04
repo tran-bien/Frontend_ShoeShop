@@ -40,11 +40,17 @@ export const publicCouponService = {
 // =======================
 
 export const userCouponService = {
-  // Lấy danh sách coupon đã thu thập của người dùng
-  getUserCoupons: (
+  // Lấy danh sách coupon công khai (user đã login)
+  getAvailableCoupons: (
     params: CouponQuery = {}
   ): Promise<{ data: ApiResponse<Coupon[]> }> =>
     axiosInstanceAuth.get("/api/v1/users/coupons", { params }),
+
+  // Lấy danh sách coupon đã thu thập của người dùng
+  getCollectedCoupons: (
+    params: CouponQuery = {}
+  ): Promise<{ data: ApiResponse<Coupon[]> }> =>
+    axiosInstanceAuth.get("/api/v1/users/coupons/collected", { params }),
 
   // Thu thập coupon
   collectCoupon: (couponId: string): Promise<{ data: ApiResponse<Coupon> }> =>

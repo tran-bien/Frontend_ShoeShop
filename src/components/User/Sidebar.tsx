@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
       await authService.logout();
       localStorage.removeItem("accessToken");
       Cookie.remove("token");
-      toast.success("Đăng xuất thành công");
+      toast.success("Ðang xuất thành công");
       navigate("/");
     } catch {
       navigate("/");
@@ -40,22 +40,22 @@ const Sidebar: React.FC = () => {
     {
       path: "/user-information",
       icon: <FaUser className="text-lg" />,
-      label: "Thông tin tài khoản",
+      label: "Thông tin tài khoẩn",
     },
     {
       path: "/user-manage-order",
       icon: <FaClipboardList className="text-lg" />,
-      label: "Quản lý đơn hàng",
+      label: "Quận lý don hàng",
     },
     {
       path: "/user-cancel-requests",
       icon: <FaTimesCircle className="text-lg" />,
-      label: "Yêu cầu hủy đơn",
+      label: "Yêu c?u hủy don",
     },
     {
       path: "/user-reviews",
       icon: <FaStar className="text-lg" />,
-      label: "Đánh giá của tôi",
+      label: "Ðánh giá của tôi",
     },
     {
       path: "/like-page",
@@ -65,27 +65,27 @@ const Sidebar: React.FC = () => {
     {
       path: "/loyalty/dashboard",
       icon: <FaGift className="text-lg" />,
-      label: "Điểm thưởng",
+      label: "Ði?m thuẩng",
     },
     {
       path: "/view-history",
       icon: <FaHistory className="text-lg" />,
-      label: "Lịch sử xem",
+      label: "Lọch số xem",
     },
     {
       path: "/recommendations",
       icon: <FaLightbulb className="text-lg" />,
-      label: "Gợi ý cho bạn",
+      label: "Gửi ý cho bẩn",
     },
     {
       path: "/user-change-password",
       icon: <FaKey className="text-lg" />,
-      label: "Đổi mật khẩu",
+      label: "Ð?i mật khẩu",
     },
     {
       path: "/user-sessions",
       icon: <FaLaptopCode className="text-lg" />,
-      label: "Phiên đăng nhập",
+      label: "Phiên đang nhập",
     },
   ];
 
@@ -97,17 +97,17 @@ const Sidebar: React.FC = () => {
           <img
             src={
               user?.avatar?.url ||
-              `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              `https://ui-avatars.com/api/ẩname=${encodeURIComponent(
                 user?.name || "User"
               )}&background=171717&color=fff`
             }
             alt="Avatar"
             className="w-20 h-20 rounded-full border-4 border-mono-100 object-cover shadow-md"
           />
-          <div className="absolute bottom-0 right-0 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
+          <div className="absolute bottom-0 right-0 w-5 h-5 bg-mono-500 border-2 border-white rounded-full"></div>
         </div>
         <h3 className="mt-4 text-lg font-bold text-mono-900">
-          {user?.name || "Tài khoản"}
+          {user?.name || "Tài khoẩn"}
         </h3>
         <p className="text-sm text-mono-500 truncate max-w-full">
           {user?.email}
@@ -150,13 +150,13 @@ const Sidebar: React.FC = () => {
       {/* Logout Button */}
       <div className="mt-6 pt-6 border-t border-mono-100">
         <button
-          className="flex items-center w-full px-4 py-3 rounded-xl text-mono-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200 group"
+          className="flex items-center w-full px-4 py-3 rounded-xl text-mono-600 hover:bg-mono-100 hover:text-mono-700 transition-all duration-200 group"
           onClick={handleLogout}
         >
-          <span className="mr-3 text-mono-500 group-hover:text-red-500 transition-transform group-hover:scale-110">
+          <span className="mr-3 text-mono-500 group-hover:text-mono-500 transition-transform group-hover:scale-110">
             <FaSignOutAlt className="text-lg" />
           </span>
-          <span className="font-medium text-sm">Đăng xuất</span>
+          <span className="font-medium text-sm">Ðang xuất</span>
         </button>
       </div>
     </div>
@@ -164,3 +164,6 @@ const Sidebar: React.FC = () => {
 };
 
 export default Sidebar;
+
+
+

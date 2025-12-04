@@ -15,3 +15,4 @@ const EmptyCompare: React.FC = () => {
 };
 
 export default EmptyCompare;
+

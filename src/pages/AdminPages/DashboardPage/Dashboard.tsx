@@ -43,9 +43,9 @@ ChartJS.register(
 );
 
 const periods = [
-  { value: "week", label: "Tuần này" },
+  { value: "week", label: "Tuẩn này" },
   { value: "month", label: "Tháng này" },
-  { value: "year", label: "Năm nay" },
+  { value: "year", label: "Nam nay" },
 ];
 
 const months = [
@@ -103,11 +103,11 @@ const Dashboard = () => {
       if (response.data.success && response.data.data) {
         setDashboardData(response.data.data);
       } else {
-        toast.error("Không thể tải dữ liệu tổng quan");
+        toast.error("Không thể tại dữ liệu tổng quan");
       }
     } catch (error) {
       console.error("Error loading dashboard data:", error);
-      toast.error("Không thể tải dữ liệu tổng quan");
+      toast.error("Không thể tại dữ liệu tổng quan");
     } finally {
       setLoading((prev) => ({ ...prev, dashboard: false }));
     }
@@ -124,11 +124,11 @@ const Dashboard = () => {
       if (response.data.success && response.data.data) {
         setTopProducts(response.data.data);
       } else {
-        toast.error("Không thể tải dữ liệu sản phẩm bán chạy");
+        toast.error("Không thể tại dữ liệu sản phẩm bán chủy");
       }
     } catch (error) {
       console.error("Error loading top products:", error);
-      toast.error("Không thể tải dữ liệu sản phẩm bán chạy");
+      toast.error("Không thể tại dữ liệu sản phẩm bán chủy");
     } finally {
       setLoading((prev) => ({ ...prev, topProducts: false }));
     }
@@ -145,11 +145,11 @@ const Dashboard = () => {
       if (response.data.success && response.data.data) {
         setDailyRevenue(response.data.data);
       } else {
-        toast.error("Không thể tải dữ liệu doanh thu hàng ngày");
+        toast.error("Không thể tại dữ liệu doanh thu hàng ngày");
       }
     } catch (error) {
       console.error("Error loading daily revenue:", error);
-      toast.error("Không thể tải dữ liệu doanh thu hàng ngày");
+      toast.error("Không thể tại dữ liệu doanh thu hàng ngày");
     } finally {
       setLoading((prev) => ({ ...prev, dailyRevenue: false }));
     }
@@ -165,11 +165,11 @@ const Dashboard = () => {
       if (response.data.success && response.data.data) {
         setMonthlyRevenue(response.data.data);
       } else {
-        toast.error("Không thể tải dữ liệu doanh thu hàng tháng");
+        toast.error("Không thể tại dữ liệu doanh thu hàng tháng");
       }
     } catch (error) {
       console.error("Error loading monthly revenue:", error);
-      toast.error("Không thể tải dữ liệu doanh thu hàng tháng");
+      toast.error("Không thể tại dữ liệu doanh thu hàng tháng");
     } finally {
       setLoading((prev) => ({ ...prev, monthlyRevenue: false }));
     }
@@ -226,7 +226,7 @@ const Dashboard = () => {
           pointHoverRadius: 6,
         },
         {
-          label: "Lợi nhuận",
+          label: "Lỗi nhuẩn",
           data: dailyRevenue.map((item) => item.profit),
           borderColor: "rgb(34, 197, 94)",
           backgroundColor: "rgba(34, 197, 94, 0.1)",
@@ -332,7 +332,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: `Doanh thu theo tháng năm ${selectedYear}`,
+        text: `Doanh thu theo tháng nam ${selectedYear}`,
       },
     },
     scales: {
@@ -360,7 +360,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: "Sản phẩm bán chạy",
+        text: "Sản phẩm bán chủy",
       },
     },
   };
@@ -391,7 +391,7 @@ const Dashboard = () => {
         {/* Total Users */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-green-100 rounded-lg">
+            <div className="p-2 bg-mono-100 rounded-lg">
               <FiUsers className="h-6 w-6 text-mono-800" />
             </div>
             <div className="ml-4">
@@ -412,11 +412,11 @@ const Dashboard = () => {
         {/* Total Orders */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-yellow-100 rounded-lg">
-              <FiShoppingBag className="h-6 w-6 text-yellow-600" />
+            <div className="p-2 bg-mono-100 rounded-lg">
+              <FiShoppingBag className="h-6 w-6 text-mono-700" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-mono-600">Tổng đơn hàng</p>
+              <p className="text-sm font-medium text-mono-600">Tổng don hàng</p>
               {loading.dashboard ? (
                 <div className="h-8 bg-mono-200 rounded w-20 animate-pulse"></div>
               ) : (
@@ -431,8 +431,8 @@ const Dashboard = () => {
         {/* Total Revenue */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex items-center">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <FiDollarSign className="h-6 w-6 text-purple-600" />
+            <div className="p-2 bg-mono-200 rounded-lg">
+              <FiDollarSign className="h-6 w-6 text-mono-700" />
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-mono-600">
@@ -520,7 +520,7 @@ const Dashboard = () => {
         {/* Top Products Chart */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">Sản phẩm bán chạy</h3>
+            <h3 className="text-lg font-semibold">Sản phẩm bán chủy</h3>
             <select
               value={topProductPeriod}
               onChange={(e) => setTopProductPeriod(e.target.value)}
@@ -538,7 +538,7 @@ const Dashboard = () => {
             <div className="h-80 bg-mono-100 rounded animate-pulse"></div>
           ) : topProducts.length === 0 ? (
             <div className="flex items-center justify-center h-80 text-mono-500">
-              Không có dữ liệu sản phẩm bán chạy
+              Không có dữ liệu sản phẩm bán chủy
             </div>
           ) : (
             <div className="h-80">
@@ -554,7 +554,7 @@ const Dashboard = () => {
         <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">
-              Chi tiết sản phẩm bán chạy
+              Chi tiết sản phẩm bán chủy
             </h3>
           </div>
 
@@ -576,7 +576,7 @@ const Dashboard = () => {
             </div>
           ) : topProducts.length === 0 ? (
             <div className="flex items-center justify-center h-80 text-mono-500">
-              Không có dữ liệu sản phẩm bán chạy
+              Không có dữ liệu sản phẩm bán chủy
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -593,10 +593,10 @@ const Dashboard = () => {
                       Doanh thu
                     </th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
-                      Lợi nhuận
+                      Lỗi nhuẩn
                     </th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
-                      Tỷ suất
+                      Từ su?t
                     </th>
                   </tr>
                 </thead>
@@ -638,10 +638,10 @@ const Dashboard = () => {
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full ${
                             product.profitMargin >= 15
-                              ? "bg-green-100 text-green-800"
+                              ? "bg-mono-100 text-mono-800"
                               : product.profitMargin >= 10
-                              ? "bg-mono-100 text-blue-800"
-                              : "bg-yellow-100 text-yellow-800"
+                              ? "bg-mono-100 text-mono-800"
+                              : "bg-mono-100 text-mono-800"
                           }`}
                         >
                           {product.profitMargin.toFixed(1)}%
@@ -661,3 +661,8 @@ const Dashboard = () => {
 
 // Dashboard component for Admin Dashboard Page
 export default Dashboard;
+
+
+
+
+

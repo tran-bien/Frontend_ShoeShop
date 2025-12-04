@@ -1,4 +1,4 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import {
   DashboardData,
   DailyRevenueItem,
@@ -12,11 +12,11 @@ import { ApiResponse } from "../types/api";
 
 // Dashboard Service
 export const dashboardService = {
-  // Lấy dữ liệu tổng quan của dashboard
+  // Láº¥y dá»¯ liá»‡u tá»•ng quan cá»§a dashboard
   getDashboardData: (): Promise<{ data: ApiResponse<DashboardData> }> =>
     axiosInstanceAuth.get("/api/v1/admin/dashboard"),
 
-  // Lấy dữ liệu doanh thu theo ngày
+  // Láº¥y dá»¯ liá»‡u doanh thu theo ngÃ y
   getDailyRevenue: (params?: {
     startDate?: string;
     endDate?: string;
@@ -25,7 +25,7 @@ export const dashboardService = {
   }> =>
     axiosInstanceAuth.get("/api/v1/admin/dashboard/revenue/daily", { params }),
 
-  // Lấy dữ liệu doanh thu theo tháng
+  // Láº¥y dá»¯ liá»‡u doanh thu theo thÃ¡ng
   getMonthlyRevenue: (params?: {
     year?: number;
   }): Promise<{
@@ -37,7 +37,7 @@ export const dashboardService = {
     axiosInstanceAuth.get("/api/v1/admin/dashboard/revenue/monthly", {
       params,
     }),
-  // Lấy thống kê sản phẩm bán chạy nhất
+  // Láº¥y thá»‘ng kÃª sáº£n pháº©m bÃ¡n cháº¡y nháº¥t
   getTopSellingProducts: (params?: {
     period?: "week" | "month" | "year";
     limit?: number;

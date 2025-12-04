@@ -314,3 +314,4 @@ const LoyaltyPage = () => {
 };
 
 export default LoyaltyPage;
+

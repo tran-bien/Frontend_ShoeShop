@@ -26,13 +26,13 @@ const LoginForm: React.FC = () => {
 
       // Validate input
       if (!loginEmail.trim() || !loginPassword.trim()) {
-        toast.error("Vui lòng nhập đầy đủ email và mật khẩu!");
+        toast.error("Vui lòng nhập d?y d? email và mật khẩu!");
         return;
       }
 
       const response = await login(loginEmail.trim(), loginPassword);
 
-      toast.success("Đăng nhập thành công!");
+      toast.success("Ðang nhập thành công!");
 
       if (response.user?.role === "admin") {
         navigate("/admin");
@@ -46,9 +46,9 @@ const LoginForm: React.FC = () => {
         navigate(redirectTo);
       }
     } catch (error: any) {
-      console.error("🚨 Đăng nhập thất bại:", error);
+      console.error("?? Ðang nhập thểt b?i:", error);
 
-      let errorMessage = "Đăng nhập thất bại!";
+      let errorMessage = "Ðang nhập thểt b?i!";
 
       if (
         error.response?.data?.errors &&
@@ -63,9 +63,9 @@ const LoginForm: React.FC = () => {
           error.code === "ERR_NETWORK"
         ) {
           errorMessage =
-            "Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng!";
+            "Không thể k?t nội đến server. Vui lòng ki?m tra k?t nội mẩng!";
         } else if (error.message.includes("404")) {
-          errorMessage = "API đăng nhập không tồn tại. Vui lòng liên hệ admin!";
+          errorMessage = "API đang nhập không tên tại. Vui lòng liên họ admin!";
         } else {
           errorMessage = error.message;
         }
@@ -85,20 +85,20 @@ const LoginForm: React.FC = () => {
         email: registerEmail,
         password: registerPassword,
       });
-      console.log("Phản hồi từ API:", response);
+      console.log("Phần h?i từ API:", response);
 
-      toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
+      toast.success("Ðang ký thành công! Vui lòng ki?m tra email d? xác thực.");
       navigate("/otp-verification", {
         state: { email: registerEmail },
       });
     } catch (error: any) {
-      let errorMessage = "Đăng ký thất bại!";
+      let errorMessage = "Ðang ký thểt b?i!";
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.message) {
         errorMessage = error.message;
       }
-      console.error("🚨 Đăng ký thất bại:", errorMessage);
+      console.error("?? Ðang ký thểt b?i:", errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -121,7 +121,7 @@ const LoginForm: React.FC = () => {
               ShoeStore
             </h1>
           </Link>
-          <p className="text-mono-500 mt-2">Chào mừng bạn đến với ShoeStore</p>
+          <p className="text-mono-500 mt-2">Chào mẩng bẩn đến với ShoeStore</p>
         </div>
 
         {/* Auth Card */}
@@ -136,7 +136,7 @@ const LoginForm: React.FC = () => {
                   : "text-mono-400 hover:text-mono-600"
               }`}
             >
-              Đăng nhập
+              Ðang nhập
             </button>
             <button
               onClick={() => setActiveTab("register")}
@@ -146,7 +146,7 @@ const LoginForm: React.FC = () => {
                   : "text-mono-400 hover:text-mono-600"
               }`}
             >
-              Đăng ký
+              Ðang ký
             </button>
           </div>
 
@@ -163,7 +163,7 @@ const LoginForm: React.FC = () => {
                     <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
                     <input
                       type="email"
-                      placeholder="Nhập email của bạn"
+                      placeholder="Nhập email của bẩn"
                       className="w-full pl-11 pr-4 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-black focus:border-transparent transition-all"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
@@ -212,7 +212,7 @@ const LoginForm: React.FC = () => {
                   disabled={loading}
                   className="w-full py-3.5 bg-mono-black text-white rounded-xl font-medium hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-all"
                 >
-                  {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+                  {loading ? "Ðang đang nhập..." : "Ðang nhập"}
                 </button>
               </div>
             ) : (
@@ -244,7 +244,7 @@ const LoginForm: React.FC = () => {
                     <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
                     <input
                       type="email"
-                      placeholder="Nhập email của bạn"
+                      placeholder="Nhập email của bẩn"
                       className="w-full pl-11 pr-4 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-black focus:border-transparent transition-all"
                       value={registerEmail}
                       onChange={(e) => setRegisterEmail(e.target.value)}
@@ -261,7 +261,7 @@ const LoginForm: React.FC = () => {
                     <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
                     <input
                       type={showRegisterPassword ? "text" : "password"}
-                      placeholder="Tạo mật khẩu"
+                      placeholder="T?o mật khẩu"
                       className="w-full pl-11 pr-12 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-black focus:border-transparent transition-all"
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
@@ -284,21 +284,21 @@ const LoginForm: React.FC = () => {
                   disabled={loading}
                   className="w-full py-3.5 bg-mono-black text-white rounded-xl font-medium hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-all"
                 >
-                  {loading ? "Đang đăng ký..." : "Đăng ký"}
+                  {loading ? "Ðang đang ký..." : "Ðang ký"}
                 </button>
 
                 {/* Terms */}
                 <p className="text-center text-xs text-mono-500">
-                  Bằng việc đăng ký, bạn đồng ý với{" "}
+                  Bảng vi?c đang ký, bẩn đếng ý với{" "}
                   <Link to="/terms" className="text-mono-black hover:underline">
-                    Điều khoản sử dụng
+                    Ði?u khoẩn sử dụng
                   </Link>{" "}
                   và{" "}
                   <Link
                     to="/privacy"
                     className="text-mono-black hover:underline"
                   >
-                    Chính sách bảo mật
+                    Chính sách b?o m?t
                   </Link>
                 </p>
               </div>
@@ -312,7 +312,7 @@ const LoginForm: React.FC = () => {
             to="/"
             className="text-mono-600 hover:text-mono-black transition-colors"
           >
-            ← Quay lại trang chủ
+            ? Quay lỗi trang chỉ
           </Link>
         </div>
       </div>
@@ -321,3 +321,4 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
+

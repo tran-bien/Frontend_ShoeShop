@@ -22,12 +22,12 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
 
     // Validation
     if (formData.quantity <= 0) {
-      setError("Số lượng phải lớn hơn 0");
+      setError("Số lượng ph?i lẩn hon 0");
       return;
     }
 
     if (formData.quantity > item.quantity) {
-      setError(`Số lượng xuất không được vượt quá tồn kho (${item.quantity})`);
+      setError(`Số lượng xuất không được vu?t quá tên kho (${item.quantity})`);
       return;
     }
 
@@ -46,7 +46,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Có lỗi xảy ra");
+      setError(error.response?.data?.message || "Có lỗi x?y ra");
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
             <strong>{item.size?.name || "N/A"}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-mono-600">Tồn kho hiện tại:</span>
+            <span className="text-mono-600">Tên kho hiện tại:</span>
             <strong className="text-mono-black">{item.quantity}</strong>
           </div>
         </div>
@@ -97,7 +97,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
             />
             {formData.quantity > 0 && (
               <p className="mt-1 text-xs text-mono-500">
-                Tồn sau xuất:{" "}
+                Tên sau xuất:{" "}
                 <strong>{item.quantity - formData.quantity}</strong>
               </p>
             )}
@@ -106,7 +106,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
           {/* Order ID (optional) */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Mã đơn hàng (nếu có)
+              Mã don hàng (n?u có)
             </label>
             <input
               type="text"
@@ -115,7 +115,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
                 setFormData({ ...formData, orderId: e.target.value })
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
-              placeholder="Nhập mã đơn hàng"
+              placeholder="Nhập mã don hàng"
             />
           </div>
 
@@ -131,13 +131,13 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               rows={3}
-              placeholder="Lý do xuất kho (tùy chọn)"
+              placeholder="Lý đo xuất kho (tùy chơn)"
             />
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-mono-100 border border-mono-300 text-mono-800 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -147,9 +147,9 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+              className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-mono-800 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "Đang xử lý..." : "Xuất kho"}
+              {loading ? "Ðang xử lý..." : "Xuất kho"}
             </button>
             <button
               type="button"
@@ -166,3 +166,6 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
 };
 
 export default StockOutModal;
+
+
+

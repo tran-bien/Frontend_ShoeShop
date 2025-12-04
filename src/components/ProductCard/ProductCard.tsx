@@ -10,32 +10,32 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  // State cho hiệu ứng fade-in khi ảnh được tải
+  // State cho hi?u ẩng fade-in khi ẩnh được tại
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // State cho hiệu ứng slide ảnh
+  // State cho hi?u ẩng slide ẩnh
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Compare context
   const { addToCompareById, removeFromCompare, isInCompare, isLoading } =
     useCompare();
 
-  // Kiểm tra chắc chắn images là mảng và có nhiều hơn 1 phần tử
+  // Ki?m tra chỉc chơn images là mẩng và có nhi?u hon 1 phần t?
   const hasMultipleImages =
     product && Array.isArray(product.images) && product.images.length > 1;
 
-  // Hiệu ứng slide ảnh với tốc độ vừa phải (3 giây cho mỗi ảnh)
+  // Hi?u ẩng slide ẩnh với t?c d? v?a ph?i (3 giây cho mới ẩnh)
   useEffect(() => {
     if (!hasMultipleImages || !product) return;
 
     const interval = setInterval(() => {
-      // Kiểm tra images tồn tại trước khi truy cập length
+      // Ki?m tra images tên tại trước khi truy c?p length
       if (Array.isArray(product.images) && product.images.length > 0) {
         setCurrentImageIndex((prev) => (prev + 1) % product.images!.length);
-        // Reset trạng thái imageLoaded khi chuyển ảnh
+        // Reset trạng thái imageLoaded khi chuyện ẩnh
         setImageLoaded(false);
       }
-    }, 3000); // Tốc độ chuyển ảnh vừa phải: 3 giây
+    }, 3000); // T?c d? chuyện ẩnh v?a ph?i: 3 giây
 
     return () => clearInterval(interval);
   }, [product, product?.images, hasMultipleImages]);
@@ -48,7 +48,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   const inCompare = isInCompare(product._id);
 
-  // Get image URL to display với kiểm tra null/undefined
+  // Get image URL to display với ki?m tra null/undefined
   const imageUrl =
     hasMultipleImages && Array.isArray(product.images)
       ? product.images[currentImageIndex]?.url || ""
@@ -62,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     // Priority for displaying price:
     // 1. Use product.priceRange if valid (min/max or single)
     // 2. Fallback to product.price or originalPrice
-    // 3. If out_of_stock and price is 0 -> show "Hết hàng"
+    // 3. If out_of_stock and price is 0 -> show "H?t hàng"
 
     const inStock = product.stockStatus !== "out_of_stock";
 
@@ -77,18 +77,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     const displayMax: number | null = hasRange ? (pr!.max as number) : null;
 
     if (!inStock && (!displayMin || displayMin === 0)) {
-      return <div className="text-sm font-medium text-red-600">Hết hàng</div>;
+      return <div className="text-sm font-medium text-mono-700">H?t hàng</div>;
     }
 
     if (hasRange && displayMax && displayMin !== displayMax) {
       return (
         <div className="flex flex-col">
           <span className="text-mono-900 font-bold text-base md:text-lg">
-            {displayMin.toLocaleString()} - {displayMax.toLocaleString()}đ
+            {displayMin.toLocaleString()} - {displayMax.toLocaleString()}d
           </span>
           {product.originalPrice && (
             <span className="text-mono-400 text-sm line-through">
-              Gốc: {product.originalPrice.toLocaleString()}đ
+              G?c: {product.originalPrice.toLocaleString()}d
             </span>
           )}
         </div>
@@ -102,27 +102,27 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         {product.hasDiscount ? (
           <>
             <span className="text-mono-900 font-bold text-base md:text-lg">
-              {finalPrice.toLocaleString()}đ
+              {finalPrice.toLocaleString()}d
             </span>
             {product.originalPrice && (
               <span className="text-mono-400 text-sm line-through">
-                {product.originalPrice.toLocaleString()}đ
+                {product.originalPrice.toLocaleString()}d
               </span>
             )}
           </>
         ) : (
           <span className="text-mono-900 font-bold text-base md:text-lg">
-            {finalPrice.toLocaleString()}đ
+            {finalPrice.toLocaleString()}d
           </span>
         )}
       </div>
     );
   };
 
-  // Hiển thị rating bằng các icon sao
+  // Hiện thọ rating bảng các icon sao
   const renderRating = () => {
-    // Nếu không có review count thì vẫn hiển thị 5 sao rỗng
-    // Chỉ ẩn phần rating khi cả hai điều kiện đều không tồn tại
+    // N?u không có review count thì vẩn hiện thọ 5 sao rẩng
+    // Chờ ẩn phần rating khi c? hai di?u kiẩn đầu không tên tại
     if (
       product.reviewCount === undefined &&
       product.averageRating === undefined
@@ -130,18 +130,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       return null;
     }
 
-    // Lấy rating, nếu không có thì mặc định là 0
+    // L?y rating, n?u không có thì m?c đếnh là 0
     const rating = product.averageRating || 0;
     const reviewCount = product.reviewCount || 0;
     const stars = [];
 
-    // Tạo 5 sao đánh giá
+    // T?o 5 sao đánh giá
     for (let i = 1; i <= 5; i++) {
       stars.push(
         i <= rating ? (
-          <FaStar key={i} className="text-yellow-400 w-4 h-4" />
+          <FaStar key={i} className="text-mono-600 w-4 h-4" />
         ) : (
-          <FaRegStar key={i} className="text-yellow-400 w-4 h-4" />
+          <FaRegStar key={i} className="text-mono-600 w-4 h-4" />
         )
       );
     }
@@ -159,7 +159,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       className="group cursor-pointer bg-white rounded-lg shadow-soft hover:shadow-luxury transition-all duration-300 overflow-hidden h-full flex flex-col transform hover:translate-y-[-4px] border border-mono-100"
       onClick={onClick}
     >
-      {/* Phần ảnh sản phẩm với hiệu ứng chuyển đổi mềm mại */}
+      {/* Phần ẩnh sản phẩm với hi?u ẩng chuyện đổi m?m mới */}
       <div className="aspect-square w-full overflow-hidden bg-mono-50 relative">
         {/* Compare Button - Top Left */}
         <button
@@ -181,9 +181,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           }`}
           title={
             isLoading
-              ? "Đang tải..."
+              ? "Ðang tại..."
               : inCompare
-              ? "Xóa khỏi so sánh"
+              ? "Xóa kh?i so sánh"
               : "Thêm vào so sánh"
           }
         >
@@ -212,7 +212,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           }}
         />
 
-        {/* Hiển thị các chỉ báo slide nếu có nhiều ảnh */}
+        {/* Hiện thọ các chờ báo slide n?u có nhi?u ẩnh */}
         {hasMultipleImages && Array.isArray(product.images) && (
           <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1 z-10">
             {product.images.map((_, idx) => (
@@ -228,7 +228,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           </div>
         )}
 
-        {/* Sale tag - Sửa lỗi kiểm tra undefined */}
+        {/* Sale tag - Sửa lỗi ki?m tra undefined */}
         {typeof product.salePercentage === "number" &&
           product.salePercentage > 0 && (
             <div className="absolute top-2 right-2 bg-mono-800 text-white text-xs font-bold px-2.5 py-1.5 rounded">
@@ -239,26 +239,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         {/* Stock status */}
         {product.stockStatus === "out_of_stock" && (
           <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-center py-1.5 text-sm font-medium">
-            Hết hàng
+            H?t hàng
           </div>
         )}
         {product.stockStatus === "low_stock" && (
           <div className="absolute bottom-0 left-0 right-0 bg-mono-600 bg-opacity-70 text-white text-center py-1.5 text-sm font-medium">
-            Sắp hết hàng
+            S?p h?t hàng
           </div>
         )}
       </div>
 
-      {/* Thông tin sản phẩm - cải thiện độ rõ ràng */}
+      {/* Thông tin sản phẩm - c?i thiện d? rõ ràng */}
       <div className="p-4 flex flex-col flex-1">
-        {/* Thương hiệu */}
+        {/* Thuong hi?u */}
         {product.brand && (
           <span className="text-sm font-medium text-mono-500 mb-1.5">
             {product.brand.name}
           </span>
         )}
 
-        {/* Tên sản phẩm - Tăng kích thước và độ đậm */}
+        {/* Tên sản phẩm - Tang kích thước và d? d?m */}
         <h3 className="text-base md:text-lg font-bold text-mono-900 mb-2 line-clamp-2 flex-grow leading-snug">
           {product.name}
         </h3>
@@ -274,3 +274,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 };
 
 export default ProductCard;
+
+
+

@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Banner Types
- * Định nghĩa các interface liên quan đến Banner quảng cáo
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Banner quáº£ng cÃ¡o
  */
 
 // =======================

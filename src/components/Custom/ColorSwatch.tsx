@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import type { Color } from "../../types/color";
 
 interface ColorSwatchProps {
@@ -100,3 +100,4 @@ const ColorSwatch: React.FC<ColorSwatchProps> = ({
 };
 
 export default ColorSwatch;
+

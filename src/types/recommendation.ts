@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Recommendation & View History Types
- * Định nghĩa các interface liên quan đến Gợi ý sản phẩm và Lịch sử xem
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Gá»£i Ã½ sáº£n pháº©m vÃ  Lá»‹ch sá»­ xem
  */
 
 import type { Product } from "./product";

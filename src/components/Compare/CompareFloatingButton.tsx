@@ -35,3 +35,4 @@ const CompareFloatingButton: React.FC = () => {
 };
 
 export default CompareFloatingButton;
+

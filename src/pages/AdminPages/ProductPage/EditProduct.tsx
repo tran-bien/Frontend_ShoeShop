@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Product, UpdateProductData } from "../../../types/product";
 import { Tag } from "../../../types/tag";
 import { Brand } from "../../../types/brand";
@@ -72,7 +72,7 @@ const EditProduct: React.FC<EditProductProps> = ({
         setTags(tagsData);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError("Kh�ng th? t?i d? li?u!");
+        setError("Không thể tại dữ liệu!");
       } finally {
         setLoadingData(false);
       }
@@ -110,12 +110,12 @@ const EditProduct: React.FC<EditProductProps> = ({
 
     // Frontend validation
     if (!formData.name?.trim()) {
-      setError("T�n s?n ph?m kh�ng du?c d? tr?ng!");
+      setError("Tên sản phẩm không được d? trống!");
       setLoading(false);
       return;
     }
     if (formData.name.trim().length < 2 || formData.name.trim().length > 200) {
-      setError("T�n s?n ph?m ph?i c� t? 2-200 k� t?!");
+      setError("Tên sản phẩm ph?i có từ 2-200 ký t?!");
       setLoading(false);
       return;
     }
@@ -124,7 +124,7 @@ const EditProduct: React.FC<EditProductProps> = ({
       (formData.description.trim().length < 10 ||
         formData.description.trim().length > 1000)
     ) {
-      setError("M� t? s?n ph?m ph?i c� t? 10-1000 k� t?!");
+      setError("Mô từ sản phẩm ph?i có từ 10-1000 ký t?!");
       setLoading(false);
       return;
     }
@@ -142,7 +142,7 @@ const EditProduct: React.FC<EditProductProps> = ({
       console.error("Update product error:", err);
       const error = err as { response?: { data?: { message?: string } } };
       const errorMessage =
-        error.response?.data?.message || "C?p nh?t s?n ph?m th?t b?i!";
+        error.response?.data?.message || "Cập nhật sản phẩm thểt b?i!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -155,17 +155,17 @@ const EditProduct: React.FC<EditProductProps> = ({
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-mono-400 hover:text-mono-800 transition-all text-2xl font-bold"
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-mono-100 text-mono-400 hover:text-mono-800 transition-all text-2xl font-bold"
         >
-          �
+          ×
         </button>
         <h2 className="text-2xl font-bold mb-6 text-mono-800">
-          Ch?nh S?a S?n Ph?m
+          Chơnh Sửa Sẩn Ph?m
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-1">
-              T�n S?n Ph?m <span className="text-mono-800">*</span>
+              Tên Sẩn Ph?m <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -173,14 +173,14 @@ const EditProduct: React.FC<EditProductProps> = ({
               value={formData.name}
               onChange={handleChange}
               required
-              placeholder="Nh?p t�n s?n ph?m..."
+              placeholder="Nhập tên sản phẩm..."
               className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
             />
           </div>
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-1">
-              M� T? <span className="text-mono-800">*</span>
+              Mô Từ <span className="text-mono-800">*</span>
             </label>
             <div className="relative">
               <textarea
@@ -189,7 +189,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                 onChange={handleChange}
                 required
                 rows={5}
-                placeholder="M� t? chi ti?t v? s?n ph?m: ch?t li?u, d?c di?m n?i b?t, c�ng d?ng..."
+                placeholder="Mô từ chi tiết v? sản phẩm: chỉt li?u, d?c di?m nội b?t, công đếng..."
                 className="mt-1 block w-full px-4 py-3 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500 resize-none"
                 maxLength={1000}
               ></textarea>
@@ -198,7 +198,7 @@ const EditProduct: React.FC<EditProductProps> = ({
               </div>
             </div>
             <p className="mt-1 text-xs text-mono-500">
-              ?? M� t? chi ti?t gi�p kh�ch h�ng hi?u r� hon v? s?n ph?m
+              ?? Mô từ chi tiết giúp khách hàng hi?u rõ hon v? sản phẩm
             </p>
           </div>
 
@@ -215,7 +215,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                 disabled={loadingData}
                 className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
               >
-                <option value="">-- Ch?n danh m?c --</option>
+                <option value="">-- Chơn danh mục --</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.name}
@@ -236,7 +236,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                 disabled={loadingData}
                 className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
               >
-                <option value="">-- Ch?n thuong hi?u --</option>
+                <option value="">-- Chơn thuong hi?u --</option>
                 {brands.map((brand) => (
                   <option key={brand._id} value={brand._id}>
                     {brand.name}
@@ -248,7 +248,7 @@ const EditProduct: React.FC<EditProductProps> = ({
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Tags (Ch?n nhi?u)
+              Tags (Chơn nhi?u)
             </label>
             <div className="border-2 border-mono-300 rounded-lg p-4 bg-mono-50 max-h-64 overflow-y-auto">
               {loadingData ? (
@@ -272,7 +272,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  <span className="ml-3 text-mono-600">�ang t?i tags...</span>
+                  <span className="ml-3 text-mono-600">Ðang tại tags...</span>
                 </div>
               ) : tags.length === 0 ? (
                 <div className="text-center py-8">
@@ -290,7 +290,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                     />
                   </svg>
                   <p className="mt-2 text-sm text-mono-500">
-                    Kh�ng c� tags n�o
+                    Không có tags nào
                   </p>
                 </div>
               ) : (
@@ -312,17 +312,17 @@ const EditProduct: React.FC<EditProductProps> = ({
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-semibold ${
                           tag.type === "MATERIAL"
-                            ? "bg-mono-100 text-blue-700"
+                            ? "bg-mono-100 text-mono-700"
                             : tag.type === "USECASE"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-purple-100 text-purple-700"
+                            ? "bg-mono-100 text-mono-700"
+                            : "bg-mono-200 text-mono-800"
                         }`}
                       >
                         {tag.type === "MATERIAL"
-                          ? "Ch?t li?u"
+                          ? "Chỉt li?u"
                           : tag.type === "USECASE"
                           ? "Nhu c?u"
-                          : "T�y ch?nh"}
+                          : "Tùy chơnh"}
                       </span>
                     </label>
                   ))}
@@ -332,14 +332,14 @@ const EditProduct: React.FC<EditProductProps> = ({
             {formData.tags && formData.tags.length > 0 && (
               <div className="mt-2 flex items-center gap-2">
                 <span className="text-sm font-medium text-mono-700">
-                  �� ch?n: {formData.tags.length} tag(s)
+                  Ðã chơn: {formData.tags.length} tag(s)
                 </span>
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, tags: [] })}
-                  className="text-xs text-mono-800 hover:text-red-700 underline"
+                  className="text-xs text-mono-800 hover:text-mono-800 underline"
                 >
-                  X�a t?t c?
+                  Xóa tất cả
                 </button>
               </div>
             )}
@@ -355,14 +355,14 @@ const EditProduct: React.FC<EditProductProps> = ({
                 className="w-5 h-5 text-mono-black border-2 border-mono-300 rounded focus:ring-2 focus:ring-mono-500 cursor-pointer"
               />
               <span className="text-sm font-medium text-mono-700">
-                �ang ho?t d?ng
+                Ðang ho?t đếng
               </span>
             </label>
           </div>
 
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 mb-4">
-              <div className="flex items-center gap-2 text-red-700">
+            <div className="bg-mono-100 border-2 border-mono-300 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-2 text-mono-800">
                 <svg
                   className="w-5 h-5"
                   fill="none"
@@ -388,7 +388,7 @@ const EditProduct: React.FC<EditProductProps> = ({
               disabled={loading}
               className="px-5 py-2 border-2 border-mono-300 text-mono-700 rounded-lg hover:bg-mono-50 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              H?y
+              Hủy
             </button>
             <button
               type="submit"
@@ -413,7 +413,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  �ang luu...
+                  Ðang luu...
                 </>
               ) : (
                 <>
@@ -430,7 +430,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                       d="M5 13l4 4L19 7"
                     />
                   </svg>
-                  Luu Thay �?i
+                  Luu Thay Ð?i
                 </>
               )}
             </button>
@@ -442,3 +442,7 @@ const EditProduct: React.FC<EditProductProps> = ({
 };
 
 export default EditProduct;
+
+
+
+

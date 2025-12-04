@@ -1,6 +1,18 @@
 ﻿import React, { useEffect, useState } from "react";
-import { reviewApi, Review } from "../../services/ReviewService";
-import { FaHeart, FaRegHeart, FaStar, FaRegStar, FaUser } from "react-icons/fa";
+import {
+  reviewApi,
+  adminReviewApi,
+  Review,
+} from "../../services/ReviewService";
+import {
+  FaHeart,
+  FaRegHeart,
+  FaStar,
+  FaRegStar,
+  FaUser,
+  FaReply,
+} from "react-icons/fa";
+import { FiSend, FiEdit2, FiTrash2 } from "react-icons/fi";
 import { useAuth } from "../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -14,8 +26,15 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
   const [loading, setLoading] = useState(true);
   const [likedReviews, setLikedReviews] = useState<Record<string, boolean>>({});
   const [likeLoading, setLikeLoading] = useState<Record<string, boolean>>({});
-  const { isAuthenticated } = useAuth();
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyContent, setReplyContent] = useState("");
+  const [replyLoading, setReplyLoading] = useState(false);
+  const [editingReply, setEditingReply] = useState<string | null>(null);
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+
+  // Check if user is admin or staff
+  const isAdminOrStaff = user?.role === "admin" || user?.role === "staff";
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -36,7 +55,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
 
   const handleLikeReview = async (reviewId: string) => {
     if (!isAuthenticated) {
-      toast.error("Vui lòng đăng nhập để thích đánh giá");
+      toast.error("Vui lòng đang nhập d? thích đánh giá");
       navigate("/login");
       return;
     }
@@ -69,13 +88,77 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
     }
   };
 
+  // Handle reply to review (admin/staff only)
+  const handleReplySubmit = async (reviewId: string) => {
+    if (!replyContent.trim()) {
+      toast.error("Vui lòng nhập nội dung phần h?i");
+      return;
+    }
+
+    setReplyLoading(true);
+    try {
+      const response = editingReply
+        ? await adminReviewApi.updateReply(reviewId, replyContent.trim())
+        : await adminReviewApi.replyToReview(reviewId, replyContent.trim());
+
+      if (response.data.success) {
+        toast.success(
+          editingReply ? "Ðã cập nhật phần h?i" : "Ðã gửi phần h?i"
+        );
+        // Update the review in local state
+        setReviews((prev) =>
+          prev.map((review) =>
+            review._id === reviewId
+              ? { ...review, reply: response.data.data?.reply }
+              : review
+          )
+        );
+        setReplyingTo(null);
+        setEditingReply(null);
+        setReplyContent("");
+      }
+    } catch (error) {
+      console.error("Error submitting reply:", error);
+      toast.error("Không thể gửi phần h?i");
+    } finally {
+      setReplyLoading(false);
+    }
+  };
+
+  // Handle delete reply
+  const handleDeleteReply = async (reviewId: string) => {
+    if (!confirm("Bẩn có chỉc chơn muẩn xóa phần h?i này?")) return;
+
+    try {
+      const response = await adminReviewApi.deleteReply(reviewId);
+      if (response.data.success) {
+        toast.success("Ðã xóa phần h?i");
+        setReviews((prev) =>
+          prev.map((review) =>
+            review._id === reviewId ? { ...review, reply: undefined } : review
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting reply:", error);
+      toast.error("Không thể xóa phần h?i");
+    }
+  };
+
+  // Start editing reply
+  const handleEditReply = (reviewId: string, currentContent: string) => {
+    setReplyingTo(reviewId);
+    setEditingReply(reviewId);
+    setReplyContent(currentContent);
+  };
+
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       if (i <= rating) {
-        stars.push(<FaStar key={i} className="text-yellow-400 w-5 h-5" />);
+        stars.push(<FaStar key={i} className="text-mono-600 w-5 h-5" />);
       } else {
-        stars.push(<FaRegStar key={i} className="text-yellow-400 w-5 h-5" />);
+        stars.push(<FaRegStar key={i} className="text-mono-600 w-5 h-5" />);
       }
     }
     return stars;
@@ -88,27 +171,27 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-mono-black"></div>
         </div>
         <p className="text-center mt-3 text-mono-500 font-medium">
-          Đang tải đánh giá...
+          Ðang tại đánh giá...
         </p>
       </div>
     );
   }
 
-  // Hiển thị danh sách đánh giá
+  // Hiện thọ danh sách đánh giá
   return (
     <div className="bg-white rounded-xl shadow-sm overflow-hidden">
       {/* Header Section */}
       <div className="px-8 py-6 border-b border-mono-100 flex justify-between items-center">
         <div>
           <h3 className="text-2xl font-bold text-mono-800">
-            Đánh giá sản phẩm
+            Ðánh giá sản phẩm
           </h3>
           <p className="text-mono-500 mt-1 font-medium">
             {reviews.length} đánh giá từ khách hàng
           </p>
         </div>
         <div className="text-right">
-          <span className="text-4xl font-bold text-yellow-500">
+          <span className="text-4xl font-bold text-mono-600">
             {reviews.length > 0
               ? (
                   reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
@@ -130,7 +213,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
         <div className="p-8 text-center">
           <FaRegStar className="mx-auto text-4xl text-mono-300 mb-3" />
           <h3 className="text-xl font-medium text-mono-700 mb-2">
-            Chưa có đánh giá nào
+            Chua có đánh giá nào
           </h3>
           <p className="text-mono-500">
             Hãy là người đầu tiên đánh giá sản phẩm này
@@ -181,8 +264,8 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                     {review.content}
                   </p>
 
-                  {/* Like Button */}
-                  <div className="mt-3 flex items-center">
+                  {/* Like Button and Reply Button */}
+                  <div className="mt-3 flex items-center gap-4">
                     <button
                       onClick={() => handleLikeReview(review._id)}
                       disabled={likeLoading[review._id]}
@@ -194,10 +277,126 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                     >
                       {likedReviews[review._id] ? <FaHeart /> : <FaRegHeart />}
                       <span className="text-sm">
-                        {review.numberOfLikes || 0} hữu ích
+                        {review.numberOfLikes || 0} h?u ích
                       </span>
                     </button>
+
+                    {/* Reply button for admin/staff */}
+                    {isAdminOrStaff && !review.reply && (
+                      <button
+                        onClick={() => {
+                          setReplyingTo(review._id);
+                          setEditingReply(null);
+                          setReplyContent("");
+                        }}
+                        className="flex items-center gap-1 text-mono-500 hover:text-mono-800 transition-colors text-sm"
+                      >
+                        <FaReply />
+                        <span>Phần h?i</span>
+                      </button>
+                    )}
                   </div>
+
+                  {/* Reply Display */}
+                  {review.reply && (
+                    <div className="mt-4 ml-4 p-4 bg-mono-50 rounded-lg border-l-4 border-mono-400">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          {review.reply.repliedBy?.avatar?.url ? (
+                            <img
+                              src={review.reply.repliedBy.avatar.url}
+                              alt={review.reply.repliedBy.name}
+                              className="w-8 h-8 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-mono-300 flex items-center justify-center">
+                              <FaUser className="text-mono-600 text-sm" />
+                            </div>
+                          )}
+                          <div>
+                            <span className="font-medium text-mono-800 text-sm">
+                              {review.reply.repliedBy?.name || "Quận trở viên"}
+                            </span>
+                            <span className="ml-2 px-2 py-0.5 bg-mono-200 text-mono-700 text-xs rounded-full">
+                              {review.reply.repliedBy?.role === "admin"
+                                ? "Admin"
+                                : "Nhân viên"}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-mono-500 text-xs">
+                            {new Date(
+                              review.reply.repliedAt
+                            ).toLocaleDateString("vi-VN")}
+                          </span>
+                          {isAdminOrStaff && (
+                            <>
+                              <button
+                                onClick={() =>
+                                  handleEditReply(
+                                    review._id,
+                                    review.reply!.content
+                                  )
+                                }
+                                className="p-1 text-mono-500 hover:text-mono-800 transition-colors"
+                                title="Chơnh sửa"
+                              >
+                                <FiEdit2 size={14} />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteReply(review._id)}
+                                className="p-1 text-mono-500 hover:text-mono-700 transition-colors"
+                                title="Xóa"
+                              >
+                                <FiTrash2 size={14} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <p className="text-mono-700 text-sm whitespace-pre-line">
+                        {review.reply.content}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Reply Form */}
+                  {replyingTo === review._id && isAdminOrStaff && (
+                    <div className="mt-4 ml-4 p-4 bg-mono-50 rounded-lg">
+                      <textarea
+                        value={replyContent}
+                        onChange={(e) => setReplyContent(e.target.value)}
+                        placeholder="Nhập phần h?i của bẩn..."
+                        className="w-full px-3 py-2 border border-mono-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-mono-500"
+                        rows={3}
+                      />
+                      <div className="flex justify-end gap-2 mt-2">
+                        <button
+                          onClick={() => {
+                            setReplyingTo(null);
+                            setEditingReply(null);
+                            setReplyContent("");
+                          }}
+                          className="px-3 py-1.5 text-sm text-mono-600 hover:text-mono-800 transition-colors"
+                        >
+                          Hủy
+                        </button>
+                        <button
+                          onClick={() => handleReplySubmit(review._id)}
+                          disabled={replyLoading || !replyContent.trim()}
+                          className="px-3 py-1.5 bg-mono-900 text-white rounded-lg text-sm flex items-center gap-1 hover:bg-mono-800 disabled:bg-mono-400 disabled:cursor-not-allowed transition-colors"
+                        >
+                          {replyLoading ? (
+                            <span className="animate-spin">?</span>
+                          ) : (
+                            <FiSend size={14} />
+                          )}
+                          <span>{editingReply ? "Cập nhật" : "Gửi"}</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -209,3 +408,6 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
 };
 
 export default ProductComments;
+
+
+

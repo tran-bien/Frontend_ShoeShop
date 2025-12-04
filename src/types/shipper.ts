@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Shipper Types
- * Định nghĩa các interface liên quan đến Shipper (người giao hàng)
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Shipper (ngÆ°á»i giao hÃ ng)
  */
 
 // =======================

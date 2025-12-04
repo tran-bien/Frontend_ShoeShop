@@ -20,8 +20,8 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
     >
       {/* Error Icon */}
       <div className="mb-4">
-        <div className="bg-red-100 rounded-full p-3">
-          <ExclamationCircleIcon className="h-12 w-12 text-red-600" />
+        <div className="bg-mono-200 rounded-full p-3">
+          <ExclamationCircleIcon className="h-12 w-12 text-mono-700" />
         </div>
       </div>
 
@@ -45,3 +45,5 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
 };
 
 export default ErrorMessage;
+
+

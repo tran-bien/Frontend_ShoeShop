@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface BannerImage {
@@ -82,13 +82,13 @@ const CustomSwipper = ({
             onClick={handlePrev}
             className="absolute top-1/2 w-24 transform -translate-y-1/2 px-2 py-1 h-full "
           >
-            ❮
+            ?
           </button>
           <button
             onClick={handleNext}
             className="absolute top-1/2 right-0 w-24 transform -translate-y-1/2 px-2 py-1 h-full"
           >
-            ❯
+            ?
           </button>
         </>
       )}
@@ -116,3 +116,4 @@ const CustomSwipper = ({
 };
 
 export default CustomSwipper;
+

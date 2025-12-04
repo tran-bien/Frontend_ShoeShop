@@ -54,7 +54,7 @@ const EditBanner: React.FC<EditBannerProps> = ({
     } catch (err: unknown) {
       const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Cập nhật banner thất bại!";
+          ?.message || "Cập nhật banner thểt b?i!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -73,10 +73,10 @@ const EditBanner: React.FC<EditBannerProps> = ({
         </button>
         <h2 className="text-xl font-bold mb-6 text-center">Cập nhật Banner</h2>
 
-        {/* Hiển thị ảnh hiện tại */}
+        {/* Hiện thọ ẩnh hiện tại */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-black mb-2">
-            Ảnh hiện tại:
+            ẩnh hiện tại:
           </label>
           <img
             src={banner.image.url}
@@ -84,7 +84,7 @@ const EditBanner: React.FC<EditBannerProps> = ({
             className="h-20 w-auto border rounded mx-auto"
           />
           <p className="text-xs text-mono-500 text-center mt-1">
-            Để thay đổi ảnh, vui lòng sử dụng chức năng "Thay đổi ảnh" trong
+            Ð? thay đổi ẩnh, vui lòng sử dụng chỉc nang "Thay đổi ẩnh" trong
             danh sách banner
           </p>
         </div>
@@ -92,7 +92,7 @@ const EditBanner: React.FC<EditBannerProps> = ({
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              Tiêu đề banner <span className="text-mono-800">*</span>
+              Tiêu d? banner <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -100,14 +100,14 @@ const EditBanner: React.FC<EditBannerProps> = ({
               value={formData.title}
               onChange={handleChange}
               required
-              placeholder="Nhập tiêu đề cho banner"
+              placeholder="Nhập tiêu d? cho banner"
               className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-black">
-              Vị trí hiển thị <span className="text-mono-800">*</span>
+              V? trí hiện thọ <span className="text-mono-800">*</span>
             </label>
             <select
               name="displayOrder"
@@ -116,31 +116,31 @@ const EditBanner: React.FC<EditBannerProps> = ({
               required
               className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             >
-              <option value={1}>Vị trí 1</option>
-              <option value={2}>Vị trí 2</option>
-              <option value={3}>Vị trí 3</option>
-              <option value={4}>Vị trí 4</option>
-              <option value={5}>Vị trí 5</option>
+              <option value={1}>V? trí 1</option>
+              <option value={2}>V? trí 2</option>
+              <option value={3}>V? trí 3</option>
+              <option value={4}>V? trí 4</option>
+              <option value={5}>V? trí 5</option>
             </select>
             <p className="text-xs text-mono-500 mt-1">
-              Vị trí hiện tại: {banner.displayOrder} (tối đa 5 banners)
+              V? trí hiện tại: {banner.displayOrder} (tại đã 5 banners)
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-black">
-              Đường dẫn (không bắt buộc)
+              Ðuẩng đến (không bắt buộc)
             </label>
             <input
               type="url"
               name="link"
               value={formData.link}
               onChange={handleChange}
-              placeholder="https://example.com hoặc /products"
+              placeholder="https://example.com ho?c /products"
               className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
             <p className="text-xs text-mono-500 mt-1">
-              Khi người dùng click vào banner sẽ chuyển đến đường dẫn này
+              Khi người dùng click vào banner số chuyện đến đường đến này
             </p>
           </div>
 
@@ -153,7 +153,7 @@ const EditBanner: React.FC<EditBannerProps> = ({
               className="h-4 w-4 text-mono-900 focus:ring-mono-700 border-mono-300 rounded"
             />
             <label className="ml-2 block text-sm text-black">
-              Banner đang hoạt động
+              Banner đang ho?t đếng
             </label>
           </div>
 
@@ -172,7 +172,7 @@ const EditBanner: React.FC<EditBannerProps> = ({
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition disabled:opacity-50"
             >
-              {loading ? "Đang cập nhật..." : "Cập nhật"}
+              {loading ? "Ðang cập nhật..." : "Cập nhật"}
             </button>
           </div>
         </form>
@@ -182,3 +182,4 @@ const EditBanner: React.FC<EditBannerProps> = ({
 };
 
 export default EditBanner;
+

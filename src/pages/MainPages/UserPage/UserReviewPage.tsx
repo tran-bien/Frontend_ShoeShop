@@ -89,7 +89,7 @@ const UserReviewPage: React.FC = () => {
         error instanceof Error
           ? error.message
           : (error as { response?: { data?: { message?: string } } })?.response
-              ?.data?.message || "Có lỗi xảy ra khi tải đánh giá";
+              ?.data?.message || "Có lỗi x?y ra khi tại đánh giá";
       message.error(errorMessage);
     } finally {
       setLoading(false);
@@ -105,13 +105,13 @@ const UserReviewPage: React.FC = () => {
         setReviewableProducts(response.data.data || []);
       }
     } catch (error: unknown) {
-      console.error("Lỗi khi tải sản phẩm có thể đánh giá:", error);
+      console.error("Lỗi khi tại sản phẩm có thọ đánh giá:", error);
       const errorMessage =
         error instanceof Error
           ? error.message
           : (error as { response?: { data?: { message?: string } } })?.response
               ?.data?.message ||
-            "Có lỗi xảy ra khi tải sản phẩm có thể đánh giá";
+            "Có lỗi x?y ra khi tại sản phẩm có thọ đánh giá";
       message.error(errorMessage);
     } finally {
       setLoadingReviewable(false);
@@ -147,11 +147,11 @@ const UserReviewPage: React.FC = () => {
       return false;
     }
     if (content.trim().length < 10) {
-      message.error("Nội dung đánh giá phải có ít nhất 10 ký tự!");
+      message.error("Nội dung đánh giá ph?i có ít nh?t 10 ký t?!");
       return false;
     }
     if (rating < 1 || rating > 5) {
-      message.error("Vui lòng chọn số sao từ 1 đến 5!");
+      message.error("Vui lòng chơn số sao từ 1 đến 5!");
       return false;
     }
     return true;
@@ -171,21 +171,21 @@ const UserReviewPage: React.FC = () => {
         content: content.trim(),
       };
 
-      console.log("Đang gửi đánh giá:", reviewData);
+      console.log("Ðang gửi đánh giá:", reviewData);
 
       const response = await reviewApi.createReview(reviewData);
 
-      console.log("Phản hồi từ server:", response);
+      console.log("Phần h?i từ server:", response);
 
       if (response.data.success) {
-        message.success("Đánh giá sản phẩm thành công!");
+        message.success("Ðánh giá sản phẩm thành công!");
         setIsCreateModalVisible(false);
         resetForm();
         // Refresh both reviews and reviewable products
         await Promise.all([fetchUserReviews(), fetchReviewableProducts()]);
       } else {
         message.error(
-          response.data.message || "Có lỗi xảy ra khi tạo đánh giá"
+          response.data.message || "Có lỗi x?y ra khi t?o đánh giá"
         );
       }
     } catch (error: unknown) {
@@ -194,7 +194,7 @@ const UserReviewPage: React.FC = () => {
         error instanceof Error
           ? error.message
           : (error as { response?: { data?: { message?: string } } })?.response
-              ?.data?.message || "Có lỗi xảy ra khi tạo đánh giá";
+              ?.data?.message || "Có lỗi x?y ra khi t?o đánh giá";
       message.error(errorMessage);
     } finally {
       setSubmitting(false);
@@ -236,7 +236,7 @@ const UserReviewPage: React.FC = () => {
         error instanceof Error
           ? error.message
           : (error as { response?: { data?: { message?: string } } })?.response
-              ?.data?.message || "Có lỗi xảy ra khi cập nhật đánh giá";
+              ?.data?.message || "Có lỗi x?y ra khi cập nhật đánh giá";
       message.error(errorMessage);
     } finally {
       setSubmitting(false);
@@ -257,7 +257,7 @@ const UserReviewPage: React.FC = () => {
       confirm({
         title: "Xác nhận xóa đánh giá",
         icon: <ExclamationCircleOutlined />,
-        content: "Bạn có chắc chắn muốn xóa đánh giá này không?",
+        content: "Bẩn có chỉc chơn muẩn xóa đánh giá này không?",
         okText: "Xóa",
         okType: "danger",
         cancelText: "Hủy",
@@ -277,7 +277,7 @@ const UserReviewPage: React.FC = () => {
                 ? error.message
                 : (error as { response?: { data?: { message?: string } } })
                     ?.response?.data?.message ||
-                  "Có lỗi xảy ra khi xóa đánh giá";
+                  "Có lỗi x?y ra khi xóa đánh giá";
             message.error(errorMessage);
           }
         },
@@ -294,10 +294,10 @@ const UserReviewPage: React.FC = () => {
           title: "Xác nhận đóng",
           icon: <ExclamationCircleOutlined />,
           content:
-            "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn đóng không?",
-          okText: "Đóng",
+            "Bẩn có thay đổi chua luu. Bẩn có chỉc chơn muẩn đóng không?",
+          okText: "Ðóng",
           okType: "danger",
-          cancelText: "Tiếp tục chỉnh sửa",
+          cancelText: "Tiếp tục chơnh sửa",
           onOk: () => {
             if (modalType === "create") {
               setIsCreateModalVisible(false);
@@ -349,7 +349,7 @@ const UserReviewPage: React.FC = () => {
       fetchUserReviews(pagination.current, pagination.pageSize),
       fetchReviewableProducts(),
     ]);
-    message.success("Đã làm mới dữ liệu!");
+    message.success("Ðã làm mới dữ liệu!");
   }, [fetchUserReviews, fetchReviewableProducts, pagination]);
 
   // Format date helper function
@@ -383,7 +383,7 @@ const UserReviewPage: React.FC = () => {
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
                 <h1 className="text-3xl font-bold text-mono-900">
-                  Đánh giá của tôi
+                  Ðánh giá của tôi
                 </h1>
                 <Button
                   icon={<ReloadOutlined />}
@@ -395,7 +395,7 @@ const UserReviewPage: React.FC = () => {
                 </Button>
               </div>
               <p className="text-mono-600">
-                Quản lý và viết đánh giá cho các sản phẩm bạn đã mua
+                Quận lý và viết đánh giá cho các sản phẩm bẩn dã mua
               </p>
             </div>
 
@@ -404,7 +404,7 @@ const UserReviewPage: React.FC = () => {
               <div className="flex justify-center items-center py-20">
                 <div className="text-center">
                   <Spin size="large" />
-                  <div className="mt-4 text-mono-600">Đang tải dữ liệu...</div>
+                  <div className="mt-4 text-mono-600">Ðang tại dữ liệu...</div>
                 </div>
               </div>
             ) : (
@@ -453,11 +453,11 @@ const UserReviewPage: React.FC = () => {
                         description={
                           <div className="text-mono-500">
                             <div className="font-medium mb-1">
-                              Không có sản phẩm nào cần đánh giá
+                              Không có sản phẩm nào cẩn đánh giá
                             </div>
                             <div className="text-sm">
-                              Tất cả sản phẩm đã được đánh giá hoặc bạn chưa có
-                              đơn hàng nào đã giao
+                              Tất cả sản phẩm dã được đánh giá ho?c bẩn chua có
+                              don hàng nào dã giao
                             </div>
                           </div>
                         }
@@ -467,7 +467,7 @@ const UserReviewPage: React.FC = () => {
                         {reviewableProducts.map((product) => (
                           <Badge.Ribbon
                             key={product.orderItemId}
-                            text={`${product.daysLeftToReview} ngày còn lại`}
+                            text={`${product.daysLeftToReview} ngày còn lỗi`}
                             color="blue"
                           >
                             <Card
@@ -486,7 +486,7 @@ const UserReviewPage: React.FC = () => {
                                   />
                                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
                                     <div className="text-white text-xs">
-                                      Mã đơn: {product.orderCode}
+                                      Mã don: {product.orderCode}
                                     </div>
                                   </div>
                                 </div>
@@ -498,7 +498,7 @@ const UserReviewPage: React.FC = () => {
                                   className="w-full"
                                   key="review"
                                 >
-                                  Đánh giá ngay
+                                  Ðánh giá ngay
                                 </Button>,
                               ]}
                             >
@@ -518,7 +518,7 @@ const UserReviewPage: React.FC = () => {
                                           {new Intl.NumberFormat(
                                             "vi-VN"
                                           ).format(product.price)}
-                                          đ
+                                          d
                                         </div>
                                       </div>
                                     </div>
@@ -528,7 +528,7 @@ const UserReviewPage: React.FC = () => {
                                   <div className="mt-2">
                                     <div className="text-xs text-mono-500 flex items-center justify-between">
                                       <div>
-                                        <Tooltip title="Ngày nhận hàng">
+                                        <Tooltip title="Ngày nhơn hàng">
                                           <span className="flex items-center">
                                             <ClockCircleOutlined className="mr-1" />
                                             {formatDate(product.deliveredAt)}
@@ -536,12 +536,12 @@ const UserReviewPage: React.FC = () => {
                                         </Tooltip>
                                       </div>
                                       <Tooltip
-                                        title={`Hạn đánh giá: ${
+                                        title={`Hơn đánh giá: ${
                                           product.reviewExpiresAt
                                             ? formatDate(
                                                 product.reviewExpiresAt
                                               )
-                                            : "Không giới hạn"
+                                            : "Không giới hơn"
                                         }`}
                                       >
                                         <InfoCircleOutlined className="text-mono-500" />
@@ -566,7 +566,7 @@ const UserReviewPage: React.FC = () => {
                         <span className="bg-mono-700 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
                           <StarFilled />
                         </span>
-                        Đánh giá đã viết
+                        Ðánh giá dã viết
                       </h2>
                       <Button
                         icon={<ReloadOutlined />}
@@ -610,11 +610,11 @@ const UserReviewPage: React.FC = () => {
                         description={
                           <div className="text-mono-500">
                             <div className="font-medium mb-1">
-                              Bạn chưa có đánh giá nào
+                              Bẩn chua có đánh giá nào
                             </div>
                             <div className="text-sm">
-                              Hãy đánh giá các sản phẩm đã mua để giúp người
-                              khác tìm hiểu sản phẩm tốt hơn
+                              Hãy đánh giá các sản phẩm dã mua d? giúp người
+                              khác tìm hi?u sản phẩm t?t hon
                             </div>
                           </div>
                         }
@@ -664,7 +664,7 @@ const UserReviewPage: React.FC = () => {
                                         key={index}
                                         className={
                                           index < review.rating
-                                            ? "text-yellow-400"
+                                            ? "text-mono-600"
                                             : "text-mono-300"
                                         }
                                       />
@@ -685,12 +685,12 @@ const UserReviewPage: React.FC = () => {
                                     className="rounded-full px-2"
                                   >
                                     {review.isActive
-                                      ? "Hiển thị công khai"
-                                      : "Đã ẩn"}
+                                      ? "Hiện thọ công khai"
+                                      : "Ðã ẩn"}
                                   </Tag>
                                   <span className="text-xs text-mono-500 flex items-center">
-                                    <StarFilled className="text-yellow-400 mr-1" />
-                                    {review.numberOfLikes} lượt thích
+                                    <StarFilled className="text-mono-600 mr-1" />
+                                    {review.numberOfLikes} lu?t thích
                                   </span>
 
                                   <div className="flex-grow"></div>
@@ -744,7 +744,7 @@ const UserReviewPage: React.FC = () => {
 
             {/* Create Review Modal */}
             <Modal
-              title="Đánh giá sản phẩm"
+              title="Ðánh giá sản phẩm"
               open={isCreateModalVisible}
               onOk={handleCreateReview}
               onCancel={() => handleModalClose("create")}
@@ -789,14 +789,14 @@ const UserReviewPage: React.FC = () => {
                   <div className="mt-3 border-t border-mono-200 pt-3">
                     <div className="text-xs text-mono-500 flex items-center justify-between">
                       <span>
-                        Thời hạn đánh giá còn:{" "}
+                        Thểi hơn đánh giá còn:{" "}
                         {selectedProduct.daysLeftToReview} ngày
                       </span>
                       <span>
-                        Hạn cuối:{" "}
+                        Hơn cuối:{" "}
                         {selectedProduct.reviewExpiresAt
                           ? formatDate(selectedProduct.reviewExpiresAt)
-                          : "Không giới hạn"}
+                          : "Không giới hơn"}
                       </span>
                     </div>
                     <Progress
@@ -817,7 +817,7 @@ const UserReviewPage: React.FC = () => {
 
               <div className="mb-4 text-center">
                 <label className="block text-sm font-medium mb-2">
-                  Mức độ hài lòng của bạn:
+                  M?c d? hài lòng của bẩn:
                 </label>
                 <Rate value={rating} onChange={setRating} className="text-xl" />
               </div>
@@ -832,7 +832,7 @@ const UserReviewPage: React.FC = () => {
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                     setContent(e.target.value)
                   }
-                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm... (ít nhất 10 ký tự)"
+                  placeholder="Chia số trởi nghi?m của bẩn v? sản phẩm... (ít nh?t 10 ký t?)"
                   maxLength={500}
                   showCount
                   autoFocus
@@ -844,7 +844,7 @@ const UserReviewPage: React.FC = () => {
                 />
                 {content.trim().length > 0 && content.trim().length < 10 && (
                   <div className="text-mono-800 text-xs mt-1">
-                    Nội dung đánh giá phải có ít nhất 10 ký tự
+                    Nội dung đánh giá ph?i có ít nh?t 10 ký t?
                   </div>
                 )}
               </div>
@@ -852,7 +852,7 @@ const UserReviewPage: React.FC = () => {
 
             {/* Edit Review Modal */}
             <Modal
-              title="Chỉnh sửa đánh giá"
+              title="Chơnh sửa đánh giá"
               open={isEditModalVisible}
               onOk={handleUpdateReview}
               onCancel={() => handleModalClose("edit")}
@@ -899,7 +899,7 @@ const UserReviewPage: React.FC = () => {
 
               <div className="mb-4 text-center">
                 <label className="block text-sm font-medium mb-2">
-                  Đánh giá sao:
+                  Ðánh giá sao:
                 </label>
                 <Rate value={rating} onChange={setRating} className="text-xl" />
               </div>
@@ -914,7 +914,7 @@ const UserReviewPage: React.FC = () => {
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                     setContent(e.target.value)
                   }
-                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm... (ít nhất 10 ký tự)"
+                  placeholder="Chia số trởi nghi?m của bẩn v? sản phẩm... (ít nh?t 10 ký t?)"
                   maxLength={500}
                   showCount
                   autoFocus
@@ -926,7 +926,7 @@ const UserReviewPage: React.FC = () => {
                 />
                 {content.trim().length > 0 && content.trim().length < 10 && (
                   <div className="text-mono-800 text-xs mt-1">
-                    Nội dung đánh giá phải có ít nhất 10 ký tự
+                    Nội dung đánh giá ph?i có ít nh?t 10 ký t?
                   </div>
                 )}
               </div>
@@ -939,3 +939,5 @@ const UserReviewPage: React.FC = () => {
 };
 
 export default UserReviewPage;
+
+

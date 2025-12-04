@@ -17,7 +17,7 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      alert("Vui lòng chọn một ảnh!");
+      alert("Vui lòng chơn m?t ẩnh!");
       return;
     }
     const formData = new FormData();
@@ -36,7 +36,7 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-md text-black">
-      <h3 className="text-lg font-bold mb-4">Quản Lý Logo Thương Hiệu</h3>
+      <h3 className="text-lg font-bold mb-4">Quận Lý Logo Thuong Hi?u</h3>
       <div className="mb-4 flex flex-col md:flex-row gap-2 items-center">
         <input
           type="file"
@@ -51,7 +51,7 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
           onClick={handleUpload}
           className="bg-mono-500 text-white px-3 py-1 rounded-full hover:bg-mono-black transition text-xs"
         >
-          Tải Lên
+          Tại Lên
         </button>
       </div>
       {logo?.url && (
@@ -71,7 +71,7 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
       )}
       {!logo?.url && (
         <div className="text-mono-400 text-sm text-center mt-2">
-          Chưa có logo
+          Chua có logo
         </div>
       )}
     </div>
@@ -79,3 +79,4 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
 };
 
 export default BrandLogoManager;
+

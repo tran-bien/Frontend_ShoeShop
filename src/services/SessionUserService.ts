@@ -1,4 +1,4 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type {
   User,
   UserQueryParams,
@@ -35,15 +35,15 @@ export interface SessionsResponse {
 // =======================
 
 export const adminUserService = {
-  // Lấy danh sách user
+  // Láº¥y danh sÃ¡ch user
   getAllUsers: (params?: UserQueryParams): Promise<{ data: UsersResponse }> =>
     axiosInstanceAuth.get("/api/v1/admin/users", { params }),
 
-  // Lấy chi tiết user theo id
+  // Láº¥y chi tiáº¿t user theo id
   getUserById: (userId: string): Promise<{ data: UserDetailResponse }> =>
     axiosInstanceAuth.get(`/api/v1/admin/users/${userId}`),
 
-  // Khóa hoặc mở khóa tài khoản user
+  // KhÃ³a hoáº·c má»Ÿ khÃ³a tÃ i khoáº£n user
   blockUser: (
     userId: string,
     data: BlockUserData
@@ -56,11 +56,11 @@ export const adminUserService = {
 // =======================
 
 export const adminSessionService = {
-  // Lấy danh sách session đăng nhập
+  // Láº¥y danh sÃ¡ch session Ä‘Äƒng nháº­p
   getAllSessions: (): Promise<{ data: SessionsResponse }> =>
     axiosInstanceAuth.get("/api/v1/admin/auth/sessions"),
 
-  // Đăng xuất (xóa session) theo userId
+  // ÄÄƒng xuáº¥t (xÃ³a session) theo userId
   logoutUser: (userId: string): Promise<{ data: ApiResponse<null> }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/auth/logout/${userId}`),
 };

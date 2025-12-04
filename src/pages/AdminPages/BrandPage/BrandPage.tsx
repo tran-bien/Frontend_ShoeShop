@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { Brand } from "../../../types/brand";
 import { adminBrandService } from "../../../services/BrandService";
@@ -24,14 +24,14 @@ const ViewDetailModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-mono-black to-purple-600 text-white p-6 rounded-t-xl">
+        <div className="sticky top-0 bg-mono-900 text-white p-6 rounded-t-xl">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Chi ti?t Thuong hi?u</h2>
+            <h2 className="text-2xl font-bold">Chi tiết Thuong hi?u</h2>
             <button
               onClick={onClose}
               className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
             >
-              �
+              ×
             </button>
           </div>
         </div>
@@ -43,7 +43,7 @@ const ViewDetailModal: React.FC<{
             </div>
             <div>
               <p className="text-sm text-mono-500 font-medium">
-                T�n thuong hi?u
+                Tên thuong hi?u
               </p>
               <p className="text-mono-800 font-semibold">{brand.name}</p>
             </div>
@@ -52,24 +52,24 @@ const ViewDetailModal: React.FC<{
               <p className="text-mono-800 font-mono text-sm">{brand.slug}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Tr?ng th�i</p>
+              <p className="text-sm text-mono-500 font-medium">Trạng thái</p>
               <div className="mt-1">
                 {brand.isActive ? (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                    Ho?t d?ng
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
+                    Ho?t đếng
                   </span>
                 ) : (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                    Kh�ng ho?t d?ng
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
+                    Không ho?t đếng
                   </span>
                 )}
               </div>
             </div>
           </div>
           <div>
-            <p className="text-sm text-mono-500 font-medium">M� t?</p>
+            <p className="text-sm text-mono-500 font-medium">Mô t?</p>
             <p className="text-mono-800 mt-1">
-              {brand.description || "Kh�ng c� m� t?"}
+              {brand.description || "Không có mô t?"}
             </p>
           </div>
           {brand.logo?.url && (
@@ -84,7 +84,7 @@ const ViewDetailModal: React.FC<{
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-mono-500 font-medium">Ng�y t?o</p>
+              <p className="text-sm text-mono-500 font-medium">Ngày t?o</p>
               <p className="text-mono-800 text-sm">
                 {brand.createdAt
                   ? new Date(brand.createdAt).toLocaleString("vi-VN")
@@ -93,7 +93,7 @@ const ViewDetailModal: React.FC<{
             </div>
             <div>
               <p className="text-sm text-mono-500 font-medium">
-                C?p nh?t l?n cu?i
+                Cập nhật lẩn cuối
               </p>
               <p className="text-mono-800 text-sm">
                 {brand.updatedAt
@@ -104,7 +104,7 @@ const ViewDetailModal: React.FC<{
           </div>
           {brand.deletedAt && (
             <div className="pt-4 border-t">
-              <p className="text-sm text-mono-500 font-medium">Ng�y x�a</p>
+              <p className="text-sm text-mono-500 font-medium">Ngày xóa</p>
               <p className="text-mono-800 text-sm">
                 {new Date(brand.deletedAt).toLocaleString("vi-VN")}
               </p>
@@ -144,7 +144,7 @@ const EditBrand: React.FC<{
       onSuccess();
       onClose();
     } catch {
-      setError("C?p nh?t thuong hi?u th?t b?i!");
+      setError("Cập nhật thuong hi?u thểt b?i!");
     } finally {
       setLoading(false);
     }
@@ -161,12 +161,12 @@ const EditBrand: React.FC<{
           &times;
         </button>
         <h2 className="text-xl font-bold mb-6 text-center">
-          C?p nh?t Thuong Hi?u
+          Cập nhật Thuong Hi?u
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              T�n Thuong Hi?u
+              Tên Thuong Hi?u
             </label>
             <input
               type="text"
@@ -179,7 +179,7 @@ const EditBrand: React.FC<{
           </div>
           <div>
             <label className="block text-sm font-medium text-black">
-              M� T?
+              Mô T?
             </label>
             <textarea
               name="description"
@@ -196,7 +196,7 @@ const EditBrand: React.FC<{
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
-              {loading ? "�ang c?p nh?t..." : "C?p nh?t"}
+              {loading ? "Ðang cập nhật..." : "Cập nhật"}
             </button>
           </div>
         </form>
@@ -355,7 +355,7 @@ const ListBrandsPage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // X? l� l?i n?u c?n
+      // Xử lý lỗi n?u cẩn
     }
   };
 
@@ -366,7 +366,7 @@ const ListBrandsPage: React.FC = () => {
       fetchBrands(currentPage);
       fetchStats();
     } catch {
-      // X? l� l?i n?u c?n
+      // Xử lý lỗi n?u cẩn
     }
   };
 
@@ -376,7 +376,7 @@ const ListBrandsPage: React.FC = () => {
       fetchBrands(currentPage);
       fetchStats();
     } catch {
-      // X? l� l?i n?u c?n
+      // Xử lý lỗi n?u cẩn
     }
   };
 
@@ -386,7 +386,7 @@ const ListBrandsPage: React.FC = () => {
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
-          Danh S�ch Thuong Hi?u
+          Danh Sách Thuong Hi?u
         </h2>
         {!isSearchVisible ? (
           <button
@@ -394,7 +394,7 @@ const ListBrandsPage: React.FC = () => {
             className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
             <IoIosSearch className="text-xl text-mono-500" />
-            <span className="font-medium">T�m ki?m</span>
+            <span className="font-medium">Tìm kiếm</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
@@ -406,7 +406,7 @@ const ListBrandsPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="T�m theo t�n thuong hi?u..."
+              placeholder="Tìm theo tên thuong hi?u..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -418,37 +418,37 @@ const ListBrandsPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-black mb-1">
-              T?ng s? thuong hi?u
+              Tổng số thuong hi?u
             </h3>
-            <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
+            <p className="text-3xl font-bold text-mono-900">{totalCount}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
-              �ang ho?t d?ng
+              Ðang ho?t đếng
             </h3>
-            <p className="text-3xl font-bold text-green-900">{activeCount}</p>
+            <p className="text-3xl font-bold text-mono-800">{activeCount}</p>
           </div>
-          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-sm border border-yellow-200">
-            <h3 className="text-sm font-medium text-yellow-600 mb-1">
-              Kh�ng ho?t d?ng
+          <div className="bg-gradient-to-br from-mono-100 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
+            <h3 className="text-sm font-medium text-mono-700 mb-1">
+              Không ho?t đếng
             </h3>
-            <p className="text-3xl font-bold text-yellow-900">
+            <p className="text-3xl font-bold text-mono-900">
               {inactiveCount}
             </p>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200">
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-mono-300">
             <h3 className="text-sm font-medium text-mono-900 mb-1">
-              T?ng s? thuong hi?u d� x�a
+              Tổng số thuong hi?u dã xóa
             </h3>
-            <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
+            <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
           </div>
         </div>
       )}
 
-      {/* Tab chuy?n d?i v� Sort */}
+      {/* Tab chuyện đổi và Sort */}
       <div className="flex items-center justify-between border-b mb-4">
         <div className="flex">
           <button
@@ -462,7 +462,7 @@ const ListBrandsPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Thuong hi?u dang ho?t d?ng
+            Thuong hi?u đang ho?t đếng
           </button>
           <button
             onClick={() => {
@@ -475,7 +475,7 @@ const ListBrandsPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Thuong hi?u d� x�a
+            Thuong hi?u dã xóa
           </button>
         </div>
         <div className="flex items-center gap-3 mb-2">
@@ -488,17 +488,17 @@ const ListBrandsPage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="created_at_desc">M?i nh?t</option>
+            <option value="created_at_desc">Mới nh?t</option>
             <option value="created_at_asc">Cu nh?t</option>
-            <option value="name_asc">T�n A-Z</option>
-            <option value="name_desc">T�n Z-A</option>
+            <option value="name_asc">Tên A-Z</option>
+            <option value="name_desc">Tên Z-A</option>
           </select>
           {!showDeleted && canCreate() && (
             <button
-              className="px-4 py-2 bg-gradient-to-r from-mono-black to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              className="px-4 py-2 bg-mono-800 text-white rounded-lg font-medium hover:bg-mono-900 transition-all shadow-md"
               onClick={() => setShowAddBrand(true)}
             >
-              + Th�m Thuong Hi?u
+              + Thêm Thuong Hi?u
             </button>
           )}
         </div>
@@ -525,12 +525,12 @@ const ListBrandsPage: React.FC = () => {
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
-              <th className="py-3 px-4 text-left border-b">T�n Thuong Hi?u</th>
+              <th className="py-3 px-4 text-left border-b">Tên Thuong Hi?u</th>
               <th className="py-3 px-4 text-left border-b">Slug</th>
-              <th className="py-3 px-4 text-left border-b">M� T?</th>
+              <th className="py-3 px-4 text-left border-b">Mô T?</th>
               <th className="py-3 px-4 text-center border-b">Logo</th>
-              <th className="py-3 px-4 text-center border-b">Tr?ng Th�i</th>
-              <th className="py-3 px-4 text-center border-b">Thao T�c</th>
+              <th className="py-3 px-4 text-center border-b">Trống Thái</th>
+              <th className="py-3 px-4 text-center border-b">Thao Tác</th>
             </tr>
           </thead>
           <tbody>
@@ -544,7 +544,7 @@ const ListBrandsPage: React.FC = () => {
                 <td className="px-4 py-3 text-sm">
                   {item.description && item.description.length > 50
                     ? `${item.description.substring(0, 50)}...`
-                    : item.description || "Kh�ng c� m� t?"}
+                    : item.description || "Không có mô t?"}
                 </td>
                 <td className="px-4 py-3 text-center">
                   <img
@@ -558,16 +558,16 @@ const ListBrandsPage: React.FC = () => {
                 </td>
                 <td className="px-4 py-3 text-center">
                   {item.deletedAt ? (
-                    <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 min-w-[120px] h-7 whitespace-nowrap">
-                      �� x�a
+                    <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-mono-200 text-mono-900 min-w-[120px] h-7 whitespace-nowrap">
+                      Ðã xóa
                     </span>
                   ) : item.isActive ? (
-                    <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 min-w-[120px] h-7 whitespace-nowrap">
-                      Ho?t d?ng
+                    <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800 min-w-[120px] h-7 whitespace-nowrap">
+                      Ho?t đếng
                     </span>
                   ) : (
-                    <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 min-w-[120px] h-7 whitespace-nowrap">
-                      Kh�ng ho?t d?ng
+                    <span className="inline-flex items-center justify-center px-4 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800 min-w-[120px] h-7 whitespace-nowrap">
+                      Không ho?t đếng
                     </span>
                   )}
                 </td>
@@ -575,7 +575,7 @@ const ListBrandsPage: React.FC = () => {
                   <div className="flex flex-wrap gap-1.5 justify-center min-w-[140px]">
                     <button
                       onClick={() => setViewDetailBrand(item)}
-                      className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                     >
                       <svg
                         className="w-3.5 h-3.5"
@@ -618,13 +618,13 @@ const ListBrandsPage: React.FC = () => {
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                               />
                             </svg>
-                            S?a
+                            Sửa
                           </button>
                         )}
                         {canDelete() && (
                           <button
                             onClick={() => handleDeleteBrand(item._id)}
-                            className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -639,15 +639,15 @@ const ListBrandsPage: React.FC = () => {
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                               />
                             </svg>
-                            X�a
+                            Xóa
                           </button>
                         )}
                         {canToggleStatus() && (
                           <button
                             className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors flex items-center gap-1.5 ${
                               item.isActive
-                                ? "bg-yellow-50 hover:bg-yellow-100 text-yellow-700 border-yellow-200"
-                                : "bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
+                                ? "bg-mono-100 hover:bg-mono-100 text-mono-700 border-mono-200"
+                                : "bg-mono-50 hover:bg-mono-100 text-mono-700 border-mono-200"
                             }`}
                             onClick={() =>
                               handleUpdateStatus(item._id, !item.isActive)
@@ -672,7 +672,7 @@ const ListBrandsPage: React.FC = () => {
                         {canUpdate() && (
                           <button
                             onClick={() => setShowLogoManager(item)}
-                            className="px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-medium rounded-lg border border-purple-200 transition-colors flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -695,7 +695,7 @@ const ListBrandsPage: React.FC = () => {
                       canUpdate() && (
                         <button
                           onClick={() => handleRestoreBrand(item._id)}
-                          className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                         >
                           <svg
                             className="w-3.5 h-3.5"
@@ -710,7 +710,7 @@ const ListBrandsPage: React.FC = () => {
                               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
-                          Kh�i ph?c
+                          Khôi ph?c
                         </button>
                       )
                     )}
@@ -725,7 +725,7 @@ const ListBrandsPage: React.FC = () => {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
         <div className="text-sm text-mono-600">
-          Trang {currentPage} / {totalPages} � T?ng: {totalCount} thuong hi?u
+          Trang {currentPage} / {totalPages} • Tổng: {totalCount} thuong hi?u
         </div>
         <div className="flex gap-2">
           <button
@@ -737,7 +737,7 @@ const ListBrandsPage: React.FC = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Tru?c
+            Trước
           </button>
 
           {/* Page Numbers */}
@@ -826,12 +826,12 @@ const ListBrandsPage: React.FC = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Ti?p
+            Tiếp
           </button>
         </div>
       </div>
 
-      {/* Modal qu?n l� logo */}
+      {/* Modal quận lý logo */}
       {showLogoManager && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-4 w-full max-w-md relative">
@@ -839,7 +839,7 @@ const ListBrandsPage: React.FC = () => {
               className="absolute top-2 right-2 text-xl font-bold"
               onClick={() => setShowLogoManager(null)}
             >
-              �
+              ×
             </button>
             <BrandLogoManager
               brandId={showLogoManager._id}
@@ -862,3 +862,10 @@ const ListBrandsPage: React.FC = () => {
 };
 
 export default ListBrandsPage;
+
+
+
+
+
+
+

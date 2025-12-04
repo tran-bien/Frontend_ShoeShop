@@ -33,19 +33,19 @@ const ResetPasswordPage: React.FC = () => {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (password.length < minLength) {
-      return "Mật khẩu phải có ít nhất 8 ký tự";
+      return "Mật khẩu ph?i có ít nh?t 8 ký t?";
     }
     if (!hasUpperCase) {
-      return "Mật khẩu phải có ít nhất 1 chữ hoa";
+      return "Mật khẩu ph?i có ít nh?t 1 chờ hoa";
     }
     if (!hasLowerCase) {
-      return "Mật khẩu phải có ít nhất 1 chữ thường";
+      return "Mật khẩu ph?i có ít nh?t 1 chờ thuẩng";
     }
     if (!hasNumbers) {
-      return "Mật khẩu phải có ít nhất 1 số";
+      return "Mật khẩu ph?i có ít nh?t 1 s?";
     }
     if (!hasSpecialChar) {
-      return "Mật khẩu phải có ít nhất 1 ký tự đặc biệt";
+      return "Mật khẩu ph?i có ít nh?t 1 ký từ d?c bi?t";
     }
     return "";
   };
@@ -70,7 +70,7 @@ const ResetPasswordPage: React.FC = () => {
       if (formData.password !== value) {
         setErrors((prev) => ({
           ...prev,
-          confirmPassword: "Mật khẩu xác nhận không khớp",
+          confirmPassword: "Mật khẩu xác nhận không khợp",
         }));
       } else {
         setErrors((prev) => ({
@@ -85,7 +85,7 @@ const ResetPasswordPage: React.FC = () => {
       if (value !== formData.confirmPassword) {
         setErrors((prev) => ({
           ...prev,
-          confirmPassword: "Mật khẩu xác nhận không khớp",
+          confirmPassword: "Mật khẩu xác nhận không khợp",
         }));
       } else {
         setErrors((prev) => ({
@@ -99,7 +99,7 @@ const ResetPasswordPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Kiểm tra cơ bản ở client
+    // Ki?m tra co bẩn ? client
     const newErrors: Record<string, string> = {};
 
     // Password validation
@@ -117,7 +117,7 @@ const ResetPasswordPage: React.FC = () => {
       newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
     } else if (formData.password !== formData.confirmPassword) {
       // Ensure exact string comparison
-      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
+      newErrors.confirmPassword = "Mật khẩu xác nhận không khợp";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -138,9 +138,9 @@ const ResetPasswordPage: React.FC = () => {
 
       // Pass both password and confirmPassword to the resetPassword function
       await resetPassword(token, trimmedPassword, trimmedConfirmPassword);
-      toast.success("Đặt lại mật khẩu thành công!");
+      toast.success("Ð?t lỗi mật khẩu thành công!");
 
-      // Chuyển hướng sau khi đặt lại mật khẩu thành công
+      // Chuyện huẩng sau khi đặt lỗi mật khẩu thành công
       setTimeout(() => {
         navigate("/login");
       }, 2000);
@@ -148,31 +148,31 @@ const ResetPasswordPage: React.FC = () => {
       console.error("Reset password error:", error);
 
       // Xử lý thông báo lỗi chi tiết từ backend
-      let errorMessage = "Đặt lại mật khẩu thất bại";
+      let errorMessage = "Ð?t lỗi mật khẩu thểt b?i";
 
       if (
         error.response?.data?.errors &&
         error.response.data.errors.length > 0
       ) {
-        // Nếu là lỗi validation từ validator của backend
+        // N?u là lỗi validation từ validator của backend
         errorMessage = error.response.data.errors[0].msg;
 
-        // Chỉ xử lý lỗi mật khẩu không khớp để hiển thị trên form
-        if (errorMessage.includes("không khớp")) {
+        // Chờ xử lý lỗi mật khẩu không khợp d? hiện thọ trên form
+        if (errorMessage.includes("không khợp")) {
           setErrors({
             confirmPassword: errorMessage,
           });
-          // Không show toast cho lỗi này vì đã hiển thị trên form
+          // Không show toast cho lỗi này vì dã hiện thọ trên form
           return;
         }
       } else if (error.response?.data?.message) {
-        // Nếu là lỗi khác từ API
+        // N?u là lỗi khác từ API
         errorMessage = error.response.data.message;
       } else if (error.message) {
         errorMessage = error.message;
       }
 
-      // Chỉ hiển thị toast, không hiển thị trên form nữa
+      // Chờ hiện thọ toast, không hiện thọ trên form n?a
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -186,10 +186,10 @@ const ResetPasswordPage: React.FC = () => {
           <FiLock className="text-4xl text-mono-600" />
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-mono-900 tracking-tight">
-          Đặt lại mật khẩu
+          Ð?t lỗi mật khẩu
         </h2>
         <p className="mt-2 text-center text-sm text-mono-600 leading-relaxed">
-          Vui lòng nhập mật khẩu mới cho tài khoản của bạn
+          Vui lòng nhập mật khẩu mới cho tài khoẩn của bẩn
         </p>
       </div>
 
@@ -212,7 +212,7 @@ const ResetPasswordPage: React.FC = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   className={`appearance-none block w-full px-3 py-2 border ${
-                    errors.password ? "border-red-300" : "border-mono-300"
+                    errors.password ? "border-mono-400" : "border-mono-300"
                   } rounded-md placeholder-gray-400 focus:outline-none focus:ring-mono-500 focus:border-mono-500 sm:text-sm`}
                   placeholder="Nhập mật khẩu mới"
                 />
@@ -250,10 +250,10 @@ const ResetPasswordPage: React.FC = () => {
                   onChange={handleInputChange}
                   className={`appearance-none block w-full px-3 py-2 border ${
                     errors.confirmPassword
-                      ? "border-red-300"
+                      ? "border-mono-400"
                       : "border-mono-300"
                   } rounded-md placeholder-gray-400 focus:outline-none focus:ring-mono-500 focus:border-mono-500 sm:text-sm`}
-                  placeholder="Nhập lại mật khẩu mới"
+                  placeholder="Nhập lỗi mật khẩu mới"
                 />
                 <button
                   type="button"
@@ -276,13 +276,13 @@ const ResetPasswordPage: React.FC = () => {
 
             {/* Password Requirements */}
             <div className="text-xs text-mono-600 bg-mono-50 p-3 rounded-md">
-              <p className="font-medium mb-1">Mật khẩu phải chứa:</p>
+              <p className="font-medium mb-1">Mật khẩu ph?i chỉa:</p>
               <ul className="space-y-1 list-disc list-inside">
-                <li>Ít nhất 8 ký tự</li>
-                <li>Ít nhất 1 chữ hoa</li>
-                <li>Ít nhất 1 chữ thường</li>
-                <li>Ít nhất 1 số</li>
-                <li>Ít nhất 1 ký tự đặc biệt</li>
+                <li>Ít nh?t 8 ký t?</li>
+                <li>Ít nh?t 1 chờ hoa</li>
+                <li>Ít nh?t 1 chờ thuẩng</li>
+                <li>Ít nh?t 1 s?</li>
+                <li>Ít nh?t 1 ký từ d?c bi?t</li>
               </ul>
             </div>
 
@@ -293,7 +293,7 @@ const ResetPasswordPage: React.FC = () => {
                 disabled={loading}
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-mono-600 hover:bg-mono-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mono-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Đang đặt lại..." : "Đặt lại mật khẩu"}
+                {loading ? "Ðang đặt lỗi..." : "Ð?t lỗi mật khẩu"}
               </button>
             </div>
           </form>
@@ -305,7 +305,7 @@ const ResetPasswordPage: React.FC = () => {
               className="flex items-center justify-center space-x-2 text-sm text-mono-600 hover:text-mono-500"
             >
               <FiArrowLeft />
-              <span>Quay lại đăng nhập</span>
+              <span>Quay lỗi đang nhập</span>
             </Link>
           </div>
         </div>
@@ -315,3 +315,6 @@ const ResetPasswordPage: React.FC = () => {
 };
 
 export default ResetPasswordPage;
+
+
+

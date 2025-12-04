@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { adminSizeService } from "../../../services/SizeService";
 import AddSize from "./AddSixe";
@@ -13,14 +13,14 @@ const ViewDetailModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-mono-black to-purple-600 text-white p-6 rounded-t-xl">
+        <div className="sticky top-0 bg-mono-900 text-white p-6 rounded-t-xl">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Chi ti?t K�ch thu?c</h2>
+            <h2 className="text-2xl font-bold">Chi tiết Kích thước</h2>
             <button
               onClick={onClose}
               className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
             >
-              �
+              ×
             </button>
           </div>
         </div>
@@ -31,7 +31,7 @@ const ViewDetailModal: React.FC<{
               <p className="text-mono-800 font-mono text-sm">{size._id}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Gi� tr? size</p>
+              <p className="text-sm text-mono-500 font-medium">Giá trở size</p>
               <p className="text-mono-800 font-bold text-2xl">{size.value}</p>
             </div>
             <div>
@@ -39,15 +39,15 @@ const ViewDetailModal: React.FC<{
               <span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
                   size.type === "EU"
-                    ? "bg-mono-100 text-blue-800"
+                    ? "bg-mono-100 text-mono-800"
                     : size.type === "US"
-                    ? "bg-purple-100 text-purple-800"
+                    ? "bg-mono-200 text-mono-800"
                     : size.type === "UK"
-                    ? "bg-green-100 text-green-800"
+                    ? "bg-mono-100 text-mono-800"
                     : size.type === "VN"
-                    ? "bg-red-100 text-red-800"
+                    ? "bg-mono-200 text-mono-900"
                     : size.type === "CM"
-                    ? "bg-yellow-100 text-yellow-800"
+                    ? "bg-mono-100 text-mono-800"
                     : "bg-mono-100 text-mono-800"
                 }`}
               >
@@ -56,14 +56,14 @@ const ViewDetailModal: React.FC<{
             </div>
           </div>
           <div>
-            <p className="text-sm text-mono-500 font-medium">M� t?</p>
+            <p className="text-sm text-mono-500 font-medium">Mô t?</p>
             <p className="text-mono-800 mt-1">
-              {size.description || "Kh�ng c� m� t?"}
+              {size.description || "Không có mô t?"}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-mono-500 font-medium">Ng�y t?o</p>
+              <p className="text-sm text-mono-500 font-medium">Ngày t?o</p>
               <p className="text-mono-800 text-sm">
                 {size.createdAt
                   ? new Date(size.createdAt).toLocaleString("vi-VN")
@@ -72,7 +72,7 @@ const ViewDetailModal: React.FC<{
             </div>
             <div>
               <p className="text-sm text-mono-500 font-medium">
-                C?p nh?t l?n cu?i
+                Cập nhật lẩn cuối
               </p>
               <p className="text-mono-800 text-sm">
                 {size.updatedAt
@@ -83,7 +83,7 @@ const ViewDetailModal: React.FC<{
           </div>
           {size.deletedAt && (
             <div className="pt-4 border-t">
-              <p className="text-sm text-mono-500 font-medium">Ng�y x�a</p>
+              <p className="text-sm text-mono-500 font-medium">Ngày xóa</p>
               <p className="text-mono-800 text-sm">
                 {new Date(size.deletedAt).toLocaleString("vi-VN")}
               </p>
@@ -115,7 +115,7 @@ const EditSizeModal: React.FC<{
       onSuccess();
       onClose();
     } catch {
-      setError("C?p nh?t size th?t b?i!");
+      setError("Cập nhật size thểt b?i!");
     } finally {
       setLoading(false);
     }
@@ -131,18 +131,18 @@ const EditSizeModal: React.FC<{
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">C?p nh?t Size</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Cập nhật Size</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Gi� tr? size
+              Giá trở size
             </label>
             <input
               type="number"
               step="0.1"
               value={value}
               onChange={(e) => setValue(Number(e.target.value))}
-              placeholder="Nh?p gi� tr? size (VD: 41.5)"
+              placeholder="Nhập giá trở size (VD: 41.5)"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -167,13 +167,13 @@ const EditSizeModal: React.FC<{
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              M� t?
+              Mô t?
             </label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Nh?p m� t?"
+              placeholder="Nhập mô t?"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -185,14 +185,14 @@ const EditSizeModal: React.FC<{
               disabled={loading}
               className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-md"
             >
-              {loading ? "�ang c?p nh?t..." : "C?p nh?t"}
+              {loading ? "Ðang cập nhật..." : "Cập nhật"}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
-              H?y
+              Hủy
             </button>
           </div>
         </form>
@@ -336,7 +336,7 @@ const SizePage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // X? l� l?i n?u c?n
+      // Xử lý lỗi n?u cẩn
     }
   };
 
@@ -347,7 +347,7 @@ const SizePage: React.FC = () => {
       fetchSizes(currentPage);
       fetchStats();
     } catch {
-      // X? l� l?i n?u c?n
+      // Xử lý lỗi n?u cẩn
     }
   };
 
@@ -357,7 +357,7 @@ const SizePage: React.FC = () => {
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
-          Danh S�ch K�ch Thu?c
+          Danh Sách Kích Thước
         </h2>
         {!isSearchVisible ? (
           <button
@@ -365,7 +365,7 @@ const SizePage: React.FC = () => {
             className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
             <IoIosSearch className="text-xl text-mono-500" />
-            <span className="font-medium">T�m ki?m</span>
+            <span className="font-medium">Tìm kiếm</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
@@ -377,7 +377,7 @@ const SizePage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="T�m theo m� t?..."
+              placeholder="Tìm theo mô t?..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -389,29 +389,29 @@ const SizePage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-black mb-1">
-              T?ng s? k�ch thu?c
+              Tổng số kích thước
             </h3>
-            <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
+            <p className="text-3xl font-bold text-mono-900">{totalCount}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
-              �ang ho?t d?ng
+              Ðang ho?t đếng
             </h3>
-            <p className="text-3xl font-bold text-green-900">{activeCount}</p>
+            <p className="text-3xl font-bold text-mono-800">{activeCount}</p>
           </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200">
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-mono-300">
             <h3 className="text-sm font-medium text-mono-900 mb-1">
-              T?ng s? k�ch thu?c d� x�a
+              Tổng số kích thước dã xóa
             </h3>
-            <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
+            <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
           </div>
         </div>
       )}
 
-      {/* Tab chuy?n d?i v� Sort */}
+      {/* Tab chuyện đổi và Sort */}
       <div className="flex items-center justify-between border-b mb-4">
         <div className="flex">
           <button
@@ -425,7 +425,7 @@ const SizePage: React.FC = () => {
               setCurrentPage(1);
             }}
           >
-            Size dang ho?t d?ng
+            Size đang ho?t đếng
           </button>
           <button
             className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
@@ -438,7 +438,7 @@ const SizePage: React.FC = () => {
               setCurrentPage(1);
             }}
           >
-            Size d� x�a
+            Size dã xóa
           </button>
         </div>
         <div className="flex items-center gap-3 mb-2">
@@ -451,7 +451,7 @@ const SizePage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="all">T?t c? lo?i</option>
+            <option value="all">Tất cả lo?i</option>
             <option value="EU">EU</option>
             <option value="US">US</option>
             <option value="UK">UK</option>
@@ -468,29 +468,29 @@ const SizePage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="created_at_desc">M?i nh?t</option>
+            <option value="created_at_desc">Mới nh?t</option>
             <option value="created_at_asc">Cu nh?t</option>
-            <option value="name_asc">Size tang d?n</option>
-            <option value="name_desc">Size gi?m d?n</option>
+            <option value="name_asc">Size tăng đến</option>
+            <option value="name_desc">Size giảm đến</option>
           </select>
           {!showDeleted && canCreate() && (
             <button
-              className="px-4 py-2 bg-gradient-to-r from-mono-black to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
+              className="px-4 py-2 bg-mono-800 text-white rounded-lg font-medium hover:bg-mono-900 transition-all shadow-md"
               onClick={() => setShowAddSize(true)}
             >
-              + Th�m K�ch Thu?c
+              + Thêm Kích Thước
             </button>
           )}
         </div>
       </div>
-      {/* Hi?n th? modal th�m size */}
+      {/* Hiện thọ modal thêm size */}
       {showAddSize && (
         <AddSize
           handleClose={() => setShowAddSize(false)}
           onSuccess={fetchSizes}
         />
       )}
-      {/* Hi?n th? modal s?a size */}
+      {/* Hiện thọ modal sửa size */}
       {editingSize && (
         <EditSizeModal
           size={editingSize}
@@ -504,11 +504,11 @@ const SizePage: React.FC = () => {
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
-              <th className="py-3 px-4 text-left border-b">Gi� Tr?</th>
+              <th className="py-3 px-4 text-left border-b">Giá Trở</th>
               <th className="py-3 px-4 text-left border-b">Lo?i</th>
-              <th className="py-3 px-4 text-left border-b">M� T?</th>
-              <th className="py-3 px-4 text-center border-b">Tr?ng Th�i</th>
-              <th className="py-3 px-4 text-center border-b">Thao T�c</th>
+              <th className="py-3 px-4 text-left border-b">Mô T?</th>
+              <th className="py-3 px-4 text-center border-b">Trống Thái</th>
+              <th className="py-3 px-4 text-center border-b">Thao Tác</th>
             </tr>
           </thead>
           <tbody>
@@ -524,15 +524,15 @@ const SizePage: React.FC = () => {
                   <span
                     className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${
                       item.type === "EU"
-                        ? "bg-mono-100 text-blue-800"
+                        ? "bg-mono-100 text-mono-800"
                         : item.type === "US"
-                        ? "bg-purple-100 text-purple-800"
+                        ? "bg-mono-200 text-mono-800"
                         : item.type === "UK"
-                        ? "bg-green-100 text-green-800"
+                        ? "bg-mono-100 text-mono-800"
                         : item.type === "VN"
-                        ? "bg-red-100 text-red-800"
+                        ? "bg-mono-200 text-mono-900"
                         : item.type === "CM"
-                        ? "bg-yellow-100 text-yellow-800"
+                        ? "bg-mono-100 text-mono-800"
                         : "bg-mono-100 text-mono-800"
                     }`}
                   >
@@ -544,12 +544,12 @@ const SizePage: React.FC = () => {
                 </td>
                 <td className="py-2 px-4 border-b text-center text-sm">
                   {item.deletedAt ? (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                      �� x�a
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-200 text-mono-900">
+                      Ðã xóa
                     </span>
                   ) : (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                      Ho?t d?ng
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
+                      Ho?t đếng
                     </span>
                   )}
                 </td>
@@ -557,7 +557,7 @@ const SizePage: React.FC = () => {
                   <div className="flex flex-wrap gap-1.5 justify-center min-w-[140px]">
                     <button
                       onClick={() => setViewDetailSize(item)}
-                      className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-blue-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                     >
                       <svg
                         className="w-3.5 h-3.5"
@@ -600,13 +600,13 @@ const SizePage: React.FC = () => {
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                               />
                             </svg>
-                            S?a
+                            Sửa
                           </button>
                         )}
                         {canDelete() && (
                           <button
                             onClick={() => handleDeleteSize(item._id)}
-                            className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-lg border border-red-200 transition-colors flex items-center gap-1.5"
+                            className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                           >
                             <svg
                               className="w-3.5 h-3.5"
@@ -621,7 +621,7 @@ const SizePage: React.FC = () => {
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                               />
                             </svg>
-                            X�a
+                            Xóa
                           </button>
                         )}
                       </>
@@ -629,7 +629,7 @@ const SizePage: React.FC = () => {
                       canUpdate() && (
                         <button
                           onClick={() => handleRestoreSize(item._id)}
-                          className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-700 text-xs font-medium rounded-lg border border-green-200 transition-colors flex items-center gap-1.5"
+                          className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                         >
                           <svg
                             className="w-3.5 h-3.5"
@@ -644,7 +644,7 @@ const SizePage: React.FC = () => {
                               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
-                          Kh�i ph?c
+                          Khôi ph?c
                         </button>
                       )
                     )}
@@ -659,7 +659,7 @@ const SizePage: React.FC = () => {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
         <div className="text-sm text-mono-600">
-          Trang {currentPage} / {totalPages} � T?ng: {totalCount} k�ch thu?c
+          Trang {currentPage} / {totalPages} • Tổng: {totalCount} kích thước
         </div>
         <div className="flex gap-2">
           <button
@@ -671,7 +671,7 @@ const SizePage: React.FC = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Tru?c
+            Trước
           </button>
 
           {/* Page Numbers */}
@@ -760,7 +760,7 @@ const SizePage: React.FC = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Ti?p
+            Tiếp
           </button>
         </div>
       </div>
@@ -777,3 +777,9 @@ const SizePage: React.FC = () => {
 };
 
 export default SizePage;
+
+
+
+
+
+

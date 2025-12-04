@@ -53,7 +53,7 @@ const ReturnPage = () => {
 
       const response = await adminReturnService.getAllReturnRequests(params);
 
-      // Backend trả về { success: true, data: { items: [], pagination: {} } }
+      // Backend trở về { success: true, data: { items: [], pagination: {} } }
       const data = response.data.data;
       setReturns(data?.items || []);
       setTotalPages(data?.pagination?.totalPages || 1);
@@ -110,33 +110,33 @@ const ReturnPage = () => {
       { color: string; label: string; icon: typeof FaClock }
     > = {
       pending: {
-        color: "bg-yellow-100 text-yellow-800",
-        label: "Chờ duyệt",
+        color: "bg-mono-100 text-mono-800",
+        label: "Chờ duy?t",
         icon: FaClock,
       },
       approved: {
-        color: "bg-mono-100 text-blue-800",
-        label: "Đã duyệt",
+        color: "bg-mono-100 text-mono-800",
+        label: "Ðã duy?t",
         icon: FaCheckCircle,
       },
       rejected: {
-        color: "bg-red-100 text-red-800",
-        label: "Từ chối",
+        color: "bg-mono-200 text-mono-900",
+        label: "Từ chỉi",
         icon: FaTimesCircle,
       },
       processing: {
-        color: "bg-purple-100 text-purple-800",
-        label: "Đang xử lý",
+        color: "bg-mono-200 text-mono-800",
+        label: "Ðang xử lý",
         icon: FaBox,
       },
       completed: {
-        color: "bg-green-100 text-green-800",
+        color: "bg-mono-100 text-mono-800",
         label: "Hoàn thành",
         icon: FaCheckCircle,
       },
       cancelled: {
         color: "bg-mono-100 text-mono-800",
-        label: "Đã hủy",
+        label: "Ðã hủy",
         icon: FaTimesCircle,
       },
     };
@@ -158,7 +158,7 @@ const ReturnPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-mono-800">Quản lý Đổi trả</h1>
+        <h1 className="text-3xl font-bold text-mono-800">Quận lý Ð?i trở</h1>
       </div>
 
       {/* Stats Cards */}
@@ -167,7 +167,7 @@ const ReturnPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Tổng yêu cầu</p>
+                <p className="text-mono-500 text-sm">Tổng yêu c?u</p>
                 <p className="text-2xl font-bold text-mono-800">
                   {stats.totalRequests}
                 </p>
@@ -179,19 +179,19 @@ const ReturnPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Chờ duyệt</p>
-                <p className="text-2xl font-bold text-yellow-600">
+                <p className="text-mono-500 text-sm">Chờ duy?t</p>
+                <p className="text-2xl font-bold text-mono-700">
                   {stats.pendingRequests}
                 </p>
               </div>
-              <FaClock className="text-yellow-500" size={40} />
+              <FaClock className="text-mono-600" size={40} />
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Đã hoàn thành</p>
+                <p className="text-mono-500 text-sm">Ðã hoàn thành</p>
                 <p className="text-2xl font-bold text-mono-800">
                   {stats.completedRequests}
                 </p>
@@ -203,7 +203,7 @@ const ReturnPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Từ chối</p>
+                <p className="text-mono-500 text-sm">Từ chỉi</p>
                 <p className="text-2xl font-bold text-mono-900">
                   {stats.rejectedRequests}
                 </p>
@@ -223,10 +223,10 @@ const ReturnPage = () => {
             className="px-4 py-2 border rounded"
           >
             <option value="">Tất cả trạng thái</option>
-            <option value="pending">Chờ duyệt</option>
-            <option value="approved">Đã duyệt</option>
-            <option value="rejected">Từ chối</option>
-            <option value="processing">Đang xử lý</option>
+            <option value="pending">Chờ duy?t</option>
+            <option value="approved">Ðã duy?t</option>
+            <option value="rejected">Từ chỉi</option>
+            <option value="processing">Ðang xử lý</option>
             <option value="completed">Hoàn thành</option>
           </select>
 
@@ -235,9 +235,9 @@ const ReturnPage = () => {
             onChange={(e) => setFilter({ ...filter, type: e.target.value })}
             className="px-4 py-2 border rounded"
           >
-            <option value="">Tất cả loại</option>
-            <option value="RETURN">Hoàn trả</option>
-            <option value="EXCHANGE">Đổi hàng</option>
+            <option value="">Tất cả lo?i</option>
+            <option value="RETURN">Hoàn trở</option>
+            <option value="EXCHANGE">Ð?i hàng</option>
           </select>
         </div>
       </div>
@@ -248,13 +248,13 @@ const ReturnPage = () => {
           <thead className="bg-mono-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Mã yêu cầu
+                Mã yêu c?u
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Khách hàng
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Loại
+                Lo?i
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
                 Số lượng SP
@@ -263,10 +263,10 @@ const ReturnPage = () => {
                 Trạng thái
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Ngày tạo
+                Ngày t?o
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                Hành động
+                Hành đếng
               </th>
             </tr>
           </thead>
@@ -274,7 +274,7 @@ const ReturnPage = () => {
             {loading ? (
               <tr>
                 <td colSpan={7} className="px-6 py-4 text-center text-mono-500">
-                  Đang tải...
+                  Ðang tại...
                 </td>
               </tr>
             ) : returns.length === 0 ? (
@@ -303,13 +303,13 @@ const ReturnPage = () => {
                     <span
                       className={`px-2 py-1 text-xs font-semibold rounded ${
                         returnRequest.type === "RETURN"
-                          ? "bg-orange-100 text-orange-800"
-                          : "bg-mono-100 text-blue-800"
+                          ? "bg-mono-200 text-mono-800"
+                          : "bg-mono-100 text-mono-800"
                       }`}
                     >
                       {returnRequest.type === "RETURN"
-                        ? "Hoàn trả"
-                        : "Đổi hàng"}
+                        ? "Hoàn trở"
+                        : "Ð?i hàng"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
@@ -330,7 +330,7 @@ const ReturnPage = () => {
                   <td className="px-6 py-4 text-sm space-x-2">
                     <button
                       onClick={() => handleViewDetail(returnRequest)}
-                      className="text-mono-black hover:text-blue-800"
+                      className="text-mono-black hover:text-mono-800"
                     >
                       Chi tiết
                     </button>
@@ -338,22 +338,22 @@ const ReturnPage = () => {
                       <>
                         <button
                           onClick={() => handleApprove(returnRequest)}
-                          className="text-mono-800 hover:text-green-800"
+                          className="text-mono-800 hover:text-mono-800"
                         >
-                          Duyệt
+                          Duy?t
                         </button>
                         <button
                           onClick={() => handleReject(returnRequest)}
-                          className="text-mono-900 hover:text-red-800"
+                          className="text-mono-900 hover:text-mono-900"
                         >
-                          Từ chối
+                          Từ chỉi
                         </button>
                       </>
                     )}
                     {returnRequest.status === "approved" && (
                       <button
                         onClick={() => handleProcess(returnRequest)}
-                        className="text-purple-600 hover:text-purple-800"
+                        className="text-mono-700 hover:text-mono-800"
                       >
                         Xử lý
                       </button>
@@ -422,3 +422,8 @@ const ReturnPage = () => {
 };
 
 export default ReturnPage;
+
+
+
+
+

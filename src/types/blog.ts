@@ -1,6 +1,6 @@
-/**
+﻿/**
  * Blog Types
- * Định nghĩa các interface liên quan đến Blog/CMS
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Blog/CMS
  */
 
 // =======================

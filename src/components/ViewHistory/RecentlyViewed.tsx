@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { userViewHistoryService } from "../../services/ViewHistoryService";
 import { convertToProductCardProduct } from "../../services/ProductService";
@@ -16,7 +16,7 @@ interface RecentlyViewedProps {
 
 const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
   limit = 8,
-  title = "Sản phẩm đã xem gần đây",
+  title = "Sáº£n pháº©m Ä‘Ã£ xem gáº§n Ä‘Ã¢y",
   excludeProductId,
 }) => {
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
             <h2 className="text-2xl font-bold text-mono-black">{title}</h2>
           </div>
           <span className="text-sm text-mono-600">
-            {viewHistory.length} sản phẩm
+            {viewHistory.length} sáº£n pháº©m
           </span>
         </div>
 
@@ -115,3 +115,4 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
 };
 
 export default RecentlyViewed;
+

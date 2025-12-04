@@ -10,7 +10,7 @@ const UnauthorizedPage: React.FC = () => {
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 text-center">
         <div className="mb-6">
           {/* Icon 403 */}
-          <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+          <div className="mx-auto w-16 h-16 bg-mono-100 rounded-full flex items-center justify-center mb-4">
             <svg
               className="w-8 h-8 text-mono-900"
               fill="none"
@@ -28,43 +28,43 @@ const UnauthorizedPage: React.FC = () => {
 
           <h1 className="text-4xl font-bold text-mono-800 mb-2">403</h1>
           <h2 className="text-xl font-semibold text-mono-800 mb-4">
-            Không có quyền truy cập
+            Không có quyẩn truy c?p
           </h2>
           <p className="text-mono-600 mb-2">
-            Bạn không có quyền truy cập vào trang này.
+            Bẩn không có quyẩn truy c?p vào trang này.
           </p>
           {user && (
             <p className="text-sm text-mono-500">
-              Đăng nhập với tài khoản:{" "}
+              Ðang nhập với tài khoẩn:{" "}
               <span className="font-medium">{user.name}</span> ({user.role})
             </p>
           )}
         </div>
 
         <div className="space-y-3">
-          {/* Nút quay lại dành cho staff/admin */}
+          {/* Nút quay lỗi dành cho staff/admin */}
           {hasStaffAccess() && (
             <Link
               to="/admin/dashboard"
               className="block w-full bg-mono-500 text-white py-2 px-4 rounded hover:bg-mono-black transition-colors duration-200"
             >
-              Quay lại Dashboard
+              Quay lỗi Dashboard
             </Link>
           )}
 
-          {/* Nút về trang chủ */}
+          {/* Nút v? trang chờ */}
           <Link
             to="/"
             className="block w-full bg-mono-500 text-white py-2 px-4 rounded hover:bg-mono-600 transition-colors duration-200"
           >
-            Về trang chủ
+            V? trang chỉ
           </Link>
         </div>
 
-        {/* Thông tin hỗ trợ */}
+        {/* Thông tin họ trở */}
         <div className="mt-6 pt-4 border-t border-mono-200">
           <p className="text-xs text-mono-500">
-            Nếu bạn cho rằng đây là lỗi, vui lòng liên hệ quản trị viên.
+            N?u bẩn cho rẩng dây là lỗi, vui lòng liên họ quận trở viên.
           </p>
         </div>
       </div>
@@ -73,3 +73,4 @@ const UnauthorizedPage: React.FC = () => {
 };
 
 export default UnauthorizedPage;
+

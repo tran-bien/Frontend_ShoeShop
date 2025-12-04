@@ -187,7 +187,7 @@ const InventoryDetailModal = ({
 
           {/* Pricing Info */}
           {item.sellingPrice && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-mono-50 border border-mono-200 rounded-lg p-4">
               <h3 className="text-lg font-bold text-mono-900 mb-3">
                 Thông tin giá bán
               </h3>
@@ -200,13 +200,13 @@ const InventoryDetailModal = ({
                 </div>
                 <div>
                   <p className="text-sm text-mono-600 mb-1">Giảm giá</p>
-                  <p className="text-lg font-bold text-orange-600">
+                  <p className="text-lg font-bold text-mono-700">
                     {item.percentDiscount || 0}%
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-mono-600 mb-1">Giá sau giảm</p>
-                  <p className="text-lg font-bold text-green-600">
+                  <p className="text-lg font-bold text-mono-600">
                     {item.finalPrice?.toLocaleString("vi-VN")}₫
                   </p>
                 </div>
@@ -215,7 +215,7 @@ const InventoryDetailModal = ({
           )}
 
           {/* Low Stock Threshold */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="bg-mono-100 border border-mono-200 rounded-lg p-4">
             <h3 className="text-lg font-bold text-mono-900 mb-3">
               Ngưỡng cảnh báo tồn kho thấp
             </h3>
@@ -252,15 +252,15 @@ const InventoryDetailModal = ({
           {/* Status Badge */}
           <div className="flex justify-center">
             {item.isOutOfStock ? (
-              <span className="px-6 py-3 text-lg font-bold text-red-800 bg-red-100 rounded-lg border-2 border-red-300">
+              <span className="px-6 py-3 text-lg font-bold text-mono-900 bg-mono-200 rounded-lg border-2 border-mono-400">
                 ⚠️ Hết hàng
               </span>
             ) : item.isLowStock ? (
-              <span className="px-6 py-3 text-lg font-bold text-orange-800 bg-orange-100 rounded-lg border-2 border-orange-300">
+              <span className="px-6 py-3 text-lg font-bold text-mono-800 bg-mono-200 rounded-lg border-2 border-mono-400">
                 ⚠️ Tồn kho thấp
               </span>
             ) : (
-              <span className="px-6 py-3 text-lg font-bold text-green-800 bg-green-100 rounded-lg border-2 border-green-300">
+              <span className="px-6 py-3 text-lg font-bold text-mono-800 bg-mono-100 rounded-lg border-2 border-mono-300">
                 ✓ Tình trạng bình thường
               </span>
             )}
@@ -304,3 +304,10 @@ const InventoryDetailModal = ({
 };
 
 export default InventoryDetailModal;
+
+
+
+
+
+
+

@@ -78,3 +78,4 @@ export const LoyaltyBadge = () => {
 };
 
 export default LoyaltyBadge;
+

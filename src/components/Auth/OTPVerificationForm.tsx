@@ -13,7 +13,7 @@ const OTPVerificationForm: React.FC = () => {
   const navigate = useNavigate();
   const { verifyOTP } = useAuth();
 
-  // Lấy thông tin email từ state của route nếu có
+  // L?y thông tin email từ state của route n?u có
   useEffect(() => {
     if (location.state?.email) {
       setEmail(location.state.email);
@@ -24,25 +24,25 @@ const OTPVerificationForm: React.FC = () => {
     // Reset error
     setError("");
 
-    // Kiểm tra email
+    // Ki?m tra email
     if (!email) {
-      setError("Vui lòng nhập email của bạn");
+      setError("Vui lòng nhập email của bẩn");
       return false;
     }
 
-    // Kiểm tra OTP
+    // Ki?m tra OTP
     if (!otp) {
       setError("Vui lòng nhập mã OTP");
       return false;
     }
 
     if (otp.length !== 6) {
-      setError("Mã OTP phải có 6 ký tự");
+      setError("Mã OTP ph?i có 6 ký t?");
       return false;
     }
 
     if (!/^\d+$/.test(otp)) {
-      setError("Mã OTP phải là số");
+      setError("Mã OTP ph?i là s?");
       return false;
     }
 
@@ -57,23 +57,23 @@ const OTPVerificationForm: React.FC = () => {
       await verifyOTP(email, otp);
       toast.success("Xác thực thành công!");
 
-      // Chuyển hướng đến trang đăng nhập sau khi xác thực thành công
+      // Chuyện huẩng đến trang đang nhập sau khi xác thực thành công
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error: any) {
       // Xử lý thông báo lỗi chi tiết từ BE
-      let errorMessage = "Xác thực thất bại!";
+      let errorMessage = "Xác thực thểt b?i!";
 
       if (
         error.response?.data?.errors &&
         error.response.data.errors.length > 0
       ) {
-        // Hiển thị lỗi cụ thể từ validator của BE
+        // Hiện thọ lỗi c? thọ từ validator của BE
         errorMessage = error.response.data.errors[0].msg;
         setError(errorMessage);
       } else if (error.response?.data?.message) {
-        // Hiển thị thông báo lỗi từ BE
+        // Hiện thọ thông báo lỗi từ BE
         errorMessage = error.response.data.message;
         setError(errorMessage);
       } else if (error.message) {
@@ -87,10 +87,10 @@ const OTPVerificationForm: React.FC = () => {
     }
   };
 
-  // Xử lý nhập OTP - chỉ cho phép nhập số
+  // Xử lý nhập OTP - chờ cho phép nhập s?
   const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Chỉ cho phép nhập số và giới hạn 6 ký tự
+    // Chờ cho phép nhập số và giới hơn 6 ký t?
     if (/^\d*$/.test(value) && value.length <= 6) {
       setOtp(value);
       if (error) setError("");
@@ -100,7 +100,7 @@ const OTPVerificationForm: React.FC = () => {
   return (
     <div className="w-[100%] flex items-center justify-center h-screen bg-white">
       <div className="w-[35%] p-8 bg-white rounded-lg flex flex-col items-center justify-center h-auto">
-        <h2 className="text-2xl mb-6 text-center">XÁC NHẬN ĐĂNG KÝ</h2>
+        <h2 className="text-2xl mb-6 text-center">XÁC NH?N ÐANG KÝ</h2>
 
         {/* Email */}
         <div className="w-full mb-4">
@@ -133,12 +133,12 @@ const OTPVerificationForm: React.FC = () => {
             } rounded-md p-2 w-full`}
             value={otp}
             onChange={handleOtpChange}
-            placeholder="Nhập mã OTP 6 chữ số"
+            placeholder="Nhập mã OTP 6 chờ s?"
             disabled={loading}
           />
         </div>
 
-        {/* Hiển thị thông báo lỗi */}
+        {/* Hiện thọ thông báo lỗi */}
         {error && (
           <div className="w-full mb-4">
             <p className="text-mono-800 text-sm">{error}</p>
@@ -152,14 +152,14 @@ const OTPVerificationForm: React.FC = () => {
             onClick={handleVerify}
             disabled={loading}
           >
-            {loading ? "Đang xác thực..." : "Xác nhận"}
+            {loading ? "Ðang xác thực..." : "Xác nhận"}
           </button>
           <button
             className="text-black text-base transition-all duration-300 hover:text-mono-600 hover:scale-105"
             onClick={() => navigate("/login")}
             disabled={loading}
           >
-            Đăng nhập
+            Ðang nhập
           </button>
         </div>
       </div>
@@ -169,3 +169,4 @@ const OTPVerificationForm: React.FC = () => {
 };
 
 export default OTPVerificationForm;
+

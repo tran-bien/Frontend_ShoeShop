@@ -1,4 +1,4 @@
-﻿import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   FaTachometerAlt,
@@ -40,17 +40,17 @@ const ShipperLayout = () => {
     {
       path: "/shipper/orders",
       icon: <FaBox size={20} />,
-      label: "Đơn hàng của tôi",
+      label: "�on h�ng của t�i",
     },
     {
       path: "/shipper/completed",
       icon: <FaCheckCircle size={20} />,
-      label: "Đã giao",
+      label: "�� giao",
     },
     {
       path: "/shipper/profile",
       icon: <FaUser size={20} />,
-      label: "Hồ sơ",
+      label: "Họ so",
     },
   ];
 
@@ -64,10 +64,10 @@ const ShipperLayout = () => {
       <aside
         className={`${
           sidebarOpen ? "w-64" : "w-20"
-        } bg-gradient-to-b from-mono-black to-blue-800 text-white transition-all duration-300 flex flex-col`}
+        } bg-mono-900 text-white transition-all duration-300 flex flex-col`}
       >
         {/* Logo */}
-        <div className="p-6 flex items-center justify-between border-b border-mono-500">
+        <div className="p-6 flex items-center justify-between border-b border-mono-700">
           {sidebarOpen && (
             <div className="flex items-center gap-3">
               <FaTruck size={32} />
@@ -76,7 +76,7 @@ const ShipperLayout = () => {
           )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-blue-700 rounded-lg"
+            className="p-2 hover:bg-mono-800 rounded-lg"
           >
             {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
           </button>
@@ -91,7 +91,7 @@ const ShipperLayout = () => {
               className={`flex items-center gap-4 px-6 py-3 mx-3 mb-2 rounded-lg transition-all ${
                 isActive(item.path)
                   ? "bg-white text-mono-black shadow-lg"
-                  : "hover:bg-blue-700"
+                  : "hover:bg-mono-800"
               }`}
             >
               <span>{item.icon}</span>
@@ -101,10 +101,10 @@ const ShipperLayout = () => {
         </nav>
 
         {/* User Info & Logout */}
-        <div className="border-t border-mono-500">
+        <div className="border-t border-mono-700">
           {user && sidebarOpen && (
             <div className="px-6 py-4">
-              <p className="text-sm text-mono-200">Xin chào,</p>
+              <p className="text-sm text-mono-200">Xin ch�o,</p>
               <p className="font-bold truncate">{user.name}</p>
               <p className="text-xs text-mono-200 truncate">{user.email}</p>
             </div>
@@ -114,7 +114,7 @@ const ShipperLayout = () => {
             className="flex items-center gap-4 px-6 py-3 mx-3 mb-3 rounded-lg hover:bg-mono-900 transition-all w-[calc(100%-1.5rem)]"
           >
             <FaSignOutAlt size={20} />
-            {sidebarOpen && <span>Đăng xuất</span>}
+            {sidebarOpen && <span>�ang xuất</span>}
           </button>
         </div>
       </aside>
@@ -153,3 +153,4 @@ const ShipperLayout = () => {
 };
 
 export default ShipperLayout;
+

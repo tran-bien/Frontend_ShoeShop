@@ -247,7 +247,7 @@ const SizeGuideManagement: React.FC = () => {
                 </button>
                 <button
                   onClick={() => handleDelete(guide._id)}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors text-red-600"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors text-mono-700"
                 >
                   <FiTrash2 className="w-4 h-4" />
                   <span className="text-sm">Xóa</span>
@@ -363,3 +363,5 @@ const SizeGuideManagement: React.FC = () => {
 };
 
 export default SizeGuideManagement;
+
+

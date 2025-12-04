@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link } from "react-router-dom";
 import {
   FiFacebook,
@@ -7,6 +7,7 @@ import {
   FiMail,
   FiPhone,
   FiMapPin,
+  FiClock,
 } from "react-icons/fi";
 // @ts-expect-error - Font import doesn't have TypeScript types
 import "@fontsource/lobster";
@@ -33,8 +34,8 @@ const Footer: React.FC = () => {
               </h3>
             </Link>
             <p className="text-mono-600 mb-6 text-sm leading-relaxed">
-              Cửa hàng giày chính hãng với nhiều mẫu mã đa dạng, phù hợp với mọi
-              nhu cầu và phong cách. Cam kết chất lượng, giá tốt nhất.
+              Cá»­a hÃ ng giÃ y chÃ­nh hÃ£ng vá»›i nhiá»u máº«u mÃ£ Ä‘a dáº¡ng, phÃ¹ há»£p vá»›i má»i
+              nhu cáº§u vÃ  phong cÃ¡ch. Cam káº¿t cháº¥t lÆ°á»£ng, giÃ¡ tá»‘t nháº¥t.
             </p>
             <div className="flex space-x-4">
               <a
@@ -64,15 +65,15 @@ const Footer: React.FC = () => {
           {/* Column 2: Quick Links */}
           <div>
             <h4 className="text-lg font-semibold text-mono-black mb-6 tracking-tight">
-              Liên kết nhanh
+              LiÃªn káº¿t nhanh
             </h4>
             <ul className="space-y-3">
               {[
-                { label: "Sản phẩm mới", href: "/products?sort=newest" },
-                { label: "Bán chạy nhất", href: "/products?sort=popular" },
-                { label: "Giày Nam", href: "/products?gender=male" },
-                { label: "Giày Nữ", href: "/products?gender=female" },
-                { label: "Khuyến mãi", href: "/coupons" },
+                { label: "Sáº£n pháº©m má»›i", href: "/products?sort=newest" },
+                { label: "BÃ¡n cháº¡y nháº¥t", href: "/products?sort=popular" },
+                { label: "GiÃ y Nam", href: "/products?gender=male" },
+                { label: "GiÃ y Ná»¯", href: "/products?gender=female" },
+                { label: "Khuyáº¿n mÃ£i", href: "/coupons" },
                 { label: "Blog", href: "/blog" },
               ].map((link) => (
                 <li key={link.href}>
@@ -90,16 +91,16 @@ const Footer: React.FC = () => {
           {/* Column 3: Customer Service */}
           <div>
             <h4 className="text-lg font-semibold text-mono-black mb-6 tracking-tight">
-              Hỗ trợ khách hàng
+              Há»— trá»£ khÃ¡ch hÃ ng
             </h4>
             <ul className="space-y-3">
               {[
-                { label: "Câu hỏi thường gặp", href: "/faq" },
-                { label: "Hướng dẫn mua hàng", href: "/faq" },
-                { label: "Chính sách đổi trả", href: "/returns" },
-                { label: "Hướng dẫn chọn size", href: "/products" },
-                { label: "Liên hệ", href: "/contact" },
-                { label: "Điều khoản sử dụng", href: "/terms" },
+                { label: "CÃ¢u há»i thÆ°á»ng gáº·p", href: "/faq" },
+                { label: "HÆ°á»›ng dáº«n mua hÃ ng", href: "/faq" },
+                { label: "ChÃ­nh sÃ¡ch Ä‘á»•i tráº£", href: "/returns" },
+                { label: "HÆ°á»›ng dáº«n chá»n size", href: "/products" },
+                { label: "LiÃªn há»‡", href: "/contact" },
+                { label: "Äiá»u khoáº£n sá»­ dá»¥ng", href: "/terms" },
               ].map((link) => (
                 <li key={link.href + link.label}>
                   <Link
@@ -116,13 +117,13 @@ const Footer: React.FC = () => {
           {/* Column 4: Contact */}
           <div>
             <h4 className="text-lg font-semibold text-mono-black mb-6 tracking-tight">
-              Liên hệ với chúng tôi
+              LiÃªn há»‡ vá»›i chÃºng tÃ´i
             </h4>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <FiMapPin className="w-5 h-5 text-mono-500 flex-shrink-0 mt-0.5" />
                 <span className="text-mono-600 text-sm">
-                  123 Đường ABC, Quận 1, TP. Hồ Chí Minh
+                  123 ÄÆ°á»ng ABC, Quáº­n 1, TP. Há»“ ChÃ­ Minh
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -145,24 +146,19 @@ const Footer: React.FC = () => {
               </li>
             </ul>
 
-            {/* Newsletter */}
-            <div className="mt-6">
-              <p className="text-sm text-mono-600 mb-3">
-                Đăng ký nhận tin khuyến mãi
-              </p>
-              <form className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="Email của bạn"
-                  className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-mono-300 text-mono-700 text-sm focus:outline-none focus:ring-2 focus:ring-mono-black focus:border-transparent transition-all"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2.5 bg-mono-black text-white rounded-lg font-medium text-sm hover:bg-mono-800 transition-colors active:scale-95"
-                >
-                  Đăng ký
-                </button>
-              </form>
+            {/* Business Hours */}
+            <div className="mt-6 pt-6 border-t border-mono-200">
+              <div className="flex items-center gap-3">
+                <FiClock className="w-5 h-5 text-mono-500 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-mono-700">
+                    Giá» lÃ m viá»‡c
+                  </p>
+                  <p className="text-sm text-mono-600">
+                    8:00 - 22:00 (Thá»© 2 - CN)
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -172,7 +168,7 @@ const Footer: React.FC = () => {
       <div className="border-t border-mono-200">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-mono-600">Chấp nhận thanh toán</p>
+            <p className="text-sm text-mono-600">Cháº¥p nháº­n thanh toÃ¡n</p>
             <div className="flex items-center gap-4">
               <img
                 src="/image/vnpay.jpg"
@@ -189,20 +185,20 @@ const Footer: React.FC = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-mono-600">
-              © {currentYear} ShoeStore. Tất cả các quyền được bảo lưu.
+              Â© {currentYear} ShoeStore. Táº¥t cáº£ cÃ¡c quyá»n Ä‘Æ°á»£c báº£o lÆ°u.
             </p>
             <div className="flex items-center gap-6 text-sm">
               <Link
                 to="/privacy"
                 className="text-mono-600 hover:text-mono-black transition-colors"
               >
-                Chính sách bảo mật
+                ChÃ­nh sÃ¡ch báº£o máº­t
               </Link>
               <Link
                 to="/terms"
                 className="text-mono-600 hover:text-mono-black transition-colors"
               >
-                Điều khoản sử dụng
+                Äiá»u khoáº£n sá»­ dá»¥ng
               </Link>
             </div>
           </div>
@@ -213,3 +209,4 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+

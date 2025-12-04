@@ -26,12 +26,12 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
     }
 
     if (!formData.reason.trim()) {
-      setError("Vui lòng nhập lý do điều chỉnh");
+      setError("Vui lòng nhập lý đo di?u chơnh");
       return;
     }
 
     if (formData.reason.trim().length < 10) {
-      setError("Lý do phải có ít nhất 10 ký tự");
+      setError("Lý đo ph?i có ít nh?t 10 ký t?");
       return;
     }
 
@@ -45,11 +45,11 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
         newQuantity: formData.newQuantity,
         reason: formData.reason,
       });
-      alert("Điều chỉnh tồn kho thành công!");
+      alert("Ði?u chơnh tên kho thành công!");
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Có lỗi xảy ra");
+      setError(error.response?.data?.message || "Có lỗi x?y ra");
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4 text-mono-800">
-          Điều chỉnh tồn kho - {item.product?.name}
+          Ði?u chơnh tên kho - {item.product?.name}
         </h2>
 
         {/* Product Info */}
@@ -84,7 +84,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
             <strong>{item.size?.name || "N/A"}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-mono-600">Tồn kho hiện tại:</span>
+            <span className="text-mono-600">Tên kho hiện tại:</span>
             <strong className="text-mono-black">{item.quantity}</strong>
           </div>
         </div>
@@ -111,7 +111,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
             {getDifference() !== 0 && (
               <p className={`mt-1 text-xs font-medium ${getDifferenceColor()}`}>
                 {getDifference() > 0 ? "+" : ""}
-                {getDifference()} ({getDifference() > 0 ? "Tăng" : "Giảm"})
+                {getDifference()} ({getDifference() > 0 ? "Tang" : "Giảm"})
               </p>
             )}
           </div>
@@ -142,7 +142,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
           {/* Reason */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Lý do điều chỉnh <span className="text-mono-800">*</span>
+              Lý đo di?u chơnh <span className="text-mono-800">*</span>
             </label>
             <textarea
               value={formData.reason}
@@ -151,17 +151,17 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
               rows={3}
-              placeholder="Ví dụ: Kiểm kê phát hiện sai lệch, hàng hỏng, mất mát..."
+              placeholder="Ví d?: Ki?m kê phát hiện sai lọch, hàng hàng, m?t mát..."
               required
             />
             <p className="mt-1 text-xs text-mono-500">
-              Tối thiểu 10 ký tự ({formData.reason.length}/10)
+              Tại thi?u 10 ký từ ({formData.reason.length}/10)
             </p>
           </div>
 
           {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-mono-100 border border-mono-300 text-mono-800 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
@@ -171,9 +171,9 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
             <button
               type="submit"
               disabled={loading || getDifference() === 0}
-              className="flex-1 bg-orange-600 text-white py-3 rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+              className="flex-1 bg-mono-700 text-white py-3 rounded-lg hover:bg-mono-800 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "Đang xử lý..." : "Điều chỉnh"}
+              {loading ? "Ðang xử lý..." : "Ði?u chơnh"}
             </button>
             <button
               type="button"
@@ -190,3 +190,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
 };
 
 export default AdjustStockModal;
+
+
+
+

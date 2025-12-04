@@ -24,14 +24,11 @@ export const publicSizeGuideService = {
   ): Promise<{ data: SizeGuideDetailResponse }> =>
     axiosInstance.get(`/api/v1/size-guides/${sizeGuideId}`),
 
-  // Lấy size guide theo category
-  getSizeGuideByCategory: (
-    categoryId: string,
-    gender?: string
+  // Lấy size guide theo productId (đúng với BE route)
+  getProductSizeGuide: (
+    productId: string
   ): Promise<{ data: SizeGuideDetailResponse }> =>
-    axiosInstance.get(`/api/v1/size-guides/category/${categoryId}`, {
-      params: { gender },
-    }),
+    axiosInstance.get(`/api/v1/products/${productId}/size-guide`),
 };
 
 // =======================

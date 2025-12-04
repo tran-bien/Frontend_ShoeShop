@@ -47,3 +47,4 @@ const ProductCardSkeleton: React.FC = () => {
 };
 
 export default ProductCardSkeleton;
+

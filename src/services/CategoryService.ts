@@ -1,26 +1,26 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type { Category, CategoryQueryParams } from "../types/category";
 import { ApiResponse } from "../types/api";
 
 // Admin Category Service
 export const adminCategoryService = {
-  // Lấy tất cả danh mục
+  // Láº¥y táº¥t cáº£ danh má»¥c
   getAll: (
     params?: CategoryQueryParams
   ): Promise<{ data: ApiResponse<Category[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/categories", { params }),
 
-  // Lấy danh mục đã xóa
+  // Láº¥y danh má»¥c Ä‘Ã£ xÃ³a
   getDeleted: (
     params?: CategoryQueryParams
   ): Promise<{ data: ApiResponse<Category[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/categories/deleted", { params }),
 
-  // Lấy chi tiết danh mục theo ID
+  // Láº¥y chi tiáº¿t danh má»¥c theo ID
   getById: (id: string): Promise<{ data: ApiResponse<Category> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/categories/${id}`),
 
-  // Tạo mới danh mục
+  // Táº¡o má»›i danh má»¥c
   create: (data: {
     name: string;
     description?: string;
@@ -30,7 +30,7 @@ export const adminCategoryService = {
   }): Promise<{ data: ApiResponse<Category> }> =>
     axiosInstanceAuth.post("/api/v1/admin/categories", data),
 
-  // Cập nhật danh mục
+  // Cáº­p nháº­t danh má»¥c
   update: (
     id: string,
     data: {
@@ -43,11 +43,11 @@ export const adminCategoryService = {
   ): Promise<{ data: ApiResponse<Category> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/categories/${id}`, data),
 
-  // Xóa mềm danh mục
+  // XÃ³a má»m danh má»¥c
   delete: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/categories/${id}`),
 
-  // Khôi phục danh mục đã xóa
+  // KhÃ´i phá»¥c danh má»¥c Ä‘Ã£ xÃ³a
   restore: (
     id: string,
     cascade: boolean = true
@@ -56,7 +56,7 @@ export const adminCategoryService = {
       cascade,
     }),
 
-  // Cập nhật trạng thái active của danh mục
+  // Cáº­p nháº­t tráº¡ng thÃ¡i active cá»§a danh má»¥c
   updateStatus: (
     id: string,
     data: { isActive: boolean; cascade?: boolean }

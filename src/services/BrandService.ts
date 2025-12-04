@@ -1,26 +1,26 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type { Brand, BrandQueryParams } from "../types/brand";
 import { ApiResponse } from "../types/api";
 
 // Admin Brand Service
 export const adminBrandService = {
-  // Lấy tất cả thương hiệu
+  // Láº¥y táº¥t cáº£ thÆ°Æ¡ng hiá»‡u
   getAll: (
     params?: BrandQueryParams
   ): Promise<{ data: ApiResponse<Brand[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/brands", { params }),
 
-  // Lấy thương hiệu đã xóa mềm
+  // Láº¥y thÆ°Æ¡ng hiá»‡u Ä‘Ã£ xÃ³a má»m
   getDeleted: (
     params?: BrandQueryParams
   ): Promise<{ data: ApiResponse<Brand[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/brands/deleted", { params }),
 
-  // Lấy chi tiết thương hiệu theo ID
+  // Láº¥y chi tiáº¿t thÆ°Æ¡ng hiá»‡u theo ID
   getById: (id: string): Promise<{ data: ApiResponse<Brand> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/brands/${id}`),
 
-  // Tạo mới thương hiệu
+  // Táº¡o má»›i thÆ°Æ¡ng hiá»‡u
   create: (data: {
     name: string;
     description?: string;
@@ -28,7 +28,7 @@ export const adminBrandService = {
   }): Promise<{ data: ApiResponse<Brand> }> =>
     axiosInstanceAuth.post("/api/v1/admin/brands", data),
 
-  // Cập nhật thương hiệu
+  // Cáº­p nháº­t thÆ°Æ¡ng hiá»‡u
   update: (
     id: string,
     data: {
@@ -39,15 +39,15 @@ export const adminBrandService = {
   ): Promise<{ data: ApiResponse<Brand> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/brands/${id}`, data),
 
-  // Xóa mềm thương hiệu
+  // XÃ³a má»m thÆ°Æ¡ng hiá»‡u
   delete: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/brands/${id}`),
 
-  // Khôi phục thương hiệu đã xóa mềm
+  // KhÃ´i phá»¥c thÆ°Æ¡ng hiá»‡u Ä‘Ã£ xÃ³a má»m
   restore: (id: string): Promise<{ data: ApiResponse<Brand> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/brands/${id}/restore`),
 
-  // Cập nhật trạng thái active của thương hiệu
+  // Cáº­p nháº­t tráº¡ng thÃ¡i active cá»§a thÆ°Æ¡ng hiá»‡u
   updateStatus: (
     id: string,
     data: { isActive: boolean; cascade?: boolean }

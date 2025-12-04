@@ -1,4 +1,4 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type { ApiResponse, PaginationParams } from "../types/api";
 
 // =======================
@@ -78,36 +78,36 @@ interface ExcelImportResponse {
 // =======================
 
 export const adminKnowledgeService = {
-  // Lấy danh sách knowledge documents
+  // Láº¥y danh sÃ¡ch knowledge documents
   getAllDocuments: (
     params?: KnowledgeQueryParams
   ): Promise<{ data: ApiResponse<KnowledgeDocumentsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/knowledge-base", { params }),
 
-  // Lấy chi tiết document
+  // Láº¥y chi tiáº¿t document
   getDocumentById: (
     id: string
   ): Promise<{ data: ApiResponse<KnowledgeDocument> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/knowledge-base/${id}`),
 
-  // Tạo document mới
+  // Táº¡o document má»›i
   createDocument: (
     data: CreateKnowledgeDocumentData
   ): Promise<{ data: ApiResponse<KnowledgeDocument> }> =>
     axiosInstanceAuth.post("/api/v1/admin/knowledge-base", data),
 
-  // Cập nhật document
+  // Cáº­p nháº­t document
   updateDocument: (
     id: string,
     data: UpdateKnowledgeDocumentData
   ): Promise<{ data: ApiResponse<KnowledgeDocument> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/knowledge-base/${id}`, data),
 
-  // Xóa document
+  // XÃ³a document
   deleteDocument: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/knowledge-base/${id}`),
 
-  // Lấy thống kê knowledge base
+  // Láº¥y thá»‘ng kÃª knowledge base
   getStatistics: (): Promise<{
     data: ApiResponse<KnowledgeStatisticsResponse>;
   }> => axiosInstanceAuth.get("/api/v1/admin/knowledge-base/statistics"),

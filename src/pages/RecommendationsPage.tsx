@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { FiTrendingUp, FiStar, FiFilter, FiPackage } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -32,7 +32,7 @@ const RecommendationsPage: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching recommendations:", error);
-      toast.error("Không thể tải gợi ý sản phẩm");
+      toast.error("KhÃ´ng thá»ƒ táº£i gá»£i Ã½ sáº£n pháº©m");
     } finally {
       setLoading(false);
     }
@@ -40,10 +40,10 @@ const RecommendationsPage: React.FC = () => {
 
   const getTypeLabel = (type: RecommendationType) => {
     const labels: Record<RecommendationType, string> = {
-      personalized: "Dành cho bạn",
-      trending: "Xu hướng",
-      similar: "Tương tự",
-      collaborative: "Được đề xuất",
+      personalized: "DÃ nh cho báº¡n",
+      trending: "Xu hÆ°á»›ng",
+      similar: "TÆ°Æ¡ng tá»±",
+      collaborative: "ÄÆ°á»£c Ä‘á» xuáº¥t",
     };
     return labels[type];
   };
@@ -53,7 +53,7 @@ const RecommendationsPage: React.FC = () => {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tải gợi ý...</p>
+          <p className="mt-4 text-gray-600">Äang táº£i gá»£i Ã½...</p>
         </div>
       </div>
     );
@@ -66,10 +66,10 @@ const RecommendationsPage: React.FC = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black mb-2 flex items-center gap-2">
             <FiStar className="w-8 h-8" />
-            Gợi Ý Cho Bạn
+            Gá»£i Ã Cho Báº¡n
           </h1>
           <p className="text-gray-600">
-            Những sản phẩm được chọn riêng dành cho bạn
+            Nhá»¯ng sáº£n pháº©m Ä‘Æ°á»£c chá»n riÃªng dÃ nh cho báº¡n
           </p>
         </div>
 
@@ -105,16 +105,16 @@ const RecommendationsPage: React.FC = () => {
           <div className="text-center py-16 bg-gray-50 rounded-lg">
             <FiPackage className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-              Chưa có gợi ý
+              ChÆ°a cÃ³ gá»£i Ã½
             </h3>
             <p className="text-gray-500 mb-6">
-              Hãy xem thêm sản phẩm để nhận được gợi ý phù hợp
+              HÃ£y xem thÃªm sáº£n pháº©m Ä‘á»ƒ nháº­n Ä‘Æ°á»£c gá»£i Ã½ phÃ¹ há»£p
             </p>
             <button
               onClick={() => navigate("/products")}
               className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
             >
-              Khám phá sản phẩm
+              KhÃ¡m phÃ¡ sáº£n pháº©m
             </button>
           </div>
         ) : (
@@ -148,7 +148,7 @@ const RecommendationsPage: React.FC = () => {
                   {rec.product.priceRange && (
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-semibold text-black">
-                        {rec.product.priceRange.min?.toLocaleString("vi-VN")}₫
+                        {rec.product.priceRange.min?.toLocaleString("vi-VN")}â‚«
                       </p>
                     </div>
                   )}
@@ -156,7 +156,7 @@ const RecommendationsPage: React.FC = () => {
                   {/* Rating */}
                   {rec.product.rating && rec.product.rating > 0 && (
                     <div className="flex items-center gap-1 mt-1">
-                      <FiStar className="w-3 h-3 text-yellow-500 fill-current" />
+                      <FiStar className="w-3 h-3 text-mono-600 fill-current" />
                       <span className="text-xs text-gray-600">
                         {typeof rec.product.rating === "number"
                           ? rec.product.rating.toFixed(1)
@@ -190,7 +190,7 @@ const RecommendationsPage: React.FC = () => {
                   <div className="px-3 pb-3">
                     <span className="inline-flex items-center gap-1 px-2 py-1 bg-black text-white text-xs rounded-full">
                       <FiTrendingUp className="w-3 h-3" />
-                      Xu hướng
+                      Xu hÆ°á»›ng
                     </span>
                   </div>
                 )}
@@ -204,3 +204,5 @@ const RecommendationsPage: React.FC = () => {
 };
 
 export default RecommendationsPage;
+
+

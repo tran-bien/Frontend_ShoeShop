@@ -1,6 +1,6 @@
-/**
+﻿/**
  * User Types
- * Định nghĩa các interface liên quan đến Người dùng
+ * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n NgÆ°á»i dÃ¹ng
  */
 
 // =======================
@@ -86,7 +86,7 @@ export interface CreateUserData {
 
 export interface UpdateUserData {
   name?: string;
-  email?: string;
+  email: string;
   phone?: string;
   gender?: UserGender;
   dateOfBirth?: string;

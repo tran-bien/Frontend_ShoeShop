@@ -53,9 +53,9 @@ const UserManageOrder: React.FC = () => {
       setOrders(res.data.orders || []);
       setStats(res.data.stats || stats);
     } catch (error) {
-      console.error("Lỗi khi tải đơn hàng:", error);
+      console.error("Lỗi khi tại don hàng:", error);
       setOrders([]);
-      toast.error("Không thể tải danh sách đơn hàng");
+      toast.error("Không thể tại danh sách don hàng");
     } finally {
       setLoading(false);
     }
@@ -85,24 +85,24 @@ const UserManageOrder: React.FC = () => {
         }
       );
 
-      // Hiển thị thông báo thành công từ response
+      // Hiện thọ thông báo thành công từ response
       if (response.data && response.data.success) {
         toast.success(
           response.data.message ||
-            "Yêu cầu hủy đơn hàng đã được gửi thành công",
+            "Yêu c?u hủy don hàng dã được gửi thành công",
           {
-            duration: 5000, // Tương đương với autoClose: 5000 trong react-toastify
+            duration: 5000, // Tuong duong với autoClose: 5000 trong react-toastify
           }
         );
       }
 
-      // Refresh danh sách đơn hàng
+      // Refresh danh sách don hàng
       fetchOrders(activeTab);
       setShowCancelModal(false);
       setSelectedOrderForCancel(null);
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Không thể hủy đơn hàng";
+        error.response?.data?.message || "Không thể hủy don hàng";
       toast.error(errorMessage);
     } finally {
       setCancelLoading(null);
@@ -134,14 +134,14 @@ const UserManageOrder: React.FC = () => {
       if (response.data.data.paymentUrl) {
         window.location.href = response.data.data.paymentUrl;
       } else {
-        toast.success("Đã gửi yêu cầu thanh toán lại");
+        toast.success("Ðã gửi yêu c?u thanh toán lỗi");
         fetchOrders(activeTab);
       }
       setShowRepayModal(false);
       setSelectedOrderForRepay(null);
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Không thể thanh toán lại đơn hàng";
+        error.response?.data?.message || "Không thể thanh toán lỗi don hàng";
       toast.error(errorMessage);
     } finally {
       setRepayLoading(null);
@@ -157,15 +157,15 @@ const UserManageOrder: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "text-yellow-600 bg-yellow-100";
+        return "text-mono-700 bg-mono-100";
       case "confirmed":
         return "text-mono-black bg-mono-100";
       case "shipping":
-        return "text-purple-600 bg-purple-100";
+        return "text-mono-700 bg-mono-200";
       case "delivered":
-        return "text-mono-800 bg-green-100";
+        return "text-mono-800 bg-mono-100";
       case "cancelled":
-        return "text-mono-900 bg-red-100";
+        return "text-mono-900 bg-mono-200";
       default:
         return "text-mono-600 bg-mono-100";
     }
@@ -176,13 +176,13 @@ const UserManageOrder: React.FC = () => {
       case "pending":
         return "Chờ xác nhận";
       case "confirmed":
-        return "Đã xác nhận";
+        return "Ðã xác nhận";
       case "shipping":
-        return "Đang giao";
+        return "Ðang giao";
       case "delivered":
-        return "Đã giao";
+        return "Ðã giao";
       case "cancelled":
-        return "Đã hủy";
+        return "Ðã hủy";
       default:
         return status;
     }
@@ -209,10 +209,10 @@ const UserManageOrder: React.FC = () => {
   const statusTabs = [
     { key: "all", label: "Tất cả", count: stats.total },
     { key: "pending", label: "Chờ xác nhận", count: stats.pending },
-    { key: "confirmed", label: "Đã xác nhận", count: stats.confirmed },
-    { key: "shipping", label: "Đang giao", count: stats.shipping },
-    { key: "delivered", label: "Đã giao", count: stats.delivered },
-    { key: "cancelled", label: "Đã hủy", count: stats.cancelled },
+    { key: "confirmed", label: "Ðã xác nhận", count: stats.confirmed },
+    { key: "shipping", label: "Ðang giao", count: stats.shipping },
+    { key: "delivered", label: "Ðã giao", count: stats.delivered },
+    { key: "cancelled", label: "Ðã hủy", count: stats.cancelled },
   ];
 
   return (
@@ -220,7 +220,7 @@ const UserManageOrder: React.FC = () => {
       <div className="flex flex-1">
         <Sidebar />
         <div className="flex-1 p-10">
-          <h1 className="text-3xl font-bold mb-6">Quản lý đơn hàng</h1>
+          <h1 className="text-3xl font-bold mb-6">Quận lý don hàng</h1>
 
           {/* Tab filter */}
           <div className="bg-white rounded-lg shadow-sm mb-6">
@@ -244,11 +244,11 @@ const UserManageOrder: React.FC = () => {
           {loading ? (
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-mono-black"></div>
-              <p className="mt-2">Đang tải...</p>
+              <p className="mt-2">Ðang tại...</p>
             </div>
           ) : orders.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-mono-500">Không có đơn hàng nào.</p>
+              <p className="text-mono-500">Không có don hàng nào.</p>
             </div>
           ) : (
             orders.map((order) => (
@@ -256,11 +256,11 @@ const UserManageOrder: React.FC = () => {
                 key={order._id}
                 className="bg-white shadow-md p-6 rounded-lg mb-6"
               >
-                {/* Header đơn hàng */}
+                {/* Header don hàng */}
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h2 className="text-lg font-semibold">
-                      Mã đơn hàng: {order.code}
+                      Mã don hàng: {order.code}
                     </h2>
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2 ${getStatusColor(
@@ -271,7 +271,7 @@ const UserManageOrder: React.FC = () => {
                     </span>
                   </div>
 
-                  {/* Nút hành động */}
+                  {/* Nút hành đếng */}
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleViewDetail(order._id)}
@@ -287,8 +287,8 @@ const UserManageOrder: React.FC = () => {
                         className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {cancelLoading === order._id
-                          ? "Đang xử lý..."
-                          : "Hủy đơn"}
+                          ? "Ðang xử lý..."
+                          : "Hủy don"}
                       </button>
                     )}
 
@@ -299,24 +299,24 @@ const UserManageOrder: React.FC = () => {
                         className="px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-black disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {repayLoading === order._id
-                          ? "Đang xử lý..."
-                          : "Thanh toán lại"}
+                          ? "Ðang xử lý..."
+                          : "Thanh toán lỗi"}
                       </button>
                     )}
                   </div>
                 </div>
 
-                {/* Thông tin đơn hàng */}
+                {/* Thông tin don hàng */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-mono-700">
                       <strong>Người đặt:</strong> {order.shippingAddress?.name}
                     </p>
                     <p className="text-mono-700">
-                      <strong>SĐT:</strong> {order.shippingAddress?.phone}
+                      <strong>SÐT:</strong> {order.shippingAddress?.phone}
                     </p>
                     <p className="text-mono-700">
-                      <strong>Địa chỉ:</strong> {order.shippingAddress?.detail},{" "}
+                      <strong>Ð?a ch?:</strong> {order.shippingAddress?.detail},{" "}
                       {order.shippingAddress?.ward},{" "}
                       {order.shippingAddress?.district},{" "}
                       {order.shippingAddress?.province}
@@ -339,7 +339,7 @@ const UserManageOrder: React.FC = () => {
                       {new Date(order.createdAt).toLocaleString()}
                     </p>
                     {order.hasCancelRequest && (
-                      <p className="text-orange-600 font-medium">
+                      <p className="text-mono-700 font-medium">
                         ⚠️ Có yêu cầu hủy đang chờ xử lý
                       </p>
                     )}
@@ -365,11 +365,11 @@ const UserManageOrder: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Tổng cộng */}
+                {/* Tổng cẩng */}
                 <div className="flex justify-end mt-4 pt-4 border-t">
                   <p className="text-lg font-bold text-mono-900">
-                    Tổng cộng:{" "}
-                    {order.totalAfterDiscountAndShipping?.toLocaleString()}đ
+                    Tổng cẩng:{" "}
+                    {order.totalAfterDiscountAndShipping?.toLocaleString()}d
                   </p>
                 </div>
               </div>

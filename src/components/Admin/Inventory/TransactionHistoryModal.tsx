@@ -45,9 +45,9 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
 
   const getTypeLabel = (type: string) => {
     const labels = {
-      IN: { text: "Nhập kho", color: "bg-green-100 text-green-800" },
-      OUT: { text: "Xuất kho", color: "bg-red-100 text-red-800" },
-      ADJUST: { text: "Điều chỉnh", color: "bg-orange-100 text-orange-800" },
+      IN: { text: "Nhập kho", color: "bg-mono-100 text-mono-800" },
+      OUT: { text: "Xuất kho", color: "bg-mono-200 text-mono-900" },
+      ADJUST: { text: "Ði?u chơnh", color: "bg-mono-200 text-mono-800" },
     };
     return (
       labels[type as keyof typeof labels] || {
@@ -60,12 +60,12 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
   const getReasonLabel = (reason: string) => {
     const reasons: Record<string, string> = {
       initial_stock: "Nhập kho ban đầu",
-      restock: "Nhập hàng bổ sung",
+      restock: "Nhập hàng bỏ sung",
       sale: "Xuất bán (Giao shipper)",
-      return: "Trả hàng",
-      exchange: "Đổi hàng",
-      damage: "Hàng hỏng",
-      adjustment: "Điều chỉnh kiểm kê",
+      return: "Trở hàng",
+      exchange: "Ð?i hàng",
+      damage: "Hàng hàng",
+      adjustment: "Ði?u chơnh ki?m kê",
       other: "Khác",
     };
     return reasons[reason] || reason;
@@ -86,7 +86,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
       <div className="bg-white rounded-lg p-6 w-full max-w-4xl m-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-mono-800">
-            📜 Lịch sử nhập kho
+            ?? Lọch số nhập kho
           </h2>
           <button
             onClick={onClose}
@@ -111,7 +111,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
               <strong>{item.size?.value || "N/A"}</strong>
             </div>
             <div>
-              <span className="text-mono-600">Tồn hiện tại:</span>{" "}
+              <span className="text-mono-600">Tên hiện tại:</span>{" "}
               <strong className="text-mono-black">{item.quantity}</strong>
             </div>
           </div>
@@ -119,10 +119,10 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
 
         {/* Transactions Table */}
         {loading ? (
-          <div className="text-center py-10 text-mono-500">Đang tải...</div>
+          <div className="text-center py-10 text-mono-500">Ðang tại...</div>
         ) : transactions.length === 0 ? (
           <div className="text-center py-10 text-mono-500">
-            Chưa có giao dịch nào
+            Chua có giao d?ch nào
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -133,7 +133,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                     Thời gian
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Loại
+                    Lo?i
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Lý do
@@ -142,7 +142,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                     Số lượng
                   </th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Giá vốn
+                    Giá vẩn
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                     Người thực hiện
@@ -177,13 +177,13 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                           {transaction.quantityChange}
                         </div>
                         <div className="text-xs text-mono-500">
-                          {transaction.quantityBefore} →{" "}
+                          {transaction.quantityBefore} ?{" "}
                           {transaction.quantityAfter}
                         </div>
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-right">
                         {transaction.costPrice
-                          ? `${transaction.costPrice.toLocaleString("vi-VN")}₫`
+                          ? `${transaction.costPrice.toLocaleString("vi-VN")}?`
                           : "-"}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
@@ -208,7 +208,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
               disabled={currentPage === 1}
               className="px-4 py-2 bg-mono-200 rounded disabled:opacity-50 hover:bg-mono-300"
             >
-              ← Trước
+              ? Trước
             </button>
             <span className="px-4 py-2 text-sm text-mono-700">
               Trang {currentPage} / {totalPages}
@@ -218,7 +218,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
               disabled={currentPage === totalPages}
               className="px-4 py-2 bg-mono-200 rounded disabled:opacity-50 hover:bg-mono-300"
             >
-              Sau →
+              Sau ?
             </button>
           </div>
         )}
@@ -229,7 +229,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
             onClick={onClose}
             className="px-6 py-2 bg-mono-200 rounded-lg hover:bg-mono-300 font-medium"
           >
-            Đóng
+            Ðóng
           </button>
         </div>
       </div>
@@ -238,3 +238,6 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
 };
 
 export default TransactionHistoryModal;
+
+
+
