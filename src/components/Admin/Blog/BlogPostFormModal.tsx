@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { adminBlogService } from "../../../services/BlogService";
-import type { BlogPost, BlogCategory } from "../../../types/blog";
+import type {
+  BlogPost,
+  BlogCategory,
+  BlogPostStatus,
+  CreateBlogPostData,
+} from "../../../types/blog";
 import toast from "react-hot-toast";
 import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 
@@ -67,11 +72,16 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
 
     setLoading(true);
     try {
+      const submitData: CreateBlogPostData = {
+        ...formData,
+        status: formData.status as BlogPostStatus,
+      };
+
       if (post) {
-        await adminBlogService.updatePost(post._id, formData);
+        await adminBlogService.updatePost(post._id, submitData);
         toast.success("Cập nhật bài viết thành công");
       } else {
-        await adminBlogService.createPost(formData);
+        await adminBlogService.createPost(submitData);
         toast.success("Tạo bài viết thành công");
       }
       onSuccess();

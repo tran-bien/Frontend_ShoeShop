@@ -12,8 +12,8 @@ interface BrandPageBrand extends Brand {
     url: string;
     public_id: string;
   };
-  deletedAt: string | null;
-  deletedBy: string | { _id: string; name?: string } | null;
+  deletedAt?: string | null;
+  deletedBy?: string | { _id: string; name?: string } | null;
 }
 
 // ViewDetailModal component

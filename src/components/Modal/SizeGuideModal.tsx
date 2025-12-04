@@ -24,6 +24,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
     if (isOpen && categoryId) {
       fetchSizeGuide();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, categoryId, gender]);
 
   const fetchSizeGuide = async () => {
@@ -34,11 +35,16 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
         categoryId!,
         gender
       );
-      setSizeGuide(data.data.sizeGuide);
-    } catch (err: any) {
+      // Handle nested response structure - API may return data.data.sizeGuide or data.data directly
+      const responseData = data.data || data;
+      const guideData =
+        (responseData as { sizeGuide?: SizeGuide }).sizeGuide || responseData;
+      setSizeGuide(guideData as SizeGuide);
+    } catch (err: unknown) {
       console.error("Failed to fetch size guide:", err);
+      const error = err as { response?: { data?: { message?: string } } };
       setError(
-        err.response?.data?.message ||
+        error.response?.data?.message ||
           "Không tìm thấy bảng hướng dẫn size cho sản phẩm này"
       );
     } finally {
@@ -112,7 +118,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                   {sizeGuide.category && (
                     <span className="px-3 py-1 bg-mono-100 text-mono-800 rounded-full text-sm font-medium">
                       {typeof sizeGuide.category === "object"
-                        ? sizeGuide.category.name
+                        ? (sizeGuide.category as { name: string }).name
                         : sizeGuide.category}
                     </span>
                   )}
@@ -152,59 +158,61 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                   )}
 
                 {/* Size Chart Table */}
-                {sizeGuide.sizeChart && sizeGuide.sizeChart.length > 0 && (
-                  <div className="border border-mono-200 rounded-xl overflow-hidden">
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead className="bg-mono-900 text-white">
-                          <tr>
-                            <th className="px-4 py-3 text-left text-sm font-semibold">
-                              Size
-                            </th>
-                            <th className="px-4 py-3 text-left text-sm font-semibold">
-                              Chiều dài (cm)
-                            </th>
-                            {sizeGuide.sizeChart[0].width && (
+                {sizeGuide.sizeChart &&
+                  Array.isArray(sizeGuide.sizeChart) &&
+                  sizeGuide.sizeChart.length > 0 && (
+                    <div className="border border-mono-200 rounded-xl overflow-hidden">
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead className="bg-mono-900 text-white">
+                            <tr>
                               <th className="px-4 py-3 text-left text-sm font-semibold">
-                                Chiều rộng (cm)
+                                Size
                               </th>
-                            )}
-                            {sizeGuide.sizeChart[0].note && (
                               <th className="px-4 py-3 text-left text-sm font-semibold">
-                                Ghi chú
+                                Chiều dài (cm)
                               </th>
-                            )}
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-mono-200">
-                          {sizeGuide.sizeChart.map((row, index) => (
-                            <tr
-                              key={index}
-                              className="hover:bg-mono-50 transition-colors"
-                            >
-                              <td className="px-4 py-3 font-medium text-mono-900">
-                                {row.size}
-                              </td>
-                              <td className="px-4 py-3 text-mono-700">
-                                {row.length}
-                              </td>
-                              {row.width && (
-                                <td className="px-4 py-3 text-mono-700">
-                                  {row.width}
-                                </td>
+                              {sizeGuide.sizeChart[0]?.width && (
+                                <th className="px-4 py-3 text-left text-sm font-semibold">
+                                  Chiều rộng (cm)
+                                </th>
                               )}
-                              {row.note && (
-                                <td className="px-4 py-3 text-mono-600 text-sm">
-                                  {row.note}
-                                </td>
+                              {sizeGuide.sizeChart[0]?.note && (
+                                <th className="px-4 py-3 text-left text-sm font-semibold">
+                                  Ghi chú
+                                </th>
                               )}
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody className="divide-y divide-mono-200">
+                            {sizeGuide.sizeChart.map((row, index) => (
+                              <tr
+                                key={index}
+                                className="hover:bg-mono-50 transition-colors"
+                              >
+                                <td className="px-4 py-3 font-medium text-mono-900">
+                                  {row.size}
+                                </td>
+                                <td className="px-4 py-3 text-mono-700">
+                                  {row.length}
+                                </td>
+                                {row.width && (
+                                  <td className="px-4 py-3 text-mono-700">
+                                    {row.width}
+                                  </td>
+                                )}
+                                {row.note && (
+                                  <td className="px-4 py-3 text-mono-600 text-sm">
+                                    {row.note}
+                                  </td>
+                                )}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* Additional Notes */}
                 {sizeGuide.notes && (

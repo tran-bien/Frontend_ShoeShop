@@ -13,6 +13,7 @@ export interface ProfileResponse {
   success: boolean;
   message: string;
   data: User;
+  user: User; // Backward compatibility - BE may return either
 }
 
 export interface AddressResponse {

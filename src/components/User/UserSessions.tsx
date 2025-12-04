@@ -240,8 +240,13 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
                   {session.device && (
                     <Text type="secondary" style={{ fontSize: "12px" }}>
                       <strong>Thiết bị:</strong>{" "}
-                      {session.device.os || "Unknown"} -{" "}
-                      {session.device.browser || "Unknown"}
+                      {typeof session.device.os === "string"
+                        ? session.device.os
+                        : session.device.os?.name || "Unknown"}{" "}
+                      -{" "}
+                      {typeof session.device.browser === "string"
+                        ? session.device.browser
+                        : session.device.browser?.name || "Unknown"}
                     </Text>
                   )}
                 </Space>

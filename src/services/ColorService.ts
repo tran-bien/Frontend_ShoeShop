@@ -23,7 +23,10 @@ export const adminColorService = {
   // Tạo mới màu sắc
   create: (data: {
     name: string;
-    hexCode: string;
+    type?: "solid" | "half";
+    hexCode?: string;
+    code?: string;
+    colors?: string[];
   }): Promise<{ data: ApiResponse<Color> }> =>
     axiosInstanceAuth.post("/api/v1/admin/colors", data),
 
@@ -32,7 +35,10 @@ export const adminColorService = {
     id: string,
     data: {
       name?: string;
+      type?: "solid" | "half";
       hexCode?: string;
+      code?: string;
+      colors?: string[];
     }
   ): Promise<{ data: ApiResponse<Color> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/colors/${id}`, data),

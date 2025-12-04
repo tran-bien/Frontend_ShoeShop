@@ -15,6 +15,7 @@ export interface ApiResponse<T = unknown> {
     limit: number;
     totalPages: number;
     totalItems: number;
+    total?: number;
     hasNext?: boolean;
     hasPrev?: boolean;
     hasNextPage?: boolean;
@@ -25,9 +26,18 @@ export interface ApiResponse<T = unknown> {
   products?: T[];
   count?: number;
   total?: number;
+  totalPages?: number;
   currentPage?: number;
   hasNextPage?: boolean;
   hasPrevPage?: boolean;
+  // Additional response fields for specific APIs
+  brand?: T;
+  brands?: T[];
+  categories?: T[];
+  tags?: T[];
+  variants?: T[];
+  variant?: T;
+  sizeGuides?: T[];
 }
 
 /**

@@ -35,8 +35,10 @@ const MyOrdersPage = () => {
     try {
       setLoading(true);
       const response = await ShipperService.getMyOrders();
-      setOrders(response.data || []);
-      setFilteredOrders(response.data || []);
+      // Handle response structure: could be { data: { data: orders } } or { data: orders }
+      const ordersData = response.data?.data || response.data || [];
+      setOrders(Array.isArray(ordersData) ? ordersData : []);
+      setFilteredOrders(Array.isArray(ordersData) ? ordersData : []);
     } catch (error) {
       console.error("Error fetching orders:", error);
     } finally {

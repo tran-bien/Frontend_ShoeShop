@@ -32,7 +32,9 @@ const ShipperProfilePage = () => {
 
         // Fetch stats
         const ordersResponse = await ShipperService.getMyOrders();
-        const orders = ordersResponse.data || [];
+        // Handle response structure: could be { data: { data: orders } } or { data: orders }
+        const responseData = ordersResponse.data?.data || ordersResponse.data;
+        const orders = Array.isArray(responseData) ? responseData : [];
 
         const totalOrders = orders.length;
         const completed = orders.filter(

@@ -153,11 +153,13 @@ const UserForm: React.FC = () => {
     try {
       setLoading(true);
       await inforApi.addAddress({
+        name: newAddress.fullName || newAddress.name,
         fullName: newAddress.fullName,
         phone: newAddress.phone,
         province: newAddress.province,
         district: newAddress.district,
         ward: newAddress.ward,
+        detail: newAddress.addressDetail || newAddress.detail,
         addressDetail: newAddress.addressDetail,
         isDefault: newAddress.isDefault,
       });

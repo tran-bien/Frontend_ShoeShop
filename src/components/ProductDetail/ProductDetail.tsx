@@ -57,7 +57,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   variants,
   images,
   similarProducts,
-  sizeGuide,
+  // sizeGuide prop is passed from parent but modal fetches its own data based on category
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  sizeGuide: _sizeGuide,
 }) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();

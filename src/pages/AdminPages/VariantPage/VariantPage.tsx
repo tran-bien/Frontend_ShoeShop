@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { variantApi } from "../../../services/VariantService";
-import { Variant } from "../../../types/product";
+import { Variant } from "../../../types/variant";
 import VariantForm from "./VariantForm";
 import VariantImagesManager from "./VariantImagesManager";
 import ColorSwatch from "../../../components/Custom/ColorSwatch";
@@ -55,10 +55,16 @@ const VariantPage: React.FC = () => {
       };
 
       const res = await variantApi.getAllVariants(params);
-      const data = res.data.variants || res.data.data || [];
-      const pagination = res.data.pagination;
+      // Handle both formats: res.data.variants or res.data.data or res.data as array
+      const responseData = res.data as unknown as {
+        variants?: Variant[];
+        data?: Variant[];
+        pagination?: { totalPages?: number; totalItems?: number };
+      };
+      const data = responseData.variants || responseData.data || [];
+      const pagination = responseData.pagination;
 
-      setVariants(data);
+      setVariants(data as Variant[]);
       setTotalPages(pagination?.totalPages || 1);
       setTotalVariants(pagination?.totalItems || 0);
       setCurrentPage(page);
@@ -82,10 +88,16 @@ const VariantPage: React.FC = () => {
       };
 
       const res = await variantApi.getDeletedVariants(params);
-      const data = res.data.variants || res.data.data || [];
-      const pagination = res.data.pagination;
+      // Handle both formats: res.data.variants or res.data.data or res.data as array
+      const responseData = res.data as unknown as {
+        variants?: Variant[];
+        data?: Variant[];
+        pagination?: { totalPages?: number; totalItems?: number };
+      };
+      const data = responseData.variants || responseData.data || [];
+      const pagination = responseData.pagination;
 
-      setDeletedVariants(data);
+      setDeletedVariants(data as Variant[]);
       setTotalPages(pagination?.totalPages || 1);
       setTotalVariants(pagination?.totalItems || 0);
       setCurrentPage(page);
@@ -161,7 +173,15 @@ const VariantPage: React.FC = () => {
       setVariantImages(variant.imagesvariant);
     } else {
       const res = await variantApi.getVariantById(variant._id);
-      const variantData = res.data.variant || res.data.data?.variant;
+      // Handle response structure
+      const resData = res.data as unknown as {
+        variant?: Variant;
+        data?: { variant?: Variant } | Variant;
+      };
+      const variantData =
+        resData.variant ||
+        (resData.data as { variant?: Variant })?.variant ||
+        (resData.data as Variant);
       setVariantImages(variantData?.imagesvariant || []);
     }
   };
@@ -766,7 +786,15 @@ const VariantPage: React.FC = () => {
               reloadImages={async () => {
                 // Gọi lại API lấy variant theo id
                 const res = await variantApi.getVariantById(showImageManager);
-                const variantData = res.data.variant || res.data.data?.variant;
+                // Handle response structure
+                const resData = res.data as unknown as {
+                  variant?: Variant;
+                  data?: { variant?: Variant } | Variant;
+                };
+                const variantData =
+                  resData.variant ||
+                  (resData.data as { variant?: Variant })?.variant ||
+                  (resData.data as Variant);
                 setVariantImages(variantData?.imagesvariant || []);
               }}
             />

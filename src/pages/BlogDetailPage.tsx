@@ -168,7 +168,7 @@ const BlogDetailPage = () => {
                 return (
                   <p
                     key={index}
-                    dangerouslySetInnerHTML={{ __html: block.content }}
+                    dangerouslySetInnerHTML={{ __html: block.content || "" }}
                   />
                 );
               } else if (block.type === "heading") {
@@ -178,7 +178,7 @@ const BlogDetailPage = () => {
                 return (
                   <HeadingTag
                     key={index}
-                    dangerouslySetInnerHTML={{ __html: block.content }}
+                    dangerouslySetInnerHTML={{ __html: block.content || "" }}
                   />
                 );
               } else if (block.type === "image") {

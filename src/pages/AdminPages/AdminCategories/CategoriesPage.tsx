@@ -6,8 +6,8 @@ import AddCategoryPage from "./AddCategories";
 import { useAuth } from "../../../hooks/useAuth";
 
 interface CategoryPageCategory extends Category {
-  deletedAt: string | null;
-  deletedBy: string | { _id: string; name?: string } | null;
+  deletedAt?: string | null;
+  deletedBy?: string | { _id: string; name?: string } | null;
 }
 
 // ViewDetailModal component

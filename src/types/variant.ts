@@ -17,6 +17,7 @@ export interface VariantSize {
   _id?: string;
   size: Size | string;
   sku?: string;
+  quantity?: number; // For inventory summary
 }
 
 // =======================

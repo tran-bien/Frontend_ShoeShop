@@ -9,7 +9,7 @@ export interface Category {
   slug?: string;
   description?: string;
   isActive?: boolean;
-  deletedAt?: string | null;
+  deletedAt?: string | null | undefined;
   deletedBy?: string | { _id: string; name?: string } | null;
   createdAt?: string;
   updatedAt?: string;

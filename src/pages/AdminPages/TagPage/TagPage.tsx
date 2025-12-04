@@ -1,13 +1,13 @@
 ﻿import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
-import { Tag } from "../../../types/tag";
+import { Tag, TagType } from "../../../types/tag";
 import { tagApi } from "../../../services/TagService";
 import { useAuth } from "../../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 
 interface TagPageTag extends Tag {
-  deletedAt: string | null;
-  deletedBy: string | { _id: string; name?: string } | null;
+  deletedAt?: string | null;
+  deletedBy?: string | { _id: string; name?: string } | null;
 }
 
 const TAG_TYPES = {
@@ -86,8 +86,8 @@ const TagPage: React.FC = () => {
         page: currentPage,
         limit,
         name: searchQuery || undefined,
-        type: typeFilter || undefined,
-        sortBy: sortOption,
+        type: typeFilter as TagType | undefined,
+        sort: sortOption,
       });
       const data = response.data.data || [];
       setTags(data);
@@ -791,7 +791,9 @@ const TagPage: React.FC = () => {
         </div>
       ) : (
         <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200 mb-6">
-          <h3 className="text-sm font-medium text-mono-900 mb-1">Tags đã xóa</h3>
+          <h3 className="text-sm font-medium text-mono-900 mb-1">
+            Tags đã xóa
+          </h3>
           <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
         </div>
       )}

@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import { adminSizeGuideService } from "../../../services/SizeGuideService";
 import { productAdminService } from "../../../services/ProductService";
-import type { SizeGuide, CreateSizeGuideData } from "../../../types/sizeGuide";
+import type {
+  LegacySizeGuide,
+  CreateSizeGuideData,
+} from "../../../types/sizeGuide";
 import type { Product } from "../../../types/product";
 import toast from "react-hot-toast";
 import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 
 interface SizeGuideFormModalProps {
-  sizeGuide: SizeGuide | null;
+  sizeGuide: LegacySizeGuide | null;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -20,14 +23,14 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [formData, setFormData] = useState<CreateSizeGuideData>({
-    product: sizeGuide?.product._id || "",
+    product: sizeGuide?.product?._id || "",
     sizeChart: {
-      description: sizeGuide?.sizeChart.description || "",
-      image: sizeGuide?.sizeChart.image,
+      description: sizeGuide?.sizeChart?.description || "",
+      image: sizeGuide?.sizeChart?.image,
     },
     measurementGuide: {
-      description: sizeGuide?.measurementGuide.description || "",
-      image: sizeGuide?.measurementGuide.image,
+      description: sizeGuide?.measurementGuide?.description || "",
+      image: sizeGuide?.measurementGuide?.image,
     },
   });
 

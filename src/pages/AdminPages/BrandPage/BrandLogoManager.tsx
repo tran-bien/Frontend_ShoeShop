@@ -11,7 +11,7 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
 
   const fetchBrandLogo = async () => {
     const res = await brandApi.getById(brandId);
-    setLogo(res.data.brand.logo);
+    setLogo(res.data.brand?.logo ?? res.data.data?.logo ?? null);
   };
 
   useEffect(() => {

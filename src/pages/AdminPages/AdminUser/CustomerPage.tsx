@@ -208,8 +208,10 @@ const ListCustomerPage: React.FC = () => {
                         .map((s) => (
                           <div key={s._id} className="mb-1">
                             <span className="text-xs">
-                              {s.device?.browser?.name || "Unknown"} - {s.ip}{" "}
-                              <br />
+                              {typeof s.device?.browser === "object"
+                                ? s.device?.browser?.name
+                                : s.device?.browser || "Unknown"}{" "}
+                              - {s.ip} <br />
                               {new Date(s.createdAt).toLocaleString()}
                             </span>
                           </div>

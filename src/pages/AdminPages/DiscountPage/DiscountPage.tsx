@@ -52,7 +52,7 @@ const DiscountPage = () => {
   const fetchDiscounts = async () => {
     try {
       const res = await couponApi.adminGetCoupons();
-      const coupons = res.data.data || [];
+      const coupons = res.data.data?.coupons || [];
       setDiscounts(
         coupons.map((c: Coupon) => ({
           _id: c._id,
@@ -141,7 +141,7 @@ const DiscountPage = () => {
     status: "active" | "inactive" | "archived"
   ) => {
     try {
-      await couponApi.adminUpdateCouponStatus(discount.id, status);
+      await couponApi.adminUpdateCouponStatus(discount.id, { status });
       fetchDiscounts();
     } catch {
       alert("Cập nhật trạng thái thất bại!");

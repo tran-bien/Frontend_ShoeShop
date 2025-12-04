@@ -24,7 +24,17 @@ const BlogListPage = () => {
 
         // BE returns { success, data, ... } from paginate helper
         setPosts(postsRes.data.data || []);
-        setCategories(categoriesRes.data.data || []);
+        // Categories response could be { data: { categories: [] } } or { data: [] }
+        const categoriesData =
+          (
+            categoriesRes.data.data as unknown as {
+              categories?: BlogCategory[];
+            }
+          )?.categories ||
+          (Array.isArray(categoriesRes.data.data)
+            ? categoriesRes.data.data
+            : []);
+        setCategories(categoriesData);
       } catch (error) {
         console.error("Failed to fetch blog data:", error);
       } finally {

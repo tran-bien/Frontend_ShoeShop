@@ -24,7 +24,9 @@ const ShipperDashboardPage = () => {
       setLoading(true);
       // Fetch my orders
       const ordersResponse = await ShipperService.getMyOrders();
-      const orders = ordersResponse.data || [];
+      // Handle response structure: could be { data: { data: orders } } or { data: orders }
+      const responseData = ordersResponse.data?.data || ordersResponse.data;
+      const orders = Array.isArray(responseData) ? responseData : [];
 
       // Filter today's orders
       const today = new Date();

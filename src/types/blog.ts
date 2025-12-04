@@ -25,12 +25,24 @@ export interface BlogCategory {
 
 export type BlogPostStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
+// Content block type for legacy support
+export interface ContentBlock {
+  type: "paragraph" | "heading" | "image" | "list";
+  content?: string;
+  level?: number;
+  url?: string;
+  alt?: string;
+  ordered?: boolean;
+  items?: string[];
+}
+
 export interface BlogPost {
   _id: string;
   title: string;
   slug: string;
   excerpt: string;
   content: string;
+  contentBlocks?: ContentBlock[]; // Legacy support
   featuredImage?: {
     url: string;
     public_id: string;
@@ -67,6 +79,7 @@ export interface BlogPostQueryParams {
   page?: number;
   limit?: number;
   status?: BlogPostStatus;
+  category?: string;
   categoryId?: string;
   tag?: string;
   search?: string;
@@ -128,21 +141,29 @@ export interface BlogCategoryDetailResponse {
 export interface BlogPostsResponse {
   success: boolean;
   message: string;
-  data: {
-    posts: BlogPost[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-      hasNext: boolean;
-      hasPrev: boolean;
-    };
+  data: BlogPost[];
+  posts?: BlogPost[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
   };
+  totalPages?: number;
 }
 
 export interface BlogPostDetailResponse {
   success: boolean;
   message: string;
   data: BlogPost;
+  post?: BlogPost;
+}
+
+export interface BlogCategoriesListResponse {
+  success: boolean;
+  message: string;
+  data: BlogCategory[];
+  categories?: BlogCategory[];
 }

@@ -46,7 +46,12 @@ const SizeGuideManagement: React.FC = () => {
       setLoading(true);
       const response = await adminSizeGuideService.getAllSizeGuides();
       if (response.data.success) {
-        setSizeGuides(response.data.data.sizeGuides);
+        // Handle both old and new response structure
+        const guides = Array.isArray(response.data.data)
+          ? response.data.data
+          : (response.data.data as unknown as { sizeGuides: SizeGuide[] })
+              .sizeGuides || [];
+        setSizeGuides(guides as SizeGuide[]);
       }
     } catch (error) {
       console.error("Error fetching size guides:", error);
@@ -69,18 +74,18 @@ const SizeGuideManagement: React.FC = () => {
     }
   };
 
-  const handleToggleActive = async (id: string, currentStatus: boolean) => {
-    try {
-      await adminSizeGuideService.updateSizeGuide(id, {
-        isActive: !currentStatus,
-      });
-      toast.success("Cập nhật trạng thái thành công");
-      fetchSizeGuides();
-    } catch (error) {
-      console.error("Error updating status:", error);
-      toast.error("Không thể cập nhật trạng thái");
-    }
-  };
+  // Note: handleToggleActive is available but not currently used in UI
+  // Uncomment and use when needed:
+  // const handleToggleActive = async (id: string, currentStatus: boolean) => {
+  //   try {
+  //     await adminSizeGuideService.updateSizeGuide(id, { isActive: !currentStatus });
+  //     toast.success("Cập nhật trạng thái thành công");
+  //     fetchSizeGuides();
+  //   } catch (error) {
+  //     console.error("Error updating status:", error);
+  //     toast.error("Không thể cập nhật trạng thái");
+  //   }
+  // };
 
   const filteredGuides = sizeGuides.filter((guide) =>
     guide.product.name.toLowerCase().includes(searchTerm.toLowerCase())

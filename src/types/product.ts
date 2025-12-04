@@ -89,6 +89,7 @@ export interface ProductAttributes {
   }>;
   colors?: Color[];
   sizes?: Size[];
+  priceRange?: PriceRange;
   inventoryMatrix?: {
     summary?: {
       byGender?: Array<{

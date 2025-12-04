@@ -17,7 +17,7 @@ export interface Brand {
   isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
-  deletedAt?: string | null;
+  deletedAt?: string | null | undefined;
   deletedBy?: string | { _id: string; name?: string } | null;
 }
 

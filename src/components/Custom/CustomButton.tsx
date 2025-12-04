@@ -1,18 +1,11 @@
 import React from "react";
 
-const CustomButton = () => {
-
-interface CustomButtonProps {  return (
-
-  variant?: "primary" | "secondary" | "ghost" | "danger";    <div>CustomButton</div>
-
-  size?: "sm" | "md" | "lg";  )
-
-  loading?: boolean;}
-
+interface CustomButtonProps {
+  variant?: "primary" | "secondary" | "ghost" | "danger";
+  size?: "sm" | "md" | "lg";
+  loading?: boolean;
   disabled?: boolean;
-
-  icon?: React.ReactNode;export default CustomButton
+  icon?: React.ReactNode;
   iconPosition?: "left" | "right";
   fullWidth?: boolean;
   children: React.ReactNode;

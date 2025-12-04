@@ -8,19 +8,23 @@
 // =======================
 
 export interface SessionDevice {
-  browser?: {
-    name?: string;
-    version?: string;
-    major?: string;
-  };
+  browser?:
+    | string
+    | {
+        name?: string;
+        version?: string;
+        major?: string;
+      };
   engine?: {
     name?: string;
     version?: string;
   };
-  os?: {
-    name?: string;
-    version?: string;
-  };
+  os?:
+    | string
+    | {
+        name?: string;
+        version?: string;
+      };
   device?: {
     vendor?: string;
     model?: string;

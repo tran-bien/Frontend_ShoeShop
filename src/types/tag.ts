@@ -12,7 +12,7 @@ export interface Tag {
   type: TagType;
   description?: string;
   isActive: boolean;
-  deletedAt?: string | null;
+  deletedAt?: string | null | undefined;
   deletedBy?: string | { _id: string; name?: string } | null;
   createdAt?: string;
   updatedAt?: string;
@@ -36,6 +36,7 @@ export interface TagQueryParams {
   page?: number;
   limit?: number;
   search?: string;
+  name?: string;
   type?: TagType;
   isActive?: boolean;
   sort?: string;

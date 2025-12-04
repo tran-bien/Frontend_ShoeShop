@@ -18,7 +18,7 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
     setLoading(true);
     setError(null);
     try {
-      await sizeApi.create({ value: Number(value), type, description });
+      await sizeApi.create({ value: String(value), region: type });
       if (onSuccess) onSuccess();
       handleClose();
     } catch {

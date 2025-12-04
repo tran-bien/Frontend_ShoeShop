@@ -111,7 +111,7 @@ const EditSizeModal: React.FC<{
     setLoading(true);
     setError(null);
     try {
-      await sizeApi.update(size._id, { value, type, description });
+      await sizeApi.update(size._id, { value: String(value), region: type });
       onSuccess();
       onClose();
     } catch {

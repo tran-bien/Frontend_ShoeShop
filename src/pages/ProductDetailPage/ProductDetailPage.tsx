@@ -161,7 +161,12 @@ const ProductDetailPage: React.FC = () => {
       <ProductDetail
         product={product}
         attributes={attributes || undefined}
-        variants={variants || undefined}
+        variants={
+          (variants as unknown as Record<
+            string,
+            import("../../types/product").Variant
+          >) || undefined
+        }
         images={images || undefined}
         similarProducts={similarProducts}
         sizeGuide={sizeGuide}

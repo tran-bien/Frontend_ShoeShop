@@ -24,7 +24,7 @@ export const publicRecommendationService = {
   // Note: Similar products endpoint không tồn tại riêng
   // Sử dụng recommendations với algorithm=CONTENT_BASED
   getSimilarProducts: (
-    productId: string,
+    _productId: string,
     limit: number = 8
   ): Promise<{ data: RecommendationsResponse }> =>
     axiosInstanceAuth.get(`/api/v1/users/recommendations`, {

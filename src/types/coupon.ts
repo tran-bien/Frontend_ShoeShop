@@ -91,11 +91,13 @@ export interface CreateCouponData {
   startDate: string;
   endDate: string;
   maxUses?: number;
-  status?: "active" | "inactive";
+  status?: "active" | "inactive" | "expired" | "archived";
   isPublic: boolean;
 }
 
-export type UpdateCouponData = Partial<CreateCouponData>;
+export type UpdateCouponData = Partial<Omit<CreateCouponData, "status">> & {
+  status?: "active" | "inactive" | "expired" | "archived";
+};
 
 export interface UpdateCouponStatusData {
   status: "active" | "inactive" | "expired" | "archived";

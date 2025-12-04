@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { adminSizeGuideService } from "../../../services/SizeGuideService";
-import type { SizeGuide } from "../../../types/sizeGuide";
+import type { LegacySizeGuide } from "../../../types/sizeGuide";
 import { useAuth } from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 import {
@@ -15,13 +15,12 @@ import SizeGuideFormModal from "../../../components/Admin/SizeGuide/SizeGuideFor
 const AdminSizeGuidePage = () => {
   const { canCreate, canUpdate, canDelete } = useAuth();
 
-  const [sizeGuides, setSizeGuides] = useState<SizeGuide[]>([]);
-  const [filteredGuides, setFilteredGuides] = useState<SizeGuide[]>([]);
+  const [sizeGuides, setSizeGuides] = useState<LegacySizeGuide[]>([]);
+  const [filteredGuides, setFilteredGuides] = useState<LegacySizeGuide[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [editingSizeGuide, setEditingSizeGuide] = useState<SizeGuide | null>(
-    null
-  );
+  const [editingSizeGuide, setEditingSizeGuide] =
+    useState<LegacySizeGuide | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch size guides
@@ -29,7 +28,7 @@ const AdminSizeGuidePage = () => {
     setLoading(true);
     try {
       const response = await adminSizeGuideService.getAllSizeGuides();
-      const sizeGuidesData = response.data.data || [];
+      const sizeGuidesData = (response.data.data || []) as LegacySizeGuide[];
       setSizeGuides(sizeGuidesData);
       setFilteredGuides(sizeGuidesData);
     } catch (error) {
@@ -50,7 +49,7 @@ const AdminSizeGuidePage = () => {
   useEffect(() => {
     if (searchQuery) {
       const filtered = sizeGuides.filter((guide) =>
-        guide.product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        guide.product?.name?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredGuides(filtered);
     } else {
@@ -77,7 +76,7 @@ const AdminSizeGuidePage = () => {
     total: sizeGuides.length,
     active: sizeGuides.filter((g) => g.isActive).length,
     withImages: sizeGuides.filter(
-      (g) => g.sizeChart.image || g.measurementGuide.image
+      (g) => g.sizeChart?.image || g.measurementGuide?.image
     ).length,
   };
 

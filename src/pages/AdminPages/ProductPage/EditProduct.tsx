@@ -53,15 +53,18 @@ const EditProduct: React.FC<EditProductProps> = ({
           tagApi.getActiveTags(),
         ]);
 
-        const brandsData =
-          brandsRes.data.data || brandsRes.data.brands || brandsRes.data || [];
-        const categoriesData =
-          categoriesRes.data.data ||
+        const brandsData = (brandsRes.data.data ||
+          brandsRes.data.brands ||
+          (brandsRes.data as unknown as Brand[]) ||
+          []) as Brand[];
+        const categoriesData = (categoriesRes.data.data ||
           categoriesRes.data.categories ||
-          categoriesRes.data ||
-          [];
-        const tagsData =
-          tagsRes.data.data || tagsRes.data.tags || tagsRes.data || [];
+          (categoriesRes.data as unknown as Category[]) ||
+          []) as Category[];
+        const tagsData = (tagsRes.data.data ||
+          tagsRes.data.tags ||
+          (tagsRes.data as unknown as Tag[]) ||
+          []) as Tag[];
 
         console.log("Data loaded:", { brandsData, categoriesData, tagsData });
         setBrands(brandsData);

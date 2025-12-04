@@ -37,14 +37,23 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
           tagApi.getActiveTags(),
         ]);
 
-        setBrands(brandsRes.data.data || brandsRes.data || []);
-        setCategories(categoriesRes.data.data || categoriesRes.data || []);
+        setBrands(
+          brandsRes.data.data || (brandsRes.data as unknown as Brand[]) || []
+        );
+        setCategories(
+          categoriesRes.data.data ||
+            (categoriesRes.data as unknown as Category[]) ||
+            []
+        );
 
         // Try different response structures
         const tagsData =
-          tagsRes.data.data || tagsRes.data.tags || tagsRes.data || [];
+          tagsRes.data.data ||
+          tagsRes.data.tags ||
+          (tagsRes.data as unknown as Tag[]) ||
+          [];
         console.log("Tags loaded:", tagsData);
-        setTags(tagsData);
+        setTags(tagsData as Tag[]);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Không thể tải dữ liệu. Vui lòng thử lại!");
