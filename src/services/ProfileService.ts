@@ -1,7 +1,7 @@
 ﻿/**
  * Profile Service
  * Quản lý thông tin người dùng và địa chỉ
- * BE Routes: /api/v1/users/profile, /api/v1/users/addresses
+ * BE Routes: /api/v1/users/profile, /api/v1/users/profile/addresses
  */
 
 import { axiosInstanceAuth } from "../utils/axiosIntance";
@@ -63,28 +63,30 @@ export const profileService = {
 export const addressService = {
   // Lấy danh sách địa chỉ
   getAddresses: (): Promise<{ data: ApiResponse<UserAddress[]> }> =>
-    axiosInstanceAuth.get("/api/v1/users/addresses"),
+    axiosInstanceAuth.get("/api/v1/users/profile/addresses"),
 
   // Thêm địa chỉ mới
   addAddress: (
     data: Omit<UserAddress, "_id">
   ): Promise<{ data: AddressResponse }> =>
-    axiosInstanceAuth.post("/api/v1/users/addresses", data),
+    axiosInstanceAuth.post("/api/v1/users/profile/addresses", data),
 
   // Cập nhật địa chỉ
   updateAddress: (
     addressId: string,
     data: Partial<UserAddress>
   ): Promise<{ data: AddressResponse }> =>
-    axiosInstanceAuth.put(`/api/v1/users/addresses/${addressId}`, data),
+    axiosInstanceAuth.put(`/api/v1/users/profile/addresses/${addressId}`, data),
 
   // Xóa địa chỉ
   deleteAddress: (addressId: string): Promise<{ data: ApiResponse<null> }> =>
-    axiosInstanceAuth.delete(`/api/v1/users/addresses/${addressId}`),
+    axiosInstanceAuth.delete(`/api/v1/users/profile/addresses/${addressId}`),
 
   // Đặt địa chỉ mặc định
   setDefaultAddress: (addressId: string): Promise<{ data: AddressResponse }> =>
-    axiosInstanceAuth.put(`/api/v1/users/addresses/${addressId}/default`),
+    axiosInstanceAuth.put(
+      `/api/v1/users/profile/addresses/${addressId}/default`
+    ),
 };
 
 export default profileService;

@@ -4,12 +4,12 @@ import type {
   LoyaltyTierQueryParams,
   CreateLoyaltyTierData,
   UpdateLoyaltyTierData,
-  AdjustPointsData,
+  // AdjustPointsData, // Removed: BE chưa implement
   LoyaltyInfoResponse,
   LoyaltyTransactionsResponse,
   LoyaltyTiersResponse,
   LoyaltyTierDetailResponse,
-  AdjustPointsResponse,
+  // AdjustPointsResponse, // Removed: BE chưa implement
 } from "../types/loyalty";
 
 // =======================
@@ -68,23 +68,10 @@ export const adminLoyaltyService = {
   ): Promise<{ data: { success: boolean; message: string } }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/loyalty-tiers/${tierId}`),
 
-  // Điều chỉnh điểm cho user
-  adjustUserPoints: (
-    data: AdjustPointsData
-  ): Promise<{ data: AdjustPointsResponse }> =>
-    axiosInstanceAuth.post("/api/v1/admin/loyalty/adjust-points", data),
-
-  // Lấy lịch sử giao dịch của một user
-  getUserTransactions: (
-    userId: string,
-    params: LoyaltyTransactionQueryParams = {}
-  ): Promise<{ data: LoyaltyTransactionsResponse }> =>
-    axiosInstanceAuth.get(
-      `/api/v1/admin/loyalty/users/${userId}/transactions`,
-      {
-        params,
-      }
-    ),
+  // NOTE: Các API sau đã bị xóa vì BE chưa implement:
+  // - adjustUserPoints: điều chỉnh điểm cho user
+  // - getUserTransactions: lấy lịch sử giao dịch của một user
+  // Nếu cần tính năng này, phải bổ sung routes vào BE trước
 };
 
 export default userLoyaltyService;

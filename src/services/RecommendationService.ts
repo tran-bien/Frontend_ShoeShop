@@ -4,7 +4,7 @@ import type {
   RecommendationQueryParams,
   ViewHistoryResponse,
   RecommendationsResponse,
-  UserBehaviorResponse,
+  // UserBehaviorResponse, // Removed: BE không có endpoint này
 } from "../types/recommendation";
 
 // =======================
@@ -35,7 +35,7 @@ export const publicRecommendationService = {
   trackProductView: (
     productId: string
   ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstance.post("/api/v1/users/view-history/track", { productId }),
+    axiosInstance.post("/api/v1/users/view-history", { productId }),
 };
 
 // =======================
@@ -44,7 +44,7 @@ export const publicRecommendationService = {
 
 export const userRecommendationService = {
   // Lấy gợi ý cá nhân hóa (cần đăng nhập)
-  // Backend endpoint: GET /api/v1/users/recommendationsửalgorithm={HYBRID|COLLABORATIVE|CONTENT_BASED|TRENDING}
+  // Backend endpoint: GET /api/v1/users/recommendations?algorithm={HYBRID|COLLABORATIVE|CONTENT_BASED|TRENDING}
   getPersonalizedRecommendations: (
     params: RecommendationQueryParams = {}
   ): Promise<{ data: RecommendationsResponse }> =>
@@ -58,20 +58,14 @@ export const userRecommendationService = {
   ): Promise<{ data: ViewHistoryResponse }> =>
     axiosInstanceAuth.get("/api/v1/users/view-history", { params }),
 
-  // Xóa lịch sử xem
+  // Xóa toàn bộ lịch sử xem
   clearViewHistory: (): Promise<{
     data: { success: boolean; message: string };
   }> => axiosInstanceAuth.delete("/api/v1/users/view-history"),
 
-  // Xóa một sản phẩm khỏi lịch sử
-  removeFromViewHistory: (
-    productId: string
-  ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstanceAuth.delete(`/api/v1/users/view-history/${productId}`),
-
-  // Lấy thông tin hành vi người dùng
-  getUserBehavior: (): Promise<{ data: UserBehaviorResponse }> =>
-    axiosInstanceAuth.get("/api/v1/users/user-behavior"),
+  // NOTE: Các API sau đã bị xóa vì BE không có endpoint:
+  // - removeFromViewHistory: xóa một sản phẩm khỏi lịch sử (BE chỉ hỗ trợ xóa toàn bộ)
+  // - getUserBehavior: lấy thông tin hành vi người dùng
 };
 
 export default publicRecommendationService;

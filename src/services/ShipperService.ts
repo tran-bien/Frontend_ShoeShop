@@ -3,7 +3,7 @@ import type {
   ShipperInfo,
   AssignOrderData,
   UpdateDeliveryStatusData,
-  UpdateLocationData,
+  // UpdateLocationData, // Removed: BE không hỗ trợ theo dõi vị trí shipper
   ShipperStatsResponse,
   Shipper,
 } from "../types/shipper";
@@ -64,9 +64,8 @@ export const shipperService = {
   ): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch(`/api/v1/shipper/delivery-status/${orderId}`, data),
 
-  // Cập nhật vị trí
-  updateLocation: (data: UpdateLocationData): Promise<{ data: ApiResponse }> =>
-    axiosInstanceAuth.patch("/api/v1/shipper/location", data),
+  // NOTE: updateLocation đã bị xóa vì BE không hỗ trợ theo dõi vị trí shipper real-time
+  // Vị trí shipper được ghi chú thủ công trong hệ thống
 
   // Cập nhật trạng thái sẵn sàng nhận đơn
   updateAvailability: (isAvailable: boolean): Promise<{ data: ApiResponse }> =>

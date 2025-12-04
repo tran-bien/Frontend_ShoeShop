@@ -2,7 +2,7 @@ import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type {
   NotificationQueryParams,
   NotificationsResponse,
-  NotificationDetailResponse,
+  // NotificationDetailResponse, // Removed: BE không có route GET /:id
   MarkAsReadResponse,
   NotificationPreferences,
   NotificationPreferencesResponse,
@@ -19,11 +19,8 @@ export const userNotificationService = {
   ): Promise<{ data: NotificationsResponse }> =>
     axiosInstanceAuth.get("/api/v1/users/notifications", { params }),
 
-  // Lấy chi tiết thông báo
-  getNotificationById: (
-    notificationId: string
-  ): Promise<{ data: NotificationDetailResponse }> =>
-    axiosInstanceAuth.get(`/api/v1/users/notifications/${notificationId}`),
+  // NOTE: getNotificationById đã bị xóa vì BE không có route GET /:id
+  // Chỉ có thể lấy danh sách thông báo, không lấy chi tiết từng cái
 
   // Đánh dấu thông báo đã đọc
   markAsRead: (notificationId: string): Promise<{ data: MarkAsReadResponse }> =>
