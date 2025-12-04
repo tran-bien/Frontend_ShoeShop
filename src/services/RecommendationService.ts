@@ -74,22 +74,4 @@ export const userRecommendationService = {
     axiosInstanceAuth.get("/api/v1/users/user-behavior"),
 };
 
-// =======================
-// Backward compatibility
-// =======================
-
-export const recommendationApi = {
-  // Public APIs
-  getRecommendations: publicRecommendationService.getRecommendations,
-  getSimilarProducts: publicRecommendationService.getSimilarProducts,
-  trackProductView: publicRecommendationService.trackProductView,
-
-  // User APIs
-  getPersonalized: userRecommendationService.getPersonalizedRecommendations,
-  getViewHistory: userRecommendationService.getViewHistory,
-  clearViewHistory: userRecommendationService.clearViewHistory,
-  removeFromViewHistory: userRecommendationService.removeFromViewHistory,
-  getUserBehavior: userRecommendationService.getUserBehavior,
-};
-
 export default publicRecommendationService;

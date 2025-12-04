@@ -1,7 +1,7 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { Category } from "../../../types/category";
-import { categoryApi } from "../../../services/CategoryService";
+import { adminCategoryService } from "../../../services/CategoryService";
 import AddCategoryPage from "./AddCategories";
 import { useAuth } from "../../../hooks/useAuth";
 
@@ -20,12 +20,12 @@ const ViewDetailModal: React.FC<{
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-gradient-to-r from-mono-black to-purple-600 text-white p-6 rounded-t-xl">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Chi tiết Danh mục</h2>
+            <h2 className="text-2xl font-bold">Chi ti?t Danh m?c</h2>
             <button
               onClick={onClose}
               className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
             >
-              ×
+              �
             </button>
           </div>
         </div>
@@ -36,7 +36,7 @@ const ViewDetailModal: React.FC<{
               <p className="text-mono-800 font-mono text-sm">{category._id}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Tên danh mục</p>
+              <p className="text-sm text-mono-500 font-medium">T�n danh m?c</p>
               <p className="text-mono-800 font-semibold">{category.name}</p>
             </div>
             <div>
@@ -44,29 +44,29 @@ const ViewDetailModal: React.FC<{
               <p className="text-mono-800 font-mono text-sm">{category.slug}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Trạng thái</p>
+              <p className="text-sm text-mono-500 font-medium">Tr?ng th�i</p>
               <div className="mt-1">
                 {category.isActive ? (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                    Hoạt động
+                    Ho?t d?ng
                   </span>
                 ) : (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                    Không hoạt động
+                    Kh�ng ho?t d?ng
                   </span>
                 )}
               </div>
             </div>
           </div>
           <div>
-            <p className="text-sm text-mono-500 font-medium">Mô tả</p>
+            <p className="text-sm text-mono-500 font-medium">M� t?</p>
             <p className="text-mono-800 mt-1">
-              {category.description || "Không có mô tả"}
+              {category.description || "Kh�ng c� m� t?"}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-mono-500 font-medium">Ngày tạo</p>
+              <p className="text-sm text-mono-500 font-medium">Ng�y t?o</p>
               <p className="text-mono-800 text-sm">
                 {category.createdAt
                   ? new Date(category.createdAt).toLocaleString("vi-VN")
@@ -75,7 +75,7 @@ const ViewDetailModal: React.FC<{
             </div>
             <div>
               <p className="text-sm text-mono-500 font-medium">
-                Cập nhật lần cuối
+                C?p nh?t l?n cu?i
               </p>
               <p className="text-mono-800 text-sm">
                 {category.updatedAt
@@ -86,7 +86,7 @@ const ViewDetailModal: React.FC<{
           </div>
           {category.deletedAt && (
             <div className="pt-4 border-t">
-              <p className="text-sm text-mono-500 font-medium">Ngày xóa</p>
+              <p className="text-sm text-mono-500 font-medium">Ng�y x�a</p>
               <p className="text-mono-800 text-sm">
                 {new Date(category.deletedAt).toLocaleString("vi-VN")}
               </p>
@@ -122,11 +122,11 @@ const EditCategoryModal: React.FC<{
     setLoading(true);
     setError(null);
     try {
-      await categoryApi.update(category._id, formData);
+      await adminCategoryService.update(category._id, formData);
       onSuccess();
       onClose();
     } catch {
-      setError("Cập nhật danh mục thất bại!");
+      setError("C?p nh?t danh m?c th?t b?i!");
     } finally {
       setLoading(false);
     }
@@ -143,12 +143,12 @@ const EditCategoryModal: React.FC<{
           &times;
         </button>
         <h2 className="text-xl font-bold mb-6 text-center">
-          Cập nhật Danh Mục
+          C?p nh?t Danh M?c
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              Tên Danh Mục
+              T�n Danh M?c
             </label>
             <input
               type="text"
@@ -161,7 +161,7 @@ const EditCategoryModal: React.FC<{
           </div>
           <div>
             <label className="block text-sm font-medium text-black">
-              Mô Tả
+              M� T?
             </label>
             <textarea
               name="description"
@@ -178,7 +178,7 @@ const EditCategoryModal: React.FC<{
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
-              {loading ? "Đang cập nhật..." : "Cập nhật"}
+              {loading ? "�ang c?p nh?t..." : "C?p nh?t"}
             </button>
           </div>
         </form>
@@ -231,7 +231,7 @@ const ListCategoriesPage: React.FC = () => {
         ...(searchQuery && { name: searchQuery }),
         sort: sortOption,
       };
-      const res = await categoryApi.getAll(params);
+      const res = await adminCategoryService.getAll(params);
       setCategories(res.data.data || []);
       setCurrentPage(res.data.currentPage || 1);
       setTotalPages(res.data.totalPages || 1);
@@ -252,7 +252,7 @@ const ListCategoriesPage: React.FC = () => {
         ...(searchQuery && { name: searchQuery }),
         sort: sortOption,
       };
-      const res = await categoryApi.getDeleted(params);
+      const res = await adminCategoryService.getDeleted(params);
       setDeletedCategories(res.data.data || []);
       setCurrentPage(res.data.currentPage || 1);
       setTotalPages(res.data.totalPages || 1);
@@ -268,12 +268,12 @@ const ListCategoriesPage: React.FC = () => {
   // Fetch stats with limit=100 for estimation
   const fetchStats = async () => {
     try {
-      const statsResponse = await categoryApi.getAll({ page: 1, limit: 100 });
+      const statsResponse = await adminCategoryService.getAll({ page: 1, limit: 100 });
       const statsData = statsResponse.data.data || [];
       const totalFromAPI = statsResponse.data.total || 0;
 
       if (totalFromAPI <= 100) {
-        // 100% accurate for ≤100 items
+        // 100% accurate for =100 items
         const active = statsData.filter((c: Category) => c.isActive).length;
         const inactive = statsData.filter((c: Category) => !c.isActive).length;
         setActiveCount(active);
@@ -321,7 +321,7 @@ const ListCategoriesPage: React.FC = () => {
 
   const handleDeleteCategory = async (id: string) => {
     try {
-      await categoryApi.delete(id);
+      await adminCategoryService.delete(id);
       if (showDeleted) {
         fetchDeletedCategories(currentPage);
       } else {
@@ -329,28 +329,28 @@ const ListCategoriesPage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      // X? l� l?i n?u c?n
     }
   };
 
   const handleRestoreCategory = async (id: string) => {
     try {
-      await categoryApi.restore(id);
+      await adminCategoryService.restore(id);
       fetchDeletedCategories(currentPage);
       fetchCategories(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      // X? l� l?i n?u c?n
     }
   };
 
   const handleUpdateStatus = async (id: string, isActive: boolean) => {
     try {
-      await categoryApi.updateStatus(id, { isActive });
+      await adminCategoryService.updateStatus(id, { isActive });
       fetchCategories(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      // X? l� l?i n?u c?n
     }
   };
 
@@ -360,7 +360,7 @@ const ListCategoriesPage: React.FC = () => {
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
-          Danh Sách Danh Mục
+          Danh S�ch Danh M?c
         </h2>
         {!isSearchVisible ? (
           <button
@@ -368,7 +368,7 @@ const ListCategoriesPage: React.FC = () => {
             className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
             <IoIosSearch className="text-xl text-mono-500" />
-            <span className="font-medium">Tìm kiếm</span>
+            <span className="font-medium">T�m ki?m</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
@@ -380,7 +380,7 @@ const ListCategoriesPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Tìm theo tên danh mục..."
+              placeholder="T�m theo t�n danh m?c..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -392,19 +392,19 @@ const ListCategoriesPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-black mb-1">
-              Tổng số danh mục
+              T?ng s? danh m?c
             </h3>
             <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
-              Đang hoạt động
+              �ang ho?t d?ng
             </h3>
             <p className="text-3xl font-bold text-green-900">{activeCount}</p>
           </div>
           <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 shadow-sm border border-yellow-200">
             <h3 className="text-sm font-medium text-yellow-600 mb-1">
-              Không hoạt động
+              Kh�ng ho?t d?ng
             </h3>
             <p className="text-3xl font-bold text-yellow-900">
               {inactiveCount}
@@ -413,7 +413,7 @@ const ListCategoriesPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab chuyển đổi và Sort */}
+      {/* Tab chuy?n d?i v� Sort */}
       <div className="flex items-center justify-between border-b mb-4">
         <div className="flex">
           <button
@@ -427,7 +427,7 @@ const ListCategoriesPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Danh mục đang hoạt động
+            Danh m?c dang ho?t d?ng
           </button>
           {hasStaffAccess() && (
             <button
@@ -441,7 +441,7 @@ const ListCategoriesPage: React.FC = () => {
                   : "text-mono-500 border-transparent hover:text-mono-black"
               }`}
             >
-              Danh mục đã xóa
+              Danh m?c d� x�a
             </button>
           )}
         </div>
@@ -455,17 +455,17 @@ const ListCategoriesPage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="created_at_desc">Mới nhất</option>
-            <option value="created_at_asc">Cũ nhất</option>
-            <option value="name_asc">Tên A-Z</option>
-            <option value="name_desc">Tên Z-A</option>
+            <option value="created_at_desc">M?i nh?t</option>
+            <option value="created_at_asc">Cu nh?t</option>
+            <option value="name_asc">T�n A-Z</option>
+            <option value="name_desc">T�n Z-A</option>
           </select>
           {!showDeleted && canCreate() && (
             <button
               className="px-4 py-2 bg-gradient-to-r from-mono-black to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
               onClick={() => setShowAddCategory(true)}
             >
-              + Thêm Danh Mục
+              + Th�m Danh M?c
             </button>
           )}
         </div>
@@ -493,12 +493,12 @@ const ListCategoriesPage: React.FC = () => {
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
-              <th className="py-3 px-4 text-left border-b">Tên Danh Mục</th>
+              <th className="py-3 px-4 text-left border-b">T�n Danh M?c</th>
               <th className="py-3 px-4 text-left border-b">Slug</th>
-              <th className="py-3 px-4 text-left border-b">Mô Tả</th>
-              <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
+              <th className="py-3 px-4 text-left border-b">M� T?</th>
+              <th className="py-3 px-4 text-center border-b">Tr?ng Th�i</th>
 
-              <th className="py-3 px-4 text-center border-b">Thao Tác</th>
+              <th className="py-3 px-4 text-center border-b">Thao T�c</th>
             </tr>
           </thead>
           <tbody>
@@ -512,20 +512,20 @@ const ListCategoriesPage: React.FC = () => {
                 <td className="px-4 py-3 text-sm">
                   {item.description && item.description.length > 50
                     ? `${item.description.substring(0, 50)}...`
-                    : item.description || "Không có mô tả"}
+                    : item.description || "Kh�ng c� m� t?"}
                 </td>
                 <td className="px-4 py-3 text-center">
                   {item.deletedAt ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                      Đã xóa
+                      �� x�a
                     </span>
                   ) : item.isActive ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                      Hoạt động
+                      Ho?t d?ng
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
-                      Không hoạt động
+                      Kh�ng ho?t d?ng
                     </span>
                   )}
                 </td>
@@ -577,7 +577,7 @@ const ListCategoriesPage: React.FC = () => {
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                               />
                             </svg>
-                            Sửa
+                            S?a
                           </button>
                         )}
                         {canDelete() && (
@@ -598,7 +598,7 @@ const ListCategoriesPage: React.FC = () => {
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                               />
                             </svg>
-                            Xóa
+                            X�a
                           </button>
                         )}
                         {canToggleStatus() && (
@@ -625,7 +625,7 @@ const ListCategoriesPage: React.FC = () => {
                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                               />
                             </svg>
-                            {item.isActive ? "Tắt" : "Bật"}
+                            {item.isActive ? "T?t" : "B?t"}
                           </button>
                         )}
                       </>
@@ -648,7 +648,7 @@ const ListCategoriesPage: React.FC = () => {
                               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
-                          Khôi phục
+                          Kh�i ph?c
                         </button>
                       )
                     )}
@@ -663,7 +663,7 @@ const ListCategoriesPage: React.FC = () => {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
         <div className="text-sm text-mono-600">
-          Trang {currentPage} / {totalPages} • Tổng: {totalCount} danh mục
+          Trang {currentPage} / {totalPages} � T?ng: {totalCount} danh m?c
         </div>
         <div className="flex gap-2">
           <button
@@ -675,7 +675,7 @@ const ListCategoriesPage: React.FC = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Trước
+            Tru?c
           </button>
 
           {/* Page Numbers */}
@@ -764,7 +764,7 @@ const ListCategoriesPage: React.FC = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Tiếp
+            Ti?p
           </button>
         </div>
       </div>

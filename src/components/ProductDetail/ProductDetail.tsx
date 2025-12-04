@@ -277,8 +277,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     if (!variants || !selectedGender || !selectedColorId) return null;
     const variantKey = `${selectedGender}-${selectedColorId}`;
     const variant = variants[variantKey];
-    // BE returns 'id' instead of '_id' in variantsInfo
-    return variant?.id || variant?._id || null;
+    return variant?._id || null;
   };
 
   // Tìm variant hiện tại

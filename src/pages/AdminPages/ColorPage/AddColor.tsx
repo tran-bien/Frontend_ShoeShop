@@ -1,5 +1,5 @@
-Ôªøimport React, { useState } from "react";
-import { colorApi } from "../../../services/ColorService";
+import React, { useState } from "react";
+import { adminColorService } from "../../../services/ColorService";
 
 interface AddColorProps {
   handleClose: () => void;
@@ -21,14 +21,14 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
     setError(null);
     try {
       if (type === "solid") {
-        await colorApi.create({ name, code, type });
+        await adminColorService.create({ name, code, type });
       } else {
-        await colorApi.create({ name, colors: [color1, color2], type });
+        await adminColorService.create({ name, colors: [color1, color2], type });
       }
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Th√™m m√†u th·∫•t b·∫°i!");
+      setError("ThÍm m‡u th?t b?i!");
     } finally {
       setLoading(false);
     }
@@ -44,24 +44,24 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Th√™m M√†u</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">ThÍm M‡u</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              T√™n M√†u
+              TÍn M‡u
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Nh·∫≠p t√™n m√†u"
+              placeholder="Nh?p tÍn m‡u"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Lo·∫°i m√†u
+              Lo?i m‡u
             </label>
             <select
               value={type}
@@ -75,7 +75,7 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
           {type === "solid" ? (
             <div className="mb-4">
               <label className="block text-sm font-bold text-mono-600">
-                M√£ m√†u (HEX)
+                M„ m‡u (HEX)
               </label>
               <input
                 type="color"
@@ -90,7 +90,7 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
             <div className="mb-4 flex gap-4">
               <div>
                 <label className="block text-sm font-bold text-mono-600">
-                  M√†u 1 (HEX)
+                  M‡u 1 (HEX)
                 </label>
                 <input
                   type="color"
@@ -103,7 +103,7 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
               </div>
               <div>
                 <label className="block text-sm font-bold text-mono-600">
-                  M√†u 2 (HEX)
+                  M‡u 2 (HEX)
                 </label>
                 <input
                   type="color"
@@ -123,14 +123,14 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
               disabled={loading}
               className="bg-mono-700 hover:bg-mono-800 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "ƒêang th√™m..." : "Th√™m M√†u"}
+              {loading ? "–ang thÍm..." : "ThÍm M‡u"}
             </button>
             <button
               type="button"
               onClick={handleClose}
               className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
-              H·ªßy
+              H?y
             </button>
           </div>
         </form>

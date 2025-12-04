@@ -21,8 +21,17 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
-        display: ["SF Pro Display", "Inter", "sans-serif"],
+        // Be Vietnam Pro for Vietnamese text, fallback to Inter and system fonts
+        sans: [
+          "Be Vietnam Pro",
+          "Inter",
+          "system-ui",
+          "-apple-system",
+          "sans-serif",
+        ],
+        display: ["Be Vietnam Pro", "SF Pro Display", "Inter", "sans-serif"],
+        // Use Inter specifically for numbers/code
+        mono: ["Inter", "monospace"],
       },
       fontSize: {
         xs: ["0.75rem", { lineHeight: "1rem", letterSpacing: "0.01em" }],

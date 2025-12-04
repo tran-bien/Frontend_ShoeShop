@@ -1,11 +1,11 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Tag } from "../../../types/tag";
 import { Brand } from "../../../types/brand";
 import { Category } from "../../../types/category";
-import { productApi } from "../../../services/ProductService";
-import { brandApi } from "../../../services/BrandService";
-import { categoryApi } from "../../../services/CategoryService";
-import { tagApi } from "../../../services/TagService";
+import { productAdminService } from "../../../services/ProductService";
+import { adminBrandService } from "../../../services/BrandService";
+import { adminCategoryService } from "../../../services/CategoryService";
+import { adminTagService } from "../../../services/TagService";
 
 interface AddProductProps {
   handleClose: () => void;
@@ -30,11 +30,11 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
     const fetchData = async () => {
       setLoadingData(true);
       try {
-        // Lấy tất cả dữ liệu song song
+        // L?y t?t c? d? li?u song song
         const [brandsRes, categoriesRes, tagsRes] = await Promise.all([
-          brandApi.getAll(),
-          categoryApi.getAll(),
-          tagApi.getActiveTags(),
+          adminBrandService.getAll(),
+          adminCategoryService.getAll(),
+          adminTagService.getActiveTags(),
         ]);
 
         setBrands(
@@ -56,7 +56,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
         setTags(tagsData as Tag[]);
       } catch (err) {
         console.error("Error fetching data:", err);
-        setError("Không thể tải dữ liệu. Vui lòng thử lại!");
+        setError("Kh�ng th? t?i d? li?u. Vui l�ng th? l?i!");
       } finally {
         setLoadingData(false);
       }
@@ -90,17 +90,17 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
 
     // Frontend validation
     if (!formData.name.trim()) {
-      setError("Tên sản phẩm không được để trống!");
+      setError("T�n s?n ph?m kh�ng du?c d? tr?ng!");
       setLoading(false);
       return;
     }
     if (formData.name.trim().length < 2 || formData.name.trim().length > 200) {
-      setError("Tên sản phẩm phải có từ 2-200 ký tự!");
+      setError("T�n s?n ph?m ph?i c� t? 2-200 k� t?!");
       setLoading(false);
       return;
     }
     if (!formData.description.trim()) {
-      setError("Mô tả sản phẩm không được để trống!");
+      setError("M� t? s?n ph?m kh�ng du?c d? tr?ng!");
       setLoading(false);
       return;
     }
@@ -108,24 +108,24 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
       formData.description.trim().length < 10 ||
       formData.description.trim().length > 1000
     ) {
-      setError("Mô tả sản phẩm phải có từ 10-1000 ký tự!");
+      setError("M� t? s?n ph?m ph?i c� t? 10-1000 k� t?!");
       setLoading(false);
       return;
     }
     if (!formData.category) {
-      setError("Vui lòng chọn danh mục!");
+      setError("Vui l�ng ch?n danh m?c!");
       setLoading(false);
       return;
     }
     if (!formData.brand) {
-      setError("Vui lòng chọn thương hiệu!");
+      setError("Vui l�ng ch?n thuong hi?u!");
       setLoading(false);
       return;
     }
 
     try {
       console.log("Submitting product data:", formData);
-      await productApi.create(formData);
+      await productAdminService.createProduct(formData);
       handleClose();
       // Show success notification if available
       if (window.location.reload) {
@@ -135,7 +135,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
       console.error("Create product error:", err);
       const error = err as { response?: { data?: { message?: string } } };
       const errorMessage =
-        error.response?.data?.message || "Thêm sản phẩm thất bại!";
+        error.response?.data?.message || "Th�m s?n ph?m th?t b?i!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -150,15 +150,15 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
           onClick={handleClose}
           className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50 text-mono-400 hover:text-mono-800 transition-all text-2xl font-bold"
         >
-          ×
+          �
         </button>
         <h2 className="text-2xl font-bold mb-6 text-mono-800">
-          Thêm Sản Phẩm Mới
+          Th�m S?n Ph?m M?i
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-1">
-              Tên Sản Phẩm <span className="text-mono-800">*</span>
+              T�n S?n Ph?m <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -166,13 +166,13 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
               value={formData.name}
               onChange={handleChange}
               required
-              placeholder="Nhập tên sản phẩm..."
+              placeholder="Nh?p t�n s?n ph?m..."
               className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-1">
-              Mô Tả <span className="text-mono-800">*</span>
+              M� T? <span className="text-mono-800">*</span>
             </label>
             <div className="relative">
               <textarea
@@ -181,7 +181,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                 onChange={handleChange}
                 required
                 rows={5}
-                placeholder="Mô tả chi tiết về sản phẩm: chất liệu, đặc điểm nổi bật, công dụng..."
+                placeholder="M� t? chi ti?t v? s?n ph?m: ch?t li?u, d?c di?m n?i b?t, c�ng d?ng..."
                 className="mt-1 block w-full px-4 py-3 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500 resize-none"
                 maxLength={1000}
               ></textarea>
@@ -190,13 +190,13 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
               </div>
             </div>
             <p className="mt-1 text-xs text-mono-500">
-              💡 Mô tả chi tiết giúp khách hàng hiểu rõ hơn về sản phẩm
+              ?? M� t? chi ti?t gi�p kh�ch h�ng hi?u r� hon v? s?n ph?m
             </p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="mb-4">
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Danh Mục <span className="text-mono-800">*</span>
+                Danh M?c <span className="text-mono-800">*</span>
               </label>
               <select
                 name="category"
@@ -205,7 +205,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                 required
                 className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
               >
-                <option value="">-- Chọn danh mục --</option>
+                <option value="">-- Ch?n danh m?c --</option>
                 {categories.map((cat) => (
                   <option key={cat._id} value={cat._id}>
                     {cat.name}
@@ -215,7 +215,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Thương Hiệu <span className="text-mono-800">*</span>
+                Thuong Hi?u <span className="text-mono-800">*</span>
               </label>
               <select
                 name="brand"
@@ -224,7 +224,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                 required
                 className="mt-1 block w-full px-4 py-2 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
               >
-                <option value="">-- Chọn thương hiệu --</option>
+                <option value="">-- Ch?n thuong hi?u --</option>
                 {brands.map((brand) => (
                   <option key={brand._id} value={brand._id}>
                     {brand.name}
@@ -235,7 +235,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Tags (Chọn nhiều)
+              Tags (Ch?n nhi?u)
             </label>
             <div className="border-2 border-mono-300 rounded-lg p-4 bg-mono-50 max-h-64 overflow-y-auto">
               {loadingData ? (
@@ -259,7 +259,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  <span className="ml-3 text-mono-600">Đang tải tags...</span>
+                  <span className="ml-3 text-mono-600">�ang t?i tags...</span>
                 </div>
               ) : tags.length === 0 ? (
                 <div className="text-center py-8">
@@ -277,7 +277,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                     />
                   </svg>
                   <p className="mt-2 text-sm text-mono-500">
-                    Không có tags nào
+                    Kh�ng c� tags n�o
                   </p>
                 </div>
               ) : (
@@ -306,10 +306,10 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                         }`}
                       >
                         {tag.type === "MATERIAL"
-                          ? "Chất liệu"
+                          ? "Ch?t li?u"
                           : tag.type === "USECASE"
-                          ? "Nhu cầu"
-                          : "Tùy chỉnh"}
+                          ? "Nhu c?u"
+                          : "T�y ch?nh"}
                       </span>
                     </label>
                   ))}
@@ -319,14 +319,14 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
             {formData.tags.length > 0 && (
               <div className="mt-2 flex items-center gap-2">
                 <span className="text-sm font-medium text-mono-700">
-                  Đã chọn: {formData.tags.length} tag(s)
+                  �� ch?n: {formData.tags.length} tag(s)
                 </span>
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, tags: [] })}
                   className="text-xs text-mono-800 hover:text-red-700 underline"
                 >
-                  Xóa tất cả
+                  X�a t?t c?
                 </button>
               </div>
             )}
@@ -349,7 +349,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
               onClick={handleClose}
               className="px-5 py-2 border-2 border-mono-300 text-mono-700 rounded-lg hover:bg-mono-50 transition-all font-medium"
             >
-              Hủy
+              H?y
             </button>
             <button
               type="submit"
@@ -374,7 +374,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  Đang thêm...
+                  �ang th�m...
                 </>
               ) : (
                 <>
@@ -391,7 +391,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  Thêm Sản Phẩm
+                  Th�m S?n Ph?m
                 </>
               )}
             </button>

@@ -9,7 +9,7 @@ import {
   FaCheckCircle,
   FaTimesCircle,
 } from "react-icons/fa";
-import ShipperService from "../../services/ShipperService";
+import { shipperService } from "../../services/ShipperService";
 
 const OrderDetailPage = () => {
   const { orderId } = useParams();
@@ -35,7 +35,7 @@ const OrderDetailPage = () => {
   const fetchOrderDetail = async () => {
     try {
       setLoading(true);
-      const response = await ShipperService.getMyOrders();
+      const response = await shipperService.getMyOrders();
       // response.data.data is the array of orders
       const orders = response.data.data || [];
       const foundOrder = orders.find((o: any) => o._id === orderId);
@@ -87,7 +87,7 @@ const OrderDetailPage = () => {
 
     try {
       setUpdating(true);
-      await ShipperService.updateDeliveryStatus(orderId, {
+      await shipperService.updateDeliveryStatus(orderId, {
         status: newStatus,
         note: formData.note || undefined,
         images: formData.images.length > 0 ? formData.images : undefined,

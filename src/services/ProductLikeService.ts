@@ -17,9 +17,4 @@ export const userWishlistService = {
     axiosInstanceAuth.get("/api/v1/users/wishlist"),
 };
 
-// Backward compatibility
-export const likeProduct = userWishlistService.likeProduct;
-export const unlikeProduct = userWishlistService.unlikeProduct;
-export const getUserLikedProducts = userWishlistService.getUserLikedProducts;
-
 export default userWishlistService;

@@ -7,44 +7,16 @@
  */
 
 // =======================
-// API RESPONSE WRAPPER
+// RE-EXPORT API TYPES FROM api.ts (Single Source of Truth)
 // =======================
-
-export interface ApiResponse<T = unknown> {
-  success: boolean;
-  message?: string;
-  data?: T;
-
-  // Specific API response properties that backend returns
-  cart?: unknown; // For cart APIs
-  preview?: unknown; // For order preview APIs
-  cancelRequests?: unknown; // For cancel request APIs
-  productInfo?: unknown; // For product info APIs
-
-  // Pagination properties
-  pagination?: {
-    page: number;
-    limit: number;
-    totalPages: number;
-    totalItems: number;
-    hasNext?: boolean;
-    hasPrev?: boolean;
-    hasNextPage?: boolean;
-    hasPrevPage?: boolean;
-  };
-
-  // Alternative pagination properties (for backward compatibility)
-  product?: T;
-  products?: T[];
-  count?: number;
-  total?: number;
-  currentPage?: number;
-  totalPages?: number;
-  hasNextPage?: boolean;
-  hasPrevPage?: boolean;
-  hasNext?: boolean;
-  hasPrev?: boolean;
-}
+export type {
+  ApiResponse,
+  ApiError,
+  PaginationParams,
+  SortParams,
+  SearchParams,
+  BaseQueryParams,
+} from "./api";
 
 // =======================
 // PRODUCT IMAGE TYPE

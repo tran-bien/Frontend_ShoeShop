@@ -148,7 +148,4 @@ export const cartService = {
   },
 };
 
-// Backward compatibility - alias cartApi to cartService
-export const cartApi = cartService;
-
 export default cartService;

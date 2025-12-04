@@ -26,13 +26,11 @@ export interface UserAvatar {
 export interface UserAddress {
   _id?: string;
   name: string;
-  fullName?: string; // Alias for name (for backward compatibility)
   phone: string;
   province: string;
   district: string;
   ward: string;
   detail: string;
-  addressDetail?: string; // Alias for detail (for backward compatibility)
   isDefault?: boolean;
 }
 

@@ -1,10 +1,5 @@
 ﻿import { useState, useEffect } from "react";
-import {
-  uploadProductImages,
-  removeProductImages,
-  setProductMainImage,
-  reorderProductImages,
-} from "../../../services/ImageService";
+import { productImageService } from "../../../services/ImageService";
 import { useAuth } from "../../../hooks/useAuth";
 
 const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
@@ -25,18 +20,18 @@ const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
     Array.from(selectedFiles).forEach((file) => {
       formData.append("images", file);
     });
-    await uploadProductImages(productId, formData);
+    await productImageService.uploadImages(productId, formData);
     setSelectedFiles(null);
     reloadImages();
   };
 
   const handleRemove = async (imageId: string) => {
-    await removeProductImages(productId, [imageId]);
+    await productImageService.removeImages(productId, [imageId]);
     reloadImages();
   };
 
   const handleSetMain = async (imageId: string) => {
-    await setProductMainImage(productId, imageId);
+    await productImageService.setMainImage(productId, imageId);
     reloadImages();
   };
 
@@ -55,7 +50,7 @@ const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
       _id: img._id,
       displayOrder: idx,
     }));
-    await reorderProductImages(productId, imageOrders);
+    await productImageService.reorderImages(productId, imageOrders);
     reloadImages();
   };
 

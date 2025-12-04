@@ -8,6 +8,14 @@ export const adminTagService = {
   getAll: (params?: TagQueryParams): Promise<{ data: ApiResponse<Tag[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/tags", { params }),
 
+  // Lấy tags active (Admin sử dụng để lọc cho dropdown)
+  getActiveTags: (
+    params?: TagQueryParams
+  ): Promise<{ data: ApiResponse<Tag[]> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/tags", {
+      params: { ...params, isActive: true },
+    }),
+
   // Lấy tags đã xóa mềm (Admin/Staff)
   getDeleted: (
     params?: TagQueryParams
@@ -75,22 +83,4 @@ export const publicTagService = {
     axiosInstance.get(`/api/v1/tags/${id}`),
 };
 
-// Backward compatibility
-export const tagApi = {
-  // Admin API
-  getAll: adminTagService.getAll,
-  getDeleted: adminTagService.getDeleted,
-  getById: adminTagService.getById,
-  create: adminTagService.create,
-  update: adminTagService.update,
-  delete: adminTagService.delete,
-  restore: adminTagService.restore,
-  toggleStatus: adminTagService.toggleStatus,
-
-  // Public API
-  getActiveTags: publicTagService.getActiveTags,
-  getByType: publicTagService.getByType,
-  getPublicById: publicTagService.getPublicById,
-};
-
-export default tagApi;
+export default adminTagService;

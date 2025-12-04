@@ -1,5 +1,5 @@
-﻿import React, { useState } from "react";
-import { categoryApi } from "../../../services/CategoryService";
+import React, { useState } from "react";
+import { adminCategoryService } from "../../../services/CategoryService";
 
 interface AddCategoryProps {
   handleClose: () => void;
@@ -30,14 +30,14 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
     setLoading(true);
     setError(null);
     try {
-      await categoryApi.create({
+      await adminCategoryService.create({
         name: categoryName,
         description: categoryDescription,
       });
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Thêm danh mục thất bại!");
+      setError("Th�m danh m?c th?t b?i!");
     } finally {
       setLoading(false);
     }
@@ -53,21 +53,21 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Thêm Danh Mục</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Th�m Danh M?c</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="categoryName"
               className="block text-sm font-bold text-mono-600"
             >
-              Tên Danh Mục
+              T�n Danh M?c
             </label>
             <input
               type="text"
               id="categoryName"
               value={categoryName}
               onChange={handleCategoryNameChange}
-              placeholder="Nhập tên danh mục"
+              placeholder="Nh?p t�n danh m?c"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -77,13 +77,13 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
               htmlFor="categoryDescription"
               className="block text-sm font-bold text-mono-600"
             >
-              Mô tả
+              M� t?
             </label>
             <textarea
               id="categoryDescription"
               value={categoryDescription}
               onChange={handleCategoryDescriptionChange}
-              placeholder="Nhập mô tả danh mục"
+              placeholder="Nh?p m� t? danh m?c"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -95,14 +95,14 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
               disabled={loading}
               className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Đang thêm..." : "Thêm Danh Mục"}
+              {loading ? "�ang th�m..." : "Th�m Danh M?c"}
             </button>
             <button
               type="button"
               onClick={handleClose}
               className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
-              Hủy
+              H?y
             </button>
           </div>
         </form>

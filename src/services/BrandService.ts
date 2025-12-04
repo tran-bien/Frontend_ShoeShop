@@ -55,5 +55,4 @@ export const adminBrandService = {
     axiosInstanceAuth.patch(`/api/v1/admin/brands/${id}/status`, data),
 };
 
-// Backward compatibility
-export const brandApi = { ...adminBrandService };
+export default adminBrandService;

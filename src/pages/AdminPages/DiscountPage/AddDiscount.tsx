@@ -1,5 +1,5 @@
-﻿import { useState } from "react";
-import { couponApi } from "../../../services/CouponService";
+import { useState } from "react";
+import { adminCouponService } from "../../../services/CouponService";
 
 interface AddDiscountProps {
   handleClose: () => void;
@@ -71,10 +71,10 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
       data.maxDiscount = form.maxDiscount;
     }
     try {
-      await couponApi.adminCreateCoupon(data);
+      await adminCouponService.createCoupon(data);
       handleClose();
     } catch (err) {
-      setError("Thêm phiếu giảm giá thất bại!");
+      setError("Th�m phi?u gi?m gi� th?t b?i!");
     } finally {
       setLoading(false);
     }
@@ -90,38 +90,38 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Thêm Coupon</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Th�m Coupon</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Mã coupon
+              M� coupon
             </label>
             <input
               type="text"
               name="code"
               value={form.code}
               onChange={handleChange}
-              placeholder="Nhập mã coupon"
+              placeholder="Nh?p m� coupon"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Mô tả
+              M� t?
             </label>
             <textarea
               name="description"
               value={form.description}
               onChange={handleChange}
-              placeholder="Nhập mô tả"
+              placeholder="Nh?p m� t?"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Loại giảm giá
+              Lo?i gi?m gi�
             </label>
             <select
               name="type"
@@ -129,13 +129,13 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               onChange={handleChange}
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
             >
-              <option value="percent">Phần trăm (%)</option>
-              <option value="fixed">Số tiền cố định</option>
+              <option value="percent">Ph?n tram (%)</option>
+              <option value="fixed">S? ti?n c? d?nh</option>
             </select>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Giá trị
+              Gi� tr?
             </label>
             <input
               type="number"
@@ -143,7 +143,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               value={form.value}
               onChange={handleChange}
               placeholder={
-                form.type === "percent" ? "Giá trị (%)" : "Số tiền giảm"
+                form.type === "percent" ? "Gi� tr? (%)" : "S? ti?n gi?m"
               }
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
@@ -153,14 +153,14 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           {form.type === "percent" && (
             <div className="mb-4">
               <label className="block text-sm font-bold text-mono-600">
-                Giảm tối đa (VND)
+                Gi?m t?i da (VND)
               </label>
               <input
                 type="number"
                 name="maxDiscount"
                 value={form.maxDiscount}
                 onChange={handleChange}
-                placeholder="Giảm tối đa"
+                placeholder="Gi?m t?i da"
                 className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                 min={0}
               />
@@ -168,21 +168,21 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           )}
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Đơn tối thiểu (VND)
+              �on t?i thi?u (VND)
             </label>
             <input
               type="number"
               name="minOrderValue"
               value={form.minOrderValue}
               onChange={handleChange}
-              placeholder="Đơn tối thiểu"
+              placeholder="�on t?i thi?u"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               min={0}
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Ngày bắt đầu
+              Ng�y b?t d?u
             </label>
             <input
               type="date"
@@ -195,7 +195,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Ngày kết thúc
+              Ng�y k?t th�c
             </label>
             <input
               type="date"
@@ -208,14 +208,14 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Số lượt sử dụng tối đa
+              S? lu?t s? d?ng t?i da
             </label>
             <input
               type="number"
               name="maxUses"
               value={form.maxUses}
               onChange={handleChange}
-              placeholder="Số lượt sử dụng tối đa"
+              placeholder="S? lu?t s? d?ng t?i da"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               min={1}
             />
@@ -228,7 +228,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               onChange={handleChange}
               className="mr-2"
             />
-            <span className="text-sm text-mono-700">Công khai</span>
+            <span className="text-sm text-mono-700">C�ng khai</span>
           </div>
           {error && <div className="text-mono-800 text-sm mb-2">{error}</div>}
           <div className="flex justify-end gap-4">
@@ -237,14 +237,14 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               disabled={loading}
               className="bg-mono-700 hover:bg-mono-800 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Đang thêm..." : "Thêm"}
+              {loading ? "�ang th�m..." : "Th�m"}
             </button>
             <button
               type="button"
               onClick={handleClose}
               className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
-              Hủy
+              H?y
             </button>
           </div>
         </form>

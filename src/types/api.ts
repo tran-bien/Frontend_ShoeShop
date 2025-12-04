@@ -5,11 +5,14 @@
 /**
  * Generic API Response interface
  * Sử dụng cho tất cả response từ backend API
+ * Single Source of Truth - các file khác nên import từ đây
  */
 export interface ApiResponse<T = unknown> {
   success: boolean;
   message?: string;
   data?: T;
+
+  // Pagination properties
   pagination?: {
     page: number;
     limit: number;
@@ -21,16 +24,16 @@ export interface ApiResponse<T = unknown> {
     hasNextPage?: boolean;
     hasPrevPage?: boolean;
   };
+
+  // Specific API response properties that backend returns
+  cart?: unknown;
+  preview?: unknown;
+  cancelRequests?: unknown;
+  productInfo?: unknown;
+
   // Backwards compatibility với các response cũ
   product?: T;
   products?: T[];
-  count?: number;
-  total?: number;
-  totalPages?: number;
-  currentPage?: number;
-  hasNextPage?: boolean;
-  hasPrevPage?: boolean;
-  // Additional response fields for specific APIs
   brand?: T;
   brands?: T[];
   categories?: T[];
@@ -38,6 +41,16 @@ export interface ApiResponse<T = unknown> {
   variants?: T[];
   variant?: T;
   sizeGuides?: T[];
+
+  // Alternative pagination properties
+  count?: number;
+  total?: number;
+  totalPages?: number;
+  currentPage?: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
+  hasNext?: boolean;
+  hasPrev?: boolean;
 }
 
 /**

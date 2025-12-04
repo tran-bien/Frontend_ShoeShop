@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { variantApi } from "../../../services/VariantService";
+import { adminVariantService } from "../../../services/VariantService";
 import { Variant } from "../../../types/variant";
 import VariantForm from "./VariantForm";
 import VariantImagesManager from "./VariantImagesManager";
@@ -54,7 +54,7 @@ const VariantPage: React.FC = () => {
         sort: sortOption,
       };
 
-      const res = await variantApi.getAllVariants(params);
+      const res = await adminVariantService.getAllVariants(params);
       // Handle both formats: res.data.variants or res.data.data or res.data as array
       const responseData = res.data as unknown as {
         variants?: Variant[];
@@ -87,7 +87,7 @@ const VariantPage: React.FC = () => {
         sort: sortOption,
       };
 
-      const res = await variantApi.getDeletedVariants(params);
+      const res = await adminVariantService.getDeletedVariants(params);
       // Handle both formats: res.data.variants or res.data.data or res.data as array
       const responseData = res.data as unknown as {
         variants?: Variant[];
@@ -128,13 +128,13 @@ const VariantPage: React.FC = () => {
 
   // Xóa mềm
   const handleDelete = async (id: string) => {
-    await variantApi.deleteVariant(id);
+    await adminVariantService.deleteVariant(id);
     fetchVariants();
   };
 
   // Khôi phục
   const handleRestore = async (id: string) => {
-    await variantApi.restoreVariant(id);
+    await adminVariantService.restoreVariant(id);
     if (showDeleted) {
       fetchDeletedVariants();
     }
@@ -172,7 +172,7 @@ const VariantPage: React.FC = () => {
     if (variant.imagesvariant) {
       setVariantImages(variant.imagesvariant);
     } else {
-      const res = await variantApi.getVariantById(variant._id);
+      const res = await adminVariantService.getVariantById(variant._id);
       // Handle response structure
       const resData = res.data as unknown as {
         variant?: Variant;
@@ -587,7 +587,7 @@ const VariantPage: React.FC = () => {
                                       : "bg-green-50 hover:bg-mono-200 text-mono-900 border-green-200"
                                   }`}
                                   onClick={async () => {
-                                    await variantApi.updateStatus(
+                                    await adminVariantService.updateStatus(
                                       v._id,
                                       !v.isActive
                                     );
@@ -785,7 +785,7 @@ const VariantPage: React.FC = () => {
               images={variantImages}
               reloadImages={async () => {
                 // Gọi lại API lấy variant theo id
-                const res = await variantApi.getVariantById(showImageManager);
+                const res = await adminVariantService.getVariantById(showImageManager);
                 // Handle response structure
                 const resData = res.data as unknown as {
                   variant?: Variant;

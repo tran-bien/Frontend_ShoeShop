@@ -71,22 +71,4 @@ export const adminSizeGuideService = {
     axiosInstanceAuth.delete(`/api/v1/admin/size-guides/${sizeGuideId}`),
 };
 
-// =======================
-// Backward compatibility
-// =======================
-
-export const sizeGuideApi = {
-  // Public APIs
-  getSizeGuides: publicSizeGuideService.getSizeGuides,
-  getSizeGuideById: publicSizeGuideService.getSizeGuideById,
-  getSizeGuideByCategory: publicSizeGuideService.getSizeGuideByCategory,
-
-  // Admin APIs
-  adminGetAll: adminSizeGuideService.getAllSizeGuides,
-  adminGetById: adminSizeGuideService.getSizeGuideById,
-  adminCreate: adminSizeGuideService.createSizeGuide,
-  adminUpdate: adminSizeGuideService.updateSizeGuide,
-  adminDelete: adminSizeGuideService.deleteSizeGuide,
-};
-
 export default publicSizeGuideService;

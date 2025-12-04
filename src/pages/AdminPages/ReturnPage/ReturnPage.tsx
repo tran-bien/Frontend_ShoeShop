@@ -1,6 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import { FaBox, FaCheckCircle, FaTimesCircle, FaClock } from "react-icons/fa";
-import ReturnService from "../../../services/ReturnService";
+import { adminReturnService } from "../../../services/ReturnService";
 import type { ReturnRequest } from "../../../types/return";
 import ReturnDetailModal from "../../../components/Admin/Return/ReturnDetailModal";
 import ApproveReturnModal from "../../../components/Admin/Return/ApproveReturnModal";
@@ -51,7 +51,7 @@ const ReturnPage = () => {
       if (filter.status) params.status = filter.status;
       if (filter.type) params.type = filter.type;
 
-      const response = await ReturnService.getReturnRequests(params);
+      const response = await adminReturnService.getAllReturnRequests(params);
 
       // Backend trả về { success: true, data: { items: [], pagination: {} } }
       const data = response.data.data;
@@ -66,7 +66,7 @@ const ReturnPage = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await ReturnService.getReturnStats();
+      const response = await adminReturnService.getReturnStats();
       const statsData = response.data.data || response.data;
       if ("totalRequests" in statsData) {
         setStats(statsData);

@@ -1,16 +1,13 @@
 ﻿import { useState, useEffect } from "react";
-import {
-  uploadBrandLogo,
-  removeBrandLogo,
-} from "../../../services/ImageService";
-import { brandApi } from "../../../services/BrandService";
+import { brandImageService } from "../../../services/ImageService";
+import { adminBrandService } from "../../../services/BrandService";
 
 const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [logo, setLogo] = useState<any>(null);
 
   const fetchBrandLogo = async () => {
-    const res = await brandApi.getById(brandId);
+    const res = await adminBrandService.getById(brandId);
     setLogo(res.data.brand?.logo ?? res.data.data?.logo ?? null);
   };
 
@@ -25,14 +22,14 @@ const BrandLogoManager = ({ brandId, reloadBrand }: any) => {
     }
     const formData = new FormData();
     formData.append("logo", selectedFile);
-    await uploadBrandLogo(brandId, formData);
+    await brandImageService.uploadLogo(brandId, formData);
     setSelectedFile(null);
     await fetchBrandLogo();
     reloadBrand();
   };
 
   const handleRemove = async () => {
-    await removeBrandLogo(brandId);
+    await brandImageService.removeLogo(brandId);
     await fetchBrandLogo();
     reloadBrand();
   };

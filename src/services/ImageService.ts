@@ -144,20 +144,88 @@ export const cloudinaryService = {
 };
 
 // =======================
-// LEGACY EXPORTS (Backward Compatibility)
+// SIZE GUIDE IMAGE SERVICE
 // =======================
 
-export const uploadBrandLogo = brandImageService.uploadLogo;
-export const removeBrandLogo = brandImageService.removeLogo;
-export const uploadProductImages = productImageService.uploadImages;
-export const removeProductImages = productImageService.removeImages;
-export const reorderProductImages = productImageService.reorderImages;
-export const setProductMainImage = productImageService.setMainImage;
-export const uploadVariantImages = variantImageService.uploadImages;
-export const removeVariantImages = variantImageService.removeImages;
-export const reorderVariantImages = variantImageService.reorderImages;
-export const setVariantMainImage = variantImageService.setMainImage;
-export const deleteFromCloudinary = cloudinaryService.deleteImages;
+export const sizeGuideImageService = {
+  // Upload/cập nhật ảnh size chart
+  uploadSizeChartImage: (
+    sizeGuideId: string,
+    formData: FormData
+  ): Promise<{ data: UploadImageResponse }> =>
+    axiosInstanceAuth.put(
+      `/api/v1/admin/images/size-guide/${sizeGuideId}/size-chart`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
+
+  // Upload/cập nhật ảnh measurement guide
+  uploadMeasurementGuideImage: (
+    sizeGuideId: string,
+    formData: FormData
+  ): Promise<{ data: UploadImageResponse }> =>
+    axiosInstanceAuth.put(
+      `/api/v1/admin/images/size-guide/${sizeGuideId}/measurement`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
+};
+
+// =======================
+// BLOG IMAGE SERVICE
+// =======================
+
+export const blogImageService = {
+  // Upload ảnh content cho blog (dùng trong markdown editor)
+  uploadBlogContentImage: (
+    formData: FormData
+  ): Promise<{ data: UploadImageResponse }> =>
+    axiosInstanceAuth.post(`/api/v1/admin/images/blog-content`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+
+  // Upload/cập nhật thumbnail cho blog post
+  uploadThumbnail: (
+    postId: string,
+    formData: FormData
+  ): Promise<{ data: UploadImageResponse }> =>
+    axiosInstanceAuth.put(
+      `/api/v1/admin/images/blog/${postId}/thumbnail`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
+
+  // Xóa thumbnail của blog post
+  removeThumbnail: (postId: string): Promise<{ data: DeleteImageResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/admin/images/blog/${postId}/thumbnail`),
+
+  // Upload/cập nhật featured image cho blog post
+  uploadFeaturedImage: (
+    postId: string,
+    formData: FormData
+  ): Promise<{ data: UploadImageResponse }> =>
+    axiosInstanceAuth.put(
+      `/api/v1/admin/images/blog/${postId}/featured-image`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    ),
+
+  // Xóa featured image của blog post
+  removeFeaturedImage: (
+    postId: string
+  ): Promise<{ data: DeleteImageResponse }> =>
+    axiosInstanceAuth.delete(
+      `/api/v1/admin/images/blog/${postId}/featured-image`
+    ),
+};
 
 // Default export
 export default {
@@ -165,4 +233,6 @@ export default {
   product: productImageService,
   variant: variantImageService,
   cloudinary: cloudinaryService,
+  sizeGuide: sizeGuideImageService,
+  blog: blogImageService,
 };

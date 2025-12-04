@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { inforApi } from "../../services/InforService";
+import { profileService, addressService } from "../../services/ProfileService";
 import Cookie from "js-cookie";
 import type { User, UserAddress } from "../../types/user";
 import {
@@ -19,12 +19,12 @@ type Address = UserAddress;
 
 // Field labels for address form
 const fieldLabels: Record<string, string> = {
-  fullName: "Họ và tên",
+  name: "Họ và tên",
   phone: "Số điện thoại",
   province: "Tỉnh/Thành phố",
   district: "Quận/Huyện",
   ward: "Phường/Xã",
-  addressDetail: "Địa chỉ chi tiết",
+  detail: "Địa chỉ chi tiết",
 };
 
 const UserForm: React.FC = () => {
@@ -36,13 +36,11 @@ const UserForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [newAddress, setNewAddress] = useState<Address>({
     name: "",
-    fullName: "",
     phone: "",
     province: "",
     district: "",
     ward: "",
     detail: "",
-    addressDetail: "",
     isDefault: false,
     _id: "",
   });
@@ -59,9 +57,9 @@ const UserForm: React.FC = () => {
     const fetchProfile = async () => {
       try {
         setLoading(true);
-        const res = await inforApi.getProfile();
-        setUser(res.data.user);
-        setEditName(res.data.user.name);
+        const res = await profileService.getProfile();
+        setUser(res.data.data);
+        setEditName(res.data.data.name);
       } catch {
         navigate("/login");
       } finally {
@@ -77,10 +75,10 @@ const UserForm: React.FC = () => {
         setLoading(true);
         const formData = new FormData();
         formData.append("avatar", e.target.files[0]);
-        await inforApi.updateAvatar(formData);
-        const res = await inforApi.getProfile();
-        setUser(res.data.user);
-        setEditName(res.data.user.name);
+        await profileService.updateAvatar(formData);
+        const res = await profileService.getProfile();
+        setUser(res.data.data);
+        setEditName(res.data.data.name);
         toast.success("Cập nhật ảnh đại diện thành công");
       } catch {
         toast.error("Không thể cập nhật ảnh đại diện");
@@ -94,10 +92,10 @@ const UserForm: React.FC = () => {
   const handleDeleteAvatar = async () => {
     try {
       setLoading(true);
-      await inforApi.deleteAvatar();
-      const res = await inforApi.getProfile();
-      setUser(res.data.user);
-      setEditName(res.data.user.name);
+      await profileService.deleteAvatar();
+      const res = await profileService.getProfile();
+      setUser(res.data.data);
+      setEditName(res.data.data.name);
       toast.success("Đã xóa ảnh đại diện");
     } catch {
       toast.error("Không thể xóa ảnh đại diện");
@@ -111,10 +109,10 @@ const UserForm: React.FC = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await inforApi.updateProfile({ name: editName });
-      const res = await inforApi.getProfile();
-      setUser(res.data.user);
-      setEditName(res.data.user.name);
+      await profileService.updateProfile({ name: editName });
+      const res = await profileService.getProfile();
+      setUser(res.data.data);
+      setEditName(res.data.data.name);
       setIsEditingName(false);
       toast.success("Cập nhật tên thành công");
     } catch {
@@ -128,17 +126,17 @@ const UserForm: React.FC = () => {
     if (!addr._id) return;
     try {
       setLoading(true);
-      await inforApi.updateAddress(addr._id, {
-        fullName: addr.fullName,
+      await addressService.updateAddress(addr._id, {
+        name: addr.name,
         phone: addr.phone,
         province: addr.province,
         district: addr.district,
         ward: addr.ward,
-        addressDetail: addr.addressDetail,
+        detail: addr.detail,
         isDefault: addr.isDefault,
       });
-      const res = await inforApi.getProfile();
-      setUser(res.data.user);
+      const res = await profileService.getProfile();
+      setUser(res.data.data);
       toast.success("Cập nhật địa chỉ thành công");
     } catch {
       toast.error("Không thể cập nhật địa chỉ");
@@ -152,32 +150,28 @@ const UserForm: React.FC = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await inforApi.addAddress({
-        name: newAddress.fullName || newAddress.name,
-        fullName: newAddress.fullName,
+      await addressService.addAddress({
+        name: newAddress.name,
         phone: newAddress.phone,
         province: newAddress.province,
         district: newAddress.district,
         ward: newAddress.ward,
-        detail: newAddress.addressDetail || newAddress.detail,
-        addressDetail: newAddress.addressDetail,
+        detail: newAddress.detail,
         isDefault: newAddress.isDefault,
       });
       setIsAddModalOpen(false);
       setNewAddress({
         name: "",
-        fullName: "",
         phone: "",
         province: "",
         district: "",
         ward: "",
         detail: "",
-        addressDetail: "",
         isDefault: false,
         _id: "",
       });
-      const res = await inforApi.getProfile();
-      setUser(res.data.user);
+      const res = await profileService.getProfile();
+      setUser(res.data.data);
       toast.success("Thêm địa chỉ thành công");
     } catch {
       toast.error("Không thể thêm địa chỉ");
@@ -190,9 +184,9 @@ const UserForm: React.FC = () => {
   const handleDeleteAddress = async (addressId: string) => {
     try {
       setLoading(true);
-      await inforApi.deleteAddress(addressId);
-      const res = await inforApi.getProfile();
-      setUser(res.data.user);
+      await addressService.deleteAddress(addressId);
+      const res = await profileService.getProfile();
+      setUser(res.data.data);
       toast.success("Đã xóa địa chỉ");
     } catch {
       toast.error("Không thể xóa địa chỉ");
@@ -353,7 +347,7 @@ const UserForm: React.FC = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-semibold text-mono-900">
-                          {addr.fullName}
+                          {addr.name}
                         </span>
                         <span className="text-mono-400">|</span>
                         <span className="text-mono-600">{addr.phone}</span>
@@ -364,7 +358,7 @@ const UserForm: React.FC = () => {
                         )}
                       </div>
                       <p className="text-mono-600 text-sm">
-                        {addr.addressDetail}, {addr.ward}, {addr.district},{" "}
+                        {addr.detail}, {addr.ward}, {addr.district},{" "}
                         {addr.province}
                       </p>
                     </div>

@@ -1,10 +1,13 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
-import { sessionUserApi } from "../../../services/SessionUserService";
+import {
+  adminSessionService,
+  adminUserService,
+} from "../../../services/SessionUserService";
 import type { User } from "../../../types/user";
 import type { Session } from "../../../types/session";
 
-// Alias cho rõ nghĩa
+// Alias cho r� nghia
 type Customer = User;
 
 const ListCustomerPage: React.FC = () => {
@@ -25,7 +28,7 @@ const ListCustomerPage: React.FC = () => {
 
   const fetchCustomers = async () => {
     try {
-      const res = await sessionUserApi.getAllUsers();
+      const res = await adminUserService.getAllUsers();
       setCustomers(res.data.users || res.data.data || []);
     } catch {
       setCustomers([]);
@@ -34,7 +37,7 @@ const ListCustomerPage: React.FC = () => {
 
   const fetchSessions = async () => {
     try {
-      const res = await sessionUserApi.getAllSessions();
+      const res = await adminSessionService.getAllSessions();
       const sessionsData = res.data.data || res.data;
       setSessions(Array.isArray(sessionsData) ? sessionsData : []);
     } catch {
@@ -65,24 +68,24 @@ const ListCustomerPage: React.FC = () => {
     if (customer.blockedAt)
       return (
         <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-semibold">
-          Đã khóa
+          �� kh�a
         </span>
       );
     if (!customer.isActive)
       return (
         <span className="bg-mono-100 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
-          Ngừng hoạt động
+          Ng?ng ho?t d?ng
         </span>
       );
     if (!customer.isVerified)
       return (
         <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-semibold">
-          Chưa xác thực
+          Chua x�c th?c
         </span>
       );
     return (
       <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
-        Đang hoạt động
+        �ang ho?t d?ng
       </span>
     );
   };
@@ -104,7 +107,7 @@ const ListCustomerPage: React.FC = () => {
   const handleLogoutUser = async (userId: string) => {
     setLoadingUserId(userId);
     try {
-      await sessionUserApi.logoutUser(userId);
+      await adminSessionService.logoutUser(userId);
       await fetchSessions();
     } finally {
       setLoadingUserId(null);
@@ -116,7 +119,10 @@ const ListCustomerPage: React.FC = () => {
     const reason = "";
     setLoadingUserId(customer._id);
     try {
-      await sessionUserApi.blockUser(customer._id, !isBlocked, reason);
+      await adminUserService.blockUser(customer._id, {
+        isBlock: !isBlocked,
+        reason,
+      });
       await fetchCustomers();
     } finally {
       setLoadingUserId(null);
@@ -127,7 +133,7 @@ const ListCustomerPage: React.FC = () => {
     <div className="p-6 w-full ">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug font-sans">
-          Danh Sách Khách Hàng
+          Danh S�ch Kh�ch H�ng
         </h2>
 
         {!isSearchVisible ? (
@@ -136,7 +142,7 @@ const ListCustomerPage: React.FC = () => {
             className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
             <IoIosSearch className="text-xl text-mono-500" />
-            <span className="font-medium">Tìm kiếm</span>
+            <span className="font-medium">T�m ki?m</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
@@ -148,7 +154,7 @@ const ListCustomerPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Tìm theo tên hoặc email..."
+              placeholder="T�m theo t�n ho?c email..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -161,13 +167,13 @@ const ListCustomerPage: React.FC = () => {
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
               <th className="py-3 px-4 text-left border-b">Avatar</th>
-              <th className="py-3 px-4 text-left border-b">Tên Khách Hàng</th>
+              <th className="py-3 px-4 text-left border-b">T�n Kh�ch H�ng</th>
               <th className="py-3 px-4 text-left border-b">Email</th>
-              <th className="py-3 px-4 text-left border-b">Số ĐT</th>
-              <th className="py-3 px-4 text-left border-b">Trạng thái</th>
-              <th className="py-3 px-4 text-left border-b">Vai trò</th>
+              <th className="py-3 px-4 text-left border-b">S? �T</th>
+              <th className="py-3 px-4 text-left border-b">Tr?ng th�i</th>
+              <th className="py-3 px-4 text-left border-b">Vai tr�</th>
               <th className="py-3 px-4 text-left border-b">Session</th>
-              <th className="py-3 px-4 text-left border-b">Thao Tác</th>
+              <th className="py-3 px-4 text-left border-b">Thao T�c</th>
             </tr>
           </thead>
           <tbody>
@@ -218,7 +224,7 @@ const ListCustomerPage: React.FC = () => {
                         ))}
                     </>
                   ) : (
-                    <span className="text-mono-400">Không có session</span>
+                    <span className="text-mono-400">Kh�ng c� session</span>
                   )}
                 </td>
                 <td className="px-4 py-3">
@@ -233,10 +239,10 @@ const ListCustomerPage: React.FC = () => {
                       >
                         {loadingUserId === customer._id ? (
                           <span className="animate-pulse">
-                            Đang đăng xuất...
+                            �ang dang xu?t...
                           </span>
                         ) : (
-                          "Đăng xuất"
+                          "�ang xu?t"
                         )}
                       </button>
                     )}
@@ -251,11 +257,11 @@ const ListCustomerPage: React.FC = () => {
                       onClick={() => handleBlockUser(customer)}
                     >
                       {loadingUserId === customer._id ? (
-                        <span className="animate-pulse">Đang xử lý...</span>
+                        <span className="animate-pulse">�ang x? l�...</span>
                       ) : customer.blockedAt ? (
-                        "Mở khóa"
+                        "M? kh�a"
                       ) : (
-                        "Khóa"
+                        "Kh�a"
                       )}
                     </button>
                   </div>

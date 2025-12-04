@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import InventoryService from "../../../services/InventoryService";
-import { productApi } from "../../../services/ProductService";
+import { productAdminService } from "../../../services/ProductService";
 import {
   TrashIcon,
   PlusIcon,
@@ -131,7 +131,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await productApi.getAll({ limit: 100 });
+      const response = await productAdminService.getProducts({ limit: 100 });
       console.log("📦 Fetched products:", response.data.data);
       console.log("📦 Full API response:", response.data);
       // The API returns products in response.data.data.data (paginated response)
@@ -170,7 +170,9 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
     if (productId) {
       try {
         console.log("🔍 Fetching full product details for:", productId);
-        const detailResponse = await productApi.getById(productId);
+        const detailResponse = await productAdminService.getProductById(
+          productId
+        );
         console.log("🔍 Full API response:", detailResponse.data);
 
         // Backend returns { success: true, product: {...} } not { data: {...} }

@@ -97,23 +97,11 @@ export const createImageFormData = (file: File): FormData => {
   return formData;
 };
 
-// Backward compatibility - Main API export
-export const bannerApi = {
-  // Admin methods
-  getAll: bannerAdminService.getBanners,
-  getById: bannerAdminService.getBannerById,
-  create: bannerAdminService.createBanner,
-  update: bannerAdminService.updateBanner,
-  updateImage: bannerAdminService.updateBannerImage,
-  delete: bannerAdminService.deleteBanner,
-  restore: bannerAdminService.restoreBanner,
-  toggleStatus: bannerAdminService.toggleBannerStatus,
-  reorder: bannerAdminService.reorderBanners,
-
-  // Public methods
-  getPublicBanners: bannerPublicService.getPublicBanners,
-
-  // Helper methods
-  createFormData: createBannerFormData,
-  createImageFormData: createImageFormData,
+export default {
+  admin: bannerAdminService,
+  public: bannerPublicService,
+  helpers: {
+    createFormData: createBannerFormData,
+    createImageFormData: createImageFormData,
+  },
 };

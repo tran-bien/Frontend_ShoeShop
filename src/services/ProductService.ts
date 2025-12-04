@@ -7,7 +7,7 @@ import {
   UpdateProductData,
   ProductQueryParams,
 } from "../types/product";
-import { ApiResponse } from "../types/common";
+import { ApiResponse } from "../types/api";
 
 // Helper type to convert Product to ProductCardProduct
 export type ProductToCardProduct = (product: Product) => ProductCardProduct;
@@ -179,25 +179,4 @@ export const productPublicService = {
   },
 };
 
-// Backward compatibility - deprecated, use productAdminService or productPublicService
-export const productApi = {
-  // Admin methods
-  getAll: productAdminService.getProducts,
-  getDeleted: productAdminService.getDeletedProducts,
-  getById: productAdminService.getProductById,
-  create: productAdminService.createProduct,
-  update: productAdminService.updateProduct,
-  delete: productAdminService.deleteProduct,
-  restore: productAdminService.restoreProduct,
-  updateStatus: productAdminService.updateProductStatus,
-  updateStockStatus: productAdminService.updateStockStatus,
-
-  // Public methods
-  getAllProductUser: productPublicService.getProducts,
-  getAllProductNew: productPublicService.getNewArrivals,
-  getProductById: productPublicService.getProductById,
-  getRelatedProducts: productPublicService.getRelatedProducts,
-  getFeaturedProducts: productPublicService.getFeaturedProducts,
-  getBestSellers: productPublicService.getBestSellers,
-  getProductBySlug: productPublicService.getProductBySlug,
-};
+export default productPublicService;

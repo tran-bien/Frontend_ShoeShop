@@ -53,21 +53,15 @@ export interface CartData {
   _id: string;
   user: string;
   cartItems: CartItem[];
-  // Làm totalQuantity optional vì backend có thể không trả về
   totalQuantity?: number;
   subTotal?: number;
   createdAt: string;
   updatedAt: string;
 }
 
-// Legacy Cart interface for backward compatibility
-export interface Cart {
-  _id: string;
-  user: string;
-  cartItems: CartItem[];
-  totalQuantity: number;
-  totalPrice: number;
-}
+// =======================
+// Alias for CartData
+export type Cart = CartData;
 
 // =======================
 // CART REQUEST TYPES

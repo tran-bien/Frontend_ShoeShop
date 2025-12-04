@@ -9,7 +9,7 @@ import {
   FaToggleOn,
   FaToggleOff,
 } from "react-icons/fa";
-import ShipperService from "../../services/ShipperService";
+import { shipperService } from "../../services/ShipperService";
 
 const ShipperProfilePage = () => {
   const [user, setUser] = useState<any>(null);
@@ -31,7 +31,7 @@ const ShipperProfilePage = () => {
         setUser(userData);
 
         // Fetch stats
-        const ordersResponse = await ShipperService.getMyOrders();
+        const ordersResponse = await shipperService.getMyOrders();
         // Handle response structure: could be { data: { data: orders } } or { data: orders }
         const responseData = ordersResponse.data?.data || ordersResponse.data;
         const orders = Array.isArray(responseData) ? responseData : [];
@@ -70,7 +70,7 @@ const ShipperProfilePage = () => {
     try {
       setUpdating(true);
       const newAvailability = !user.shipper?.isAvailable;
-      await ShipperService.updateAvailability(newAvailability);
+      await shipperService.updateAvailability(newAvailability);
 
       // Update local user data
       const updatedUser = {

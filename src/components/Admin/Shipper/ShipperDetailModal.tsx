@@ -1,5 +1,5 @@
-﻿import { useState, useEffect } from "react";
-import ShipperService from "../../../services/ShipperService";
+import { useState, useEffect } from "react";
+import { adminShipperService } from "../../../services/ShipperService";
 import type { Shipper } from "../../../types/shipper";
 
 interface Props {
@@ -18,7 +18,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await ShipperService.getShipperStats(shipper._id);
+      const response = await adminShipperService.getShipperStats(shipper._id);
       setStats(response.data.stats);
     } catch (error) {
       console.error("Error fetching shipper stats:", error);
@@ -33,7 +33,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return "Chưa cập nhật";
+    if (!dateString) return "Chua c?p nh?t";
     return new Date(dateString).toLocaleString("vi-VN", {
       year: "numeric",
       month: "2-digit",
@@ -48,24 +48,24 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
       <div className="bg-white rounded-lg p-6 max-w-3xl w-full m-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-mono-800">
-            👤 Chi tiết Shipper
+            ?? Chi ti?t Shipper
           </h2>
           <button
             onClick={onClose}
             className="text-mono-500 hover:text-mono-700 text-2xl font-bold"
           >
-            ×
+            �
           </button>
         </div>
 
         {/* Personal Info */}
         <div className="bg-mono-50 rounded-lg p-4 mb-6">
           <h3 className="font-semibold text-mono-800 mb-3">
-            Thông tin cá nhân
+            Th�ng tin c� nh�n
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <span className="text-mono-600">Họ tên:</span>{" "}
+              <span className="text-mono-600">H? t�n:</span>{" "}
               <strong>{shipper.name}</strong>
             </div>
             <div>
@@ -73,11 +73,11 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
               <strong>{shipper.email}</strong>
             </div>
             <div>
-              <span className="text-mono-600">Số điện thoại:</span>{" "}
+              <span className="text-mono-600">S? di?n tho?i:</span>{" "}
               <strong>{shipper.phone}</strong>
             </div>
             <div>
-              <span className="text-mono-600">Trạng thái:</span>{" "}
+              <span className="text-mono-600">Tr?ng th�i:</span>{" "}
               <span
                 className={`px-2 py-1 rounded text-xs font-semibold ${
                   shipper.shipper.isAvailable
@@ -86,8 +86,8 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
                 }`}
               >
                 {shipper.shipper.isAvailable
-                  ? "✅ Đang hoạt động"
-                  : "❌ Không hoạt động"}
+                  ? "? �ang ho?t d?ng"
+                  : "? Kh�ng ho?t d?ng"}
               </span>
             </div>
           </div>
@@ -96,24 +96,24 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
         {/* Capacity Info */}
         <div className="bg-mono-50 rounded-lg p-4 mb-6">
           <h3 className="font-semibold text-mono-800 mb-3">
-            Công suất làm việc
+            C�ng su?t l�m vi?c
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm mb-3">
             <div>
-              <span className="text-mono-600">Đơn đang giao:</span>{" "}
+              <span className="text-mono-600">�on dang giao:</span>{" "}
               <strong className="text-mono-black">
                 {shipper.shipper.activeOrders}
               </strong>
             </div>
             <div>
-              <span className="text-mono-600">Giới hạn đơn:</span>{" "}
+              <span className="text-mono-600">Gi?i h?n don:</span>{" "}
               <strong>{shipper.shipper.maxOrders}</strong>
             </div>
           </div>
           {/* Capacity Bar */}
           <div>
             <div className="flex justify-between text-xs text-mono-600 mb-1">
-              <span>Công suất</span>
+              <span>C�ng su?t</span>
               <span>
                 {(
                   (shipper.shipper.activeOrders / shipper.shipper.maxOrders) *
@@ -151,19 +151,19 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
         {shipper.shipper.currentLocation && (
           <div className="bg-green-50 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-mono-800 mb-3">
-              📍 Vị trí hiện tại
+              ?? V? tr� hi?n t?i
             </h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-mono-600">Vĩ độ:</span>{" "}
+                <span className="text-mono-600">Vi d?:</span>{" "}
                 <strong>{shipper.shipper.currentLocation.latitude}</strong>
               </div>
               <div>
-                <span className="text-mono-600">Kinh độ:</span>{" "}
+                <span className="text-mono-600">Kinh d?:</span>{" "}
                 <strong>{shipper.shipper.currentLocation.longitude}</strong>
               </div>
               <div className="col-span-2">
-                <span className="text-mono-600">Cập nhật lần cuối:</span>{" "}
+                <span className="text-mono-600">C?p nh?t l?n cu?i:</span>{" "}
                 <strong>
                   {formatDate(shipper.shipper.currentLocation.updatedAt)}
                 </strong>
@@ -175,34 +175,34 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
         {/* Statistics */}
         {loading ? (
           <div className="text-center py-6 text-mono-500">
-            Đang tải thống kê...
+            �ang t?i th?ng k�...
           </div>
         ) : stats ? (
           <div className="bg-mono-50 rounded-lg p-4">
             <h3 className="font-semibold text-mono-800 mb-4">
-              📊 Thống kê giao hàng
+              ?? Th?ng k� giao h�ng
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg p-3 text-center">
-                <p className="text-mono-600 text-xs mb-1">Tổng đơn</p>
+                <p className="text-mono-600 text-xs mb-1">T?ng don</p>
                 <p className="text-2xl font-bold text-mono-800">
                   {stats.totalOrders || 0}
                 </p>
               </div>
               <div className="bg-white rounded-lg p-3 text-center">
-                <p className="text-mono-600 text-xs mb-1">Thành công</p>
+                <p className="text-mono-600 text-xs mb-1">Th�nh c�ng</p>
                 <p className="text-2xl font-bold text-mono-800">
                   {stats.completedOrders || 0}
                 </p>
               </div>
               <div className="bg-white rounded-lg p-3 text-center">
-                <p className="text-mono-600 text-xs mb-1">Thất bại</p>
+                <p className="text-mono-600 text-xs mb-1">Th?t b?i</p>
                 <p className="text-2xl font-bold text-mono-900">
                   {stats.failedOrders || 0}
                 </p>
               </div>
               <div className="bg-white rounded-lg p-3 text-center">
-                <p className="text-mono-600 text-xs mb-1">Tỷ lệ thành công</p>
+                <p className="text-mono-600 text-xs mb-1">T? l? th�nh c�ng</p>
                 <p className="text-2xl font-bold text-mono-black">
                   {getSuccessRate()}%
                 </p>
@@ -213,7 +213,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
             {stats.activeOrders > 0 && (
               <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                 <p className="text-sm text-yellow-800">
-                  ⚠️ Đang có <strong>{stats.activeOrders}</strong> đơn hàng đang
+                  ?? �ang c� <strong>{stats.activeOrders}</strong> don h�ng dang
                   giao
                 </p>
               </div>
@@ -221,7 +221,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
           </div>
         ) : (
           <div className="text-center py-6 text-mono-800">
-            Không thể tải thống kê
+            Kh�ng th? t?i th?ng k�
           </div>
         )}
 
@@ -231,7 +231,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
             onClick={onClose}
             className="px-6 py-2 bg-mono-200 rounded-lg hover:bg-mono-300 font-medium"
           >
-            Đóng
+            ��ng
           </button>
         </div>
       </div>

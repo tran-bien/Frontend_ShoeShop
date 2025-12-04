@@ -64,5 +64,4 @@ export const adminCategoryService = {
     axiosInstanceAuth.patch(`/api/v1/admin/categories/${id}/status`, data),
 };
 
-// Backward compatibility
-export const categoryApi = { ...adminCategoryService };
+export default adminCategoryService;

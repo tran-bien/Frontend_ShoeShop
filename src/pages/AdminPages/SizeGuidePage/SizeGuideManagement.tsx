@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { FiPlus, FiEdit2, FiTrash2, FiImage, FiEye } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { adminSizeGuideService } from "../../../services/SizeGuideService";
+import SizeGuideFormModal from "../../../components/Admin/SizeGuide/SizeGuideFormModal";
+import type { LegacySizeGuide } from "../../../types/sizeGuide";
 
 interface SizeGuide {
   _id: string;
@@ -256,23 +258,103 @@ const SizeGuideManagement: React.FC = () => {
         </div>
       )}
 
-      {/* Create/Edit Modal - TODO: Implement */}
+      {/* Create/Edit Modal */}
       {showCreateModal && (
+        <SizeGuideFormModal
+          sizeGuide={selectedGuide as LegacySizeGuide | null}
+          onClose={() => {
+            setShowCreateModal(false);
+            setSelectedGuide(null);
+          }}
+          onSuccess={() => {
+            setShowCreateModal(false);
+            setSelectedGuide(null);
+            fetchSizeGuides();
+          }}
+        />
+      )}
+
+      {/* View Detail Modal */}
+      {selectedGuide && !showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full p-6">
-            <h2 className="text-2xl font-bold mb-4">
-              {selectedGuide ? "Chỉnh Sửa" : "Thêm"} Size Guide
-            </h2>
-            <p className="text-gray-600">TODO: Implement form</p>
-            <button
-              onClick={() => {
-                setShowCreateModal(false);
-                setSelectedGuide(null);
-              }}
-              className="mt-4 px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
-            >
-              Đóng
-            </button>
+          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-black">
+                  Chi tiết Size Guide
+                </h2>
+                <button
+                  onClick={() => setSelectedGuide(null)}
+                  className="p-2 hover:bg-gray-100 rounded-lg"
+                >
+                  ✕
+                </button>
+              </div>
+              <p className="text-gray-600 mt-1">
+                Sản phẩm: {selectedGuide.product.name}
+              </p>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {/* Size Chart */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Bảng Size</h3>
+                {selectedGuide.sizeChart.image && (
+                  <img
+                    src={selectedGuide.sizeChart.image.url}
+                    alt="Size Chart"
+                    className="w-full max-h-96 object-contain bg-gray-50 rounded-lg mb-3"
+                  />
+                )}
+                {selectedGuide.sizeChart.description && (
+                  <p className="text-gray-700 whitespace-pre-wrap">
+                    {selectedGuide.sizeChart.description}
+                  </p>
+                )}
+                {!selectedGuide.sizeChart.image &&
+                  !selectedGuide.sizeChart.description && (
+                    <p className="text-gray-400 italic">Chưa có thông tin</p>
+                  )}
+              </div>
+
+              {/* Measurement Guide */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Hướng Dẫn Đo</h3>
+                {selectedGuide.measurementGuide.image && (
+                  <img
+                    src={selectedGuide.measurementGuide.image.url}
+                    alt="Measurement Guide"
+                    className="w-full max-h-96 object-contain bg-gray-50 rounded-lg mb-3"
+                  />
+                )}
+                {selectedGuide.measurementGuide.description && (
+                  <p className="text-gray-700 whitespace-pre-wrap">
+                    {selectedGuide.measurementGuide.description}
+                  </p>
+                )}
+                {!selectedGuide.measurementGuide.image &&
+                  !selectedGuide.measurementGuide.description && (
+                    <p className="text-gray-400 italic">Chưa có thông tin</p>
+                  )}
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
+              <button
+                onClick={() => setSelectedGuide(null)}
+                className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300"
+              >
+                Đóng
+              </button>
+              <button
+                onClick={() => {
+                  setShowCreateModal(true);
+                }}
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
+              >
+                Chỉnh sửa
+              </button>
+            </div>
           </div>
         </div>
       )}

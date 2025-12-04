@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { adminSizeGuideService } from "../../../services/SizeGuideService";
+import { sizeGuideImageService } from "../../../services/ImageService";
 import { productAdminService } from "../../../services/ProductService";
 import type {
   LegacySizeGuide,
@@ -7,7 +8,7 @@ import type {
 } from "../../../types/sizeGuide";
 import type { Product } from "../../../types/product";
 import toast from "react-hot-toast";
-import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 
 interface SizeGuideFormModalProps {
   sizeGuide: LegacySizeGuide | null;
@@ -21,7 +22,11 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
   onSuccess,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [uploadingSizeChart, setUploadingSizeChart] = useState(false);
+  const [uploadingMeasurement, setUploadingMeasurement] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const sizeChartInputRef = useRef<HTMLInputElement>(null);
+  const measurementInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<CreateSizeGuideData>({
     product: sizeGuide?.product?._id || "",
     sizeChart: {
@@ -46,6 +51,139 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
     };
     fetchProducts();
   }, []);
+
+  // Handle upload size chart image
+  const handleUploadSizeChartImage = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Vui lòng chọn file ảnh");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Kích thước ảnh tối đa là 5MB");
+      return;
+    }
+
+    // If editing existing size guide, upload directly
+    if (sizeGuide) {
+      setUploadingSizeChart(true);
+      try {
+        const formDataUpload = new FormData();
+        formDataUpload.append("image", file);
+        const response = await sizeGuideImageService.uploadSizeChartImage(
+          sizeGuide._id,
+          formDataUpload
+        );
+        setFormData({
+          ...formData,
+          sizeChart: {
+            ...formData.sizeChart,
+            image: response.data.sizeGuide?.sizeChart?.image || {
+              url: response.data.url || "",
+              public_id: response.data.public_id || "",
+            },
+          },
+        });
+        toast.success("Tải ảnh size chart thành công");
+      } catch (error) {
+        console.error("Failed to upload size chart image:", error);
+        toast.error("Không thể tải ảnh lên");
+      } finally {
+        setUploadingSizeChart(false);
+      }
+    } else {
+      // For new size guide, show preview with local URL
+      const previewUrl = URL.createObjectURL(file);
+      setFormData({
+        ...formData,
+        sizeChart: {
+          ...formData.sizeChart,
+          image: { url: previewUrl, public_id: "" },
+        },
+      });
+      toast.success(
+        "Ảnh sẽ được tải lên sau khi tạo Size Guide. Vui lòng tạo Size Guide trước."
+      );
+    }
+    // Reset input
+    if (sizeChartInputRef.current) {
+      sizeChartInputRef.current.value = "";
+    }
+  };
+
+  // Handle upload measurement guide image
+  const handleUploadMeasurementImage = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Vui lòng chọn file ảnh");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Kích thước ảnh tối đa là 5MB");
+      return;
+    }
+
+    // If editing existing size guide, upload directly
+    if (sizeGuide) {
+      setUploadingMeasurement(true);
+      try {
+        const formDataUpload = new FormData();
+        formDataUpload.append("image", file);
+        const response =
+          await sizeGuideImageService.uploadMeasurementGuideImage(
+            sizeGuide._id,
+            formDataUpload
+          );
+        setFormData({
+          ...formData,
+          measurementGuide: {
+            ...formData.measurementGuide,
+            image: response.data.sizeGuide?.measurementGuide?.image || {
+              url: response.data.url || "",
+              public_id: response.data.public_id || "",
+            },
+          },
+        });
+        toast.success("Tải ảnh hướng dẫn đo thành công");
+      } catch (error) {
+        console.error("Failed to upload measurement guide image:", error);
+        toast.error("Không thể tải ảnh lên");
+      } finally {
+        setUploadingMeasurement(false);
+      }
+    } else {
+      // For new size guide, show preview with local URL
+      const previewUrl = URL.createObjectURL(file);
+      setFormData({
+        ...formData,
+        measurementGuide: {
+          ...formData.measurementGuide,
+          image: { url: previewUrl, public_id: "" },
+        },
+      });
+      toast.success(
+        "Ảnh sẽ được tải lên sau khi tạo Size Guide. Vui lòng tạo Size Guide trước."
+      );
+    }
+    // Reset input
+    if (measurementInputRef.current) {
+      measurementInputRef.current.value = "";
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,7 +288,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
             {/* Size Chart Image URL */}
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                URL hình ảnh bảng size
+                Hình ảnh bảng size
               </label>
               <div className="flex gap-2">
                 <input
@@ -173,21 +311,67 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                   placeholder="https://example.com/size-chart.jpg"
                   className="flex-1 px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
                 />
+                <input
+                  type="file"
+                  ref={sizeChartInputRef}
+                  accept="image/*"
+                  onChange={handleUploadSizeChartImage}
+                  className="hidden"
+                />
                 <button
                   type="button"
-                  className="px-4 py-2 bg-mono-100 text-mono-700 rounded-lg hover:bg-mono-200 transition-colors flex items-center gap-2"
-                  onClick={() => toast("Tính năng upload ảnh sẽ có sau")}
+                  className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors flex items-center gap-2 disabled:opacity-50"
+                  onClick={() => sizeChartInputRef.current?.click()}
+                  disabled={uploadingSizeChart}
                 >
-                  <PhotoIcon className="w-5 h-5" />
-                  Upload
+                  {uploadingSizeChart ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Đang tải...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowUpTrayIcon className="w-5 h-5" />
+                      Upload
+                    </>
+                  )}
                 </button>
               </div>
               {formData.sizeChart.image?.url && (
-                <img
-                  src={formData.sizeChart.image.url}
-                  alt="Size chart preview"
-                  className="mt-2 w-full h-48 object-contain bg-mono-50 rounded-lg border border-mono-200"
-                />
+                <div className="mt-2 relative">
+                  <img
+                    src={formData.sizeChart.image.url}
+                    alt="Size chart preview"
+                    className="w-full h-48 object-contain bg-mono-50 rounded-lg border border-mono-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        sizeChart: { ...formData.sizeChart, image: undefined },
+                      })
+                    }
+                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                  >
+                    <XMarkIcon className="w-4 h-4" />
+                  </button>
+                </div>
               )}
             </div>
 
@@ -236,7 +420,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
             {/* Measurement Guide Image URL */}
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                URL hình ảnh hướng dẫn đo
+                Hình ảnh hướng dẫn đo
               </label>
               <div className="flex gap-2">
                 <input
@@ -259,21 +443,70 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                   placeholder="https://example.com/measurement-guide.jpg"
                   className="flex-1 px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
                 />
+                <input
+                  type="file"
+                  ref={measurementInputRef}
+                  accept="image/*"
+                  onChange={handleUploadMeasurementImage}
+                  className="hidden"
+                />
                 <button
                   type="button"
-                  className="px-4 py-2 bg-mono-100 text-mono-700 rounded-lg hover:bg-mono-200 transition-colors flex items-center gap-2"
-                  onClick={() => toast("Tính năng upload ảnh sẽ có sau")}
+                  className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors flex items-center gap-2 disabled:opacity-50"
+                  onClick={() => measurementInputRef.current?.click()}
+                  disabled={uploadingMeasurement}
                 >
-                  <PhotoIcon className="w-5 h-5" />
-                  Upload
+                  {uploadingMeasurement ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
+                      </svg>
+                      Đang tải...
+                    </>
+                  ) : (
+                    <>
+                      <ArrowUpTrayIcon className="w-5 h-5" />
+                      Upload
+                    </>
+                  )}
                 </button>
               </div>
               {formData.measurementGuide.image?.url && (
-                <img
-                  src={formData.measurementGuide.image.url}
-                  alt="Measurement guide preview"
-                  className="mt-2 w-full h-48 object-contain bg-mono-50 rounded-lg border border-mono-200"
-                />
+                <div className="mt-2 relative">
+                  <img
+                    src={formData.measurementGuide.image.url}
+                    alt="Measurement guide preview"
+                    className="w-full h-48 object-contain bg-mono-50 rounded-lg border border-mono-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFormData({
+                        ...formData,
+                        measurementGuide: {
+                          ...formData.measurementGuide,
+                          image: undefined,
+                        },
+                      })
+                    }
+                    className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                  >
+                    <XMarkIcon className="w-4 h-4" />
+                  </button>
+                </div>
               )}
             </div>
 

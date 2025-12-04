@@ -104,43 +104,8 @@ export const adminCouponService = {
     axiosInstanceAuth.patch(`/api/v1/admin/coupons/${id}/status`, data),
 };
 
-// =======================
-// Backward compatibility adapters
-// =======================
-
-export const couponApi = {
-  // Public
-  getPublicCoupons: publicCouponService.getPublicCoupons,
-
-  // User
-  getUserCoupons: userCouponService.getUserCoupons,
-  collectCoupon: userCouponService.collectCoupon,
-  verifyCoupon: userCouponService.verifyCoupon,
-
-  // Admin
-  adminGetCoupons: adminCouponService.getAllCoupons,
-  adminGetCouponById: adminCouponService.getCouponById,
-  adminCreateCoupon: adminCouponService.createCoupon,
-  adminUpdateCoupon: adminCouponService.updateCoupon,
-  adminDeleteCoupon: adminCouponService.deleteCoupon,
-  adminUpdateCouponStatus: adminCouponService.updateCouponStatus,
-};
-
-// Keep old discountApi name for compatibility
-export const discountApi = {
-  getAllAdminCoupons: adminCouponService.getAllCoupons,
-  getAdminCouponById: adminCouponService.getCouponById,
-  createAdminCoupon: adminCouponService.createCoupon,
-  updateAdminCoupon: adminCouponService.updateCoupon,
-  deleteAdminCoupon: adminCouponService.deleteCoupon,
-  updateAdminCouponStatus: adminCouponService.updateCouponStatus,
-};
-
-// Unified export named as requested
-export const CouponService = {
+export default {
   public: publicCouponService,
   user: userCouponService,
   admin: adminCouponService,
 };
-
-export default CouponService;

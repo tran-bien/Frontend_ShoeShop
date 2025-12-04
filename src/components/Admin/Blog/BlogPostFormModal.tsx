@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { adminBlogService } from "../../../services/BlogService";
+import { blogImageService } from "../../../services/ImageService";
 import type {
   BlogPost,
   BlogCategory,
@@ -7,7 +8,7 @@ import type {
   CreateBlogPostData,
 } from "../../../types/blog";
 import toast from "react-hot-toast";
-import { XMarkIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 
 interface BlogPostFormModalProps {
   post: BlogPost | null;
@@ -23,6 +24,8 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
   onSuccess,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const featuredImageInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     title: post?.title || "",
     content: post?.content || "",
@@ -35,6 +38,66 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
   });
 
   const [newTag, setNewTag] = useState("");
+
+  // Handle upload featured image
+  const handleUploadFeaturedImage = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast.error("Vui lòng chọn file ảnh");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Kích thước ảnh tối đa là 5MB");
+      return;
+    }
+
+    // If editing existing post, upload directly
+    if (post) {
+      setUploadingImage(true);
+      try {
+        const formDataUpload = new FormData();
+        formDataUpload.append("image", file);
+        const response = await blogImageService.uploadFeaturedImage(
+          post._id,
+          formDataUpload
+        );
+        setFormData({
+          ...formData,
+          featuredImage: response.data.featuredImage || {
+            url: response.data.url || "",
+            public_id: response.data.public_id || "",
+          },
+        });
+        toast.success("Tải ảnh đại diện thành công");
+      } catch (error) {
+        console.error("Failed to upload featured image:", error);
+        toast.error("Không thể tải ảnh lên");
+      } finally {
+        setUploadingImage(false);
+      }
+    } else {
+      // For new post, show preview with local URL
+      const previewUrl = URL.createObjectURL(file);
+      setFormData({
+        ...formData,
+        featuredImage: { url: previewUrl, public_id: "" },
+      });
+      toast.success(
+        "Ảnh sẽ được tải lên sau khi tạo bài viết. Vui lòng tạo bài viết trước."
+      );
+    }
+    // Reset input
+    if (featuredImageInputRef.current) {
+      featuredImageInputRef.current.value = "";
+    }
+  };
 
   // Add tag
   const addTag = () => {
@@ -237,21 +300,64 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                 placeholder="https://example.com/image.jpg"
                 className="flex-1 px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
               />
+              <input
+                type="file"
+                ref={featuredImageInputRef}
+                accept="image/*"
+                onChange={handleUploadFeaturedImage}
+                className="hidden"
+              />
               <button
                 type="button"
-                className="px-4 py-2 bg-mono-100 text-mono-700 rounded-lg hover:bg-mono-200 transition-colors flex items-center gap-2"
-                onClick={() => toast("Tính năng upload ảnh sẽ có sau")}
+                className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors flex items-center gap-2 disabled:opacity-50"
+                onClick={() => featuredImageInputRef.current?.click()}
+                disabled={uploadingImage}
               >
-                <PhotoIcon className="w-5 h-5" />
-                Upload
+                {uploadingImage ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Đang tải...
+                  </>
+                ) : (
+                  <>
+                    <ArrowUpTrayIcon className="w-5 h-5" />
+                    Upload
+                  </>
+                )}
               </button>
             </div>
             {formData.featuredImage?.url && (
-              <img
-                src={formData.featuredImage.url}
-                alt="Featured preview"
-                className="mt-2 w-full h-48 object-cover rounded-lg border border-mono-200"
-              />
+              <div className="mt-2 relative">
+                <img
+                  src={formData.featuredImage.url}
+                  alt="Featured preview"
+                  className="w-full h-48 object-cover rounded-lg border border-mono-200"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData({ ...formData, featuredImage: undefined })
+                  }
+                  className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                >
+                  <XMarkIcon className="w-4 h-4" />
+                </button>
+              </div>
             )}
           </div>
 

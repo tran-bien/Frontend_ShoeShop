@@ -18,6 +18,11 @@ export interface Image {
   updatedAt?: string;
 }
 
+export interface SimpleImage {
+  url: string;
+  public_id: string;
+}
+
 export interface ImageOrder {
   _id: string;
   displayOrder: number;
@@ -30,11 +35,25 @@ export interface ImageOrder {
 export interface UploadImageResponse {
   success: boolean;
   message: string;
-  data: {
+  url?: string;
+  public_id?: string;
+  data?: {
     images?: Image[];
     image?: Image;
     logo?: Image;
   };
+  // For SizeGuide responses
+  sizeGuide?: {
+    sizeChart?: {
+      image?: SimpleImage;
+    };
+    measurementGuide?: {
+      image?: SimpleImage;
+    };
+  };
+  // For Blog responses
+  featuredImage?: SimpleImage;
+  thumbnail?: SimpleImage;
 }
 
 export interface DeleteImageResponse {

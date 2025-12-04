@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaTruck,
@@ -10,7 +10,7 @@ import {
   FaClock,
   FaFilter,
 } from "react-icons/fa";
-import ShipperService from "../../services/ShipperService";
+import { shipperService } from "../../services/ShipperService";
 
 const MyOrdersPage = () => {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const MyOrdersPage = () => {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await ShipperService.getMyOrders();
+      const response = await shipperService.getMyOrders();
       // Handle response structure: could be { data: { data: orders } } or { data: orders }
       const ordersData = response.data?.data || response.data || [];
       setOrders(Array.isArray(ordersData) ? ordersData : []);
@@ -52,22 +52,22 @@ const MyOrdersPage = () => {
       { label: string; color: string; icon: JSX.Element }
     > = {
       assigned_to_shipper: {
-        label: "Đã gán",
+        label: "�� g�n",
         color: "bg-mono-100 text-blue-800",
         icon: <FaHourglassHalf />,
       },
       out_for_delivery: {
-        label: "Đang giao",
+        label: "�ang giao",
         color: "bg-yellow-100 text-yellow-800",
         icon: <FaTruck />,
       },
       delivered: {
-        label: "Đã giao",
+        label: "�� giao",
         color: "bg-green-100 text-green-800",
         icon: <FaCheckCircle />,
       },
       delivery_failed: {
-        label: "Thất bại",
+        label: "Th?t b?i",
         color: "bg-red-100 text-red-800",
         icon: <FaTimesCircle />,
       },
@@ -96,7 +96,7 @@ const MyOrdersPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">Đang tải đơn hàng...</div>
+        <div className="text-mono-500">�ang t?i don h�ng...</div>
       </div>
     );
   }
@@ -106,7 +106,7 @@ const MyOrdersPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-mono-800">
-          Đơn hàng của tôi ({filteredOrders.length})
+          �on h�ng c?a t�i ({filteredOrders.length})
         </h1>
       </div>
 
@@ -115,7 +115,7 @@ const MyOrdersPage = () => {
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2 text-mono-700 font-medium">
             <FaFilter />
-            <span>Lọc theo trạng thái:</span>
+            <span>L?c theo tr?ng th�i:</span>
           </div>
           <button
             onClick={() => setFilterStatus("")}
@@ -125,7 +125,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Tất cả ({orders.length})
+            T?t c? ({orders.length})
           </button>
           <button
             onClick={() => setFilterStatus("assigned_to_shipper")}
@@ -135,7 +135,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Đã gán (
+            �� g�n (
             {orders.filter((o) => o.status === "assigned_to_shipper").length})
           </button>
           <button
@@ -146,7 +146,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Đang giao (
+            �ang giao (
             {orders.filter((o) => o.status === "out_for_delivery").length})
           </button>
           <button
@@ -157,7 +157,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Đã giao ({orders.filter((o) => o.status === "delivered").length})
+            �� giao ({orders.filter((o) => o.status === "delivered").length})
           </button>
           <button
             onClick={() => setFilterStatus("delivery_failed")}
@@ -167,7 +167,7 @@ const MyOrdersPage = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Thất bại (
+            Th?t b?i (
             {orders.filter((o) => o.status === "delivery_failed").length})
           </button>
         </div>
@@ -177,7 +177,7 @@ const MyOrdersPage = () => {
       {filteredOrders.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-12 text-center">
           <FaTruck size={48} className="mx-auto text-mono-400 mb-4" />
-          <p className="text-mono-500 text-lg">Không có đơn hàng nào</p>
+          <p className="text-mono-500 text-lg">Kh�ng c� don h�ng n�o</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -205,7 +205,7 @@ const MyOrdersPage = () => {
               <div className="p-6 space-y-4">
                 {/* Customer Info */}
                 <div>
-                  <p className="text-sm text-mono-600 mb-1">Khách hàng</p>
+                  <p className="text-sm text-mono-600 mb-1">Kh�ch h�ng</p>
                   <div className="flex items-center gap-2">
                     <p className="font-semibold text-mono-800">
                       {order.user?.name || "N/A"}
@@ -225,7 +225,7 @@ const MyOrdersPage = () => {
                 <div>
                   <p className="text-sm text-mono-600 mb-1 flex items-center gap-1">
                     <FaMapMarkerAlt className="text-mono-800" />
-                    Địa chỉ giao hàng
+                    �?a ch? giao h�ng
                   </p>
                   <p className="text-mono-800">
                     {order.shippingAddress?.address || "N/A"}
@@ -242,15 +242,15 @@ const MyOrdersPage = () => {
                 {/* Order Items Count */}
                 <div className="flex items-center justify-between pt-4 border-t border-mono-200">
                   <div>
-                    <p className="text-sm text-mono-600">Số lượng sản phẩm</p>
+                    <p className="text-sm text-mono-600">S? lu?ng s?n ph?m</p>
                     <p className="font-semibold text-mono-800">
-                      {order.items?.length || 0} mặt hàng
+                      {order.items?.length || 0} m?t h�ng
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-mono-600">Tổng tiền</p>
+                    <p className="text-sm text-mono-600">T?ng ti?n</p>
                     <p className="font-bold text-mono-black text-lg">
-                      {order.finalTotal?.toLocaleString("vi-VN")}₫
+                      {order.finalTotal?.toLocaleString("vi-VN")}?
                     </p>
                   </div>
                 </div>
@@ -261,7 +261,7 @@ const MyOrdersPage = () => {
                     <div className="bg-mono-50 rounded-lg p-3">
                       <p className="text-sm text-mono-600 mb-2 flex items-center gap-1">
                         <FaClock />
-                        Lần giao gần nhất
+                        L?n giao g?n nh?t
                       </p>
                       <p className="text-sm text-mono-800">
                         {new Date(
@@ -273,7 +273,7 @@ const MyOrdersPage = () => {
                       {order.deliveryAttempts[order.deliveryAttempts.length - 1]
                         .note && (
                         <p className="text-sm text-mono-600 mt-1">
-                          Ghi chú:{" "}
+                          Ghi ch�:{" "}
                           {
                             order.deliveryAttempts[
                               order.deliveryAttempts.length - 1
@@ -289,7 +289,7 @@ const MyOrdersPage = () => {
                   onClick={() => handleViewDetail(order._id)}
                   className="w-full bg-mono-black hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-colors"
                 >
-                  Xem chi tiết & Cập nhật
+                  Xem chi ti?t & C?p nh?t
                 </button>
               </div>
             </div>

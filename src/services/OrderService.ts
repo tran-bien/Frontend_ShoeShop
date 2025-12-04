@@ -138,30 +138,4 @@ export const paymentService = {
     axiosInstance.get("/api/v1/users/orders/vnpay/test-callback"),
 };
 
-// =======================
-// Backward compatibility
-// =======================
-
-export const orderApi = {
-  // User API
-  getOrders: userOrderService.getOrders,
-  createOrder: userOrderService.createOrder,
-  getOrderById: userOrderService.getOrderById,
-  cancelOrder: userOrderService.cancelOrder,
-  getUserCancelRequests: userOrderService.getUserCancelRequests,
-  repayOrder: userOrderService.repayOrder,
-
-  // Admin API
-  adminGetOrders: adminOrderService.getAllOrders,
-  adminGetOrderById: adminOrderService.getOrderDetail,
-  adminUpdateOrderStatus: adminOrderService.updateOrderStatus,
-  adminGetCancelRequests: adminOrderService.getCancelRequests,
-  adminProcessCancelRequest: adminOrderService.processCancelRequest,
-
-  // Payment API
-  vnpayCallback: paymentService.vnpayCallback,
-  vnpayIpn: paymentService.vnpayIpn,
-  testVnpayCallback: paymentService.testVnpayCallback,
-};
-
 export default userOrderService;

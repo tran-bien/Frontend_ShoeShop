@@ -1,5 +1,5 @@
-﻿import React, { useState } from "react";
-import { sizeApi } from "../../../services/SizeService";
+import React, { useState } from "react";
+import { adminSizeService } from "../../../services/SizeService";
 
 interface AddSizeProps {
   handleClose: () => void;
@@ -18,11 +18,11 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
     setLoading(true);
     setError(null);
     try {
-      await sizeApi.create({ value: String(value), region: type });
+      await adminSizeService.create({ value: String(value), region: type });
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Thêm size thất bại!");
+      setError("Th�m size th?t b?i!");
     } finally {
       setLoading(false);
     }
@@ -38,11 +38,11 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Thêm Size</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Th�m Size</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Giá trị size
+              Gi� tr? size
             </label>
             <input
               type="number"
@@ -51,14 +51,14 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
               onChange={(e) =>
                 setValue(e.target.value === "" ? "" : Number(e.target.value))
               }
-              placeholder="Nhập giá trị size (VD: 41.5)"
+              placeholder="Nh?p gi� tr? size (VD: 41.5)"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Loại size
+              Lo?i size
             </label>
             <select
               value={type}
@@ -76,13 +76,13 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Mô tả
+              M� t?
             </label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Nhập mô tả"
+              placeholder="Nh?p m� t?"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -94,14 +94,14 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
               disabled={loading}
               className="bg-mono-700 hover:bg-mono-800 text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Đang thêm..." : "Thêm Size"}
+              {loading ? "�ang th�m..." : "Th�m Size"}
             </button>
             <button
               type="button"
               onClick={handleClose}
               className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
-              Hủy
+              H?y
             </button>
           </div>
         </form>

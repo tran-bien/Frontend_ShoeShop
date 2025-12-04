@@ -1,3 +1,9 @@
+/**
+ * Profile Service
+ * Quản lý thông tin người dùng và địa chỉ
+ * BE Routes: /api/v1/users/profile, /api/v1/users/addresses
+ */
+
 import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type { User, UpdateUserProfileData, UserAddress } from "../types/user";
 import type { ApiResponse } from "../types/api";
@@ -13,7 +19,6 @@ export interface ProfileResponse {
   success: boolean;
   message: string;
   data: User;
-  user: User; // Backward compatibility - BE may return either
 }
 
 export interface AddressResponse {
@@ -42,13 +47,13 @@ export const profileService = {
 
   // Cập nhật avatar (form-data)
   updateAvatar: (formData: FormData): Promise<{ data: ApiResponse<User> }> =>
-    axiosInstanceAuth.post("/api/v1/images/avatar", formData, {
+    axiosInstanceAuth.post("/api/v1/users/images/avatar", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
 
   // Xóa avatar
   deleteAvatar: (): Promise<{ data: ApiResponse<User> }> =>
-    axiosInstanceAuth.delete("/api/v1/images/avatar"),
+    axiosInstanceAuth.delete("/api/v1/users/images/avatar"),
 };
 
 // =======================
@@ -72,20 +77,6 @@ export const addressService = {
   // Xóa địa chỉ
   deleteAddress: (addressId: string): Promise<{ data: ApiResponse<null> }> =>
     axiosInstanceAuth.delete(`/api/v1/users/addresses/${addressId}`),
-};
-
-// =======================
-// LEGACY EXPORTS (Backward Compatibility)
-// =======================
-
-export const inforApi = {
-  getProfile: profileService.getProfile,
-  updateProfile: profileService.updateProfile,
-  updateAvatar: profileService.updateAvatar,
-  deleteAvatar: profileService.deleteAvatar,
-  addAddress: addressService.addAddress,
-  updateAddress: addressService.updateAddress,
-  deleteAddress: addressService.deleteAddress,
 };
 
 export default profileService;

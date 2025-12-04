@@ -44,5 +44,4 @@ export const adminSizeService = {
     axiosInstanceAuth.put(`/api/v1/admin/sizes/${id}/restore`),
 };
 
-// Backward compatibility
-export const sizeApi = { ...adminSizeService };
+export default adminSizeService;

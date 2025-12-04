@@ -64,5 +64,4 @@ export const adminVariantService = {
     }),
 };
 
-// Backward compatibility
-export const variantApi = { ...adminVariantService };
+export default adminVariantService;

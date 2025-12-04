@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
-import { sizeApi } from "../../../services/SizeService";
+import { adminSizeService } from "../../../services/SizeService";
 import AddSize from "./AddSixe";
 import { useAuth } from "../../../hooks/useAuth";
 import type { Size } from "../../../types/size";
@@ -15,12 +15,12 @@ const ViewDetailModal: React.FC<{
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-gradient-to-r from-mono-black to-purple-600 text-white p-6 rounded-t-xl">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-bold">Chi tiết Kích thước</h2>
+            <h2 className="text-2xl font-bold">Chi ti?t K�ch thu?c</h2>
             <button
               onClick={onClose}
               className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
             >
-              ×
+              �
             </button>
           </div>
         </div>
@@ -31,11 +31,11 @@ const ViewDetailModal: React.FC<{
               <p className="text-mono-800 font-mono text-sm">{size._id}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Giá trị size</p>
+              <p className="text-sm text-mono-500 font-medium">Gi� tr? size</p>
               <p className="text-mono-800 font-bold text-2xl">{size.value}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Loại size</p>
+              <p className="text-sm text-mono-500 font-medium">Lo?i size</p>
               <span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
                   size.type === "EU"
@@ -56,14 +56,14 @@ const ViewDetailModal: React.FC<{
             </div>
           </div>
           <div>
-            <p className="text-sm text-mono-500 font-medium">Mô tả</p>
+            <p className="text-sm text-mono-500 font-medium">M� t?</p>
             <p className="text-mono-800 mt-1">
-              {size.description || "Không có mô tả"}
+              {size.description || "Kh�ng c� m� t?"}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-mono-500 font-medium">Ngày tạo</p>
+              <p className="text-sm text-mono-500 font-medium">Ng�y t?o</p>
               <p className="text-mono-800 text-sm">
                 {size.createdAt
                   ? new Date(size.createdAt).toLocaleString("vi-VN")
@@ -72,7 +72,7 @@ const ViewDetailModal: React.FC<{
             </div>
             <div>
               <p className="text-sm text-mono-500 font-medium">
-                Cập nhật lần cuối
+                C?p nh?t l?n cu?i
               </p>
               <p className="text-mono-800 text-sm">
                 {size.updatedAt
@@ -83,7 +83,7 @@ const ViewDetailModal: React.FC<{
           </div>
           {size.deletedAt && (
             <div className="pt-4 border-t">
-              <p className="text-sm text-mono-500 font-medium">Ngày xóa</p>
+              <p className="text-sm text-mono-500 font-medium">Ng�y x�a</p>
               <p className="text-mono-800 text-sm">
                 {new Date(size.deletedAt).toLocaleString("vi-VN")}
               </p>
@@ -111,11 +111,11 @@ const EditSizeModal: React.FC<{
     setLoading(true);
     setError(null);
     try {
-      await sizeApi.update(size._id, { value: String(value), region: type });
+      await adminSizeService.update(size._id, { value: String(value), region: type });
       onSuccess();
       onClose();
     } catch {
-      setError("Cập nhật size thất bại!");
+      setError("C?p nh?t size th?t b?i!");
     } finally {
       setLoading(false);
     }
@@ -131,25 +131,25 @@ const EditSizeModal: React.FC<{
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Cập nhật Size</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">C?p nh?t Size</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Giá trị size
+              Gi� tr? size
             </label>
             <input
               type="number"
               step="0.1"
               value={value}
               onChange={(e) => setValue(Number(e.target.value))}
-              placeholder="Nhập giá trị size (VD: 41.5)"
+              placeholder="Nh?p gi� tr? size (VD: 41.5)"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Loại size
+              Lo?i size
             </label>
             <select
               value={type}
@@ -167,13 +167,13 @@ const EditSizeModal: React.FC<{
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Mô tả
+              M� t?
             </label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Nhập mô tả"
+              placeholder="Nh?p m� t?"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -185,14 +185,14 @@ const EditSizeModal: React.FC<{
               disabled={loading}
               className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-md"
             >
-              {loading ? "Đang cập nhật..." : "Cập nhật"}
+              {loading ? "�ang c?p nh?t..." : "C?p nh?t"}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="bg-mono-200 hover:bg-mono-300 text-mono-700 px-6 py-2 rounded-md"
             >
-              Hủy
+              H?y
             </button>
           </div>
         </form>
@@ -238,7 +238,7 @@ const SizePage: React.FC = () => {
         ...(typeFilter !== "all" && { type: typeFilter }),
         sort: sortOption,
       };
-      const res = await sizeApi.getAll(params);
+      const res = await adminSizeService.getAll(params);
       setSizes(res.data.data || []);
       setCurrentPage(res.data.currentPage || 1);
       setTotalPages(res.data.totalPages || 1);
@@ -260,7 +260,7 @@ const SizePage: React.FC = () => {
         ...(typeFilter !== "all" && { type: typeFilter }),
         sort: sortOption,
       };
-      const res = await sizeApi.getDeleted(params);
+      const res = await adminSizeService.getDeleted(params);
       setDeletedSizes(res.data.data || []);
       setCurrentPage(res.data.currentPage || 1);
       setTotalPages(res.data.totalPages || 1);
@@ -276,7 +276,7 @@ const SizePage: React.FC = () => {
   // Fetch stats with limit=100 for estimation
   const fetchStats = async () => {
     try {
-      const statsResponse = await sizeApi.getAll({ page: 1, limit: 100 });
+      const statsResponse = await adminSizeService.getAll({ page: 1, limit: 100 });
       const statsData = statsResponse.data.data || [];
       const totalFromAPI = statsResponse.data.total || 0;
 
@@ -293,7 +293,7 @@ const SizePage: React.FC = () => {
 
   const fetchDeletedStats = async () => {
     try {
-      const deletedResponse = await sizeApi.getDeleted({ page: 1, limit: 100 });
+      const deletedResponse = await adminSizeService.getDeleted({ page: 1, limit: 100 });
       const totalDeleted = deletedResponse.data.total || 0;
       setDeletedCount(totalDeleted);
     } catch {
@@ -328,7 +328,7 @@ const SizePage: React.FC = () => {
 
   const handleDeleteSize = async (_id: string) => {
     try {
-      await sizeApi.delete(_id);
+      await adminSizeService.delete(_id);
       if (showDeleted) {
         fetchDeletedSizes(currentPage);
       } else {
@@ -336,18 +336,18 @@ const SizePage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      // X? l� l?i n?u c?n
     }
   };
 
   const handleRestoreSize = async (_id: string) => {
     try {
-      await sizeApi.restore(_id);
+      await adminSizeService.restore(_id);
       fetchDeletedSizes(currentPage);
       fetchSizes(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      // X? l� l?i n?u c?n
     }
   };
 
@@ -357,7 +357,7 @@ const SizePage: React.FC = () => {
     <div className="p-6 w-full font-sans">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug">
-          Danh Sách Kích Thước
+          Danh S�ch K�ch Thu?c
         </h2>
         {!isSearchVisible ? (
           <button
@@ -365,7 +365,7 @@ const SizePage: React.FC = () => {
             className="flex items-center gap-2 border border-mono-300 bg-white hover:bg-mono-100 text-mono-700 px-5 py-2 rounded-3xl shadow transition-colors font-medium focus:outline-none focus:ring-2 focus:ring-mono-400 active:bg-mono-200"
           >
             <IoIosSearch className="text-xl text-mono-500" />
-            <span className="font-medium">Tìm kiếm</span>
+            <span className="font-medium">T�m ki?m</span>
           </button>
         ) : (
           <div className="flex items-center space-x-2 w-full max-w-md">
@@ -377,7 +377,7 @@ const SizePage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Tìm theo mô tả..."
+              placeholder="T�m theo m� t?..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -389,13 +389,13 @@ const SizePage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-black mb-1">
-              Tổng số kích thước
+              T?ng s? k�ch thu?c
             </h3>
             <p className="text-3xl font-bold text-blue-900">{totalCount}</p>
           </div>
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-green-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
-              Đang hoạt động
+              �ang ho?t d?ng
             </h3>
             <p className="text-3xl font-bold text-green-900">{activeCount}</p>
           </div>
@@ -404,14 +404,14 @@ const SizePage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
           <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-red-200">
             <h3 className="text-sm font-medium text-mono-900 mb-1">
-              Tổng số kích thước đã xóa
+              T?ng s? k�ch thu?c d� x�a
             </h3>
             <p className="text-3xl font-bold text-red-900">{deletedCount}</p>
           </div>
         </div>
       )}
 
-      {/* Tab chuyển đổi và Sort */}
+      {/* Tab chuy?n d?i v� Sort */}
       <div className="flex items-center justify-between border-b mb-4">
         <div className="flex">
           <button
@@ -425,7 +425,7 @@ const SizePage: React.FC = () => {
               setCurrentPage(1);
             }}
           >
-            Size đang hoạt động
+            Size dang ho?t d?ng
           </button>
           <button
             className={`px-4 py-2 font-medium transition border-b-2 -mb-px ${
@@ -438,7 +438,7 @@ const SizePage: React.FC = () => {
               setCurrentPage(1);
             }}
           >
-            Size đã xóa
+            Size d� x�a
           </button>
         </div>
         <div className="flex items-center gap-3 mb-2">
@@ -451,7 +451,7 @@ const SizePage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="all">Tất cả loại</option>
+            <option value="all">T?t c? lo?i</option>
             <option value="EU">EU</option>
             <option value="US">US</option>
             <option value="UK">UK</option>
@@ -468,29 +468,29 @@ const SizePage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="created_at_desc">Mới nhất</option>
-            <option value="created_at_asc">Cũ nhất</option>
-            <option value="name_asc">Size tăng dần</option>
-            <option value="name_desc">Size giảm dần</option>
+            <option value="created_at_desc">M?i nh?t</option>
+            <option value="created_at_asc">Cu nh?t</option>
+            <option value="name_asc">Size tang d?n</option>
+            <option value="name_desc">Size gi?m d?n</option>
           </select>
           {!showDeleted && canCreate() && (
             <button
               className="px-4 py-2 bg-gradient-to-r from-mono-black to-purple-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all shadow-md"
               onClick={() => setShowAddSize(true)}
             >
-              + Thêm Kích Thước
+              + Th�m K�ch Thu?c
             </button>
           )}
         </div>
       </div>
-      {/* Hiển thị modal thêm size */}
+      {/* Hi?n th? modal th�m size */}
       {showAddSize && (
         <AddSize
           handleClose={() => setShowAddSize(false)}
           onSuccess={fetchSizes}
         />
       )}
-      {/* Hiển thị modal sửa size */}
+      {/* Hi?n th? modal s?a size */}
       {editingSize && (
         <EditSizeModal
           size={editingSize}
@@ -504,11 +504,11 @@ const SizePage: React.FC = () => {
           <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
             <tr>
               <th className="py-3 px-4 text-left border-b">ID</th>
-              <th className="py-3 px-4 text-left border-b">Giá Trị</th>
-              <th className="py-3 px-4 text-left border-b">Loại</th>
-              <th className="py-3 px-4 text-left border-b">Mô Tả</th>
-              <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
-              <th className="py-3 px-4 text-center border-b">Thao Tác</th>
+              <th className="py-3 px-4 text-left border-b">Gi� Tr?</th>
+              <th className="py-3 px-4 text-left border-b">Lo?i</th>
+              <th className="py-3 px-4 text-left border-b">M� T?</th>
+              <th className="py-3 px-4 text-center border-b">Tr?ng Th�i</th>
+              <th className="py-3 px-4 text-center border-b">Thao T�c</th>
             </tr>
           </thead>
           <tbody>
@@ -545,11 +545,11 @@ const SizePage: React.FC = () => {
                 <td className="py-2 px-4 border-b text-center text-sm">
                   {item.deletedAt ? (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
-                      Đã xóa
+                      �� x�a
                     </span>
                   ) : (
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                      Hoạt động
+                      Ho?t d?ng
                     </span>
                   )}
                 </td>
@@ -600,7 +600,7 @@ const SizePage: React.FC = () => {
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                               />
                             </svg>
-                            Sửa
+                            S?a
                           </button>
                         )}
                         {canDelete() && (
@@ -621,7 +621,7 @@ const SizePage: React.FC = () => {
                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                               />
                             </svg>
-                            Xóa
+                            X�a
                           </button>
                         )}
                       </>
@@ -644,7 +644,7 @@ const SizePage: React.FC = () => {
                               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
-                          Khôi phục
+                          Kh�i ph?c
                         </button>
                       )
                     )}
@@ -659,7 +659,7 @@ const SizePage: React.FC = () => {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-6">
         <div className="text-sm text-mono-600">
-          Trang {currentPage} / {totalPages} • Tổng: {totalCount} kích thước
+          Trang {currentPage} / {totalPages} � T?ng: {totalCount} k�ch thu?c
         </div>
         <div className="flex gap-2">
           <button
@@ -671,7 +671,7 @@ const SizePage: React.FC = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Trước
+            Tru?c
           </button>
 
           {/* Page Numbers */}
@@ -760,7 +760,7 @@ const SizePage: React.FC = () => {
                 : "bg-mono-200 text-mono-700 hover:bg-mono-300"
             }`}
           >
-            Tiếp
+            Ti?p
           </button>
         </div>
       </div>

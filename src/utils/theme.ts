@@ -47,8 +47,9 @@ export const monochromeTheme = {
   // Typography
   typography: {
     fontFamily: {
+      // Be Vietnam Pro optimized for Vietnamese
       primary:
-        "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        "'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
       mono: "'JetBrains Mono', 'Fira Code', monospace",
     },
     fontSize: {

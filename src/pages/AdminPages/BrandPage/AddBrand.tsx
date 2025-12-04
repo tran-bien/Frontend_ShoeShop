@@ -1,5 +1,5 @@
-﻿import React, { useState } from "react";
-import { brandApi } from "../../../services/BrandService";
+import React, { useState } from "react";
+import { adminBrandService } from "../../../services/BrandService";
 
 interface AddBrandProps {
   handleClose: () => void;
@@ -26,11 +26,11 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
     setLoading(true);
     setError(null);
     try {
-      await brandApi.create(formData);
+      await adminBrandService.create(formData);
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Thêm thương hiệu thất bại!");
+      setError("Th�m thuong hi?u th?t b?i!");
     } finally {
       setLoading(false);
     }
@@ -46,11 +46,11 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
         >
           &times;
         </button>
-        <h2 className="text-xl font-bold mb-6 text-center">Thêm Thương Hiệu</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Th�m Thuong Hi?u</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-black">
-              Tên Thương Hiệu
+              T�n Thuong Hi?u
             </label>
             <input
               type="text"
@@ -63,7 +63,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
           </div>
           <div>
             <label className="block text-sm font-medium text-black">
-              Mô Tả
+              M� T?
             </label>
             <textarea
               name="description"
@@ -80,7 +80,7 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
               disabled={loading}
               className="bg-mono-500 text-white px-4 py-2 rounded-md hover:bg-mono-black transition"
             >
-              {loading ? "Đang thêm..." : "Thêm"}
+              {loading ? "�ang th�m..." : "Th�m"}
             </button>
           </div>
         </form>

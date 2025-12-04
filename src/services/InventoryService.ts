@@ -1,5 +1,5 @@
 import { axiosInstanceAuth } from "../utils/axiosIntance";
-import { ApiResponse } from "../types/common";
+import { ApiResponse } from "../types/api";
 import type {
   InventoryItem,
   InventoryTransaction,
@@ -108,7 +108,4 @@ export const adminInventoryService = {
     ),
 };
 
-// Backward compatibility
-export const inventoryService = { ...adminInventoryService };
-
-export default inventoryService;
+export default adminInventoryService;

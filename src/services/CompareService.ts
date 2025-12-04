@@ -85,13 +85,4 @@ export const compareLocalService = {
   },
 };
 
-// =======================
-// Backward compatibility
-// =======================
-
-export const compareApi = {
-  compareProducts: publicCompareService.compareProducts,
-  ...compareLocalService,
-};
-
 export default publicCompareService;

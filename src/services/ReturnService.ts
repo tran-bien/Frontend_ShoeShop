@@ -100,21 +100,7 @@ export const adminReturnService = {
   // Nếu cần endpoint này, phải thêm vào backend trước
 };
 
-// Backward compatibility - Combined legacy API
-export const returnService = {
-  // Customer methods
-  createReturnRequest: customerReturnService.createReturnRequest,
-  getReturnRequests: customerReturnService.getReturnRequests,
-  getReturnRequestDetail: customerReturnService.getReturnRequestDetail,
-  cancelReturnRequest: customerReturnService.cancelReturnRequest,
-
-  // Admin methods
-  getReturnStats: adminReturnService.getReturnStats,
-  approveReturnRequest: adminReturnService.approveReturnRequest,
-  rejectReturnRequest: adminReturnService.rejectReturnRequest,
-  processReturn: adminReturnService.processReturn,
-  processExchange: adminReturnService.processExchange,
-  // completeReturn: adminReturnService.completeReturn, // REMOVED - endpoint không tồn tại
+export default {
+  customer: customerReturnService,
+  admin: adminReturnService,
 };
-
-export default returnService;

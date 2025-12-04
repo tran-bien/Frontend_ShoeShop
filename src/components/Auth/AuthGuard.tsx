@@ -9,10 +9,9 @@ interface AuthGuardProps {
   requireAuth?: boolean;
   requireRole?: string[];
   redirectTo?: string;
-  adminOnly?: boolean; // Thêm thuộc tính adminOnly - giữ lại để backward compatibility
-  requireStaff?: boolean; // Mới - cho phép cả staff và admin
-  requireAdminOnly?: boolean; // Mới - chỉ admin
-  requireShipper?: boolean; // Mới - chỉ shipper
+  requireStaff?: boolean;
+  requireAdminOnly?: boolean;
+  requireShipper?: boolean;
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = ({
@@ -20,10 +19,9 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   requireAuth = true,
   requireRole = [],
   redirectTo = "/login",
-  adminOnly = false, // Giá trị mặc định là false
-  requireStaff = false, // Mới
-  requireAdminOnly = false, // Mới
-  requireShipper = false, // Mới
+  requireStaff = false,
+  requireAdminOnly = false,
+  requireShipper = false,
 }) => {
   const { isAuthenticated, user, isLoading } = useAuth();
   const location = useLocation();
@@ -65,11 +63,6 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
 
   // Kiểm tra quyền shipper only (chỉ shipper)
   if (requireShipper && user && user.role !== "shipper") {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
-  // Backward compatibility cho adminOnly
-  if (adminOnly && user?.role !== "admin") {
     return <Navigate to="/unauthorized" replace />;
   }
 

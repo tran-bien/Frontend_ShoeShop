@@ -54,7 +54,6 @@ export interface SizeGuide {
     name: string;
     slug?: string;
   };
-  // Old format backward compatibility
   measurementGuide?: MeasurementGuide;
   isActive?: boolean;
   createdBy?: string;

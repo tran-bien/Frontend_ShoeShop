@@ -9,10 +9,16 @@ import {
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { adminBlogService } from "../../../services/BlogService";
-import type { BlogPost, BlogPostStatus } from "../../../types/blog";
+import BlogPostFormModal from "../../../components/Admin/Blog/BlogPostFormModal";
+import type {
+  BlogPost,
+  BlogPostStatus,
+  BlogCategory,
+} from "../../../types/blog";
 
 const BlogManagement: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [categories, setCategories] = useState<BlogCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<BlogPostStatus | "all">(
@@ -20,11 +26,35 @@ const BlogManagement: React.FC = () => {
   );
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
 
   useEffect(() => {
     fetchPosts();
+    fetchCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, statusFilter]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await adminBlogService.getAllCategories();
+      if (response.data.success) {
+        // Handle both response formats: { data: { categories } } or { data: [] }
+        const cats = response.data.data;
+        if (Array.isArray(cats)) {
+          setCategories(cats);
+        } else if (cats && "categories" in cats) {
+          setCategories(
+            (cats as { categories: BlogCategory[] }).categories || []
+          );
+        } else {
+          setCategories([]);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const fetchPosts = async () => {
     try {
@@ -144,7 +174,10 @@ const BlogManagement: React.FC = () => {
 
         {/* Create Button */}
         <button
-          onClick={() => (window.location.href = "/admin/blogs/create")}
+          onClick={() => {
+            setSelectedPost(null);
+            setShowModal(true);
+          }}
           className="flex items-center justify-center gap-2 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
         >
           <FiPlus className="w-5 h-5" />
@@ -157,7 +190,10 @@ const BlogManagement: React.FC = () => {
         <div className="text-center py-16 bg-gray-50 rounded-lg">
           <p className="text-gray-500 text-lg mb-4">Chưa có bài viết nào</p>
           <button
-            onClick={() => (window.location.href = "/admin/blogs/create")}
+            onClick={() => {
+              setSelectedPost(null);
+              setShowModal(true);
+            }}
             className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
           >
             Tạo bài viết đầu tiên
@@ -233,9 +269,10 @@ const BlogManagement: React.FC = () => {
                     <span className="text-sm">Xem</span>
                   </button>
                   <button
-                    onClick={() =>
-                      (window.location.href = `/admin/blogs/edit/${post._id}`)
-                    }
+                    onClick={() => {
+                      setSelectedPost(post);
+                      setShowModal(true);
+                    }}
                     className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors border-r border-gray-200"
                   >
                     <FiEdit2 className="w-4 h-4" />
@@ -278,6 +315,23 @@ const BlogManagement: React.FC = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* Create/Edit Modal */}
+      {showModal && (
+        <BlogPostFormModal
+          post={selectedPost}
+          categories={categories}
+          onClose={() => {
+            setShowModal(false);
+            setSelectedPost(null);
+          }}
+          onSuccess={() => {
+            setShowModal(false);
+            setSelectedPost(null);
+            fetchPosts();
+          }}
+        />
       )}
     </div>
   );

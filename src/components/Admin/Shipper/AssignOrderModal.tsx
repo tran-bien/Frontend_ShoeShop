@@ -1,5 +1,5 @@
-﻿import { useState, useEffect } from "react";
-import ShipperService from "../../../services/ShipperService";
+import { useState, useEffect } from "react";
+import { adminShipperService } from "../../../services/ShipperService";
 import type { Shipper } from "../../../types/shipper";
 
 interface Props {
@@ -30,26 +30,26 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
     e.preventDefault();
 
     if (!formData.orderId.trim()) {
-      setError("Vui lòng nhập mã đơn hàng");
+      setError("Vui l�ng nh?p m� don h�ng");
       return;
     }
 
     if (!formData.shipperId) {
-      setError("Vui lòng chọn shipper");
+      setError("Vui l�ng ch?n shipper");
       return;
     }
 
     try {
       setLoading(true);
       setError("");
-      await ShipperService.assignOrderToShipper(formData.orderId, {
+      await adminShipperService.assignOrderToShipper(formData.orderId, {
         shipperId: formData.shipperId,
       });
-      alert("Gán đơn hàng cho shipper thành công!");
+      alert("G�n don h�ng cho shipper th�nh c�ng!");
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Có lỗi xảy ra");
+      setError(error.response?.data?.message || "C� l?i x?y ra");
     } finally {
       setLoading(false);
     }
@@ -71,14 +71,14 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full">
         <h2 className="text-xl font-bold mb-4 text-mono-800">
-          🚚 Gán đơn hàng cho Shipper
+          ?? G�n don h�ng cho Shipper
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Order ID */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Mã đơn hàng <span className="text-mono-800">*</span>
+              M� don h�ng <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -87,7 +87,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                 setFormData({ ...formData, orderId: e.target.value })
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
-              placeholder="Nhập ID hoặc mã đơn hàng"
+              placeholder="Nh?p ID ho?c m� don h�ng"
               required
             />
           </div>
@@ -95,13 +95,13 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
           {/* Shipper Selection */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Chọn Shipper <span className="text-mono-800">*</span>
+              Ch?n Shipper <span className="text-mono-800">*</span>
             </label>
 
             {availableShippers.length === 0 ? (
               <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm">
-                ⚠️ Không có shipper khả dụng. Tất cả shipper đang bận hoặc đã
-                đạt giới hạn đơn hàng.
+                ?? Kh�ng c� shipper kh? d?ng. T?t c? shipper dang b?n ho?c d�
+                d?t gi?i h?n don h�ng.
               </div>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto border border-mono-200 rounded-lg p-2">
@@ -146,14 +146,14 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                               )}`}
                             >
                               {shipper.shipper.activeOrders}/
-                              {shipper.shipper.maxOrders} đơn
+                              {shipper.shipper.maxOrders} don
                             </span>
                             <p className="text-xs text-mono-500 mt-1">
                               {
                                 shipper.shipper.deliveryStats
                                   .successfulDeliveries
                               }{" "}
-                              thành công
+                              th�nh c�ng
                             </p>
                           </div>
                         </div>
@@ -195,14 +195,14 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
               disabled={loading || availableShippers.length === 0}
               className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "Đang xử lý..." : "Gán đơn hàng"}
+              {loading ? "�ang x? l�..." : "G�n don h�ng"}
             </button>
             <button
               type="button"
               onClick={onClose}
               className="flex-1 bg-mono-200 py-3 rounded-lg hover:bg-mono-300 font-medium transition-colors"
             >
-              Hủy
+              H?y
             </button>
           </div>
         </form>

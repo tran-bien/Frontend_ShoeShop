@@ -87,24 +87,4 @@ export const adminLoyaltyService = {
     ),
 };
 
-// =======================
-// Backward compatibility
-// =======================
-
-export const loyaltyApi = {
-  // User APIs
-  getLoyaltyInfo: userLoyaltyService.getLoyaltyInfo,
-  getTransactions: userLoyaltyService.getTransactions,
-  getTiers: userLoyaltyService.getTiers,
-
-  // Admin APIs
-  adminGetAllTiers: adminLoyaltyService.getAllTiers,
-  adminGetTierById: adminLoyaltyService.getTierById,
-  adminCreateTier: adminLoyaltyService.createTier,
-  adminUpdateTier: adminLoyaltyService.updateTier,
-  adminDeleteTier: adminLoyaltyService.deleteTier,
-  adminAdjustPoints: adminLoyaltyService.adjustUserPoints,
-  adminGetUserTransactions: adminLoyaltyService.getUserTransactions,
-};
-
 export default userLoyaltyService;

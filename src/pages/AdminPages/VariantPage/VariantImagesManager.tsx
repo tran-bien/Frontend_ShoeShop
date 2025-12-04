@@ -1,10 +1,5 @@
 ﻿import React, { useState } from "react";
-import {
-  uploadVariantImages,
-  removeVariantImages,
-  setVariantMainImage,
-  reorderVariantImages,
-} from "../../../services/ImageService";
+import { variantImageService } from "../../../services/ImageService";
 import { useAuth } from "../../../hooks/useAuth";
 
 const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
@@ -26,18 +21,18 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
     Array.from(selectedFiles).forEach((file) => {
       formData.append("images", file);
     });
-    await uploadVariantImages(variantId, formData);
+    await variantImageService.uploadImages(variantId, formData);
     setSelectedFiles(null);
     reloadImages();
   };
 
   const handleRemove = async (imageId: string) => {
-    await removeVariantImages(variantId, [imageId]);
+    await variantImageService.removeImages(variantId, [imageId]);
     reloadImages();
   };
 
   const handleSetMain = async (imageId: string) => {
-    await setVariantMainImage(variantId, imageId);
+    await variantImageService.setMainImage(variantId, imageId);
     reloadImages();
   };
 
@@ -56,7 +51,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
       _id: img._id,
       displayOrder: idx,
     }));
-    await reorderVariantImages(variantId, imageOrders);
+    await variantImageService.reorderImages(variantId, imageOrders);
     reloadImages();
   };
 

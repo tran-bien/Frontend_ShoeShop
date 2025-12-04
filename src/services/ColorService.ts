@@ -52,5 +52,4 @@ export const adminColorService = {
     axiosInstanceAuth.put(`/api/v1/admin/colors/${id}/restore`),
 };
 
-// Backward compatibility
-export const colorApi = { ...adminColorService };
+export default adminColorService;

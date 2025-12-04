@@ -31,7 +31,6 @@ export interface VariantSize {
 
 export interface Variant {
   _id: string;
-  id?: string; // Alias for _id (for backward compatibility)
   product: Product | string;
   color: Color | string;
   gender: string;

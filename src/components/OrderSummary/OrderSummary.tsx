@@ -2,8 +2,8 @@
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { userOrderService } from "../../services/OrderService";
-import { inforApi } from "../../services/InforService";
-import { cartApi } from "../../services/CartService";
+import { profileService } from "../../services/ProfileService";
+import { cartService } from "../../services/CartService";
 import type { UserAddress } from "../../types/user";
 import type { CartItem } from "../../types/cart";
 import {
@@ -63,7 +63,7 @@ const OrderSummary: React.FC = () => {
         setCartLoading(true);
 
         // Lấy giỏ hàng
-        const cartRes = await cartApi.getCart();
+        const cartRes = await cartService.getCart();
         const cart = cartRes.data.cart;
 
         if (!cart || !cart.cartItems || cart.cartItems.length === 0) {
@@ -86,7 +86,7 @@ const OrderSummary: React.FC = () => {
         setSelectedItems(selected);
 
         // Preview đơn hàng KHÔNG có mã giảm giá ban đầu
-        const previewRes = await cartApi.previewBeforeOrder({});
+        const previewRes = await cartService.previewBeforeOrder({});
 
         if (previewRes.data.success && previewRes.data.preview) {
           setPreviewData(previewRes.data.preview);
@@ -107,8 +107,8 @@ const OrderSummary: React.FC = () => {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const res = await inforApi.getProfile();
-        const userAddresses = res.data.user.addresses || [];
+        const res = await profileService.getProfile();
+        const userAddresses = res.data.data.addresses || [];
         setAddresses(userAddresses);
 
         // Chọn địa chỉ mặc định hoặc địa chỉ đầu tiên
@@ -130,7 +130,7 @@ const OrderSummary: React.FC = () => {
     }
 
     try {
-      const previewRes = await cartApi.previewBeforeOrder({
+      const previewRes = await cartService.previewBeforeOrder({
         couponCode: couponCode.trim(),
       });
 
@@ -279,8 +279,8 @@ const OrderSummary: React.FC = () => {
                     <option value="">Chọn địa chỉ giao hàng</option>
                     {addresses.map((addr) => (
                       <option key={addr._id} value={addr._id}>
-                        {addr.fullName} - {addr.phone} | {addr.addressDetail},{" "}
-                        {addr.ward}, {addr.district}, {addr.province}
+                        {addr.name} - {addr.phone} | {addr.detail}, {addr.ward},{" "}
+                        {addr.district}, {addr.province}
                         {addr.isDefault ? " [Mặc định]" : ""}
                       </option>
                     ))}

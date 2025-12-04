@@ -73,19 +73,7 @@ export const shipperService = {
     axiosInstanceAuth.patch("/api/v1/shipper/availability", { isAvailable }),
 };
 
-// Backward compatibility - Combined legacy API
-const shipperServiceLegacy = {
-  // Admin methods
-  getShippers: adminShipperService.getShippers,
-  assignOrderToShipper: adminShipperService.assignOrderToShipper,
-  getShipperStats: adminShipperService.getShipperStats,
-  getShipperDetail: adminShipperService.getShipperDetail,
-
-  // Shipper methods
-  getMyOrders: shipperService.getMyOrders,
-  updateDeliveryStatus: shipperService.updateDeliveryStatus,
-  updateLocation: shipperService.updateLocation,
-  updateAvailability: shipperService.updateAvailability,
+export default {
+  admin: adminShipperService,
+  shipper: shipperService,
 };
-
-export default shipperServiceLegacy;

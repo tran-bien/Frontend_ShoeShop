@@ -1,4 +1,4 @@
-Ôªøimport { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   FaTruck,
   FaCheckCircle,
@@ -7,7 +7,7 @@ import {
   FaMapMarkerAlt,
   FaClock,
 } from "react-icons/fa";
-import ShipperService from "../../services/ShipperService";
+import { shipperService } from "../../services/ShipperService";
 
 const ShipperDashboardPage = () => {
   const [stats, setStats] = useState<any>(null);
@@ -23,7 +23,7 @@ const ShipperDashboardPage = () => {
     try {
       setLoading(true);
       // Fetch my orders
-      const ordersResponse = await ShipperService.getMyOrders();
+      const ordersResponse = await shipperService.getMyOrders();
       // Handle response structure: could be { data: { data: orders } } or { data: orders }
       const responseData = ordersResponse.data?.data || ordersResponse.data;
       const orders = Array.isArray(responseData) ? responseData : [];
@@ -75,22 +75,22 @@ const ShipperDashboardPage = () => {
   const getStatusBadge = (status: string) => {
     const statusMap: any = {
       assigned_to_shipper: {
-        label: "ƒê√£ g√°n",
+        label: "–„ g·n",
         color: "bg-mono-100 text-blue-800",
         icon: <FaHourglassHalf />,
       },
       out_for_delivery: {
-        label: "ƒêang giao",
+        label: "–ang giao",
         color: "bg-yellow-100 text-yellow-800",
         icon: <FaTruck />,
       },
       delivered: {
-        label: "ƒê√£ giao",
+        label: "–„ giao",
         color: "bg-green-100 text-green-800",
         icon: <FaCheckCircle />,
       },
       delivery_failed: {
-        label: "Th·∫•t b·∫°i",
+        label: "Th?t b?i",
         color: "bg-red-100 text-red-800",
         icon: <FaTimesCircle />,
       },
@@ -115,7 +115,7 @@ const ShipperDashboardPage = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">ƒêang t·∫£i...</div>
+        <div className="text-mono-500">–ang t?i...</div>
       </div>
     );
   }
@@ -128,7 +128,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">T·ªïng ƒë∆°n h√†ng</p>
+              <p className="text-mono-600 text-sm mb-1">T?ng don h‡ng</p>
               <p className="text-3xl font-bold text-mono-800">
                 {stats?.totalOrders || 0}
               </p>
@@ -143,7 +143,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">ƒê√£ giao</p>
+              <p className="text-mono-600 text-sm mb-1">–„ giao</p>
               <p className="text-3xl font-bold text-mono-800">
                 {stats?.completed || 0}
               </p>
@@ -158,7 +158,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">Th·∫•t b·∫°i</p>
+              <p className="text-mono-600 text-sm mb-1">Th?t b?i</p>
               <p className="text-3xl font-bold text-mono-900">
                 {stats?.failed || 0}
               </p>
@@ -173,7 +173,7 @@ const ShipperDashboardPage = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-mono-600 text-sm mb-1">T·ª∑ l·ªá th√†nh c√¥ng</p>
+              <p className="text-mono-600 text-sm mb-1">T? l? th‡nh cÙng</p>
               <p className="text-3xl font-bold text-purple-600">
                 {stats?.successRate}%
               </p>
@@ -190,13 +190,13 @@ const ShipperDashboardPage = () => {
         <div className="px-6 py-4 border-b border-mono-200">
           <h2 className="text-xl font-bold text-mono-800 flex items-center gap-2">
             <FaTruck className="text-mono-black" />
-            ƒê∆°n h√†ng ƒëang giao ({activeOrders.length})
+            –on h‡ng dang giao ({activeOrders.length})
           </h2>
         </div>
         <div className="p-6">
           {activeOrders.length === 0 ? (
             <div className="text-center py-8 text-mono-500">
-              Kh√¥ng c√≥ ƒë∆°n h√†ng n√†o ƒëang giao
+              KhÙng cÛ don h‡ng n‡o dang giao
             </div>
           ) : (
             <div className="space-y-4">
@@ -234,7 +234,7 @@ const ShipperDashboardPage = () => {
 
                   <div className="mt-3 flex items-center justify-between">
                     <p className="font-bold text-mono-black">
-                      {order.finalTotal?.toLocaleString("vi-VN")}‚Ç´
+                      {order.finalTotal?.toLocaleString("vi-VN")}?
                     </p>
                     <button
                       onClick={() =>
@@ -242,7 +242,7 @@ const ShipperDashboardPage = () => {
                       }
                       className="px-4 py-2 bg-mono-black hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
                     >
-                      Xem chi ti·∫øt
+                      Xem chi ti?t
                     </button>
                   </div>
                 </div>
@@ -257,13 +257,13 @@ const ShipperDashboardPage = () => {
         <div className="px-6 py-4 border-b border-mono-200">
           <h2 className="text-xl font-bold text-mono-800 flex items-center gap-2">
             <FaClock className="text-mono-800" />
-            ƒê∆°n h√†ng h√¥m nay ({todayOrders.length})
+            –on h‡ng hÙm nay ({todayOrders.length})
           </h2>
         </div>
         <div className="p-6">
           {todayOrders.length === 0 ? (
             <div className="text-center py-8 text-mono-500">
-              Kh√¥ng c√≥ ƒë∆°n h√†ng n√†o h√¥m nay
+              KhÙng cÛ don h‡ng n‡o hÙm nay
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -271,19 +271,19 @@ const ShipperDashboardPage = () => {
                 <thead className="bg-mono-50">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      M√£ ƒë∆°n
+                      M„ don
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      Kh√°ch h√†ng
+                      Kh·ch h‡ng
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      ƒê·ªãa ch·ªâ
+                      –?a ch?
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      T·ªïng ti·ªÅn
+                      T?ng ti?n
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase">
-                      Tr·∫°ng th√°i
+                      Tr?ng th·i
                     </th>
                   </tr>
                 </thead>
@@ -300,7 +300,7 @@ const ShipperDashboardPage = () => {
                         {order.shippingAddress?.address || "N/A"}
                       </td>
                       <td className="px-4 py-3 text-sm font-semibold text-mono-black">
-                        {order.finalTotal?.toLocaleString("vi-VN")}‚Ç´
+                        {order.finalTotal?.toLocaleString("vi-VN")}?
                       </td>
                       <td className="px-4 py-3 text-sm">
                         {getStatusBadge(order.status)}

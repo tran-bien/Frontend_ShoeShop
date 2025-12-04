@@ -135,31 +135,4 @@ export const adminBlogService = {
     }),
 };
 
-// =======================
-// Backward compatibility
-// =======================
-
-export const blogApi = {
-  // Public APIs
-  getCategories: publicBlogService.getCategories,
-  getPosts: publicBlogService.getPosts,
-  getPostBySlug: publicBlogService.getPostBySlug,
-  getHighlightedPosts: publicBlogService.getHighlightedPosts,
-  getRelatedPosts: publicBlogService.getRelatedPosts,
-
-  // Admin APIs
-  adminGetAllCategories: adminBlogService.getAllCategories,
-  adminGetCategoryById: adminBlogService.getCategoryById,
-  adminCreateCategory: adminBlogService.createCategory,
-  adminUpdateCategory: adminBlogService.updateCategory,
-  adminDeleteCategory: adminBlogService.deleteCategory,
-  adminGetAllPosts: adminBlogService.getAllPosts,
-  adminGetPostById: adminBlogService.getPostById,
-  adminCreatePost: adminBlogService.createPost,
-  adminUpdatePost: adminBlogService.updatePost,
-  adminDeletePost: adminBlogService.deletePost,
-  adminPublishPost: adminBlogService.publishPost,
-  adminArchivePost: adminBlogService.archivePost,
-};
-
 export default publicBlogService;

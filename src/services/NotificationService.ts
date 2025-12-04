@@ -75,12 +75,4 @@ export const userNotificationService = {
     ),
 };
 
-// =======================
-// Backward compatibility
-// =======================
-
-export const notificationApi = {
-  ...userNotificationService,
-};
-
 export default userNotificationService;

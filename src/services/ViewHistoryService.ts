@@ -47,14 +47,4 @@ export const userViewHistoryService = {
     axiosInstanceAuth.delete("/api/v1/users/view-history"),
 };
 
-// =======================
-// Backward compatibility
-// =======================
-
-export const viewHistoryApi = {
-  track: publicViewHistoryService.trackView,
-  getHistory: userViewHistoryService.getViewHistory,
-  clearHistory: userViewHistoryService.clearHistory,
-};
-
 export default publicViewHistoryService;

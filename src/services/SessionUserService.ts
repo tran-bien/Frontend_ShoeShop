@@ -65,22 +65,6 @@ export const adminSessionService = {
     axiosInstanceAuth.delete(`/api/v1/admin/auth/logout/${userId}`),
 };
 
-// =======================
-// LEGACY EXPORTS (Backward Compatibility)
-// =======================
-
-export const sessionUserApi = {
-  getAllUsers: adminUserService.getAllUsers,
-  getUserById: adminUserService.getUserById,
-  getAllSessions: adminSessionService.getAllSessions,
-  logoutUser: adminSessionService.logoutUser,
-  blockUser: (userId: string, isBlock: boolean, reason?: string) =>
-    adminUserService.blockUser(userId, {
-      isBlock,
-      reason: isBlock ? reason || "Bị khóa bởi admin" : undefined,
-    }),
-};
-
 export default {
   user: adminUserService,
   session: adminSessionService,
