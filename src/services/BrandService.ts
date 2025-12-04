@@ -4,23 +4,23 @@ import { ApiResponse } from "../types/api";
 
 // Admin Brand Service
 export const adminBrandService = {
-  // Láº¥y táº¥t cáº£ thÆ°Æ¡ng hiá»‡u
+  // Lấy tất cả thương hiệu
   getAll: (
     params?: BrandQueryParams
   ): Promise<{ data: ApiResponse<Brand[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/brands", { params }),
 
-  // Láº¥y thÆ°Æ¡ng hiá»‡u Ä‘Ã£ xÃ³a má»m
+  // Lấy thương hiệu đã xóa mềm
   getDeleted: (
     params?: BrandQueryParams
   ): Promise<{ data: ApiResponse<Brand[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/brands/deleted", { params }),
 
-  // Láº¥y chi tiáº¿t thÆ°Æ¡ng hiá»‡u theo ID
+  // Lấy chi tiết thương hiệu theo ID
   getById: (id: string): Promise<{ data: ApiResponse<Brand> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/brands/${id}`),
 
-  // Táº¡o má»›i thÆ°Æ¡ng hiá»‡u
+  // Tạo mới thương hiệu
   create: (data: {
     name: string;
     description?: string;
@@ -28,7 +28,7 @@ export const adminBrandService = {
   }): Promise<{ data: ApiResponse<Brand> }> =>
     axiosInstanceAuth.post("/api/v1/admin/brands", data),
 
-  // Cáº­p nháº­t thÆ°Æ¡ng hiá»‡u
+  // Cập nhật thương hiệu
   update: (
     id: string,
     data: {
@@ -39,15 +39,15 @@ export const adminBrandService = {
   ): Promise<{ data: ApiResponse<Brand> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/brands/${id}`, data),
 
-  // XÃ³a má»m thÆ°Æ¡ng hiá»‡u
+  // Xóa mềm thương hiệu
   delete: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/brands/${id}`),
 
-  // KhÃ´i phá»¥c thÆ°Æ¡ng hiá»‡u Ä‘Ã£ xÃ³a má»m
+  // Khôi phục thương hiệu đã xóa mềm
   restore: (id: string): Promise<{ data: ApiResponse<Brand> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/brands/${id}/restore`),
 
-  // Cáº­p nháº­t tráº¡ng thÃ¡i active cá»§a thÆ°Æ¡ng hiá»‡u
+  // Cập nhật trạng thái active của thương hiệu
   updateStatus: (
     id: string,
     data: { isActive: boolean; cascade?: boolean }

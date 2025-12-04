@@ -29,7 +29,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
 
   const fetchSizeGuide = async () => {
     if (!productId) {
-      setError("KhÃ´ng cÃ³ thÃ´ng tin sáº£n pháº©m");
+      setError("Không có thông tin sản phẩm");
       return;
     }
 
@@ -48,19 +48,19 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
         setSizeGuide(responseAny.sizeGuide as SizeGuide);
       } else if (responseAny.sizeGuide === null) {
         // BE returns null when product has no size guide
-        setError("Sáº£n pháº©m chÆ°a cÃ³ hÆ°á»›ng dáº«n size");
+        setError("Sản phẩm chưa có hướng dẫn size");
       } else if (responseAny.data) {
         // Fallback to standard response format
         setSizeGuide(responseAny.data as SizeGuide);
       } else {
-        setError("KhÃ´ng tÃ¬m tháº¥y hÆ°á»›ng dáº«n size");
+        setError("Không tìm thấy hướng dẫn size");
       }
     } catch (err: unknown) {
       console.error("Failed to fetch size guide:", err);
       const apiError = err as { response?: { data?: { message?: string } } };
       setError(
         apiError.response?.data?.message ||
-          "KhÃ´ng tÃ¬m tháº¥y báº£ng hÆ°á»›ng dáº«n size cho sáº£n pháº©m nÃ y"
+          "Không tìm thấy bảng hướng dẫn size cho sản phẩm này"
       );
     } finally {
       setLoading(false);
@@ -80,8 +80,8 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
       return (
         <div className="space-y-4">
           <h4 className="font-semibold text-mono-black flex items-center gap-2">
-            <span className="text-lg">ðŸ“</span>
-            Báº£ng Size
+            <span className="text-lg">📏</span>
+            Bảng Size
           </h4>
           {sizeChart.description && (
             <p className="text-sm text-mono-600">{sizeChart.description}</p>
@@ -107,16 +107,16 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                     Size
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-semibold">
-                    Chiá»u dÃ i (cm)
+                    Chiều dài (cm)
                   </th>
                   {sizeChart[0]?.width && (
                     <th className="px-4 py-3 text-left text-sm font-semibold">
-                      Chiá»u rá»™ng (cm)
+                      Chiều rộng (cm)
                     </th>
                   )}
                   {sizeChart[0]?.note && (
                     <th className="px-4 py-3 text-left text-sm font-semibold">
-                      Ghi chÃº
+                      Ghi chú 
                     </th>
                   )}
                 </tr>

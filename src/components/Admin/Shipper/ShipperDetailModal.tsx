@@ -33,7 +33,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return "Chua cập nhật";
+    if (!dateString) return "Chưa cập nhật";
     return new Date(dateString).toLocaleString("vi-VN", {
       year: "numeric",
       month: "2-digit",
@@ -86,8 +86,8 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
                 }`}
               >
                 {shipper.shipper.isAvailable
-                  ? "? Ðang ho?t đếng"
-                  : "? Không ho?t đếng"}
+                  ? "🟢 Đang hoạt động"
+                  : "🔴 Không hoạt động"}
               </span>
             </div>
           </div>
@@ -100,13 +100,13 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm mb-3">
             <div>
-              <span className="text-mono-600">Ðon đang giao:</span>{" "}
+              <span className="text-mono-600">Đơn đang giao:</span>{" "}
               <strong className="text-mono-black">
                 {shipper.shipper.activeOrders}
               </strong>
             </div>
             <div>
-              <span className="text-mono-600">Giới hơn don:</span>{" "}
+              <span className="text-mono-600">Giới hạn đơn:</span>{" "}
               <strong>{shipper.shipper.maxOrders}</strong>
             </div>
           </div>
@@ -151,19 +151,19 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
         {shipper.shipper.currentLocation && (
           <div className="bg-mono-50 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-mono-800 mb-3">
-              ?? V? trí hiện tại
+              📍 Vị trí hiện tại
             </h3>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-mono-600">Vi d?:</span>{" "}
+                <span className="text-mono-600">Vĩ độ:</span>{" "}
                 <strong>{shipper.shipper.currentLocation.latitude}</strong>
               </div>
               <div>
-                <span className="text-mono-600">Kinh d?:</span>{" "}
+                <span className="text-mono-600">Kinh độ:</span>{" "}
                 <strong>{shipper.shipper.currentLocation.longitude}</strong>
               </div>
               <div className="col-span-2">
-                <span className="text-mono-600">Cập nhật lẩn cuối:</span>{" "}
+                <span className="text-mono-600">Cập nhật lần cuối:</span>{" "}
                 <strong>
                   {formatDate(shipper.shipper.currentLocation.updatedAt)}
                 </strong>
@@ -180,11 +180,11 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
         ) : stats ? (
           <div className="bg-mono-50 rounded-lg p-4">
             <h3 className="font-semibold text-mono-800 mb-4">
-              ?? Thàng kê giao hàng
+              📊 Thống kê giao hàng
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg p-3 text-center">
-                <p className="text-mono-600 text-xs mb-1">Tổng don</p>
+                <p className="text-mono-600 text-xs mb-1">Tổng đơn</p>
                 <p className="text-2xl font-bold text-mono-800">
                   {stats.totalOrders || 0}
                 </p>
@@ -196,13 +196,13 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
                 </p>
               </div>
               <div className="bg-white rounded-lg p-3 text-center">
-                <p className="text-mono-600 text-xs mb-1">Thểt b?i</p>
+                <p className="text-mono-600 text-xs mb-1">Thất bại</p>
                 <p className="text-2xl font-bold text-mono-900">
                   {stats.failedOrders || 0}
                 </p>
               </div>
               <div className="bg-white rounded-lg p-3 text-center">
-                <p className="text-mono-600 text-xs mb-1">Từ lệ thành công</p>
+                <p className="text-mono-600 text-xs mb-1">Tỷ lệ thành công</p>
                 <p className="text-2xl font-bold text-mono-black">
                   {getSuccessRate()}%
                 </p>
@@ -213,7 +213,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
             {stats.activeOrders > 0 && (
               <div className="mt-4 bg-mono-100 border border-mono-200 rounded-lg p-3">
                 <p className="text-sm text-mono-800">
-                  ?? Ðang có <strong>{stats.activeOrders}</strong> don hàng đang
+                  📦 Đang có <strong>{stats.activeOrders}</strong> đơn hàng đang
                   giao
                 </p>
               </div>
@@ -240,6 +240,3 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
 };
 
 export default ShipperDetailModal;
-
-
-

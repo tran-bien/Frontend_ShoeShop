@@ -4,11 +4,11 @@ import { ApiResponse } from "../types/api";
 
 // Admin Tag Service
 export const adminTagService = {
-  // Láº¥y táº¥t cáº£ tags (Admin/Staff)
+  // Lấy tất cả tags (Admin/Staff)
   getAll: (params?: TagQueryParams): Promise<{ data: ApiResponse<Tag[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/tags", { params }),
 
-  // Láº¥y tags active (Admin sá»­ dá»¥ng Ä‘á»ƒ lá»c cho dropdown)
+  // Lấy tags active (Admin sử dụng để lọc cho dropdown)
   getActiveTags: (
     params?: TagQueryParams
   ): Promise<{ data: ApiResponse<Tag[]> }> =>
@@ -16,17 +16,17 @@ export const adminTagService = {
       params: { ...params, isActive: true },
     }),
 
-  // Láº¥y tags Ä‘Ã£ xÃ³a má»m (Admin/Staff)
+  // Lấy tags đã xóa mềm (Admin/Staff)
   getDeleted: (
     params?: TagQueryParams
   ): Promise<{ data: ApiResponse<Tag[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/tags/deleted", { params }),
 
-  // Láº¥y chi tiáº¿t tag theo ID (Admin/Staff)
+  // Lấy chi tiết tag theo ID (Admin/Staff)
   getById: (id: string): Promise<{ data: ApiResponse<Tag> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/tags/${id}`),
 
-  // Táº¡o má»›i tag (Admin/Staff)
+  // Tạo mới tag (Admin/Staff)
   create: (data: {
     name: string;
     type: "MATERIAL" | "USECASE" | "CUSTOM";
@@ -35,7 +35,7 @@ export const adminTagService = {
   }): Promise<{ data: ApiResponse<Tag> }> =>
     axiosInstanceAuth.post("/api/v1/admin/tags", data),
 
-  // Cáº­p nháº­t tag (Admin/Staff)
+  // Cập nhật tag (Admin/Staff)
   update: (
     id: string,
     data: {
@@ -47,11 +47,11 @@ export const adminTagService = {
   ): Promise<{ data: ApiResponse<Tag> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/tags/${id}`, data),
 
-  // XÃ³a má»m tag (Admin/Staff)
+  // Xóa mềm tag (Admin/Staff)
   delete: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/tags/${id}`),
 
-  // KhÃ´i phá»¥c tag Ä‘Ã£ xÃ³a má»m (Admin/Staff)
+  // Khôi phục tag đã xóa mềm (Admin/Staff)
   restore: (id: string): Promise<{ data: ApiResponse<Tag> }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/tags/${id}/restore`),
 
@@ -65,20 +65,20 @@ export const adminTagService = {
 
 // Public Tag Service
 export const publicTagService = {
-  // Láº¥y táº¥t cáº£ tags active (Public)
+  // Lấy tất cả tags active (Public)
   getActiveTags: (
     params?: TagQueryParams
   ): Promise<{ data: ApiResponse<Tag[]> }> =>
     axiosInstance.get("/api/v1/tags", { params }),
 
-  // Láº¥y tags theo type (Public - MATERIAL/USECASE/CUSTOM)
+  // Lấy tags theo type (Public - MATERIAL/USECASE/CUSTOM)
   getByType: (
     type: string,
     params?: TagQueryParams
   ): Promise<{ data: ApiResponse<Tag[]> }> =>
     axiosInstance.get(`/api/v1/tags/type/${type}`, { params }),
 
-  // Láº¥y tag detail (Public - chá»‰ active)
+  // Lấy tag detail (Public - chỉ active)
   getPublicById: (id: string): Promise<{ data: ApiResponse<Tag> }> =>
     axiosInstance.get(`/api/v1/tags/${id}`),
 };

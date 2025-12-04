@@ -40,17 +40,17 @@ const Sidebar: React.FC = () => {
     {
       path: "/user-information",
       icon: <FaUser className="text-lg" />,
-      label: "Thông tin tài khoẩn",
+      label: "Thông tin tài khoản",
     },
     {
       path: "/user-manage-order",
       icon: <FaClipboardList className="text-lg" />,
-      label: "Quận lý don hàng",
+      label: "Quản lý đơn hàng",
     },
     {
       path: "/user-cancel-requests",
       icon: <FaTimesCircle className="text-lg" />,
-      label: "Yêu c?u hủy don",
+      label: "Yêu cầu hủy đơn",
     },
     {
       path: "/user-reviews",
@@ -65,22 +65,22 @@ const Sidebar: React.FC = () => {
     {
       path: "/loyalty/dashboard",
       icon: <FaGift className="text-lg" />,
-      label: "Ði?m thuẩng",
+      label: "Điểm thưởng",
     },
     {
       path: "/view-history",
       icon: <FaHistory className="text-lg" />,
-      label: "Lọch số xem",
+      label: "Lịch sử xem",
     },
     {
       path: "/recommendations",
       icon: <FaLightbulb className="text-lg" />,
-      label: "Gửi ý cho bẩn",
+      label: "Gợi ý cho bạn",
     },
     {
       path: "/user-change-password",
       icon: <FaKey className="text-lg" />,
-      label: "Ð?i mật khẩu",
+      label: "Đổi mật khẩu",
     },
     {
       path: "/user-sessions",

@@ -54,7 +54,7 @@ const EditBanner: React.FC<EditBannerProps> = ({
     } catch (err: unknown) {
       const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Cập nhật banner thểt b?i!";
+          ?.message || "Cập nhật banner thất bại!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -129,18 +129,18 @@ const EditBanner: React.FC<EditBannerProps> = ({
 
           <div>
             <label className="block text-sm font-medium text-black">
-              Đường  đến (không bắt buộc)
+              Đường đến (không bắt buộc)
             </label>
             <input
               type="url"
               name="link"
               value={formData.link}
               onChange={handleChange}
-              placeholder="https://example.com ho?c /products"
+              placeholder="https://example.com hoặc /products"
               className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
             <p className="text-xs text-mono-500 mt-1">
-              Khi người dùng click vào banner số chuyện đến đường đến này
+              Khi người dùng click vào banner sẽ chuyển đến đường dẫn này
             </p>
           </div>
 

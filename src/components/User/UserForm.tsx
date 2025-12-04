@@ -24,7 +24,7 @@ const fieldLabels: Record<string, string> = {
   province: "Tính/Thành phố",
   district: "Quận/Huyện",
   ward: "Phường/Xã",
-  detail: "Ð?a chờ chi tiết",
+  detail: "Địa chỉ chi tiết",
 };
 
 const UserForm: React.FC = () => {
@@ -207,8 +207,8 @@ const UserForm: React.FC = () => {
     <div className="bg-white rounded-2xl shadow-lg border border-mono-100 w-full max-w-2xl mx-auto overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-mono-800 to-mono-black p-6">
-        <h2 className="text-2xl font-bold text-white">Thông tin tài khoẩn</h2>
-        <p className="text-mono-300 mt-1">Quận lý thông tin cá nhân của bẩn</p>
+        <h2 className="text-2xl font-bold text-white">Thông tin tài khoản</h2>
+        <p className="text-mono-300 mt-1">Quản lý thông tin cá nhân của bạn</p>
       </div>
 
       <div className="p-6 space-y-8">
@@ -219,7 +219,7 @@ const UserForm: React.FC = () => {
             <img
               src={
                 user.avatar?.url ||
-                "https://ui-avatars.com/api/ẩname=" +
+                "https://ui-avatars.com/api/?name=" +
                   encodeURIComponent(user.name) +
                   "&background=171717&color=fff"
               }
@@ -230,7 +230,7 @@ const UserForm: React.FC = () => {
               <button
                 onClick={() => document.getElementById("avatarInput")?.click()}
                 className="p-2 bg-white rounded-full text-mono-800 hover:bg-mono-100 transition-colors"
-                title="Ð?i ẩnh"
+                title="Đổi ảnh"
                 disabled={loading}
               >
                 <FiCamera size={18} />
@@ -320,7 +320,7 @@ const UserForm: React.FC = () => {
             <div className="flex items-center gap-2">
               <FiMapPin className="text-mono-700" size={20} />
               <h3 className="text-lg font-semibold text-mono-900">
-                Ð?a chờ của tôi
+                Địa chỉ của tôi
               </h3>
             </div>
             <button
@@ -452,7 +452,7 @@ const UserForm: React.FC = () => {
                   }
                   className="w-5 h-5 rounded border-mono-300 text-mono-black focus:ring-mono-black"
                 />
-                <span className="text-mono-700">Ð?t làm địa chỉ m?c đếnh</span>
+                <span className="text-mono-700">Đặt làm địa chỉ mặc định</span>
               </label>
               <div className="flex gap-3 pt-4">
                 <button
@@ -518,7 +518,7 @@ const UserForm: React.FC = () => {
                   }
                   className="w-5 h-5 rounded border-mono-300 text-mono-black focus:ring-mono-black"
                 />
-                <span className="text-mono-700">Ð?t làm địa chỉ m?c đếnh</span>
+                <span className="text-mono-700">Đặt làm địa chỉ mặc định</span>
               </label>
               <div className="flex gap-3 pt-4">
                 <button

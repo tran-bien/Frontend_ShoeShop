@@ -1,6 +1,6 @@
 ﻿/**
  * Inventory Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Kho hÃ ng
+ * Định nghĩa các interface liên quan đến Kho hàng
  */
 
 // =======================

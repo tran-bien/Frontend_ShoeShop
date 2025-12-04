@@ -59,7 +59,7 @@ interface InventoryReportResponse {
 // =======================
 
 export const adminReportService = {
-  // BÃ¡o cÃ¡o tá»“n kho chi tiáº¿t
+  // Báo cáo tồn kho chi tiết
   getInventoryReport: (
     params?: InventoryReportParams
   ): Promise<{ data: ApiResponse<InventoryReportResponse> }> =>

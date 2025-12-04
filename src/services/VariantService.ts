@@ -4,25 +4,25 @@ import { ApiResponse } from "../types/api";
 
 // Admin Variant Service
 export const adminVariantService = {
-  // Láº¥y danh sÃ¡ch táº¥t cáº£ variant
+  // Lấy danh sách tất cả variant
   getAllVariants: (
     params?: VariantQueryParams
   ): Promise<{ data: ApiResponse<Variant[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/variants", { params }),
 
-  // Láº¥y danh sÃ¡ch variant Ä‘Ã£ xÃ³a
+  // Lấy danh sách variant đã xóa
   getDeletedVariants: (
     params?: VariantQueryParams
   ): Promise<{ data: ApiResponse<Variant[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/variants/deleted", { params }),
 
-  // Láº¥y variant theo ID
+  // Lấy variant theo ID
   getVariantById: (
     variantId: string
   ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/variants/${variantId}`),
 
-  // ThÃªm variant má»›i
+  // Thêm variant mới
   createVariant: (data: {
     product: string;
     color: string;
@@ -32,7 +32,7 @@ export const adminVariantService = {
   }): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.post("/api/v1/admin/variants", data),
 
-  // Cáº­p nháº­t variant
+  // Cập nhật variant
   updateVariant: (
     variantId: string,
     data: {
@@ -44,17 +44,17 @@ export const adminVariantService = {
   ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/variants/${variantId}`, data),
 
-  // XÃ³a má»m variant
+  // Xóa mềm variant
   deleteVariant: (variantId: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/variants/${variantId}`),
 
-  // KhÃ´i phá»¥c variant Ä‘Ã£ xÃ³a
+  // Khôi phục variant đã xóa
   restoreVariant: (
     variantId: string
   ): Promise<{ data: ApiResponse<Variant> }> =>
     axiosInstanceAuth.post(`/api/v1/admin/variants/${variantId}/restore`),
 
-  // Chá»‰nh sá»­a tráº¡ng thÃ¡i isActive
+  // Chỉnh sửa trạng thái isActive
   updateStatus: (
     variantId: string,
     isActive: boolean

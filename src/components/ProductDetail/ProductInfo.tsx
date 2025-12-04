@@ -17,7 +17,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
     }
     return product.totalQuantity || 0;
   };
-  // T?o mẩng các kích thước dã sắp xếp
+  // Tạo mảng các kích thước đã sắp xếp
   const getSortedSizes = (): Size[] => {
     if (!attributes?.sizes) return [];
     return [...attributes.sizes].sort((a: Size, b: Size) => {
@@ -32,7 +32,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold border-b pb-2 mb-2">
-          Mô từ sản phẩm
+          Mô tả sản phẩm
         </h3>
         <p className="text-mono-700 whitespace-pre-line">
           {product.description}
@@ -50,11 +50,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
               <span className="font-medium">
                 {typeof product.category === "object"
                   ? product.category?.name
-                  : product.category || "Chua phân lo?i"}
+                  : product.category || "Chưa phân loại"}
               </span>
             </div>
             <div className="flex">
-              <span className="w-36 text-mono-600">Thuong hi?u:</span>
+              <span className="w-36 text-mono-600">Thương hiệu:</span>
               <div className="flex items-center">
                 {typeof product.brand === "object" && product.brand?.logo ? (
                   <img
@@ -70,7 +70,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
                 <span className="font-medium">
                   {typeof product.brand === "object"
                     ? product.brand?.name
-                    : product.brand || "Chua có thuong hi?u"}
+                    : product.brand || "Chưa có thương hiệu"}
                 </span>
               </div>
             </div>
@@ -89,8 +89,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
                 {product.stockStatus === "in_stock"
                   ? "Còn hàng"
                   : product.stockStatus === "low_stock"
-                  ? "S?p h?t hàng"
-                  : "H?t hàng"}
+                  ? "Sắp hết hàng"
+                  : "Hết hàng"}
               </span>
             </div>
 
@@ -125,7 +125,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-mono-600 mb-1">Màu sắc có sẩn:</span>
+                <span className="text-mono-600 mb-1">Màu sắc có sẵn:</span>
                 <div className="flex flex-wrap gap-2">
                   {attributes.colors?.map((color: Color) => (
                     <div key={color._id} className="flex items-center gap-1">
@@ -166,7 +166,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
                 </div>
               </div>{" "}
               <div className="flex flex-col">
-                <span className="text-mono-600 mb-1">Kích thước có sẩn:</span>
+                <span className="text-mono-600 mb-1">Kích thước có sẵn:</span>
                 <div className="flex flex-wrap gap-1">
                   {getSortedSizes().map((size: Size) => (
                     <div key={size._id} className="relative group inline-block">
@@ -191,12 +191,12 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
       {/* Thông tin thêm */}
       <div>
         <h3 className="text-lg font-semibold border-b pb-2 mb-2">
-          Chính sách b?o hành
+          Chính sách bảo hành
         </h3>
         <ul className="list-disc pl-5 space-y-1 text-mono-700">
-          <li>B?o hành chính hãng 12 tháng</li>
-          <li>Ð?i trở trong vòng 30 ngày n?u có lỗi từ nhà sẩn xuất</li>
-          <li>Miẩn phí vẩn chuyện với don hàng từ 500.000d</li>
+          <li>Bảo hành chính hãng 12 tháng</li>
+          <li>Đổi trả trong vòng 30 ngày nếu có lỗi từ nhà sản xuất</li>
+          <li>Miễn phí vận chuyển với đơn hàng từ 500.000đ</li>
         </ul>
       </div>
     </div>
@@ -204,5 +204,3 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
 };
 
 export default ProductInfo;
-
-

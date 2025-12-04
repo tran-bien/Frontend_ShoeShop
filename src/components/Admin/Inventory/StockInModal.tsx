@@ -107,10 +107,10 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
     if (formData.variantId) {
       const variant = variants.find((v) => v._id === formData.variantId);
       if (variant?.sizes) {
-        console.log("ðŸŽ¯ Selected variant sizes:", variant.sizes);
+        console.log("Selected variant sizes:", variant.sizes);
         setAvailableSizes(variant.sizes);
       } else {
-        console.log("âš ï¸ No sizes found for variant");
+        console.log("No sizes found for variant");
         setAvailableSizes([]);
       }
       setSizeEntries([]);
@@ -132,13 +132,13 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
   const fetchProducts = async () => {
     try {
       const response = await productAdminService.getProducts({ limit: 100 });
-      console.log("ðŸ“¦ Fetched products:", response.data.data);
-      console.log("ðŸ“¦ Full API response:", response.data);
+      console.log(" Fetched products:", response.data.data);
+      console.log("Full API response:", response.data);
       // The API returns products in response.data.data.data (paginated response)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const responseData = response.data.data as any;
       const productsData = responseData?.data || responseData || [];
-      console.log("ðŸ“¦ Extracted products:", productsData);
+      console.log("Extracted products:", productsData);
       setProducts(productsData);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -163,25 +163,24 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
   const handleProductChange = async (productId: string) => {
     const product = products.find((p) => p._id === productId);
-    console.log("ðŸŽ¨ Selected product:", product);
+    console.log("Selected product:", product);
 
     // Product list API doesn't include variants (deleted for performance)
     // Need to fetch full product details to get variants
     if (productId) {
       try {
-        console.log("ðŸ” Fetching full product details for:", productId);
+        console.log("Fetching full product details for:", productId);
         const detailResponse = await productAdminService.getProductById(
           productId
         );
-        console.log("ðŸ” Full API response:", detailResponse.data);
-
+        console.log("Full API response:", detailResponse.data);
         // Backend returns { success: true, product: {...} } not { data: {...} }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const responseData = detailResponse.data as any;
         const fullProduct = responseData.product || responseData.data || null;
 
-        console.log("ðŸŽ¨ Full product with variants:", fullProduct);
-        console.log("ðŸŽ¨ Product variants:", fullProduct?.variants);
+        console.log("Full product with variants:", fullProduct);
+        console.log("Product variants:", fullProduct?.variants);
         setSelectedProduct(fullProduct);
       } catch (error) {
         console.error("Error fetching product details:", error);
@@ -261,12 +260,12 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
     // Validation
     if (!formData.productId || !formData.variantId) {
-      toast.error("Vui lÃ²ng chá»n sáº£n pháº©m vÃ  mÃ u sáº¯c!");
+      toast.error("Vui lòng chọn sản phẩm và màu sắc!");
       return;
     }
 
     if (sizeEntries.length === 0) {
-      toast.error("Vui lÃ²ng thÃªm Ã­t nháº¥t má»™t kÃ­ch thÆ°á»›c!");
+      toast.error("Vui lòng thêm ít nhất một kích thước!");
       return;
     }
 
@@ -276,13 +275,13 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
     );
     if (invalidEntries.length > 0) {
       toast.error(
-        "Vui lÃ²ng chá»n kÃ­ch thÆ°á»›c vÃ  nháº­p sá»‘ lÆ°á»£ng há»£p lá»‡ cho táº¥t cáº£ cÃ¡c dÃ²ng!"
+        "Vui lòng chọn kích thước và nhập số lượng hợp lệ cho tất cả các dòng!"
       );
       return;
     }
 
     if (formData.costPrice <= 0) {
-      toast.error("GiÃ¡ vá»‘n pháº£i lá»›n hÆ¡n 0!");
+      toast.error("Giá vốn phải lớn hơn 0!");
       return;
     }
 
@@ -318,11 +317,11 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
       await Promise.all(promises);
 
-      toast.success(`âœ… Nháº­p kho thÃ nh cÃ´ng ${sizeEntries.length} kÃ­ch thÆ°á»›c!`);
+      toast.success(`Nhập kho thành công ${sizeEntries.length} kích thước!`);
       onSuccess();
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err.response?.data?.message || "CÃ³ lá»—i xáº£y ra khi nháº­p kho");
+      toast.error(err.response?.data?.message || "Có lỗi xảy ra khi nhập kho");
     } finally {
       setSubmitting(false);
     }
@@ -346,9 +345,9 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                 <ShoppingBagIcon className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold">Nháº­p kho hÃ ng</h2>
+                <h2 className="text-2xl font-bold">Nhập kho hàng</h2>
                 <p className="text-sm text-mono-200 mt-1">
-                  Nháº­p nhiá»u kÃ­ch thÆ°á»›c vá»›i giÃ¡ chung
+                  Nhập nhiều kích thước với giá chung
                 </p>
               </div>
             </div>
@@ -368,7 +367,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold mb-2 text-mono-700">
                   <ShoppingBagIcon className="w-4 h-4" />
-                  Sáº£n pháº©m <span className="text-mono-700">*</span>
+                  Sản phẩm <span className="text-mono-700">*</span>
                 </label>
                 <select
                   value={formData.productId}
@@ -376,7 +375,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   className="w-full border border-mono-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-mono-500 bg-white text-mono-900 transition-all"
                   required
                 >
-                  <option value="">-- Chá»n sáº£n pháº©m --</option>
+                  <option value="">-- Chọn sản phẩm --</option>
                   {products.map((product) => (
                     <option key={product._id} value={product._id}>
                       {product.name}
@@ -389,7 +388,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold mb-2 text-mono-700">
                   <SwatchIcon className="w-4 h-4" />
-                  MÃ u sáº¯c <span className="text-mono-700">*</span>
+                  Màu sắc <span className="text-mono-700">*</span>
                 </label>
                 <select
                   value={formData.variantId}
@@ -403,7 +402,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   required
                   disabled={!formData.productId}
                 >
-                  <option value="">-- Chá»n mÃ u sáº¯c --</option>
+                  <option value="">-- Chọn màu sắc --</option>
                   {variants.map((variant) => (
                     <option key={variant._id} value={variant._id}>
                       {variant.color?.name || "N/A"}{" "}
@@ -421,7 +420,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
               <div className="bg-mono-100 px-4 py-3 flex justify-between items-center border-b border-mono-300">
                 <h3 className="font-bold text-mono-900 flex items-center gap-2">
                   <ScaleIcon className="w-5 h-5" />
-                  Danh sÃ¡ch kÃ­ch thÆ°á»›c nháº­p kho
+                  Danh sách kích thước nhập kho
                 </h3>
                 <button
                   type="button"
@@ -429,7 +428,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   className="flex items-center gap-2 bg-mono-800 text-white px-4 py-2 rounded-lg hover:bg-mono-900 transition-all shadow-sm hover:shadow-md"
                 >
                   <PlusIcon className="w-5 h-5" />
-                  ThÃªm size
+                  Thêm size
                 </button>
               </div>
 
@@ -438,10 +437,10 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   <div className="text-center py-12 text-mono-500">
                     <ScaleIcon className="w-12 h-12 mx-auto mb-3 text-mono-300" />
                     <p className="text-lg font-medium">
-                      ChÆ°a cÃ³ kÃ­ch thÆ°á»›c nÃ o
+                      Chưa có kích thước nào
                     </p>
                     <p className="text-sm mt-1">
-                      Nháº¥n "ThÃªm size" Ä‘á»ƒ báº¯t Ä‘áº§u nháº­p kho
+                      Nhấn "Thêm size" để bắt đầu nhập kho
                     </p>
                   </div>
                 ) : (
@@ -454,7 +453,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                         {/* Size Selection */}
                         <div className="col-span-5">
                           <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
-                            KÃ­ch thÆ°á»›c
+                            Kích thước
                           </label>
                           <select
                             value={entry.sizeId}
@@ -486,7 +485,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                         {/* Quantity Input */}
                         <div className="col-span-3">
                           <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
-                            Sá»‘ lÆ°á»£ng nháº­p
+                            Số lượng nhập
                           </label>
                           <input
                             type="number"
@@ -506,7 +505,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                         {/* Current Stock Display */}
                         <div className="col-span-3">
                           <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
-                            Tá»“n hiá»‡n táº¡i
+                            Tồn hiện tại
                           </label>
                           <div className="bg-mono-200 px-3 py-2.5 rounded-lg text-sm font-bold text-mono-700 text-center">
                             {entry.currentStock}
@@ -535,10 +534,10 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                     <div className="flex justify-between items-center">
                       <span className="font-semibold flex items-center gap-2">
                         <ChartBarIcon className="w-5 h-5" />
-                        Tá»•ng sá»‘ lÆ°á»£ng nháº­p:
+                        Tổng số lượng nhập:
                       </span>
                       <span className="text-2xl font-bold">
-                        {getTotalQuantity()} sáº£n pháº©m
+                        {getTotalQuantity()} sản phẩm
                       </span>
                     </div>
                   </div>
@@ -552,14 +551,14 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
             <div className="bg-mono-100 px-4 py-3 border-b border-mono-300">
               <h3 className="font-bold text-mono-900 flex items-center gap-2">
                 <CurrencyDollarIcon className="w-5 h-5" />
-                ThÃ´ng tin giÃ¡ chung (Ã¡p dá»¥ng cho táº¥t cáº£ size)
+                Thông tin giá chung (áp dụng cho tất cả size)
               </h3>
             </div>
             <div className="p-4 bg-white">
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
-                    GiÃ¡ vá»‘n (â‚«) <span className="text-mono-700">*</span>
+                    Giá vốn (₫) <span className="text-mono-700">*</span>
                   </label>
                   <input
                     type="number"
@@ -611,7 +610,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                       }
                       className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
                     >
-                      1 triá»‡u
+                      1 triệu
                     </button>
                     <button
                       type="button"
@@ -620,13 +619,13 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                       }
                       className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
                     >
-                      2 triá»‡u
+                      2 triệu
                     </button>
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
-                    Má»¥c tiÃªu lÃ£i (%)
+                    Mục tiêu lãi (%)
                   </label>
                   <input
                     type="number"
@@ -641,7 +640,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                     className="w-full border border-mono-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-mono-500 font-semibold text-mono-900"
                     min="0"
                   />
-                  {/* Äá» xuáº¥t % lá»£i nhuáº­n */}
+                  {/* Đề xuất % lợi nhuận */}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       type="button"
@@ -674,7 +673,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
-                    Giáº£m giÃ¡ (%)
+                    Giảm giá (%)
                   </label>
                   <input
                     type="number"
@@ -725,7 +724,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
 
               <div className="mt-4">
                 <label className="block text-xs font-semibold mb-2 text-mono-600 uppercase tracking-wide">
-                  Ghi chÃº
+                  Ghi chú
                 </label>
                 <textarea
                   value={formData.note}
@@ -734,7 +733,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                   }
                   className="w-full border border-mono-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-mono-500 text-mono-900"
                   rows={2}
-                  placeholder="Nháº­p ghi chÃº (khÃ´ng báº¯t buá»™c)"
+                  placeholder="Nhập ghi chú (không bắt buộc)"
                 />
               </div>
             </div>
@@ -744,22 +743,22 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
           <div className="bg-mono-50 border border-mono-200 rounded-lg p-4">
             <h3 className="font-bold text-sm text-mono-900 mb-3 flex items-center gap-2">
               <CalculatorIcon className="w-5 h-5" />
-              CÃ´ng thá»©c tÃ­nh giÃ¡
+              Công thức tính giá
             </h3>
             <div className="space-y-2 text-sm">
               <div className="bg-white rounded-lg p-3 border border-mono-200">
                 <code className="text-xs font-mono text-mono-700">
-                  GiÃ¡ gá»‘c = GiÃ¡ vá»‘n Ã— (1 + Má»¥c tiÃªu lÃ£i / 100)
+                  Giá gốc = Giá vốn × (1 + Mục tiêu lãi / 100)
                 </code>
               </div>
               <div className="bg-white rounded-lg p-3 border border-mono-200">
                 <code className="text-xs font-mono text-mono-700">
-                  GiÃ¡ bÃ¡n = GiÃ¡ gá»‘c Ã— (1 - Giáº£m giÃ¡ / 100)
+                  Giá bán = Giá gốc × (1 - Giảm giá / 100)
                 </code>
               </div>
               <div className="bg-white rounded-lg p-3 border border-mono-200">
                 <code className="text-xs font-mono text-mono-700">
-                  LÃ£i thá»±c = GiÃ¡ bÃ¡n - GiÃ¡ vá»‘n
+                  Lãi thực = Giá bán - Giá vốn
                 </code>
               </div>
             </div>
@@ -770,31 +769,31 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
             <div className="bg-gradient-to-r from-mono-800 to-mono-900 text-white rounded-lg p-5 shadow-xl">
               <h3 className="font-bold text-sm mb-4 flex items-center gap-2">
                 <ChartBarIcon className="w-5 h-5" />
-                Káº¿t quáº£ tÃ­nh toÃ¡n
+                Kết quả tính toán
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
                   <p className="text-xs text-mono-200 mb-1">
-                    GiÃ¡ bÃ¡n / sáº£n pháº©m
+                    Giá bán / sản phẩm
                   </p>
                   <p className="text-xl font-bold">
                     {formatCurrency(pricePreview.calculatedPriceFinal)}
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                  <p className="text-xs text-mono-200 mb-1">LÃ£i / sáº£n pháº©m</p>
+                  <p className="text-xs text-mono-200 mb-1">Lãi / sản phẩm</p>
                   <p className="text-xl font-bold text-mono-300">
                     {formatCurrency(pricePreview.profitPerItem)}
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                  <p className="text-xs text-mono-200 mb-1">Tá»•ng giÃ¡ vá»‘n</p>
+                  <p className="text-xs text-mono-200 mb-1">Tổng giá vốn</p>
                   <p className="text-lg font-bold">
                     {formatCurrency(getTotalCost())}
                   </p>
                 </div>
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3">
-                  <p className="text-xs text-mono-200 mb-1">Tá»•ng lÃ£i dá»± kiáº¿n</p>
+                  <p className="text-xs text-mono-200 mb-1">Tổng lãi dự kiến</p>
                   <p className="text-lg font-bold text-mono-300">
                     {formatCurrency(getTotalProfit())}
                   </p>
@@ -821,14 +820,14 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
               className="flex-1 px-6 py-3 border-2 border-mono-300 text-mono-700 rounded-lg hover:bg-mono-100 font-semibold transition-all"
               disabled={submitting}
             >
-              Há»§y
+              Hủy
             </button>
             <button
               type="submit"
               className="flex-1 px-6 py-3 bg-mono-800 text-white rounded-lg hover:bg-mono-900 font-semibold transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={submitting}
             >
-              {submitting ? "Äang nháº­p kho..." : "Nháº­p kho"}
+              {submitting ? "Đang nhập kho..." : "Nhập kho"}
             </button>
           </div>
         </form>

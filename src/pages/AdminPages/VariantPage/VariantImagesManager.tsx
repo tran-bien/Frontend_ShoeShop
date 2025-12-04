@@ -122,7 +122,7 @@ const VariantImagesManager = ({ variantId, images, reloadImages }: any) => {
                 className="bg-mono-1000 hover:bg-mono-700 text-white px-2 py-1 rounded text-xs"
                 onClick={() => handleSetMain(img._id)}
               >
-                Ð?t làm chính
+                Đặt làm chính
               </button>
             )}
             {img.isMain && (

@@ -12,11 +12,11 @@ import { ApiResponse } from "../types/api";
 
 // Dashboard Service
 export const dashboardService = {
-  // Láº¥y dá»¯ liá»‡u tá»•ng quan cá»§a dashboard
+  // Lấy dữ liệu tổng quan của dashboard
   getDashboardData: (): Promise<{ data: ApiResponse<DashboardData> }> =>
     axiosInstanceAuth.get("/api/v1/admin/dashboard"),
 
-  // Láº¥y dá»¯ liá»‡u doanh thu theo ngÃ y
+  // Lấy dữ liệu doanh thu theo ngày
   getDailyRevenue: (params?: {
     startDate?: string;
     endDate?: string;
@@ -25,7 +25,7 @@ export const dashboardService = {
   }> =>
     axiosInstanceAuth.get("/api/v1/admin/dashboard/revenue/daily", { params }),
 
-  // Láº¥y dá»¯ liá»‡u doanh thu theo thÃ¡ng
+  // Lấy dữ liệu doanh thu theo tháng
   getMonthlyRevenue: (params?: {
     year?: number;
   }): Promise<{
@@ -37,7 +37,7 @@ export const dashboardService = {
     axiosInstanceAuth.get("/api/v1/admin/dashboard/revenue/monthly", {
       params,
     }),
-  // Láº¥y thá»‘ng kÃª sáº£n pháº©m bÃ¡n cháº¡y nháº¥t
+  // Lấy thống kê sản phẩm bán chạy nhất
   getTopSellingProducts: (params?: {
     period?: "week" | "month" | "year";
     limit?: number;

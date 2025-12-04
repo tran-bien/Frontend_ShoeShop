@@ -110,12 +110,12 @@ const EditProduct: React.FC<EditProductProps> = ({
 
     // Frontend validation
     if (!formData.name?.trim()) {
-      setError("Tên sản phẩm không được d? trống!");
+      setError("Tên sản phẩm không được để trống!");
       setLoading(false);
       return;
     }
     if (formData.name.trim().length < 2 || formData.name.trim().length > 200) {
-      setError("Tên sản phẩm ph?i có từ 2-200 ký t?!");
+      setError("Tên sản phẩm phải có từ 2-200 ký tự!");
       setLoading(false);
       return;
     }
@@ -124,7 +124,7 @@ const EditProduct: React.FC<EditProductProps> = ({
       (formData.description.trim().length < 10 ||
         formData.description.trim().length > 1000)
     ) {
-      setError("Mô từ sản phẩm ph?i có từ 10-1000 ký t?!");
+      setError("Mô tả sản phẩm phải có từ 10-1000 ký tự!");
       setLoading(false);
       return;
     }
@@ -142,7 +142,7 @@ const EditProduct: React.FC<EditProductProps> = ({
       console.error("Update product error:", err);
       const error = err as { response?: { data?: { message?: string } } };
       const errorMessage =
-        error.response?.data?.message || "Cập nhật sản phẩm thểt b?i!";
+        error.response?.data?.message || "Cập nhật sản phẩm thất bại!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -189,7 +189,7 @@ const EditProduct: React.FC<EditProductProps> = ({
                 onChange={handleChange}
                 required
                 rows={5}
-                placeholder="Mô từ chi tiết v? sản phẩm: chỉt li?u, d?c di?m nội b?t, công đếng..."
+                placeholder="Mô tả chi tiết về sản phẩm: chất liệu, đặc điểm nổi bật, công dụng..."
                 className="mt-1 block w-full px-4 py-3 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500 resize-none"
                 maxLength={1000}
               ></textarea>

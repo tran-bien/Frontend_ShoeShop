@@ -24,9 +24,9 @@ const OTPVerificationForm: React.FC = () => {
     // Reset error
     setError("");
 
-    // Ki?m tra email
+    // Kiểm tra email
     if (!email) {
-      setError("Vui lòng nhập email của bẩn");
+      setError("Vui lòng nhập email của bạn");
       return false;
     }
 
@@ -37,12 +37,12 @@ const OTPVerificationForm: React.FC = () => {
     }
 
     if (otp.length !== 6) {
-      setError("Mã OTP ph?i có 6 ký t?");
+      setError("Mã OTP phải có 6 ký tự");
       return false;
     }
 
     if (!/^\d+$/.test(otp)) {
-      setError("Mã OTP ph?i là s?");
+      setError("Mã OTP phải là số");
       return false;
     }
 

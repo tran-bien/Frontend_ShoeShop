@@ -1,6 +1,6 @@
 ﻿/**
  * Wishlist Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Danh sÃ¡ch yÃªu thÃ­ch
+ * Định nghĩa các interface liên quan đến Danh sách yêu thích
  */
 
 // =======================

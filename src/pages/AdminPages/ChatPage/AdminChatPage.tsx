@@ -236,7 +236,7 @@ const AdminChatPage: React.FC = () => {
       }
     } catch (error) {
       console.error("Failed to send message:", error);
-      toast.error("KhÃ´ng thá»ƒ gá»­i tin nháº¯n");
+      toast.error("Không thể gửi tin nhắn");
       setIsSending(false);
     }
   };
@@ -244,7 +244,7 @@ const AdminChatPage: React.FC = () => {
   const handleCloseConversation = async (conversationId: string) => {
     try {
       await chatService.closeConversation(conversationId);
-      toast.success("ÄÃ£ Ä‘Ã³ng cuá»™c há»™i thoáº¡i");
+      toast.success("Đã đóng cuộc hội thoại");
       setConversations((prev) =>
         prev.map((c) =>
           c._id === conversationId ? { ...c, status: "closed" } : c
@@ -255,7 +255,7 @@ const AdminChatPage: React.FC = () => {
       }
     } catch (error) {
       console.error("Failed to close conversation:", error);
-      toast.error("KhÃ´ng thá»ƒ Ä‘Ã³ng cuá»™c há»™i thoáº¡i");
+      toast.error("Không thể đóng cuộc hội thoại");
     }
   };
 
@@ -311,7 +311,7 @@ const AdminChatPage: React.FC = () => {
               <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-mono-400" />
               <input
                 type="text"
-                placeholder="TÃ¬m kiáº¿m khÃ¡ch hÃ ng..."
+                placeholder="Tìm kiếm khách hàng..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-mono-50 border border-mono-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-900"
@@ -331,10 +331,10 @@ const AdminChatPage: React.FC = () => {
                   }`}
                 >
                   {status === "all"
-                    ? "Táº¥t cáº£"
+                    ? "Tất cả"
                     : status === "active"
-                    ? "Äang má»Ÿ"
-                    : "ÄÃ£ Ä‘Ã³ng"}
+                    ? "Đang mở"
+                    : "Đã đóng"}
                 </button>
               ))}
             </div>
@@ -349,7 +349,7 @@ const AdminChatPage: React.FC = () => {
             ) : filteredConversations.length === 0 ? (
               <div className="text-center text-mono-500 py-10">
                 <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-mono-300" />
-                <p>KhÃ´ng cÃ³ cuá»™c há»™i thoáº¡i nÃ o</p>
+                <p>Không có cuộc hội thoại nào</p>
               </div>
             ) : (
               <div className="divide-y divide-mono-100">
@@ -385,7 +385,7 @@ const AdminChatPage: React.FC = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
                             <p className="font-medium text-mono-900 truncate">
-                              {customer?.name || "KhÃ¡ch hÃ ng"}
+                              {customer?.name || "Khách hàng"}
                             </p>
                             {conv.unreadCount && conv.unreadCount > 0 && (
                               <span className="ml-2 px-1.5 py-0.5 text-xs bg-mono-900 text-white rounded-full">
@@ -394,7 +394,7 @@ const AdminChatPage: React.FC = () => {
                             )}
                           </div>
                           <p className="text-sm text-mono-500 truncate">
-                            {conv.lastMessage?.text || "Báº¯t Ä‘áº§u cuá»™c há»™i thoáº¡i"}
+                            {conv.lastMessage?.text || "Bắt đầu cuộc hội thoại"}
                           </p>
                           <p className="text-xs text-mono-400 mt-1">
                             {conv.lastMessage?.createdAt
@@ -425,10 +425,10 @@ const AdminChatPage: React.FC = () => {
               <div className="text-center">
                 <FiMessageCircle className="w-16 h-16 mx-auto mb-4 text-mono-300" />
                 <h3 className="text-xl font-semibold text-mono-700 mb-2">
-                  Chá»n cuá»™c há»™i thoáº¡i
+                  Chọn cuộc hội thoại
                 </h3>
                 <p className="text-mono-500">
-                  Chá»n má»™t cuá»™c há»™i thoáº¡i tá»« danh sÃ¡ch bÃªn trÃ¡i Ä‘á»ƒ báº¯t Ä‘áº§u
+                  Chọn một cuộc hội thoại từ danh sách bên trái để bắt đầu
                 </p>
               </div>
             </div>
@@ -452,7 +452,7 @@ const AdminChatPage: React.FC = () => {
                     <div>
                       <h3 className="font-semibold text-mono-900">
                         {getCustomerInfo(activeConversation)?.name ||
-                          "KhÃ¡ch hÃ ng"}
+                          "Khách hàng"}
                       </h3>
                       <p className="text-sm text-mono-500">
                         {getCustomerInfo(activeConversation)?.email}
@@ -468,7 +468,7 @@ const AdminChatPage: React.FC = () => {
                         className="flex items-center gap-2 px-3 py-1.5 text-sm text-mono-600 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors"
                       >
                         <FiCheckCircle className="w-4 h-4" />
-                        ÄÃ³ng há»™i thoáº¡i
+                        Đóng hội thoại
                       </button>
                     )}
                     <button
@@ -580,7 +580,7 @@ const AdminChatPage: React.FC = () => {
                         handleTyping();
                       }}
                       onKeyPress={handleKeyPress}
-                      placeholder="Nháº­p tin nháº¯n..."
+                      placeholder="Nhập tin nhắn..."
                       className="flex-1 px-4 py-2.5 bg-mono-50 border border-mono-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent"
                       disabled={isSending}
                     />
@@ -599,7 +599,7 @@ const AdminChatPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="p-4 border-t border-mono-200 bg-mono-100 text-center">
-                  <p className="text-mono-500">Cuá»™c há»™i thoáº¡i nÃ y Ä‘Ã£ Ä‘Ã³ng</p>
+                  <p className="text-mono-500">Cuộc hội thoại này đã đóng</p>
                 </div>
               )}
             </>

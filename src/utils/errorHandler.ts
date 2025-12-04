@@ -27,7 +27,7 @@ export const getErrorMessage = (error: any): string => {
     }
   }
 
-  return error.message || "ÄÃ£ xáº£y ra lá»—i, vui lÃ²ng thá»­ láº¡i sau";
+  return error.message || "Đã xảy ra lỗi, vui lòng thử lại sau";
 };
 
 /**

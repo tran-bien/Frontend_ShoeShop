@@ -1,6 +1,6 @@
 ﻿/**
  * Loyalty Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Äiá»ƒm thÆ°á»Ÿng vÃ  Háº¡ng thÃ nh viÃªn
+ * Định nghĩa các interface liên quan đến Điểm thưởng và Hạng thành viên
  */
 
 // =======================

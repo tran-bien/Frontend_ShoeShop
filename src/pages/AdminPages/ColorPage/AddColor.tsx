@@ -32,7 +32,7 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Thêm màu thểt b?i!");
+      setError("Thêm màu thất bại!");
     } finally {
       setLoading(false);
     }

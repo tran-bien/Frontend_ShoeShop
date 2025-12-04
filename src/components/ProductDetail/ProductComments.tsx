@@ -127,12 +127,12 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
 
   // Handle delete reply
   const handleDeleteReply = async (reviewId: string) => {
-    if (!confirm("Bẩn có chỉc chơn muẩn xóa phần h?i này?")) return;
+    if (!confirm("Bạn có chắc chắn muốn xóa phản hồi này?")) return;
 
     try {
       const response = await adminReviewApi.deleteReply(reviewId);
       if (response.data.success) {
-        toast.success("Ðã xóa phần h?i");
+        toast.success("Đã xóa phản hồi");
         setReviews((prev) =>
           prev.map((review) =>
             review._id === reviewId ? { ...review, reply: undefined } : review
@@ -213,7 +213,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
         <div className="p-8 text-center">
           <FaRegStar className="mx-auto text-4xl text-mono-300 mb-3" />
           <h3 className="text-xl font-medium text-mono-700 mb-2">
-            Chua có đánh giá nào
+            Chưa có đánh giá nào
           </h3>
           <p className="text-mono-500">
             Hãy là người đầu tiên đánh giá sản phẩm này
@@ -367,7 +367,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                       <textarea
                         value={replyContent}
                         onChange={(e) => setReplyContent(e.target.value)}
-                        placeholder="Nhập phần h?i của bẩn..."
+                        placeholder="Nhập phản hồi của bạn..."
                         className="w-full px-3 py-2 border border-mono-300 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-mono-500"
                         rows={3}
                       />

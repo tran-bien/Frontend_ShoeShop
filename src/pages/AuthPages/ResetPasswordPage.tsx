@@ -99,7 +99,7 @@ const ResetPasswordPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Ki?m tra co bẩn ? client
+    // Kiểm tra cơ bản ở client
     const newErrors: Record<string, string> = {};
 
     // Password validation

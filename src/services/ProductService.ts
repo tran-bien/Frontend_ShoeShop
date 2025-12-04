@@ -49,40 +49,40 @@ export const convertToProductCardProduct: ProductToCardProduct = (product) => {
 
 // Admin Product Service
 export const productAdminService = {
-  // Láº¥y danh sÃ¡ch sáº£n pháº©m (cÃ³ phÃ¢n trang vÃ  filter)
+  // Lấy danh sách sản phẩm (có phân trang và filter)
   getProducts: (
     params?: ProductQueryParams
   ): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/products", { params }),
 
-  // Láº¥y danh sÃ¡ch sáº£n pháº©m Ä‘Ã£ xÃ³a
+  // Lấy danh sách sản phẩm đã xóa
   getDeletedProducts: (
     params?: ProductQueryParams
   ): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/products/deleted", { params }),
 
-  // Láº¥y chi tiáº¿t sáº£n pháº©m theo ID
+  // Lấy chi tiết sản phẩm theo ID
   getProductById: (id: string): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/products/${id}`),
 
-  // Táº¡o sáº£n pháº©m má»›i
+  // Tạo sản phẩm mới
   createProduct: (
     data: CreateProductData
   ): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.post("/api/v1/admin/products", data),
 
-  // Cáº­p nháº­t sáº£n pháº©m
+  // Cập nhật sản phẩm
   updateProduct: (
     id: string,
     data: UpdateProductData
   ): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/products/${id}`, data),
 
-  // XÃ³a má»m sáº£n pháº©m
+  // Xóa mềm sản phẩm
   deleteProduct: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/products/${id}`),
 
-  // KhÃ´i phá»¥c sáº£n pháº©m Ä‘Ã£ xÃ³a
+  // Khôi phục sản phẩm đã xóa
   restoreProduct: (
     id: string,
     restoreVariants: boolean = true
@@ -91,7 +91,7 @@ export const productAdminService = {
       restoreVariants,
     }),
 
-  // Cáº­p nháº­t tráº¡ng thÃ¡i active
+  // Cập nhật trạng thái active
   updateProductStatus: (
     id: string,
     data: {
@@ -101,25 +101,25 @@ export const productAdminService = {
   ): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/products/${id}/status`, data),
 
-  // Cáº­p nháº­t tráº¡ng thÃ¡i tá»“n kho
+  // Cập nhật trạng thái tồn kho
   updateStockStatus: (id: string): Promise<{ data: ApiResponse<Product> }> =>
     axiosInstanceAuth.post(`/api/v1/admin/products/${id}/update-stock-status`),
 };
 
 // Public Product Service
 export const productPublicService = {
-  // Láº¥y danh sÃ¡ch sáº£n pháº©m cÃ´ng khai vá»›i filter phá»©c táº¡p
+  // Lấy danh sách sản phẩm công khai với filter phức tạp
   getProducts: (
     params?: ProductQueryParams
   ): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstance.get("/api/v1/products", { params }),
 
-  // Láº¥y sáº£n pháº©m ná»•i báº­t
+  // Lấy sản phẩm nổi bật
   getFeaturedProducts: (params?: {
     limit?: number;
   }): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstance.get("/api/v1/products/featured", { params }),
-  // Láº¥y chi tiáº¿t sáº£n pháº©m theo slug
+  // Lấy chi tiết sản phẩm theo slug
   getProductBySlug: async (slug: string) => {
     try {
       const response = await axiosInstance.get(`/api/v1/products/slug/${slug}`);
@@ -128,26 +128,26 @@ export const productPublicService = {
       console.error("Error fetching product by slug:", error);
       const axiosError = error as { response?: { status?: number } };
       if (axiosError.response?.status === 404) {
-        toast.error("KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m");
+        toast.error("Không tìm thấy sản phẩm");
       } else {
-        toast.error("Lá»—i khi táº£i sáº£n pháº©m");
+        toast.error("Lỗi khi tải sản phẩm");
       }
       throw error;
     }
   },
 
-  // Láº¥y sáº£n pháº©m má»›i nháº¥t
+  // Lấy sản phẩm mới nhất
   getNewArrivals: (params?: {
     limit?: number;
   }): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstance.get("/api/v1/products/new-arrivals", { params }),
 
-  // Láº¥y sáº£n pháº©m bÃ¡n cháº¡y
+  // Lấy sản phẩm bán chạy
   getBestSellers: (params?: {
     limit?: number;
   }): Promise<{ data: ApiResponse<Product[]> }> =>
     axiosInstance.get("/api/v1/products/best-sellers", { params }),
-  // Láº¥y sáº£n pháº©m liÃªn quan
+  // Lấy sản phẩm liên quan
   getRelatedProducts: async (id: string, params?: { limit?: number }) => {
     try {
       const response = await axiosInstance.get(
@@ -157,11 +157,11 @@ export const productPublicService = {
       return response;
     } catch (error: unknown) {
       console.error("Error fetching related products:", error);
-      // KhÃ´ng hiá»ƒn thá»‹ toast error cho related products vÃ¬ Ä‘Ã¢y lÃ  tÃ­nh nÄƒng phá»¥
+      // Không hiển thị toast error cho related products vì đây là tính năng phụ
       throw error;
     }
   },
-  // Láº¥y chi tiáº¿t sáº£n pháº©m theo ID
+  // Lấy chi tiết sản phẩm theo ID
   getProductById: async (id: string) => {
     try {
       const response = await axiosInstance.get(`/api/v1/products/${id}`);
@@ -170,9 +170,9 @@ export const productPublicService = {
       console.error("Error fetching product by ID:", error);
       const axiosError = error as { response?: { status?: number } };
       if (axiosError.response?.status === 404) {
-        toast.error("KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m");
+        toast.error("Không tìm thấy sản phẩm");
       } else {
-        toast.error("Lá»—i khi táº£i sáº£n pháº©m");
+        toast.error("Lỗi khi tải sản phẩm");
       }
       throw error;
     }

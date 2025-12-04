@@ -217,13 +217,9 @@ const ListOrderPage: React.FC = () => {
             <table className="min-w-full bg-white rounded-md overflow-hidden border">
               <thead className="bg-mono-50 text-mono-700 text-sm font-semibold uppercase">
                 <tr>
-                  <th className="py-3 px-4 text-left border-b">
-                    Mï¿½ don hï¿½ng
-                  </th>
-                  <th className="py-3 px-4 text-left border-b">
-                    Khï¿½ch hï¿½ng
-                  </th>
-                  <th className="py-3 px-4 text-left border-b">ï¿½?a chỉ</th>
+                  <th className="py-3 px-4 text-left border-b">Mã đơn hàng</th>
+                  <th className="py-3 px-4 text-left border-b">Khách hàng</th>
+                  <th className="py-3 px-4 text-left border-b">Địa chỉ</th>
                   <th className="py-3 px-4 text-left border-b">
                     Số điện thoại
                   </th>

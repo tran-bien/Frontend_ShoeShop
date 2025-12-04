@@ -64,13 +64,13 @@ const ShipperPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-mono-800">Quận lý Shipper</h1>
+        <h1 className="text-3xl font-bold text-mono-800">Quản lý Shipper</h1>
         <button
           onClick={handleAssignOrder}
           className="bg-mono-black hover:bg-mono-800 text-white px-4 py-2 rounded-lg flex items-center gap-2"
         >
           <FaTruck size={20} />
-          Gán don hàng
+          Gán đơn hàng
         </button>
       </div>
 
@@ -188,7 +188,7 @@ const ShipperPage = () => {
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xs text-mono-500">Thểt b?i</div>
+                    <div className="text-xs text-mono-500">Thất bại</div>
                     <div className="text-lg font-bold text-mono-900">
                       {shipper.shipper.deliveryStats.failed}
                     </div>
@@ -199,7 +199,7 @@ const ShipperPage = () => {
                 <div className="pt-4 border-t">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-mono-600">
-                      Từ lệ thành công
+                      Tỷ lệ thành công
                     </span>
                     <span className="text-sm font-bold text-mono-black">
                       {calculateSuccessRate(shipper.shipper.deliveryStats)}%

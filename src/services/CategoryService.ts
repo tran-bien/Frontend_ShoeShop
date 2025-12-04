@@ -4,23 +4,23 @@ import { ApiResponse } from "../types/api";
 
 // Admin Category Service
 export const adminCategoryService = {
-  // Láº¥y táº¥t cáº£ danh má»¥c
+  // Lấy tất cả danh mục
   getAll: (
     params?: CategoryQueryParams
   ): Promise<{ data: ApiResponse<Category[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/categories", { params }),
 
-  // Láº¥y danh má»¥c Ä‘Ã£ xÃ³a
+  // Lấy danh mục đã xóa
   getDeleted: (
     params?: CategoryQueryParams
   ): Promise<{ data: ApiResponse<Category[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/categories/deleted", { params }),
 
-  // Láº¥y chi tiáº¿t danh má»¥c theo ID
+  // Lấy chi tiết danh mục theo ID
   getById: (id: string): Promise<{ data: ApiResponse<Category> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/categories/${id}`),
 
-  // Táº¡o má»›i danh má»¥c
+  // Tạo mới danh mục
   create: (data: {
     name: string;
     description?: string;
@@ -30,7 +30,7 @@ export const adminCategoryService = {
   }): Promise<{ data: ApiResponse<Category> }> =>
     axiosInstanceAuth.post("/api/v1/admin/categories", data),
 
-  // Cáº­p nháº­t danh má»¥c
+  // Cập nhật danh mục
   update: (
     id: string,
     data: {
@@ -43,11 +43,11 @@ export const adminCategoryService = {
   ): Promise<{ data: ApiResponse<Category> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/categories/${id}`, data),
 
-  // XÃ³a má»m danh má»¥c
+  // Xóa mềm danh mục
   delete: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/categories/${id}`),
 
-  // KhÃ´i phá»¥c danh má»¥c Ä‘Ã£ xÃ³a
+  // Khôi phục danh mục đã xóa
   restore: (
     id: string,
     cascade: boolean = true
@@ -56,7 +56,7 @@ export const adminCategoryService = {
       cascade,
     }),
 
-  // Cáº­p nháº­t tráº¡ng thÃ¡i active cá»§a danh má»¥c
+  // Cập nhật trạng thái active của danh mục
   updateStatus: (
     id: string,
     data: { isActive: boolean; cascade?: boolean }

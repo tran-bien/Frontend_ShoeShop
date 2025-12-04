@@ -249,16 +249,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         )}
       </div>
 
-      {/* Thông tin sản phẩm - c?i thiện d? rõ ràng */}
+      {/* Thông tin sản phẩm - cải thiện để rõ ràng */}
       <div className="p-4 flex flex-col flex-1">
-        {/* Thuong hi?u */}
+        {/* Thương hiệu */}
         {product.brand && (
           <span className="text-sm font-medium text-mono-500 mb-1.5">
             {product.brand.name}
           </span>
         )}
 
-        {/* Tên sản phẩm - Tang kích thước và d? d?m */}
+        {/* Tên sản phẩm - Tăng kích thước và độ đậm */}
         <h3 className="text-base md:text-lg font-bold text-mono-900 mb-2 line-clamp-2 flex-grow leading-snug">
           {product.name}
         </h3>

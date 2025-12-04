@@ -206,7 +206,7 @@ const UserCancelRequestsPage: React.FC = () => {
                   {request.adminResponse && (
                     <div className="mt-4 pt-4 border-t">
                       <h3 className="font-semibold text-mono-700 mb-2">
-                        Phần h?i từ Admin
+                        Phản hồi từ Admin
                       </h3>
                       <div className="bg-mono-50 border border-mono-200 p-3 rounded text-sm text-mono-800">
                         {request.adminResponse}

@@ -152,7 +152,7 @@ const EditColorModal: React.FC<{
       onSuccess();
       onClose();
     } catch {
-      setError("Cập nhật màu thểt b?i!");
+      setError("Cập nhật màu thất bại!");
     } finally {
       setLoading(false);
     }
@@ -468,14 +468,14 @@ const ColorPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-200 to-mono-300 rounded-xl p-6 shadow-sm border border-mono-400">
             <h3 className="text-sm font-medium text-mono-700 mb-1">
-              Tổng số màu sắc dã xóa
+              Tổng số màu sắc đã xóa
             </h3>
             <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
           </div>
         </div>
       )}
 
-      {/* Tab chuyện đổi và Sort */}
+      {/* Tab chuyển đổi và Sort */}
       <div className="flex items-center justify-between border-b mb-4">
         <div className="flex">
           <button
@@ -502,7 +502,7 @@ const ColorPage: React.FC = () => {
               setCurrentPage(1);
             }}
           >
-            Màu dã xóa
+            Màu đã xóa
           </button>
         </div>
         <div className="flex items-center gap-3 mb-2">
@@ -515,8 +515,8 @@ const ColorPage: React.FC = () => {
             }}
             className="px-3 py-1.5 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
           >
-            <option value="created_at_desc">Mới nh?t</option>
-            <option value="created_at_asc">Cu nh?t</option>
+            <option value="created_at_desc">Mới nhất</option>
+            <option value="created_at_asc">Cũ nhất</option>
             <option value="name_asc">Tên A-Z</option>
             <option value="name_desc">Tên Z-A</option>
           </select>
@@ -556,8 +556,8 @@ const ColorPage: React.FC = () => {
               <th className="py-3 px-4 text-left border-b">ID</th>
               <th className="py-3 px-4 text-left border-b">Tên Màu</th>
               <th className="py-3 px-4 text-left border-b">Mã Màu</th>
-              <th className="py-3 px-4 text-left border-b">Lo?i</th>
-              <th className="py-3 px-4 text-center border-b">Trống Thái</th>
+              <th className="py-3 px-4 text-left border-b">Loại</th>
+              <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
               <th className="py-3 px-4 text-center border-b">Thao Tác</th>
             </tr>
           </thead>
@@ -708,7 +708,7 @@ const ColorPage: React.FC = () => {
                               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
-                          Khôi ph?c
+                          Khôi phục
                         </button>
                       )
                     )}

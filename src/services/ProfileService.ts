@@ -1,6 +1,6 @@
 ﻿/**
  * Profile Service
- * Quáº£n lÃ½ thÃ´ng tin ngÆ°á»i dÃ¹ng vÃ  Ä‘á»‹a chá»‰
+ * Quản lý thông tin người dùng và địa chỉ
  * BE Routes: /api/v1/users/profile, /api/v1/users/addresses
  */
 
@@ -35,23 +35,23 @@ export interface AddressResponse {
 // =======================
 
 export const profileService = {
-  // Láº¥y thÃ´ng tin profile
+  // Lấy thông tin profile
   getProfile: (): Promise<{ data: ProfileResponse }> =>
     axiosInstanceAuth.get("/api/v1/users/profile"),
 
-  // Cáº­p nháº­t thÃ´ng tin ngÆ°á»i dÃ¹ng
+  // Cập nhật thông tin người dùng
   updateProfile: (
     data: UpdateUserProfileData
   ): Promise<{ data: ApiResponse<User> }> =>
     axiosInstanceAuth.put("/api/v1/users/profile", data),
 
-  // Cáº­p nháº­t avatar (form-data)
+  // Cập nhật avatar (form-data)
   updateAvatar: (formData: FormData): Promise<{ data: ApiResponse<User> }> =>
     axiosInstanceAuth.post("/api/v1/users/images/avatar", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
 
-  // XÃ³a avatar
+  // Xóa avatar
   deleteAvatar: (): Promise<{ data: ApiResponse<User> }> =>
     axiosInstanceAuth.delete("/api/v1/users/images/avatar"),
 };
@@ -61,28 +61,28 @@ export const profileService = {
 // =======================
 
 export const addressService = {
-  // Láº¥y danh sÃ¡ch Ä‘á»‹a chá»‰
+  // Lấy danh sách địa chỉ
   getAddresses: (): Promise<{ data: ApiResponse<UserAddress[]> }> =>
     axiosInstanceAuth.get("/api/v1/users/addresses"),
 
-  // ThÃªm Ä‘á»‹a chá»‰ má»›i
+  // Thêm địa chỉ mới
   addAddress: (
     data: Omit<UserAddress, "_id">
   ): Promise<{ data: AddressResponse }> =>
     axiosInstanceAuth.post("/api/v1/users/addresses", data),
 
-  // Cáº­p nháº­t Ä‘á»‹a chá»‰
+  // Cập nhật địa chỉ
   updateAddress: (
     addressId: string,
     data: Partial<UserAddress>
   ): Promise<{ data: AddressResponse }> =>
     axiosInstanceAuth.put(`/api/v1/users/addresses/${addressId}`, data),
 
-  // XÃ³a Ä‘á»‹a chá»‰
+  // Xóa địa chỉ
   deleteAddress: (addressId: string): Promise<{ data: ApiResponse<null> }> =>
     axiosInstanceAuth.delete(`/api/v1/users/addresses/${addressId}`),
 
-  // Äáº·t Ä‘á»‹a chá»‰ máº·c Ä‘á»‹nh
+  // Đặt địa chỉ mặc định
   setDefaultAddress: (addressId: string): Promise<{ data: AddressResponse }> =>
     axiosInstanceAuth.put(`/api/v1/users/addresses/${addressId}/default`),
 };

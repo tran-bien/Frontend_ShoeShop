@@ -22,31 +22,31 @@ const AdminNavbar = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      // Delay trước khi navigate d? toast k?p hiện thể
+      // Delay trước khi navigate để toast kịp hiển thị
       setTimeout(() => {
         navigate("/login");
       }, 500);
     } catch (error) {
       console.error("Logout error:", error);
-      // Fallback navigation n?u có lỗi
+      // Fallback navigation nếu có lỗi
       setTimeout(() => {
         navigate("/login");
       }, 500);
     }
   };
 
-  // Tiêu d? trang d?a vào URL
+  // Tiêu đề trang dựa vào URL
   const getPageTitle = () => {
     const path = location.pathname;
     if (path === "/admin" || path === "/admin/dashboard") return "Dashboard";
-    if (path.includes("/admin/products")) return "Quận lý sản phẩm";
-    if (path.includes("/admin/users")) return "Quận lý người dùng";
-    if (path.includes("/admin/categories")) return "Quận lý danh mục";
-    if (path.includes("/admin/orders")) return "Quận lý don hàng";
-    if (path.includes("/admin/brand")) return "Quận lý thuong hi?u";
-    if (path.includes("/admin/banners")) return "Quận lý banner";
-    if (path.includes("/admin/color")) return "Quận lý màu sắc";
-    if (path.includes("/admin/size")) return "Quận lý kích thước";
+    if (path.includes("/admin/products")) return "Quản lý sản phẩm";
+    if (path.includes("/admin/users")) return "Quản lý người dùng";
+    if (path.includes("/admin/categories")) return "Quản lý danh mục";
+    if (path.includes("/admin/orders")) return "Quản lý đơn hàng";
+    if (path.includes("/admin/brand")) return "Quản lý thương hiệu";
+    if (path.includes("/admin/banners")) return "Quản lý banner";
+    if (path.includes("/admin/color")) return "Quản lý màu sắc";
+    if (path.includes("/admin/size")) return "Quản lý kích thước";
     return "Admin";
   };
 

@@ -530,7 +530,7 @@ const ListBrandsPage: React.FC = () => {
               <th className="py-3 px-4 text-left border-b">Slug</th>
               <th className="py-3 px-4 text-left border-b">Mô Tả</th>
               <th className="py-3 px-4 text-center border-b">Logo</th>
-              <th className="py-3 px-4 text-center border-b">Trống Thái</th>
+              <th className="py-3 px-4 text-center border-b">Trạng Thái</th>
               <th className="py-3 px-4 text-center border-b">Thao Tác</th>
             </tr>
           </thead>
@@ -667,7 +667,7 @@ const ListBrandsPage: React.FC = () => {
                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                               />
                             </svg>
-                            {item.isActive ? "T?t" : "B?t"}
+                            {item.isActive ? "Tắt" : "Bật"}
                           </button>
                         )}
                         {canUpdate() && (
@@ -711,7 +711,7 @@ const ListBrandsPage: React.FC = () => {
                               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
-                          Khôi ph?c
+                          Khôi phục
                         </button>
                       )
                     )}
@@ -832,7 +832,7 @@ const ListBrandsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Modal quận lý logo */}
+      {/* Modal quản lý logo */}
       {showLogoManager && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-4 w-full max-w-md relative">

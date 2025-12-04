@@ -1,6 +1,6 @@
 ﻿/**
  * Review Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n ÄÃ¡nh giÃ¡ sáº£n pháº©m
+ * Định nghĩa các interface liên quan đến Đánh giá sản phẩm
  */
 
 // =======================

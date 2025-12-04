@@ -90,17 +90,17 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
 
     // Frontend validation
     if (!formData.name.trim()) {
-      setError("Tên sản phẩm không được d? trống!");
+      setError("Tên sản phẩm không được để trống!");
       setLoading(false);
       return;
     }
     if (formData.name.trim().length < 2 || formData.name.trim().length > 200) {
-      setError("Tên sản phẩm ph?i có từ 2-200 ký t?!");
+      setError("Tên sản phẩm phải có từ 2-200 ký tự!");
       setLoading(false);
       return;
     }
     if (!formData.description.trim()) {
-      setError("Mô từ sản phẩm không được d? trống!");
+      setError("Mô tả sản phẩm không được để trống!");
       setLoading(false);
       return;
     }
@@ -135,7 +135,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
       console.error("Create product error:", err);
       const error = err as { response?: { data?: { message?: string } } };
       const errorMessage =
-        error.response?.data?.message || "Thêm sản phẩm thểt b?i!";
+        error.response?.data?.message || "Thêm sản phẩm thất bại!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -153,12 +153,12 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
           ×
         </button>
         <h2 className="text-2xl font-bold mb-6 text-mono-800">
-          Thêm Sẩn Ph?m Mới
+          Thêm Sản Phẩm Mới
         </h2>
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-1">
-              Tên Sẩn Ph?m <span className="text-mono-800">*</span>
+              Tên Sản Phẩm <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -181,7 +181,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                 onChange={handleChange}
                 required
                 rows={5}
-                placeholder="Mô từ chi tiết v? sản phẩm: chỉt li?u, d?c di?m nội b?t, công đếng..."
+                placeholder="Mô tả chi tiết về sản phẩm: chất liệu, đặc điểm nổi bật, công dụng..."
                 className="mt-1 block w-full px-4 py-3 border-2 border-mono-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-mono-500 resize-none"
                 maxLength={1000}
               ></textarea>
@@ -391,7 +391,7 @@ const AddProduct: React.FC<AddProductProps> = ({ handleClose }) => {
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  Thêm Sẩn Ph?m
+                  Thêm Sản Phẩm
                 </>
               )}
             </button>

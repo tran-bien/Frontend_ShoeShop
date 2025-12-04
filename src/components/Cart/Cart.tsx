@@ -31,7 +31,7 @@ const Cart: React.FC = () => {
   const [couponLoading, setCouponLoading] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null); // TODO: Add OrderPreview type
 
-  // Thay đổi: Sử dụng Map d? track quantity chính xác hon
+  // Thay đổi: Sử dụng Map để track quantity chính xác hơn
   const [optimisticQuantities, setOptimisticQuantities] = useState<
     Map<string, number>
   >(new Map());
@@ -99,7 +99,7 @@ const Cart: React.FC = () => {
         // Reset optimistic quantities khi fetch mới
         setOptimisticQuantities(new Map());
       } else {
-        toast.error(response.data.message || "Không thể tại giỏ hàng");
+        toast.error(response.data.message || "Không thể tải giỏ hàng");
       }
     } catch (error: any) {
       if (error.response?.status === 401) {
@@ -170,7 +170,7 @@ const Cart: React.FC = () => {
     }
   }, [cart, appliedCoupon?.code, previewOrder]);
 
-  // C?i thiện debounced update với cancel cu
+  // Cải thiện debounced update với cancel cũ
   const debouncedUpdateQuantity = useCallback(
     debounce(async (itemId: string, newQuantity: number) => {
       if (newQuantity < 1 || newQuantity > 99) return;
@@ -181,7 +181,7 @@ const Cart: React.FC = () => {
       try {
         const response = await cartService.updateCartItemQuantity(itemId, {
           quantity: newQuantity,
-        }); // Chờ update n?u dây là request mới nh?t
+        }); // Chỉ update nếu đây là request mới nhất
         if (lastUpdateTime.current.get(itemId) === now) {
           if (response.data.success) {
             const updatedCart = response.data.cart;
@@ -197,12 +197,12 @@ const Cart: React.FC = () => {
             }
 
             if (response.data.productInfo?.exceededInventory) {
-              toast.error(response.data.message || "Số lượng vu?t quá tên kho");
+              toast.error(response.data.message || "Số lượng vượt quá tồn kho");
             }
           }
         }
       } catch (error: any) {
-        // Chờ xử lý error n?u dây là request mới nh?t
+        // Chờ xử lý error nếu đây là request mới nhấ t
         if (
           lastUpdateTime.current.get(itemId) === now &&
           error.response?.status !== 401
@@ -231,11 +231,11 @@ const Cart: React.FC = () => {
       const currentItem = cart?.cartItems.find((item) => item._id === itemId);
       if (!currentItem) return;
 
-      // Cancel timeout cu n?u có
+      // Cancel timeout cũ nếu có
       const existingTimeout = updateTimeouts.current.get(itemId);
       if (existingTimeout) {
         clearTimeout(existingTimeout);
-      } // Optimistic update ngay lệp t?c
+      } // Optimistic update ngay lập tức
       setOptimisticQuantities((prev) => {
         const newMap = new Map(prev);
         newMap.set(itemId, newQuantity);
@@ -243,7 +243,7 @@ const Cart: React.FC = () => {
       });
 
       if (isImmediate) {
-        // Cancel debounce và gửi trởc tiếp cho button click
+        // Cancel debounce và gửi trực tiếp cho button click
         debouncedUpdateQuantity.cancel();
         debouncedUpdateQuantity(itemId, newQuantity);
       } else {
@@ -254,7 +254,7 @@ const Cart: React.FC = () => {
     [cart?.cartItems, debouncedUpdateQuantity]
   );
 
-  // C?i tiền: Thêm m?t state d? theo dõi input hiện tại
+  // Cải tiến: Thêm một state để theo dõi input hiện tại
   const [inputValues, setInputValues] = useState<Map<string, string>>(
     new Map()
   );
@@ -262,16 +262,16 @@ const Cart: React.FC = () => {
   // Handle input change
   const handleQuantityInputChange = useCallback(
     (itemId: string, value: string) => {
-      // Luu giá trở hiện tại của input d? hiện thọ ngay lệp t?c
+      // Lưu giá trị hiện tại của input để hiển thị ngay lập tức
       setInputValues((prev) => {
         const newMap = new Map(prev);
-        // Chờ giỏ các ký từ s?
+        // Chỉ giữ các ký tự số
         const sanitizedValue = value.replace(/[^0-9]/g, "");
         newMap.set(itemId, sanitizedValue);
         return newMap;
       });
 
-      // Xử lý cập nhật số lượng n?u là giá trở hợp lệ
+      // Xử lý cập nhật số lượng nếu là giá trị hợp lệ
       const numValue = parseInt(value);
       if (!isNaN(numValue) && numValue >= 1 && numValue <= 99) {
         updateQuantity(itemId, numValue, false);
@@ -280,28 +280,28 @@ const Cart: React.FC = () => {
     [updateQuantity]
   );
 
-  // C?i tiền: Làm rõ hon xử lý giá trở hiện thể
+  // Cải tiến: Làm rõ hơn xử lý giá trị hiển thị
   const getDisplayQuantity = useCallback(
     (item: CartItem) => {
-      // N?u đang có giá trở nhập vào, uu tiên hiện thọ giá trở dó
+      // Nếu đang có giá trị nhập vào, ưu tiên hiển thị giá trị đó
       const inputValue = inputValues.get(item._id);
       if (inputValue !== undefined) {
         return inputValue;
       }
 
-      // N?u đang có optimistic quantity, hiện thọ giá trở dó
+      // Nếu đang có optimistic quantity, hiển thị giá trị đó
       const optimisticQty = optimisticQuantities.get(item._id);
       if (optimisticQty !== undefined) {
         return optimisticQty.toString();
       }
 
-      // M?c đếnh là giá trở từ server
+      // Mặc định là giá trị từ server
       return item.quantity.toString();
     },
     [optimisticQuantities, inputValues]
   );
 
-  // Thêm hàm xử lý nút tăng/giảm số lượng - không hiện thọ loading
+  // Thêm hàm xử lý nút tăng/giảm số lượng - không hiện thị loading
   const handleQuantityButtonClick = useCallback(
     (itemId: string, change: number) => {
       const currentItem = cart?.cartItems.find((item) => item._id === itemId);
@@ -327,10 +327,10 @@ const Cart: React.FC = () => {
     [optimisticQuantities]
   );
 
-  // C?i tiền: Xử lý focus và blur cho input
+  // Cải tiến: Xử lý focus và blur cho input
   const handleInputFocus = useCallback(
     (itemId: string) => {
-      // Khi focus vào input, luu giá trở hiện tại
+      // Khi focus vào input, lưu giá trị hiện tại
       const currentItem = cart?.cartItems.find((item) => item._id === itemId);
       if (currentItem) {
         const qty = optimisticQuantities.get(itemId) ?? currentItem.quantity;
@@ -346,13 +346,13 @@ const Cart: React.FC = () => {
 
   const handleInputBlur = useCallback(
     (itemId: string) => {
-      // Khi blur kh?i input, xử lý giá trở cuối cùng
+      // Khi blur khỏi input, xử lý giá trị cuối cùng
       const inputValue = inputValues.get(itemId);
       if (inputValue !== undefined) {
         const numValue = parseInt(inputValue);
 
         if (isNaN(numValue) || numValue < 1) {
-          // N?u giá trở không hợp lệ, đặt v? 1
+          // Nếu giá trị không hợp lệ, đặt về 1
           updateQuantity(itemId, 1, true);
           setInputValues((prev) => {
             const newMap = new Map(prev);
@@ -360,7 +360,7 @@ const Cart: React.FC = () => {
             return newMap;
           });
         } else if (numValue > 99) {
-          // N?u vu?t quá 99, giới hơn là 99
+          // Nếu vượt quá 99, giới hạn là 99
           updateQuantity(itemId, 99, true);
           setInputValues((prev) => {
             const newMap = new Map(prev);
@@ -413,7 +413,7 @@ const Cart: React.FC = () => {
   // Remove selected items
   const removeSelectedItems = useCallback(async () => {
     if (!selectedItems?.length) {
-      toast.error("Vui lòng chơn sản phẩm d? xóa");
+      toast.error("Vui lòng chọn sản phẩm để xóa");
       return;
     }
 
@@ -423,14 +423,14 @@ const Cart: React.FC = () => {
         const updatedCart = response.data.cart;
         if (updatedCart) {
           setCart(updatedCart);
-          // Clear optimistic quantities cho items dã xóa
+          // Clear optimistic quantities cho items đã xóa
           setOptimisticQuantities(new Map());
         }
-        toast.success(`Ðã xóa ${selectedItems.length} sản phẩm`);
+        toast.success(`Đã xóa ${selectedItems.length} sản phẩm`);
       }
     } catch (error: any) {
       if (error.response?.status === 401) {
-        toast.error("Phiên đang nhập dã h?t hơn");
+        toast.error("Phiên đăng nhập đã hết hạn");
         navigate("/login");
         return;
       }
@@ -453,9 +453,9 @@ const Cart: React.FC = () => {
         if (response.data.preview?.couponApplied) {
           setPreviewData(response.data.preview);
           setAppliedCoupon(response.data.preview.couponDetail);
-          toast.success("Ðã áp dụng mã giảm giá thành công");
+          toast.success("Đã áp dụng mã giảm giá thành công");
         } else {
-          toast.error("Mã giảm giá không hợp lệ ho?c không áp dụng được");
+          toast.error("Mã giảm giá không hợp lệ hoặc không áp dụng được");
           setAppliedCoupon(null);
         }
       } else {
@@ -512,7 +512,7 @@ const Cart: React.FC = () => {
   // Proceed to checkout
   const proceedToCheckout = useCallback(() => {
     if (!selectedItems?.length) {
-      toast.error("Vui lòng chơn sản phẩm d? thanh toán");
+      toast.error("Vui lòng chọn sản phẩm để thanh toán");
       return;
     }
     navigate("/order-confirmation");
@@ -548,7 +548,7 @@ const Cart: React.FC = () => {
               className="flex items-center space-x-2 text-mono-600 hover:text-mono-900 transition-colors"
             >
               <FiArrowLeft />
-              <span>Tiếp tục mua s?m</span>
+              <span>Tiếp tục mua sắm</span>
             </button>
           </div>
           <h1 className="text-3xl font-bold text-mono-900 flex items-center space-x-2">
@@ -562,16 +562,16 @@ const Cart: React.FC = () => {
           <div className="text-center py-16">
             <FiShoppingBag className="mx-auto text-6xl text-mono-300 mb-4" />
             <h2 className="text-2xl font-semibold text-mono-900 mb-2">
-              Giỏ hàng của bẩn đang trống
+              Giỏ hàng của bạn đang trống
             </h2>
             <p className="text-mono-600 mb-6">
-              Hãy thêm m?t số sản phẩm vào giỏ hàng của bẩn
+              Hãy thêm một số sản phẩm vào giỏ hàng của bạn
             </p>
             <button
               onClick={() => navigate("/")}
               className="bg-mono-black text-white px-6 py-3 rounded-lg hover:bg-mono-800 transition-colors"
             >
-              B?t đầu mua s?m
+              Bắt đầu mua sắm
             </button>
           </div>
         ) : (
@@ -595,7 +595,7 @@ const Cart: React.FC = () => {
                         className="w-5 h-5 text-mono-black rounded focus:ring-mono-500"
                       />
                       <span className="font-medium text-mono-900">
-                        Chơn tất cả ({availableItems.length} sản phẩm)
+                        Chọn tất cả ({availableItems.length} sản phẩm)
                       </span>
                     </label>
                     {selectedItems.length > 0 && (
@@ -604,7 +604,7 @@ const Cart: React.FC = () => {
                         className="flex items-center space-x-2 text-mono-900 hover:text-mono-800 transition-colors"
                       >
                         <FiTrash2 />
-                        <span>Xóa dã chơn</span>
+                        <span>Xóa đã chọn</span>
                       </button>
                     )}
                   </div>
@@ -675,7 +675,7 @@ const Cart: React.FC = () => {
                               {!item.isAvailable && (
                                 <p className="mt-1 text-sm text-mono-900">
                                   {item.unavailableReason ||
-                                    "Sản phẩm không có sẩn"}
+                                    "Sản phẩm không có sẵn"}
                                 </p>
                               )}
                             </div>
@@ -726,7 +726,7 @@ const Cart: React.FC = () => {
                                   min="1"
                                   max="99"
                                 />
-                                {/* Xóa hi?u ẩng loading */}
+                                {/* Xóa hiệu ứng loading */}
                               </div>
 
                               <button
@@ -760,7 +760,7 @@ const Cart: React.FC = () => {
               <div className="bg-white rounded-xl shadow-sm sticky top-8">
                 <div className="p-6">
                   <h2 className="text-xl font-semibold text-mono-900 mb-4">
-                    Tóm t?t don hàng
+                    Tóm tắt đơn hàng
                   </h2>
 
                   {/* Coupon Section */}
@@ -852,7 +852,7 @@ const Cart: React.FC = () => {
                   {/* Total với optimistic calculation */}
                   <div className="border-t pt-3">
                     <div className="flex justify-between text-lg font-semibold text-mono-900">
-                      <span>Tổng cẩng</span>
+                      <span>Tổng cộng</span>
                       <span className="text-mono-black">
                         {selectedItems.length > 0
                           ? (
@@ -878,7 +878,7 @@ const Cart: React.FC = () => {
                   <div className="mt-4 text-center text-sm text-mono-500">
                     <div className="flex items-center justify-center space-x-1">
                       <span>???</span>
-                      <span>Thanh toán an toàn và b?o m?t</span>
+                      <span>Thanh toán an toàn và bảo mật</span>
                     </div>
                   </div>
                 </div>

@@ -27,15 +27,15 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Ki?m tra kích thước file (5MB max)
+      // Kiểm tra kích thước file (5MB max)
       if (file.size > 5 * 1024 * 1024) {
-        setError("Kích thước ẩnh không được vu?t quá 5MB");
+        setError("Kích thước ảnh không được vượt quá 5MB");
         return;
       }
 
-      // Ki?m tra lo?i file
+      // Kiểm tra loại file
       if (!file.type.startsWith("image/")) {
-        setError("Vui lòng chơn file ẩnh");
+        setError("Vui lòng chọn file ảnh");
         return;
       }
 
@@ -46,7 +46,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      setError("Vui lòng chơn ẩnh mới");
+      setError("Vui lòng chọn ảnh mới");
       return;
     }
 
@@ -62,7 +62,7 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
     } catch (err: unknown) {
       const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Cập nhật ẩnh thểt b?i!";
+          ?.message || "Cập nhật ảnh thất bại!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -81,13 +81,13 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
         </button>
 
         <h3 className="text-lg font-bold mb-4 text-center">
-          Thay đổi ẩnh Banner
+          Thay đổi ảnh Banner
         </h3>
 
-        {/* ẩnh hiện tại */}
+        {/* Ảnh hiện tại */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-black mb-2">
-            ẩnh hiện tại:
+            Ảnh hiện tại:
           </label>
           <div className="flex justify-center">
             <img
@@ -98,10 +98,10 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
           </div>
         </div>
 
-        {/* Upload ẩnh mới */}
+        {/* Upload ảnh mới */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-black mb-2">
-            Chơn ẩnh mới <span className="text-mono-800">*</span>
+            Chọn ảnh mới <span className="text-mono-800">*</span>
           </label>
           <input
             type="file"
@@ -110,12 +110,12 @@ const BannerImageManager: React.FC<BannerImageManagerProps> = ({
             className="block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
           />
           <p className="text-xs text-mono-500 mt-1">
-            Chỉp nhơn: JPG, PNG, WEBP. Tại đã 5MB. Kích thước khuyện ngh?:
+            Chấp nhận: JPG, PNG, WEBP. Tối đa 5MB. Kích thước khuyến nghị:
             1920x400px
           </p>
         </div>
 
-        {/* Preview ẩnh mới */}
+        {/* Preview ảnh mới */}
         {selectedFile && (
           <div className="mb-4">
             <label className="block text-sm font-medium text-black mb-2">

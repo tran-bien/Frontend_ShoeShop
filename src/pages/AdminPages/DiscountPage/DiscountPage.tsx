@@ -120,22 +120,22 @@ const DiscountPage = () => {
       setForm(initialForm);
       fetchDiscounts();
     } catch {
-      alert("Cập nhật coupon thểt b?i!");
+      alert("Cập nhật coupon thất bại!");
     }
   };
 
   // Xóa
   const handleDeleteDiscount = async (discount: Discount) => {
-    if (!window.confirm("Bẩn chỉc chơn muẩn xóa coupon này?")) return;
+    if (!window.confirm("Bạn chắc chắn muốn xóa coupon này?")) return;
     try {
       await adminCouponService.deleteCoupon(discount.id);
       fetchDiscounts();
     } catch {
-      alert("Xóa coupon thểt b?i!");
+      alert("Xóa coupon thất bại!");
     }
   };
 
-  // Ð?i trạng thái
+  // Đổi trạng thái
   const handleUpdateStatus = async (
     discount: Discount,
     status: "active" | "inactive" | "archived"
@@ -144,7 +144,7 @@ const DiscountPage = () => {
       await adminCouponService.updateCouponStatus(discount.id, { status });
       fetchDiscounts();
     } catch {
-      alert("Cập nhật trạng thái thểt b?i!");
+      alert("Cập nhật trạng thái thất bại!");
     }
   };
 
@@ -212,7 +212,7 @@ const DiscountPage = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm theo mã ho?c mô t?..."
+              placeholder="Tìm theo mã hoặc mô tả..."
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
@@ -260,7 +260,7 @@ const DiscountPage = () => {
                   {discount.description}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
-                  {discount.type === "percent" ? "Phần tram" : "C? đếnh"}
+                  {discount.type === "percent" ? "Phần trăm" : "Cố định"}
                 </td>
                 <td className="py-2 px-4 border-b text-center">
                   {discount.type === "percent"
@@ -403,20 +403,20 @@ const DiscountPage = () => {
                   value={form.type}
                   onChange={handleChange}
                 >
-                  <option value="percent">Phần tram (%)</option>
-                  <option value="fixed">Số tiền c? đếnh</option>
+                  <option value="percent">Phần trăm (%)</option>
+                  <option value="fixed">Số tiền cố định</option>
                 </select>
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Giá trở
+                  Giá trị
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="value"
                   type="number"
                   placeholder={
-                    form.type === "percent" ? "Giá trở (%)" : "Số tiền giảm"
+                    form.type === "percent" ? "Giá trị (%)" : "Số tiền giảm"
                   }
                   value={form.value}
                   onChange={handleChange}

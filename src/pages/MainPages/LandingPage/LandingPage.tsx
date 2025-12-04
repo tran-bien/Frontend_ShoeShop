@@ -65,7 +65,7 @@ const LandingPage: React.FC = () => {
       setError(null);
 
       try {
-        // Fetch song song d? tăng performance
+        // Fetch song song để tăng performance
         const [
           featuredRes,
           bestSellersRes,
@@ -126,9 +126,9 @@ const LandingPage: React.FC = () => {
           setAllProducts(flattenedProducts);
         }
 
-        // Xử lý dữ liệu coupon - sửa d? khợp với c?u trúc response
+        // Xử lý dữ liệu coupon - sửa để khớp với cấu trúc response
         if (couponsRes.data.success) {
-          // Dữ liệu coupons năm ? level root của response, không ph?i trong data
+          // Dữ liệu coupons nằm ở level root của response, không phải trong data
           const coupons = couponsRes.data.coupons || [];
           console.log("Public coupons:", coupons);
           setPublicCoupons(coupons);
@@ -136,7 +136,7 @@ const LandingPage: React.FC = () => {
 
         // Xử lý dữ liệu banners
         if (bannersRes.data.success) {
-          // API trở về banners trong truẩng banners, không ph?i data
+          // API trả về banners trong trường banners, không phải data
           const response = bannersRes.data as {
             success: boolean;
             banners?: Banner[];
@@ -322,7 +322,7 @@ const LandingPage: React.FC = () => {
     </>
   );
 
-  // Coupon Card Component - Thi?t k? với height đếng đầu và màu copy nh?t
+  // Coupon Card Component - Thiết kế với height đồng đều và màu copy nhạt
   const CouponCard = ({ coupon }: { coupon: Coupon }) => (
     <div className="bg-white border-2 border-mono-200 rounded-lg p-3 hover:border-mono-800 hover:shadow-md transition-all duration-300 relative overflow-hidden min-w-0 h-full flex flex-col">
       {/* Decorative corner */}
@@ -344,7 +344,7 @@ const LandingPage: React.FC = () => {
           <FiTag className="text-mono-400 w-3 h-3" />
         </div>
 
-        {/* Giá trở giảm giá */}
+        {/* Giá trị giảm giá */}
         <div className="mb-2">
           <div className="text-lg font-bold text-mono-900 mb-1">
             {coupon.type === "percent"
@@ -395,7 +395,7 @@ const LandingPage: React.FC = () => {
         <section className="py-8 bg-white">
           <div className="container mx-auto px-4">
             <div className="relative">
-              {/* Banner container với chi?u cao lẩn hon */}
+              {/* Banner container với chiều cao lớn hơn */}
               <div className="overflow-hidden h-[600px] md:h-[700px] lg:h-[800px] w-full rounded-xl shadow-lg">
                 <div
                   className="relative w-full h-full cursor-pointer group"
@@ -462,21 +462,21 @@ const LandingPage: React.FC = () => {
         </section>
       )}
 
-      {/* Mã giảm giá - Layout ngang với height đếng đầu */}
+      {/* Mã giảm giá - Layout ngang với height đồng đều */}
       {publicCoupons && publicCoupons.length > 0 && (
         <section className="py-12 bg-mono-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-8">
               <h2 className="text-4xl font-bold text-mono-900 mb-2">
-                Mã giảm giá hợp đến
+                Mã giảm giá hấp dẫn
               </h2>
               <p className="text-mono-600 max-w-xl mx-auto text-sm">
-                Sử dụng các mã giảm giá du?i dây d? nhơn uu dãi t?t nh?t cho don
-                hàng của bẩn
+                Sử dụng các mã giảm giá dưới đây để nhận ưu đãi tốt nhất cho đơn
+                hàng của bạn
               </p>
             </div>
 
-            {/* Grid ngang cho 5 mã giảm giá với height đếng đầu */}
+            {/* Grid ngang cho 5 mã giảm giá với height đồng đều */}
             <div className="max-w-7xl mx-auto">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 items-stretch">
                 {publicCoupons.map((coupon) => (
@@ -513,22 +513,22 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Sản phẩm nội b?t */}
+      {/* Sản phẩm nổi bật */}
       <section className="py-16 bg-mono-50">
         <div className="container mx-auto px-4">
           <SectionTitle
-            title="Sản phẩm nội b?t"
+            title="Sản phẩm nổi bật"
             linkTo="/products?sort=rating"
             linkText="Xem tất cả"
           />
           <ProductGrid
             products={featuredProducts}
-            emptyMessage="Không có sản phẩm nội b?t nào"
+            emptyMessage="Không có sản phẩm nổi bật nào"
           />
         </div>
       </section>
 
-      {/* Sản phẩm bán chủy */}
+      {/* Sản phẩm bán chạy */}
       <section className="container mx-auto px-4 py-16 bg-white">
         <SectionTitle
           title="Sản phẩm bán chủy"
@@ -549,11 +549,11 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Sản phẩm mới nh?t */}
+      {/* Sản phẩm mới nhất */}
       <section className="bg-mono-50 py-16">
         <div className="container mx-auto px-4">
           <SectionTitle
-            title="Sản phẩm mới nh?t"
+            title="Sản phẩm mới nhất"
             linkTo="/products?sort=newest"
             linkText="Xem tất cả"
           />

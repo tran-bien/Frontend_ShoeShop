@@ -78,36 +78,36 @@ interface ExcelImportResponse {
 // =======================
 
 export const adminKnowledgeService = {
-  // Láº¥y danh sÃ¡ch knowledge documents
+  // Lấy danh sách knowledge documents
   getAllDocuments: (
     params?: KnowledgeQueryParams
   ): Promise<{ data: ApiResponse<KnowledgeDocumentsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/knowledge-base", { params }),
 
-  // Láº¥y chi tiáº¿t document
+  // Lấy chi tiết document
   getDocumentById: (
     id: string
   ): Promise<{ data: ApiResponse<KnowledgeDocument> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/knowledge-base/${id}`),
 
-  // Táº¡o document má»›i
+  // Tạo document mới
   createDocument: (
     data: CreateKnowledgeDocumentData
   ): Promise<{ data: ApiResponse<KnowledgeDocument> }> =>
     axiosInstanceAuth.post("/api/v1/admin/knowledge-base", data),
 
-  // Cáº­p nháº­t document
+  // Cập nhật document
   updateDocument: (
     id: string,
     data: UpdateKnowledgeDocumentData
   ): Promise<{ data: ApiResponse<KnowledgeDocument> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/knowledge-base/${id}`, data),
 
-  // XÃ³a document
+  // Xóa document
   deleteDocument: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/knowledge-base/${id}`),
 
-  // Láº¥y thá»‘ng kÃª knowledge base
+  // Lấy thống kê knowledge base
   getStatistics: (): Promise<{
     data: ApiResponse<KnowledgeStatisticsResponse>;
   }> => axiosInstanceAuth.get("/api/v1/admin/knowledge-base/statistics"),

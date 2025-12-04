@@ -832,7 +832,7 @@ const UserReviewPage: React.FC = () => {
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                     setContent(e.target.value)
                   }
-                  placeholder="Chia số trởi nghi?m của bẩn v? sản phẩm... (ít nh?t 10 ký t?)"
+                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm... (ít nhất 10 ký tự)"
                   maxLength={500}
                   showCount
                   autoFocus
@@ -844,7 +844,7 @@ const UserReviewPage: React.FC = () => {
                 />
                 {content.trim().length > 0 && content.trim().length < 10 && (
                   <div className="text-mono-800 text-xs mt-1">
-                    Nội dung đánh giá ph?i có ít nh?t 10 ký t?
+                    Nội dung đánh giá phải có ít nhất 10 ký tự
                   </div>
                 )}
               </div>
@@ -852,7 +852,7 @@ const UserReviewPage: React.FC = () => {
 
             {/* Edit Review Modal */}
             <Modal
-              title="Chơnh sửa đánh giá"
+              title="Chỉnh sửa đánh giá"
               open={isEditModalVisible}
               onOk={handleUpdateReview}
               onCancel={() => handleModalClose("edit")}
@@ -914,7 +914,7 @@ const UserReviewPage: React.FC = () => {
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
                     setContent(e.target.value)
                   }
-                  placeholder="Chia số trởi nghi?m của bẩn v? sản phẩm... (ít nh?t 10 ký t?)"
+                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm... (ít nhất 10 ký tự)"
                   maxLength={500}
                   showCount
                   autoFocus
@@ -926,7 +926,7 @@ const UserReviewPage: React.FC = () => {
                 />
                 {content.trim().length > 0 && content.trim().length < 10 && (
                   <div className="text-mono-800 text-xs mt-1">
-                    Nội dung đánh giá ph?i có ít nh?t 10 ký t?
+                    Nội dung đánh giá phải có ít nhất 10 ký tự
                   </div>
                 )}
               </div>

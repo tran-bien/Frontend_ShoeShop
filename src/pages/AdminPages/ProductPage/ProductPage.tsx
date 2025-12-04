@@ -40,7 +40,7 @@ const ProductPage = () => {
   const [sortOption, setSortOption] = useState("created_at_desc");
   const limit = 10;
 
-  // Modal cập nhật trống thï¿½i active
+  // Modal cập nhật trạng thái active
   const [showActiveModal, setShowActiveModal] = useState(false);
   const [activeForm, setActiveForm] = useState({
     isActive: false,
@@ -175,7 +175,7 @@ const ProductPage = () => {
       setShowEdit(false);
       fetchProducts();
     } catch {
-      setEditError("Cập nhật sản phẩm thểt b?i!");
+      setEditError("Cập nhật sản phẩm thất bại!");
     } finally {
       setEditLoading(false);
     }
@@ -198,14 +198,14 @@ const ProductPage = () => {
     fetchProducts();
   };
 
-  // M? modal cập nhật trống thï¿½i active
+  // Mở modal cập nhật trạng thái active
   const openActiveModal = (product: Product) => {
     setSelectedProduct(product);
     setActiveForm({ isActive: !product.isActive, cascade: true });
     setShowActiveModal(true);
   };
 
-  // Gửi cập nhật trống thï¿½i active
+  // Gửi cập nhật trạng thái active
   const handleActiveSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedProduct) return;
@@ -274,10 +274,10 @@ const ProductPage = () => {
   return (
     <div className="p-6 w-full font-sans bg-mono-50 min-h-screen">
       <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug mb-6">
-        Quận Lï¿½ Sẩn Ph?m
+        Quản Lý Sản Phẩm
       </h2>
 
-      {/* Tab chuyện đổi */}
+      {/* Tab chuyển đổi */}
       <div className="flex border-b mb-6 bg-white rounded-t-lg">
         <button
           onClick={() => {
@@ -305,7 +305,7 @@ const ProductPage = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Sản phẩm dï¿½ xï¿½a
+            Sản phẩm đã xóa
           </button>
         )}
         {!showDeleted && canCreate() && (
@@ -313,7 +313,7 @@ const ProductPage = () => {
             className="ml-auto px-6 py-3 bg-mono-black hover:bg-mono-800 text-white rounded-lg font-medium mr-3 my-2 transition-colors shadow-sm"
             onClick={() => openModal("add")}
           >
-            + Thï¿½m Sẩn Ph?m
+            + Thêm Sản Phẩm
           </button>
         )}
       </div>
@@ -326,7 +326,7 @@ const ProductPage = () => {
             <div className="flex-1">
               <input
                 type="text"
-                placeholder="?? Tï¿½m ki?m sản phẩm theo tï¿½n..."
+                placeholder="🔍 Tìm kiếm sản phẩm theo tên..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -365,7 +365,7 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">Tất cả thuong hi?u</option>
+              <option value="all">Tất cả thương hiệu</option>
               {brands.map((brand) => (
                 <option key={brand._id} value={brand._id}>
                   {brand.name}
@@ -382,10 +382,10 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">Tất cả tên kho</option>
-              <option value="in_stock">Cï¿½n hï¿½ng</option>
-              <option value="low_stock">S?p h?t</option>
-              <option value="out_of_stock">H?t hï¿½ng</option>
+              <option value="all">Tất cả tồn kho</option>
+              <option value="in_stock">Còn hàng</option>
+              <option value="low_stock">Sắp hết</option>
+              <option value="out_of_stock">Hết hàng</option>
             </select>
 
             {/* Active Status Filter */}
@@ -397,9 +397,9 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="all">Tất cả trống thï¿½i</option>
-              <option value="true">ï¿½ang bï¿½n</option>
-              <option value="false">ẩn</option>
+              <option value="all">Tất cả trạng thái</option>
+              <option value="true">Đang bán</option>
+              <option value="false">Ẩn</option>
             </select>
 
             {/* Sort */}
@@ -411,10 +411,10 @@ const ProductPage = () => {
               }}
               className="px-3 py-2 border border-mono-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-600"
             >
-              <option value="created_at_desc">Mới nh?t</option>
-              <option value="created_at_asc">Cu nh?t</option>
-              <option value="name_asc">Tï¿½n A-Z</option>
-              <option value="name_desc">Tï¿½n Z-A</option>
+              <option value="created_at_desc">Mới nhất</option>
+              <option value="created_at_asc">Cũ nhất</option>
+              <option value="name_asc">Tên A-Z</option>
+              <option value="name_desc">Tên Z-A</option>
             </select>
           </div>
 
@@ -437,7 +437,7 @@ const ProductPage = () => {
               }}
               className="text-sm text-mono-black hover:text-mono-800 font-medium"
             >
-              ? Xï¿½a bỏ lọc
+              ✕ Xóa bỏ lọc
             </button>
           )}
         </div>
@@ -446,7 +446,7 @@ const ProductPage = () => {
       {loading ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-mono-black"></div>
-          <p className="mt-4 text-mono-600">ï¿½ang tại dữ liệu...</p>
+          <p className="mt-4 text-mono-600">Đang tải dữ liệu...</p>
         </div>
       ) : products.length === 0 ? (
         <div className="bg-white rounded-lg shadow-sm p-12 text-center">
@@ -465,15 +465,15 @@ const ProductPage = () => {
           </svg>
           <h3 className="text-lg font-medium text-mono-900 mb-2">
             {showDeleted
-              ? "Khï¿½ng cï¿½ sản phẩm nï¿½o dï¿½ xï¿½a"
-              : "Khï¿½ng tï¿½m thủy sản phẩm"}
+              ? "Không có sản phẩm nào đã xóa"
+              : "Không tìm thấy sản phẩm"}
           </h3>
           <p className="text-mono-500">
             {showDeleted
-              ? "Chua cï¿½ sản phẩm nï¿½o bỏ xï¿½a trong họ thàng"
+              ? "Chưa có sản phẩm nào bị xóa trong hệ thống"
               : searchQuery || categoryFilter !== "all" || brandFilter !== "all"
-              ? "Thọ thay đổi bỏ lọc ho?c từ khï¿½a tï¿½m ki?m"
-              : "Hï¿½y thï¿½m sản phẩm đầu tiï¿½n của bẩn"}
+              ? "Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm"
+              : "Hãy thêm sản phẩm đầu tiên của bạn"}
           </p>
         </div>
       ) : (
@@ -489,19 +489,19 @@ const ProductPage = () => {
                     Danh mục
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Thuong hi?u
+                    Thương hiệu
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Giï¿½ bï¿½n
+                    Giá bán
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Tên kho
+                    Tồn kho
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Trống thï¿½i
+                    Trạng thái
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
-                    Hï¿½nh đếng
+                    Hành động
                   </th>
                 </tr>
               </thead>
@@ -518,7 +518,7 @@ const ProductPage = () => {
                     totalQuantity,
                   } = product;
 
-                  // Sử dụng variantSummary n?u cï¿½, n?u khï¿½ng thï¿½ fallback v? price
+                  // Sử dụng variantSummary nếu có, nếu không thì fallback về price
                   const priceRange = product.variantSummary?.priceRange || {
                     min: product.price || 0,
                     max: product.price || 0,
@@ -581,7 +581,7 @@ const ProductPage = () => {
                         }`}
                         title={
                           !showDeleted && canUpdate()
-                            ? "Nhơn d? cập nhật trống thï¿½i tên kho"
+                            ? "Nhấn để cập nhật trạng thái tồn kho"
                             : ""
                         }
                         onClick={() => {
@@ -594,17 +594,17 @@ const ProductPage = () => {
                             {
                               in_stock: (
                                 <span className="bg-mono-100 text-mono-800 px-3 py-1 rounded-full text-xs font-semibold inline-block">
-                                  Cï¿½n hï¿½ng
+                                  Còn hàng
                                 </span>
                               ),
                               low_stock: (
                                 <span className="bg-mono-100 text-mono-800 px-3 py-1 rounded-full text-xs font-semibold inline-block">
-                                  S?p h?t
+                                  Sắp hết
                                 </span>
                               ),
                               out_of_stock: (
                                 <span className="bg-mono-200 text-mono-900 px-3 py-1 rounded-full text-xs font-semibold inline-block">
-                                  H?t hï¿½ng
+                                  Hết hàng
                                 </span>
                               ),
                             }[stockStatus || "out_of_stock"]
@@ -624,9 +624,9 @@ const ProductPage = () => {
                                 : "bg-mono-100 text-mono-700 hover:bg-mono-200"
                             }`}
                             onClick={() => openActiveModal(product)}
-                            title="Cập nhật trống thï¿½i"
+                            title="Cập nhật trạng thái"
                           >
-                            {isActive ? "? ï¿½ang bï¿½n" : "? ẩn"}
+                            {isActive ? "✓ Đang bán" : "✗ Ẩn"}
                           </button>
                         )}
                         {!showDeleted && !canToggleStatus() && (
@@ -637,7 +637,7 @@ const ProductPage = () => {
                                 : "bg-mono-100 text-mono-700"
                             }`}
                           >
-                            {isActive ? "? ï¿½ang bï¿½n" : "? ẩn"}
+                            {isActive ? "✓ Đang bán" : "✗ Ẩn"}
                           </span>
                         )}
                       </td>
@@ -696,7 +696,7 @@ const ProductPage = () => {
                                   <button
                                     className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                     onClick={() => openModal("images", product)}
-                                    title="Quận lï¿½ ẩnh sản phẩm"
+                                    title="Quản lý ảnh sản phẩm"
                                   >
                                     <svg
                                       className="w-3.5 h-3.5"
@@ -711,7 +711,7 @@ const ProductPage = () => {
                                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                       />
                                     </svg>
-                                    ẩnh
+                                    Ảnh
                                   </button>
                                 </>
                               )}
@@ -719,7 +719,7 @@ const ProductPage = () => {
                                 <button
                                   className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                                   onClick={() => openModal("delete", product)}
-                                  title="Xï¿½a sản phẩm"
+                                  title="Xóa sản phẩm"
                                 >
                                   <svg
                                     className="w-3.5 h-3.5"
@@ -734,7 +734,7 @@ const ProductPage = () => {
                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                     />
                                   </svg>
-                                  Xï¿½a
+                                  Xóa
                                 </button>
                               )}
                             </>
@@ -743,7 +743,7 @@ const ProductPage = () => {
                               <button
                                 className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                                 onClick={() => handleRestore(product._id)}
-                                title="Khï¿½i ph?c sản phẩm"
+                                title="Khôi phục sản phẩm"
                               >
                                 <svg
                                   className="w-3.5 h-3.5"
@@ -758,7 +758,7 @@ const ProductPage = () => {
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                                   />
                                 </svg>
-                                Khï¿½i ph?c
+                                Khôi phục
                               </button>
                             )
                           )}
@@ -805,9 +805,9 @@ const ProductPage = () => {
                     <span className="font-medium">
                       {Math.min(currentPage * limit, totalProducts)}
                     </span>{" "}
-                    trong tổng s?{" "}
-                    <span className="font-medium">{totalProducts}</span> sẩn
-                    ph?m
+                    trong tổng số{" "}
+                    <span className="font-medium">{totalProducts}</span> sản
+                    phẩm
                   </p>
                 </div>
                 <div>
@@ -885,31 +885,31 @@ const ProductPage = () => {
             >
               &times;
             </button>
-            <h2 className="text-xl font-bold mb-8 text-center">Sửa Sẩn Ph?m</h2>
+            <h2 className="text-xl font-bold mb-8 text-center">Sửa Sản Phẩm</h2>
             <form className="space-y-4" onSubmit={handleEditSubmit}>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Tï¿½n sản phẩm
+                  Tên sản phẩm
                 </label>
                 <input
                   type="text"
                   name="name"
                   value={editForm.name}
                   onChange={handleEditChange}
-                  placeholder="Nhập tï¿½n sản phẩm"
+                  placeholder="Nhập tên sản phẩm"
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   required
                 />
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Mï¿½ t?
+                  Mô tả
                 </label>
                 <textarea
                   name="description"
                   value={editForm.description}
                   onChange={handleEditChange}
-                  placeholder="Nhập mï¿½ t?"
+                  placeholder="Nhập mô tả"
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   rows={3}
                   required
@@ -936,7 +936,7 @@ const ProductPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Thuong hi?u
+                  Thương hiệu
                 </label>
                 <select
                   name="brand"
@@ -945,7 +945,7 @@ const ProductPage = () => {
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   required
                 >
-                  <option value="">Chơn thuong hi?u</option>
+                  <option value="">Chọn thương hiệu</option>
                   {brands.map((brand) => (
                     <option key={brand._id} value={brand._id}>
                       {brand.name}
@@ -969,7 +969,7 @@ const ProductPage = () => {
                   disabled={editLoading}
                   className="bg-mono-500 hover:bg-mono-black text-white px-6 py-2 rounded-md"
                 >
-                  {editLoading ? "ï¿½ang cập nhật..." : "Cập nhật"}
+                  {editLoading ? "Đang cập nhật..." : "Cập nhật"}
                 </button>
               </div>
             </form>
@@ -980,9 +980,9 @@ const ProductPage = () => {
       {showDelete && selectedProduct && (
         <div className="fixed inset-0 bg-mono-300 bg-opacity-75 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-2xl shadow-lg w-auto relative text-black">
-            <h2 className="text-xl font-bold mb-4 text-center">Xï¿½c nhơn xï¿½a</h2>
+            <h2 className="text-xl font-bold mb-4 text-center">Xác nhận xóa</h2>
             <p className="text-center mb-6">
-              Bẩn cï¿½ chỉc chơn muẩn xï¿½a sản phẩm "{selectedProduct.name}"?
+              Bạn có chắc chắn muốn xóa sản phẩm "{selectedProduct.name}"?
             </p>
             <div className="flex justify-center gap-4">
               <button
@@ -995,21 +995,21 @@ const ProductPage = () => {
                 onClick={handleDelete}
                 className="bg-mono-800 hover:bg-mono-900 text-white px-6 py-2 rounded-md"
               >
-                Xï¿½a
+                Xóa
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal cập nhật trống thï¿½i active */}
+      {/* Modal cập nhật trạng thái active */}
       {showActiveModal && selectedProduct && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md relative animate-fadeIn">
             {/* Header */}
             <div className="px-6 py-4 border-b border-mono-200">
               <h2 className="text-lg font-semibold text-mono-900">
-                Cập nhật trống thï¿½i sản phẩm
+                Cập nhật trạng thái sản phẩm
               </h2>
             </div>
 
@@ -1097,7 +1097,7 @@ const ProductPage = () => {
         />
       )}
 
-      {/* Modal Quận Lï¿½ ẩnh */}
+      {/* Modal Quản Lý Ảnh */}
       {showImageManager && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-4 w-full max-w-xl relative">
@@ -1105,7 +1105,7 @@ const ProductPage = () => {
               className="absolute top-2 right-2 text-xl font-bold hover:text-mono-900"
               onClick={() => closeModal("images")}
             >
-              ï¿½
+              ×
             </button>
             <ProductImagesManager
               productId={showImageManager}
@@ -1128,10 +1128,3 @@ const ProductPage = () => {
 };
 
 export default ProductPage;
-
-
-
-
-
-
-

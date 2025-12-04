@@ -41,15 +41,15 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Ki?m tra kích thước file (5MB max)
+      // Kiểm tra kích thước file (5MB max)
       if (file.size > 5 * 1024 * 1024) {
-        setError("Kích thước ẩnh không được vu?t quá 5MB");
+        setError("Kích thước ảnh không được vượt quá 5MB");
         return;
       }
 
-      // Ki?m tra lo?i file
+      // Kiểm tra loại file
       if (!file.type.startsWith("image/")) {
-        setError("Vui lòng chơn file ẩnh");
+        setError("Vui lòng chọn file ảnh");
         return;
       }
 
@@ -62,7 +62,7 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
     e.preventDefault();
 
     if (!selectedFile) {
-      setError("Vui lòng chơn ẩnh banner");
+      setError("Vui lòng chọn ảnh banner");
       return;
     }
 
@@ -83,7 +83,7 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
     } catch (err: unknown) {
       const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Thêm banner thểt b?i!";
+          ?.message || "Thêm banner thất bại!";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -141,24 +141,24 @@ const AddBanner: React.FC<AddBannerProps> = ({ handleClose, onSuccess }) => {
 
           <div>
             <label className="block text-sm font-medium text-black">
-              Ðuẩng đến (không bắt buộc)
+              Đường dẫn (không bắt buộc)
             </label>
             <input
               type="url"
               name="link"
               value={formData.link}
               onChange={handleChange}
-              placeholder="https://example.com ho?c /products"
+              placeholder="https://example.com hoặc /products"
               className="mt-1 block w-full px-3 py-2 border border-mono-300 rounded-md shadow-sm focus:outline-none focus:ring-mono-700 focus:border-mono-700 sm:text-sm"
             />
             <p className="text-xs text-mono-500 mt-1">
-              Khi người dùng click vào banner số chuyện đến đường đến này
+              Khi người dùng click vào banner sẽ chuyển đến đường dẫn này
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-black">
-              ẩnh banner <span className="text-mono-800">*</span>
+              Ảnh banner <span className="text-mono-800">*</span>
             </label>
             <input
               type="file"

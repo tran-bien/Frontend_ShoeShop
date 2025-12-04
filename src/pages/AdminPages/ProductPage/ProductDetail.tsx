@@ -352,7 +352,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                           | "in_stock"
                           | "low_stock"
                           | "out_of_stock"
-                      ] || "H?t hï¿½ng"}
+                      ] || "Hết hàng"}
                     </span>
                     <span className="text-sm text-mono-600">
                       ({detail.totalQuantity} sản phẩm)
@@ -407,7 +407,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                     </span>
                   </div>
                   <div>
-                    <span className="text-mono-500">Ngï¿½y t?o:</span>
+                    <span className="text-mono-500">Ngày tạo:</span>
                     <span className="ml-2 text-mono-700">
                       {new Date(detail.createdAt).toLocaleDateString("vi-VN")}
                     </span>
@@ -471,7 +471,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                               : "bg-mono-100 text-mono-600"
                           }`}
                         >
-                          {variant.isActive ? "? ï¿½ang bï¿½n" : "? ẩn"}
+                          {variant.isActive ? "✓ Đang bán" : "✗ Ẩn"}
                         </span>
                       </div>
 
@@ -479,26 +479,26 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                         <div className="bg-white rounded-lg p-3 border border-mono-200">
                           <div className="text-xs text-mono-500 mb-1">
-                            Giï¿½ g?c
+                            Giá gốc
                           </div>
                           <div className="text-sm font-bold text-mono-800">
                             {(variant as any).price?.toLocaleString() || "N/A"}{" "}
-                            ?
+                            đ
                           </div>
                         </div>
                         <div className="bg-white rounded-lg p-3 border border-mono-200">
                           <div className="text-xs text-mono-500 mb-1">
-                            Giï¿½ bï¿½n
+                            Giá bán
                           </div>
                           <div className="text-sm font-bold text-mono-black">
-                            {(variant as any).priceFinalệ.toLocaleString() ||
+                            {(variant as any).priceFinal?.toLocaleString() ||
                               "N/A"}{" "}
-                            ?
+                            đ
                           </div>
                         </div>
                         <div className="bg-white rounded-lg p-3 border border-mono-300">
                           <div className="text-xs text-mono-500 mb-1">
-                            Giảm giï¿½
+                            Giảm giá
                           </div>
                           <div className="text-sm font-bold text-mono-700">
                             {(variant as any).percentDiscount || 0}%
@@ -506,7 +506,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                         </div>
                         <div className="bg-white rounded-lg p-3 border border-mono-200">
                           <div className="text-xs text-mono-500 mb-1">
-                            Lỗi nhuẩn
+                            Lợi nhuận
                           </div>
                           <div className="text-sm font-bold text-mono-800">
                             {(variant as any).profit?.toLocaleString() || "N/A"}{" "}
@@ -598,7 +598,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
           )}
         </div>
 
-        {/* Modal quận lï¿½ ẩnh */}
+        {/* Modal quản lý ảnh */}
         {showImageManager && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
             <div className="bg-white rounded-xl p-6 w-full max-w-2xl relative shadow-2xl">

@@ -11,7 +11,7 @@ const LikeProduct = () => {
   const [removingItems, setRemovingItems] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
 
-  // L?y danh sách sản phẩm yêu thích từ API
+  // Lấy danh sách sản phẩm yêu thích từ API
   useEffect(() => {
     const fetchWishlist = async () => {
       setLoading(true);
@@ -23,9 +23,9 @@ const LikeProduct = () => {
           setWishlist([]);
         }
       } catch (error) {
-        console.error("Lỗi khi tại danh sách yêu thích:", error);
+        console.error("Lỗi khi tải danh sách yêu thích:", error);
         setWishlist([]);
-        toast.error("Không thể tại danh sách yêu thích");
+        toast.error("Không thể tải danh sách yêu thích");
       } finally {
         setLoading(false);
       }
@@ -34,9 +34,9 @@ const LikeProduct = () => {
     fetchWishlist();
   }, []);
 
-  // Hàm xóa sản phẩm kh?i wishlist
+  // Hàm xóa sản phẩm khỏi wishlist
   const removeProduct = async (wishlistItemId: string) => {
-    if (removingItems.has(wishlistItemId)) return; // Tránh click nhi?u lẩn
+    if (removingItems.has(wishlistItemId)) return; // Tránh click nhiều lần
 
     setRemovingItems((prev) => new Set([...prev, wishlistItemId]));
     try {
@@ -61,7 +61,7 @@ const LikeProduct = () => {
     }
   };
 
-  // Hàm di chuyện đến trang chi tiết sản phẩm
+  // Hàm di chuyển đến trang chi tiết sản phẩm
   const navigateToProduct = (productId: string) => {
     navigate(`/product/${productId}`);
   };
@@ -75,8 +75,8 @@ const LikeProduct = () => {
         </div>
       ) : wishlist.length === 0 ? (
         <div className="py-10 text-center">
-          <div className="text-5xl text-mono-300 mb-4">??</div>
-          <p className="text-mono-600">Bẩn chua có sản phẩm yêu thích nào.</p>
+          <div className="text-5xl text-mono-300 mb-4">❤️</div>
+          <p className="text-mono-600">Bạn chưa có sản phẩm yêu thích nào.</p>
           <button
             onClick={() => navigate("/products")}
             className="mt-4 px-4 py-2 bg-mono-black text-white rounded hover:bg-mono-800 transition-colors"
@@ -90,7 +90,7 @@ const LikeProduct = () => {
             key={item._id}
             className="flex items-center bg-white shadow-md rounded-lg p-4 w-[400px] hover:shadow-lg transition-shadow duration-200"
           >
-            {/* ẩnh sản phẩm */}
+            {/* Ảnh sản phẩm */}
             <div
               className="w-16 h-16 bg-mono-100 flex items-center justify-center rounded-md font-bold text-lg overflow-hidden cursor-pointer"
               onClick={() => navigateToProduct(item.product._id)}
@@ -128,7 +128,7 @@ const LikeProduct = () => {
                 </>
               ) : (
                 <p className="text-mono-800 font-semibold">
-                  {item.product.price?.toLocaleString() || "Liên h?"}d
+                  {item.product.price?.toLocaleString() || "Liên hệ"}đ
                 </p>
               )}
             </div>
@@ -137,7 +137,7 @@ const LikeProduct = () => {
             <button
               onClick={() => removeProduct(item._id)}
               className="text-mono-800 hover:text-mono-800 p-2 rounded-full hover:bg-mono-100 transition-colors"
-              title="Xóa kh?i yêu thích"
+              title="Xóa khỏi yêu thích"
               disabled={removingItems.has(item._id)}
             >
               {removingItems.has(item._id) ? (

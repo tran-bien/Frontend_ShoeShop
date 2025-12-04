@@ -1,6 +1,6 @@
 ﻿/**
  * Notification Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n ThÃ´ng bÃ¡o
+ * Định nghĩa các interface liên quan đến Thông báo
  */
 
 // =======================

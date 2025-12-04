@@ -559,11 +559,11 @@ const BannerPage: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4">Ð?i ẩnh Banner</h3>
+          <h3 className="text-xl font-bold mb-4">Đổi ảnh Banner</h3>
 
           {/* Current Image */}
           <div className="mb-4">
-            <p className="text-sm text-mono-600 mb-2">ẩnh hiện tại:</p>
+            <p className="text-sm text-mono-600 mb-2">Ảnh hiện tại:</p>
             <img
               src={selectedBanner.image.url}
               alt={selectedBanner.title}
@@ -574,7 +574,7 @@ const BannerPage: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Chơn ẩnh mới
+                Chọn ảnh mới
               </label>
               <input
                 type="file"
@@ -587,7 +587,7 @@ const BannerPage: React.FC = () => {
 
             {newImage && (
               <div>
-                <p className="text-sm text-mono-600 mb-2">ẩnh mới:</p>
+                <p className="text-sm text-mono-600 mb-2">Ảnh mới:</p>
                 <img
                   src={URL.createObjectURL(newImage)}
                   alt="Preview"
@@ -654,7 +654,7 @@ const BannerPage: React.FC = () => {
 
             <div className="mb-4">
               <p className="text-mono-600 mb-3">
-                Bẩn có chỉc chơn muẩn xóa banner này không?
+                Bạn có chắc chắn muốn xóa banner này không?
               </p>
 
               {/* Banner Preview */}
@@ -868,10 +868,10 @@ const BannerPage: React.FC = () => {
             </svg>
           </div>
           <h3 className="text-xl font-semibold text-mono-900 mb-2">
-            Chua có banner nào
+            Chưa có banner nào
           </h3>
           <p className="text-mono-500 mb-6">
-            Hãy t?o banner đầu tiên d? quậng bá sản phẩm trên trang chỉ
+            Hãy tạo banner đầu tiên để quảng bá sản phẩm trên trang chủ
           </p>
           {canCreate() && (
             <button
@@ -965,7 +965,7 @@ const BannerPage: React.FC = () => {
                               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                             />
                           </svg>
-                          V? trí {banner.displayOrder}
+                          Vị trí {banner.displayOrder}
                         </span>
 
                         {banner.link && (
@@ -983,12 +983,12 @@ const BannerPage: React.FC = () => {
                                 d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                               />
                             </svg>
-                            Có liên k?t
+                            Có liên kết
                           </span>
                         )}
 
                         <span className="text-sm text-mono-500">
-                          T?o:{" "}
+                          Tạo:{" "}
                           {new Date(banner.createdAt).toLocaleDateString(
                             "vi-VN"
                           )}
@@ -1020,7 +1020,7 @@ const BannerPage: React.FC = () => {
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                               />
                             </svg>
-                            Chơnh sửa
+                            Chỉnh sửa
                           </button>
 
                           <button
@@ -1043,10 +1043,10 @@ const BannerPage: React.FC = () => {
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                               />
                             </svg>
-                            Ð?i ẩnh
+                            Đổi ảnh
                           </button>
 
-                          {/* Dropdown đổi v? trí */}
+                          {/* Dropdown đổi vị trí */}
                           <select
                             value={banner.displayOrder}
                             onChange={(e) =>
@@ -1059,7 +1059,7 @@ const BannerPage: React.FC = () => {
                           >
                             {[1, 2, 3, 4, 5].map((position) => (
                               <option key={position} value={position}>
-                                V? trí {position}
+                                Vị trí {position}
                               </option>
                             ))}
                           </select>

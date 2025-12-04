@@ -133,7 +133,7 @@ const InventoryPage = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-mono-800">Quận lý Kho hàng</h1>
+        <h1 className="text-3xl font-bold text-mono-800">Quản lý Kho hàng</h1>
         <button
           onClick={handleStockIn}
           className="bg-mono-black hover:bg-mono-800 text-white px-4 py-2 rounded-lg flex items-center gap-2"
@@ -173,7 +173,7 @@ const InventoryPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">H?t hàng</p>
+                <p className="text-mono-500 text-sm">Hết hàng</p>
                 <p className="text-2xl font-bold text-mono-900">
                   {stats.outOfStockItems || 0}
                 </p>
@@ -185,9 +185,9 @@ const InventoryPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Giá trở tên kho</p>
+                <p className="text-mono-500 text-sm">Giá trị tồn kho</p>
                 <p className="text-2xl font-bold text-mono-800">
-                  {stats.totalValue?.toLocaleString("vi-VN")}?
+                  {stats.totalValue?.toLocaleString("vi-VN")}đ
                 </p>
               </div>
               <FaDollarSign className="text-mono-700" size={40} />
@@ -323,21 +323,21 @@ const InventoryPage = () => {
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-mono-900">
-                      {item.averageCostPrice?.toLocaleString("vi-VN")}?
+                      {item.averageCostPrice?.toLocaleString("vi-VN")}đ
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     {item.isOutOfStock ? (
                       <span className="px-2 py-1 text-xs font-semibold text-mono-900 bg-mono-200 rounded">
-                        H?t hàng
+                        Hết hàng
                       </span>
                     ) : item.isLowStock ? (
                       <span className="px-2 py-1 text-xs font-semibold text-mono-800 bg-mono-200 rounded">
-                        Tên kho thấp
+                        Tồn kho thấp
                       </span>
                     ) : (
                       <span className="px-2 py-1 text-xs font-semibold text-mono-800 bg-mono-100 rounded">
-                        Bình thuẩng
+                        Bình thường
                       </span>
                     )}
                   </td>
@@ -361,15 +361,15 @@ const InventoryPage = () => {
                       <button
                         onClick={() => handleAdjustStock(item)}
                         className="px-3 py-1.5 text-xs font-medium text-mono-700 bg-white hover:bg-mono-50 rounded border border-mono-300 transition-colors"
-                        title="Ði?u chơnh tên kho"
+                        title="Điều chỉnh tồn kho"
                       >
-                        Ði?u chơnh
+                        Điều chỉnh
                       </button>
                       <button
                         onClick={() => handleViewTransactions(item)}
                         className="px-3 py-1.5 text-xs font-medium text-white bg-mono-black hover:bg-mono-800 rounded border border-mono-black transition-colors"
                       >
-                        Lọch s?
+                        Lịch sử
                       </button>
                     </div>
                   </td>

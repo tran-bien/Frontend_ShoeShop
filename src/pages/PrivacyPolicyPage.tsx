@@ -128,7 +128,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 2. Mục đích sử dụng thông tin
               </h2>
               <p className="text-mono-700 leading-relaxed mb-4">
-                Chúng tôi sử dụng thông tin của bạn đ?:
+                Chúng tôi sử dụng thông tin của bạn để:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-mono-700">
                 <li>Xử lý và giao đơn hàng của bạn</li>
@@ -194,7 +194,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 5. Cookies và công nghệ theo dõi
               </h2>
               <p className="text-mono-700 leading-relaxed mb-4">
-                Chúng tôi sử dụng cookies đ?:
+                Chúng tôi sử dụng cookies để:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-mono-700">
                 <li>Duy trì phiên đăng nhập của bạn</li>
@@ -279,7 +279,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 <p className="text-mono-700">Email: privacy@shoestore.com</p>
                 <p className="text-mono-700">Hotline: 1900 xxxx</p>
                 <p className="text-mono-700">
-                  Địa ch?: 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh
+                  Địa chỉ: 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh
                 </p>
               </div>
             </section>
@@ -291,4 +291,3 @@ const PrivacyPolicyPage: React.FC = () => {
 };
 
 export default PrivacyPolicyPage;
-

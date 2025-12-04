@@ -37,7 +37,7 @@ interface CheckEligibilityResponse {
 
 // Customer Return Service
 export const customerReturnService = {
-  // Kiá»ƒm tra sáº£n pháº©m cÃ³ thá»ƒ Ä‘á»•i/tráº£ khÃ´ng
+  // Kiểm tra sản phẩm có thể đổi/trả không
   checkEligibility: (params: {
     orderId: string;
     variantId: string;
@@ -47,63 +47,63 @@ export const customerReturnService = {
       params,
     }),
 
-  // Táº¡o yÃªu cáº§u Ä‘á»•i/tráº£ hÃ ng
+  // Tạo yêu cầu đổi/trả hàng
   createReturnRequest: (
     data: CreateReturnRequestData
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.post("/api/v1/users/returns", data),
 
-  // Láº¥y danh sÃ¡ch yÃªu cáº§u Ä‘á»•i/tráº£ hÃ ng
+  // Lấy danh sách yêu cầu đổi/trả hàng
   getReturnRequests: (
     params?: ReturnRequestQueryParams
   ): Promise<{ data: ApiResponse<GetReturnRequestsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/users/returns", { params }),
 
-  // Láº¥y chi tiáº¿t yÃªu cáº§u Ä‘á»•i/tráº£ hÃ ng
+  // Lấy chi tiết yêu cầu đổi/trả hàng
   getReturnRequestDetail: (
     id: string
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.get(`/api/v1/users/returns/${id}`),
 
-  // Há»§y yÃªu cáº§u Ä‘á»•i/tráº£ hÃ ng
+  // Hủy yêu cầu đổi/trả hàng
   cancelReturnRequest: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/users/returns/${id}`),
 };
 
 // Admin Return Service
 export const adminReturnService = {
-  // Láº¥y danh sÃ¡ch táº¥t cáº£ yÃªu cáº§u Ä‘á»•i/tráº£ hÃ ng (Admin)
+  // Lấy danh sách tất cả yêu cầu đổi/trả hàng (Admin)
   getAllReturnRequests: (
     params?: ReturnRequestQueryParams
   ): Promise<{ data: ApiResponse<GetReturnRequestsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/returns", { params }),
 
-  // Láº¥y thá»‘ng kÃª Ä‘á»•i tráº£ (Admin)
+  // Lấy thống kê đổi trả (Admin)
   getReturnStats: (): Promise<{ data: ApiResponse<ReturnStatsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/returns/stats/summary"),
 
-  // PhÃª duyá»‡t yÃªu cáº§u Ä‘á»•i/tráº£ hÃ ng
+  // Phê duyệt yêu cầu đổi/trả hàng
   approveReturnRequest: (
     id: string,
     data?: { note?: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/approve`, data),
 
-  // Tá»« chá»‘i yÃªu cáº§u Ä‘á»•i/tráº£ hÃ ng
+  // Từ chối yêu cầu đổi/trả hàng
   rejectReturnRequest: (
     id: string,
     data: { reason: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/reject`, data),
 
-  // Xá»­ lÃ½ tráº£ hÃ ng
+  // Xử lý trả hàng
   processReturn: (
     id: string,
     data?: { note?: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.post(`/api/v1/admin/returns/${id}/process-return`, data),
 
-  // Xá»­ lÃ½ Ä‘á»•i hÃ ng
+  // Xử lý đổi hàng
   processExchange: (
     id: string,
     data?: { note?: string }
@@ -113,9 +113,9 @@ export const adminReturnService = {
       data
     ),
 
-  // REMOVED: completeReturn endpoint khÃ´ng tá»“n táº¡i á»Ÿ backend
-  // Backend tá»± Ä‘á»™ng chuyá»ƒn sang 'completed' sau khi processReturn hoáº·c processExchange thÃ nh cÃ´ng
-  // Náº¿u cáº§n endpoint nÃ y, pháº£i thÃªm vÃ o backend trÆ°á»›c
+  // REMOVED: completeReturn endpoint không tồn tại ở backend
+  // Backend tự động chuyển sang 'completed' sau khi processReturn hoặc processExchange thành công
+  // Nếu cần endpoint này, phải thêm vào backend trước
 };
 
 export default {

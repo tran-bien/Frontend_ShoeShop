@@ -26,12 +26,12 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
     }
 
     if (!formData.reason.trim()) {
-      setError("Vui lòng nhập lý đo di?u chơnh");
+      setError("Vui lòng nhập lý do điều chỉnh");
       return;
     }
 
     if (formData.reason.trim().length < 10) {
-      setError("Lý đo ph?i có ít nh?t 10 ký t?");
+      setError("Lý do phải có ít nhất 10 ký tự");
       return;
     }
 
@@ -45,11 +45,11 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
         newQuantity: formData.newQuantity,
         reason: formData.reason,
       });
-      alert("Ði?u chơnh tên kho thành công!");
+      alert("Điều chỉnh tồn kho thành công!");
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Có lỗi x?y ra");
+      setError(error.response?.data?.message || "Có lỗi xảy ra");
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4 text-mono-800">
-          Ði?u chơnh tên kho - {item.product?.name}
+          Điều chỉnh tồn kho - {item.product?.name}
         </h2>
 
         {/* Product Info */}
@@ -173,7 +173,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
               disabled={loading || getDifference() === 0}
               className="flex-1 bg-mono-700 text-white py-3 rounded-lg hover:bg-mono-800 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "Ðang xử lý..." : "Ði?u chơnh"}
+              {loading ? "Đang xử lý..." : "Điều chỉnh"}
             </button>
             <button
               type="button"

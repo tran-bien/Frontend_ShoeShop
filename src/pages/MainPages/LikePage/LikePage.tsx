@@ -72,11 +72,11 @@ const LikePage: React.FC = () => {
     }
   };
 
-  // Chuyện đổi dữ liệu wishlist item thành ProductCardProduct
+  // Chuyển đổi dữ liệu wishlist item thành ProductCardProduct
   const convertWishlistToProductCard = (wishlistItem: any) => {
     const baseProduct = wishlistItem.product;
 
-    // Sử dụng hàm convertToProductCardProduct và ghi dè m?t số giá trở
+    // Sử dụng hàm convertToProductCardProduct và ghi đè một số giá trị
     const productCardData = convertToProductCardProduct({
       ...baseProduct,
       price: wishlistItem.variant?.priceFinal || baseProduct.price || 0,
@@ -109,7 +109,7 @@ const LikePage: React.FC = () => {
             Danh sách yêu thích trống
           </h2>
           <p className="text-mono-500 mb-6">
-            Bẩn chua thêm sản phẩm nào vào danh sách yêu thích
+            Bạn chưa thêm sản phẩm nào vào danh sách yêu thích
           </p>
           <button
             onClick={() => navigate("/products")}
@@ -133,7 +133,7 @@ const LikePage: React.FC = () => {
               }
             />
 
-            {/* Nút xóa - Ð?t ? góc du?i bên ph?i và làm to hon */}
+            {/* Nút xóa - Đặt ở góc dưới bên phải và làm to hơn */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -141,7 +141,7 @@ const LikePage: React.FC = () => {
               }}
               disabled={removingItems.has(item._id)}
               className="absolute bottom-2 right-2 z-10 bg-white p-3 rounded-full shadow-lg hover:bg-mono-200 transition-colors"
-              title="Xóa kh?i yêu thích"
+              title="Xóa khỏi yêu thích"
             >
               {removingItems.has(item._id) ? (
                 <div className="h-6 w-6 border-2 border-mono-800 border-t-transparent rounded-full animate-spin"></div>

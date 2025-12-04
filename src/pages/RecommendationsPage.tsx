@@ -32,7 +32,7 @@ const RecommendationsPage: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching recommendations:", error);
-      toast.error("KhÃ´ng thá»ƒ táº£i gá»£i Ã½ sáº£n pháº©m");
+      toast.error("Không thể tải gợi ý sản phẩm");
     } finally {
       setLoading(false);
     }
@@ -40,10 +40,10 @@ const RecommendationsPage: React.FC = () => {
 
   const getTypeLabel = (type: RecommendationType) => {
     const labels: Record<RecommendationType, string> = {
-      personalized: "DÃ nh cho báº¡n",
-      trending: "Xu hÆ°á»›ng",
-      similar: "TÆ°Æ¡ng tá»±",
-      collaborative: "ÄÆ°á»£c Ä‘á» xuáº¥t",
+      personalized: "Dành cho bạn",
+      trending: "Xu hướng",
+      similar: "Tương tự",
+      collaborative: "Được đề xuất",
     };
     return labels[type];
   };
@@ -53,7 +53,7 @@ const RecommendationsPage: React.FC = () => {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600">Äang táº£i gá»£i Ã½...</p>
+          <p className="mt-4 text-gray-600">Đang tải gợi ý...</p>
         </div>
       </div>
     );
@@ -66,10 +66,10 @@ const RecommendationsPage: React.FC = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-black mb-2 flex items-center gap-2">
             <FiStar className="w-8 h-8" />
-            Gá»£i Ã Cho Báº¡n
+            Gợi Ý Cho Bạn
           </h1>
           <p className="text-gray-600">
-            Nhá»¯ng sáº£n pháº©m Ä‘Æ°á»£c chá»n riÃªng dÃ nh cho báº¡n
+            Những sản phẩm được chọn riêng dành cho bạn
           </p>
         </div>
 
@@ -190,7 +190,7 @@ const RecommendationsPage: React.FC = () => {
                   <div className="px-3 pb-3">
                     <span className="inline-flex items-center gap-1 px-2 py-1 bg-black text-white text-xs rounded-full">
                       <FiTrendingUp className="w-3 h-3" />
-                      Xu hÆ°á»›ng
+                      Xu hướng
                     </span>
                   </div>
                 )}

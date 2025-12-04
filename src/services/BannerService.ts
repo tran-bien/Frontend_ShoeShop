@@ -16,30 +16,30 @@ const ADMIN_API_PREFIX = "/api/v1/admin/banners";
 
 // Admin Banner Service
 export const bannerAdminService = {
-  // Láº¥y danh sÃ¡ch banner (cÃ³ phÃ¢n trang vÃ  filter)
+  // Lấy danh sách banner (có phân trang và filter)
   getBanners: (
     params?: BannerQueryParams
   ): Promise<{ data: ApiResponse<Banner[]> }> =>
     axiosInstanceAuth.get(ADMIN_API_PREFIX, { params }),
 
-  // Láº¥y chi tiáº¿t banner theo ID
+  // Lấy chi tiết banner theo ID
   getBannerById: (id: string): Promise<{ data: ApiResponse<Banner> }> =>
     axiosInstanceAuth.get(`${ADMIN_API_PREFIX}/${id}`),
 
-  // Táº¡o banner má»›i vá»›i upload áº£nh
+  // Tạo banner mới với upload ảnh
   createBanner: (formData: FormData): Promise<{ data: ApiResponse<Banner> }> =>
     axiosInstanceAuth.post(ADMIN_API_PREFIX, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
 
-  // Cáº­p nháº­t thÃ´ng tin banner (khÃ´ng bao gá»“m áº£nh)
+  // Cập nhật thông tin banner (không bao gồm ảnh)
   updateBanner: (
     id: string,
     data: UpdateBannerData
   ): Promise<{ data: ApiResponse<Banner> }> =>
     axiosInstanceAuth.put(`${ADMIN_API_PREFIX}/${id}`, data),
 
-  // Cáº­p nháº­t áº£nh banner
+  // Cập nhật ảnh banner
   updateBannerImage: (
     id: string,
     formData: FormData
@@ -48,11 +48,11 @@ export const bannerAdminService = {
       headers: { "Content-Type": "multipart/form-data" },
     }),
 
-  // XÃ³a má»m banner
+  // Xóa mềm banner
   deleteBanner: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`${ADMIN_API_PREFIX}/${id}`),
 
-  // KhÃ´i phá»¥c banner Ä‘Ã£ xÃ³a
+  // Khôi phục banner đã xóa
   restoreBanner: (
     id: string,
     newDisplayOrder?: number
@@ -61,11 +61,11 @@ export const bannerAdminService = {
       newDisplayOrder,
     }),
 
-  // Toggle tráº¡ng thÃ¡i active cá»§a banner
+  // Toggle trạng thái active của banner
   toggleBannerStatus: (id: string): Promise<{ data: ApiResponse<Banner> }> =>
     axiosInstanceAuth.put(`${ADMIN_API_PREFIX}/${id}/toggle-status`),
 
-  // Sáº¯p xáº¿p láº¡i thá»© tá»± banner
+  // Sắp xếp lại thứ tự banner
   reorderBanners: (
     bannerOrders: ReorderBannerData[]
   ): Promise<{ data: ApiResponse }> =>
@@ -74,12 +74,12 @@ export const bannerAdminService = {
 
 // Public Banner Service
 export const bannerPublicService = {
-  // Láº¥y danh sÃ¡ch banner cÃ´ng khai (chá»‰ active)
+  // Lấy danh sách banner công khai (chỉ active)
   getPublicBanners: (): Promise<{ data: ApiResponse<Banner[]> }> =>
     axiosInstance.get("/api/v1/banners"),
 };
 
-// Helper functions Ä‘á»ƒ táº¡o FormData
+// Helper functions để tạo FormData
 export const createBannerFormData = (data: CreateBannerData): FormData => {
   const formData = new FormData();
   formData.append("title", data.title);

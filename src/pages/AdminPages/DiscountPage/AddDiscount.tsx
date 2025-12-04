@@ -74,7 +74,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
       await adminCouponService.createCoupon(data);
       handleClose();
     } catch (err) {
-      setError("Thêm phi?u giảm giá thểt b?i!");
+      setError("Thêm phiếu giảm giá thất bại!");
     } finally {
       setLoading(false);
     }
@@ -129,13 +129,13 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               onChange={handleChange}
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
             >
-              <option value="percent">Phần tram (%)</option>
-              <option value="fixed">Số tiền c? đếnh</option>
+              <option value="percent">Phần trăm (%)</option>
+              <option value="fixed">Số tiền cố định</option>
             </select>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Giá trở
+              Giá trị
             </label>
             <input
               type="number"
@@ -143,7 +143,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               value={form.value}
               onChange={handleChange}
               placeholder={
-                form.type === "percent" ? "Giá trở (%)" : "Số tiền giảm"
+                form.type === "percent" ? "Giá trị (%)" : "Số tiền giảm"
               }
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required

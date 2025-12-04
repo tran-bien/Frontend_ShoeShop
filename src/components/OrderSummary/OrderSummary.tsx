@@ -56,13 +56,13 @@ const OrderSummary: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<CartItem[]>([]);
   const navigate = useNavigate();
 
-  // L?y giỏ hàng và preview don hàng
+  // Lấy giỏ hàng và preview đơn hàng
   useEffect(() => {
     const fetchCartAndPreview = async () => {
       try {
         setCartLoading(true);
 
-        // L?y giỏ hàng
+        // Lấy giỏ hàng
         const cartRes = await cartService.getCart();
         const cart = cartRes.data.cart;
 
@@ -332,7 +332,7 @@ const OrderSummary: React.FC = () => {
             <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
                 <FaStickyNote className="mr-2 text-mono-700" />
-                Ghi chú don hàng
+                Ghi chú đơn hàng
               </h3>
               <textarea
                 className="w-full border border-mono-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-mono-500 focus:border-transparent"

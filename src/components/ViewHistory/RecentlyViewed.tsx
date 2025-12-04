@@ -16,7 +16,7 @@ interface RecentlyViewedProps {
 
 const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
   limit = 8,
-  title = "Sáº£n pháº©m Ä‘Ã£ xem gáº§n Ä‘Ã¢y",
+  title = "Sản phẩm đã xem gần đây",
   excludeProductId,
 }) => {
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
             <h2 className="text-2xl font-bold text-mono-black">{title}</h2>
           </div>
           <span className="text-sm text-mono-600">
-            {viewHistory.length} sáº£n pháº©m
+            {viewHistory.length} sản phẩm
           </span>
         </div>
 

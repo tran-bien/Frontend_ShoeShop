@@ -23,7 +23,7 @@ const ForgotPasswordForm = () => {
 
     // Validate email
     if (!email) {
-      newErrors.email = "Vui lòng cung c?p email";
+      newErrors.email = "Vui lòng cung cấp email";
       isValid = false;
     } else if (!isValidEmail(email)) {
       newErrors.email = "Email không hợp lệ";
@@ -32,7 +32,7 @@ const ForgotPasswordForm = () => {
 
     // Validate captcha
     if (!isHuman) {
-      newErrors.captcha = "Vui lòng xác nhận bẩn không ph?i là người máy";
+      newErrors.captcha = "Vui lòng xác nhận bạn không phải là người máy";
       isValid = false;
     }
 
@@ -47,7 +47,7 @@ const ForgotPasswordForm = () => {
 
     setLoading(true);
     try {
-      console.log("Ðang gửi yêu c?u quên mật khẩu với email:", email);
+      console.log("Đang gửi yêu cầu quên mật khẩu với email:", email);
 
       const response = await axios.post(
         "http://localhost:5005/api/v1/auth/forgot-password",
@@ -149,7 +149,7 @@ const ForgotPasswordForm = () => {
           )}
         </div>
 
-        {/* Tôi không ph?i là người máy */}
+        {/* Tôi không phải là người máy */}
         <div className="w-[40%] mb-2 flex items-center border border-black rounded-md p-2 bg-mono-100 justify-start self-start">
           <input
             type="checkbox"
@@ -167,7 +167,7 @@ const ForgotPasswordForm = () => {
             htmlFor="notRobot"
             className="text-base text-mono-500 font-light"
           >
-            Tôi không ph?i là người máy
+            Tôi không phải là người máy
           </label>
         </div>
 
@@ -192,7 +192,7 @@ const ForgotPasswordForm = () => {
             onClick={() => navigate("/login")}
             disabled={loading}
           >
-            Ðang nhập
+            Đăng nhập
           </button>
         </div>
       </div>

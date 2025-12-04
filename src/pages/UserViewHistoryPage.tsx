@@ -35,22 +35,22 @@ const UserViewHistory: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching view history:", error);
-      toast.error("KhÃ´ng thá»ƒ táº£i lá»‹ch sá»­ xem");
+      toast.error("Không thể tải lịch sử xem");
     } finally {
       setLoading(false);
     }
   };
 
   const handleClearHistory = async () => {
-    if (!window.confirm("Báº¡n cÃ³ cháº¯c muá»‘n xÃ³a toÃ n bá»™ lá»‹ch sá»­ xem?")) return;
+    if (!window.confirm("Bạn có chắc muốn xóa toàn bộ lịch sử xem?")) return;
 
     try {
       await userViewHistoryService.clearHistory();
-      toast.success("ÄÃ£ xÃ³a lá»‹ch sá»­ xem");
+      toast.success("Đã xóa lịch sử xem");
       setHistory([]);
     } catch (error) {
       console.error("Error clearing history:", error);
-      toast.error("KhÃ´ng thá»ƒ xÃ³a lá»‹ch sá»­");
+      toast.error("Không thể xóa lịch sử xem");
     }
   };
 
@@ -60,8 +60,8 @@ const UserViewHistory: React.FC = () => {
     const diffTime = Math.abs(now.getTime() - d.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 1) return "HÃ´m qua";
-    if (diffDays < 7) return `${diffDays} ngÃ y trÆ°á»›c`;
+    if (diffDays === 1) return "Hôm qua";
+    if (diffDays < 7) return `${diffDays} ngày trước`;
     return d.toLocaleDateString("vi-VN");
   };
 
@@ -70,7 +70,7 @@ const UserViewHistory: React.FC = () => {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600">Äang táº£i...</p>
+          <p className="mt-4 text-gray-600">Đang tải...</p>
         </div>
       </div>
     );
@@ -82,8 +82,8 @@ const UserViewHistory: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-black mb-2">Lá»‹ch Sá»­ Xem</h1>
-            <p className="text-gray-600">CÃ¡c sáº£n pháº©m báº¡n Ä‘Ã£ xem gáº§n Ä‘Ã¢y</p>
+            <h1 className="text-3xl font-bold text-black mb-2">Lịch Sử Xem</h1>
+            <p className="text-gray-600">Các sản phẩm bạn đã xem gần đây</p>
           </div>
 
           {history.length > 0 && (
@@ -92,7 +92,7 @@ const UserViewHistory: React.FC = () => {
               className="mt-4 sm:mt-0 flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             >
               <FiTrash2 className="w-4 h-4" />
-              XÃ³a táº¥t cáº£
+              Xóa tất cả
             </button>
           )}
         </div>
@@ -102,17 +102,17 @@ const UserViewHistory: React.FC = () => {
           <div className="text-center py-16 bg-gray-50 rounded-lg">
             <FiEye className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
-              ChÆ°a cÃ³ lá»‹ch sá»­ xem
+              Chưa có lịch sử xem
             </h3>
             <p className="text-gray-500 mb-6">
-              CÃ¡c sáº£n pháº©m báº¡n xem sáº½ hiá»ƒn thá»‹ á»Ÿ Ä‘Ã¢y
+              Các sản phẩm bạn xem sẽ hiển thị ở đây
             </p>
             <button
               onClick={() => navigate("/products")}
               className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
             >
               <FiShoppingBag className="w-5 h-5" />
-              KhÃ¡m phÃ¡ sáº£n pháº©m
+              Khám phá sản phẩm
             </button>
           </div>
         ) : (
@@ -157,7 +157,6 @@ const UserViewHistory: React.FC = () => {
                               {item.product.priceRange.max.toLocaleString(
                                 "vi-VN"
                               )}
-                              â‚«
                             </span>
                           )}
                       </p>
@@ -181,7 +180,7 @@ const UserViewHistory: React.FC = () => {
                   disabled={page === 1}
                   className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
-                  TrÆ°á»›c
+                  Trước
                 </button>
 
                 <span className="text-gray-600">

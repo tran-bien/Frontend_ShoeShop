@@ -35,15 +35,15 @@ export interface SessionsResponse {
 // =======================
 
 export const adminUserService = {
-  // Láº¥y danh sÃ¡ch user
+  // Lấy danh sách user
   getAllUsers: (params?: UserQueryParams): Promise<{ data: UsersResponse }> =>
     axiosInstanceAuth.get("/api/v1/admin/users", { params }),
 
-  // Láº¥y chi tiáº¿t user theo id
+  // Lấy chi tiết user theo id
   getUserById: (userId: string): Promise<{ data: UserDetailResponse }> =>
     axiosInstanceAuth.get(`/api/v1/admin/users/${userId}`),
 
-  // KhÃ³a hoáº·c má»Ÿ khÃ³a tÃ i khoáº£n user
+  // Khóa hoặc mở khóa tài khoản user
   blockUser: (
     userId: string,
     data: BlockUserData
@@ -56,11 +56,11 @@ export const adminUserService = {
 // =======================
 
 export const adminSessionService = {
-  // Láº¥y danh sÃ¡ch session Ä‘Äƒng nháº­p
+  // Lấy danh sách session đăng nhập
   getAllSessions: (): Promise<{ data: SessionsResponse }> =>
     axiosInstanceAuth.get("/api/v1/admin/auth/sessions"),
 
-  // ÄÄƒng xuáº¥t (xÃ³a session) theo userId
+  // Đăng xuất (xóa session) theo userId
   logoutUser: (userId: string): Promise<{ data: ApiResponse<null> }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/auth/logout/${userId}`),
 };

@@ -14,7 +14,7 @@ const ProcessReturnModal = ({ returnRequest, onClose }: Props) => {
           Xử lý {returnRequest.type === "RETURN" ? "hoàn trở" : "đổi hàng"}
         </h2>
         <p className="text-mono-600 mb-4">Mã: #{returnRequest._id.slice(-8)}</p>
-        <p className="text-mono-600 mb-4">Chỉc nang đang phát triẩn...</p>
+        <p className="text-mono-600 mb-4">Chức năng đang phát triển...</p>
         <button onClick={onClose} className="bg-mono-200 px-4 py-2 rounded">
           Ðóng
         </button>

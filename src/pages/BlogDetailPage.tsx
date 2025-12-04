@@ -66,14 +66,14 @@ const BlogDetailPage = () => {
       <div className="min-h-screen bg-mono-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-mono-black mb-4">
-            KhÃ´ng tÃ¬m tháº¥y bÃ i viáº¿t
+            Không tìm thấy bài viết
           </h2>
           <Link
             to="/blog"
             className="inline-flex items-center gap-2 text-mono-700 hover:text-mono-black hover:underline"
           >
             <ArrowLeftIcon className="w-4 h-4" />
-            Quay láº¡i danh sÃ¡ch
+            Quay lại danh sách
           </Link>
         </div>
       </div>
@@ -89,7 +89,7 @@ const BlogDetailPage = () => {
           className="inline-flex items-center gap-2 text-sm text-mono-700 hover:text-mono-black hover:underline mb-8"
         >
           <ArrowLeftIcon className="w-4 h-4" />
-          Quay láº¡i
+          Quay lại
         </Link>
 
         {/* Header */}
@@ -204,14 +204,14 @@ const BlogDetailPage = () => {
             })}
           </div>
         ) : (
-          <p className="text-mono-600">Ná»™i dung Ä‘ang Ä‘Æ°á»£c cáº­p nháº­t...</p>
+          <p className="text-mono-600">Nội dung đang được cập nhật...</p>
         )}
 
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
           <div className="mt-16 pt-16 border-t border-mono-200">
             <h2 className="text-2xl font-bold text-mono-black mb-8">
-              BÃ i viáº¿t liÃªn quan
+              Bài viết liên quan
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedPosts.map((relatedPost) => (

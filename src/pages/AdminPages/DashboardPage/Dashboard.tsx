@@ -416,7 +416,7 @@ const Dashboard = () => {
               <FiShoppingBag className="h-6 w-6 text-mono-700" />
             </div>
             <div className="ml-4">
-              <p className="text-sm font-medium text-mono-600">Tổng don hàng</p>
+              <p className="text-sm font-medium text-mono-600">Tổng đơn hàng</p>
               {loading.dashboard ? (
                 <div className="h-8 bg-mono-200 rounded w-20 animate-pulse"></div>
               ) : (
@@ -661,8 +661,3 @@ const Dashboard = () => {
 
 // Dashboard component for Admin Dashboard Page
 export default Dashboard;
-
-
-
-
-

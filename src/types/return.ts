@@ -1,6 +1,6 @@
 ﻿/**
  * Return Request Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n YÃªu cáº§u Ä‘á»•i/tráº£ hÃ ng
+ * Định nghĩa các interface liên quan đến Yêu cầu đổi/trả hàng
  */
 
 // =======================

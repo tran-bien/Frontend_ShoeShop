@@ -22,7 +22,7 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Thêm size thểt b?i!");
+      setError("Thêm size thất bại!");
     } finally {
       setLoading(false);
     }

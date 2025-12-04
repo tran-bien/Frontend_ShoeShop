@@ -23,26 +23,26 @@ interface GetShippersResponse {
 
 // Admin Shipper Service
 export const adminShipperService = {
-  // Láº¥y danh sÃ¡ch shipper
+  // Lấy danh sách shipper
   getShippers: (params?: {
     available?: boolean;
   }): Promise<{ data: ApiResponse<GetShippersResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/shippers", { params }),
 
-  // PhÃ¢n cÃ´ng Ä‘Æ¡n hÃ ng cho shipper
+  // Phân công đơn hàng cho shipper
   assignOrderToShipper: (
     orderId: string,
     data: AssignOrderData
   ): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.post(`/api/v1/admin/shippers/assign/${orderId}`, data),
 
-  // Láº¥y thá»‘ng kÃª cá»§a shipper
+  // Lấy thống kê của shipper
   getShipperStats: (
     shipperId: string
   ): Promise<{ data: ShipperStatsResponse }> =>
     axiosInstanceAuth.get(`/api/v1/admin/shippers/${shipperId}/stats`),
 
-  // Láº¥y chi tiáº¿t shipper
+  // Lấy chi tiết shipper
   getShipperDetail: (
     shipperId: string
   ): Promise<{ data: ApiResponse<ShipperInfo> }> =>
@@ -51,24 +51,24 @@ export const adminShipperService = {
 
 // Shipper Service (for shipper role)
 export const shipperService = {
-  // Láº¥y danh sÃ¡ch Ä‘Æ¡n hÃ ng cá»§a shipper
+  // Lấy danh sách đơn hàng của shipper
   getMyOrders: (params?: {
     status?: string;
   }): Promise<{ data: ApiResponse<Order[]> }> =>
     axiosInstanceAuth.get("/api/v1/shipper/my-orders", { params }),
 
-  // Cáº­p nháº­t tráº¡ng thÃ¡i giao hÃ ng
+  // Cập nhật trạng thái giao hàng
   updateDeliveryStatus: (
     orderId: string,
     data: UpdateDeliveryStatusData
   ): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch(`/api/v1/shipper/delivery-status/${orderId}`, data),
 
-  // Cáº­p nháº­t vá»‹ trÃ­
+  // Cập nhật vị trí
   updateLocation: (data: UpdateLocationData): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch("/api/v1/shipper/location", data),
 
-  // Cáº­p nháº­t tráº¡ng thÃ¡i sáºµn sÃ ng
+  // Cập nhật trạng thái sẵn sàng nhận đơn
   updateAvailability: (isAvailable: boolean): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch("/api/v1/shipper/availability", { isAvailable }),
 };

@@ -1,6 +1,6 @@
 ﻿/**
  * Order Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n ÄÆ¡n hÃ ng
+ * Định nghĩa các interface liên quan đến Đơn hàng
  */
 
 // =======================

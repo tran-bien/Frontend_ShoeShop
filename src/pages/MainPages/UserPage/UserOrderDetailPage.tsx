@@ -219,7 +219,7 @@ const UserOrderDetailPage: React.FC = () => {
           </div>
 
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            {/* Header don hàng */}
+            {/* Header đơn hàng */}
             <div className="bg-gradient-to-r from-mono-500 to-mono-black text-white p-6">
               <div className="flex justify-between items-start">
                 <div>
@@ -288,7 +288,7 @@ const UserOrderDetailPage: React.FC = () => {
                       <strong>SĐT:</strong> {order.shippingAddress?.phone}
                     </p>
                     <p>
-                      <strong>Ð?a ch?:</strong>
+                      <strong>Địa chỉ:</strong>
                     </p>
                     <p className="text-mono-600 pl-2">
                       {order.shippingAddress?.detail}
@@ -343,11 +343,11 @@ const UserOrderDetailPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Thông tin don hàng */}
+                {/* Thông tin đơn hàng */}
                 <div className="bg-mono-50 p-4 rounded-lg">
                   <div className="flex items-center gap-2 mb-3">
                     <FaCalendarAlt className="text-mono-600" />
-                    <h3 className="font-semibold">Thông tin don hàng</h3>
+                    <h3 className="font-semibold">Thông tin đơn hàng</h3>
                   </div>
                   <div className="space-y-2 text-sm">
                     <p>
@@ -416,17 +416,17 @@ const UserOrderDetailPage: React.FC = () => {
               {order.note && (
                 <div className="bg-mono-50 border border-mono-200 p-4 rounded-lg mb-6">
                   <h3 className="font-semibold text-mono-800 mb-2">
-                    Ghi chú don hàng:
+                    Ghi chú đơn hàng:
                   </h3>
                   <p className="text-mono-700">{order.note}</p>
                 </div>
               )}
 
-              {/* Lý đo hủy */}
+              {/* Lý do hủy */}
               {order.cancelReason && (
                 <div className="bg-mono-100 border border-mono-300 p-4 rounded-lg mb-6">
                   <h3 className="font-semibold text-mono-900 mb-2">
-                    Lý đo hủy don:
+                    Lý do hủy đơn:
                   </h3>
                   <p className="text-mono-700">{order.cancelReason}</p>
                 </div>
@@ -483,11 +483,11 @@ const UserOrderDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Lọch số trạng thái */}
+              {/* Lịch sử trạng thái */}
               {order.statusHistory && order.statusHistory.length > 0 && (
                 <div className="border-t pt-6 mt-6">
                   <h3 className="text-lg font-semibold mb-4">
-                    Lọch số don hàng
+                    Lịch sử đơn hàng
                   </h3>
                   <div className="space-y-3">
                     {order.statusHistory.map((history, idx) => (

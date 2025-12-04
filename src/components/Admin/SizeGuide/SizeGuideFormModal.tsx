@@ -61,13 +61,13 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Vui lÃ²ng chá»n file áº£nh");
+      toast.error("Vui lòng chọn file ảnh");
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("KÃ­ch thÆ°á»›c áº£nh tá»‘i Ä‘a lÃ  5MB");
+      toast.error("Kích thước ảnh tối đa là 5MB");
       return;
     }
 
@@ -91,10 +91,10 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
             },
           },
         });
-        toast.success("Táº£i áº£nh size chart thÃ nh cÃ´ng");
+        toast.success("Tải ảnh size chart thành công");
       } catch (error) {
         console.error("Failed to upload size chart image:", error);
-        toast.error("KhÃ´ng thá»ƒ táº£i áº£nh lÃªn");
+        toast.error("Không thể tải ảnh lên");
       } finally {
         setUploadingSizeChart(false);
       }
@@ -109,7 +109,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
         },
       });
       toast.success(
-        "áº¢nh sáº½ Ä‘Æ°á»£c táº£i lÃªn sau khi táº¡o Size Guide. Vui lÃ²ng táº¡o Size Guide trÆ°á»›c."
+        "Ảnh sẽ được tải lên sau khi tạo Size Guide. Vui lòng tạo Size Guide trước."
       );
     }
     // Reset input
@@ -127,13 +127,13 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast.error("Vui lÃ²ng chá»n file áº£nh");
+      toast.error("Vui lòng chọn file ảnh");
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("KÃ­ch thÆ°á»›c áº£nh tá»‘i Ä‘a lÃ  5MB");
+      toast.error("Kích thước ảnh tối đa là 5MB");
       return;
     }
 
@@ -158,10 +158,10 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
             },
           },
         });
-        toast.success("Táº£i áº£nh hÆ°á»›ng dáº«n Ä‘o thÃ nh cÃ´ng");
+        toast.success("Tải ảnh hướng dẫn đo thành công");
       } catch (error) {
         console.error("Failed to upload measurement guide image:", error);
-        toast.error("KhÃ´ng thá»ƒ táº£i áº£nh lÃªn");
+        toast.error("Không thể tải ảnh lên");
       } finally {
         setUploadingMeasurement(false);
       }
@@ -176,7 +176,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
         },
       });
       toast.success(
-        "áº¢nh sáº½ Ä‘Æ°á»£c táº£i lÃªn sau khi táº¡o Size Guide. Vui lÃ²ng táº¡o Size Guide trÆ°á»›c."
+        "Ảnh sẽ được tải lên sau khi tạo Size Guide. Vui lòng tạo Size Guide trước."
       );
     }
     // Reset input
@@ -189,7 +189,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
     e.preventDefault();
 
     if (!formData.product) {
-      toast.error("Vui lÃ²ng chá»n sáº£n pháº©m");
+      toast.error("Vui lòng chọn sản phẩm");
       return;
     }
 
@@ -197,7 +197,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
       !formData.sizeChart.description &&
       !formData.measurementGuide.description
     ) {
-      toast.error("Vui lÃ²ng nháº­p Ã­t nháº¥t má»™t mÃ´ táº£");
+      toast.error("Vui lòng nhập ít nhất một mô tả");
       return;
     }
 
@@ -205,16 +205,16 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
     try {
       if (sizeGuide) {
         await adminSizeGuideService.updateSizeGuide(sizeGuide._id, formData);
-        toast.success("Cáº­p nháº­t size guide thÃ nh cÃ´ng");
+        toast.success("Cập nhật size guide thành công");
       } else {
         await adminSizeGuideService.createSizeGuide(formData);
-        toast.success("Táº¡o size guide thÃ nh cÃ´ng");
+        toast.success("Tạo size guide thành công");
       }
       onSuccess();
     } catch (error) {
       console.error("Failed to save size guide:", error);
       const err = error as { response?: { data?: { message?: string } } };
-      toast.error(err?.response?.data?.message || "KhÃ´ng thá»ƒ lÆ°u size guide");
+      toast.error(err?.response?.data?.message || "Không thể lưu size guide");
     } finally {
       setLoading(false);
     }
@@ -226,7 +226,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-mono-200 sticky top-0 bg-white z-10">
           <h2 className="text-2xl font-bold text-mono-black">
-            {sizeGuide ? "Cáº­p nháº­t Size Guide" : "Táº¡o Size Guide Má»›i"}
+            {sizeGuide ? "Cập nhật Size Guide" : "Tạo Size Guide Mới"}
           </h2>
           <button
             onClick={onClose}
@@ -241,7 +241,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
           {/* Product Selection */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Sáº£n pháº©m <span className="text-mono-500">*</span>
+              Sản phẩm <span className="text-mono-500">*</span>
             </label>
             <select
               value={formData.product}
@@ -252,7 +252,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
               required
               disabled={!!sizeGuide}
             >
-              <option value="">Chá»n sáº£n pháº©m</option>
+              <option value="">Chọn sản phẩm</option>
               {products.map((product) => (
                 <option key={product._id} value={product._id}>
                   {product.name}
@@ -261,7 +261,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
             </select>
             {sizeGuide && (
               <p className="text-xs text-mono-500 mt-1">
-                KhÃ´ng thá»ƒ thay Ä‘á»•i sáº£n pháº©m khi cáº­p nháº­t
+                Không thể thay đổi sản phẩm khi cập nhật
               </p>
             )}
           </div>
@@ -282,13 +282,13 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                   d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
                 />
               </svg>
-              Báº£ng size
+              Bảng size
             </h3>
 
             {/* Size Chart Image URL */}
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                HÃ¬nh áº£nh báº£ng size
+                Hình ảnh bảng size
               </label>
               <div className="flex gap-2">
                 <input
@@ -342,7 +342,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                         />
                       </svg>
-                      Äang táº£i...
+                      Đang tải...
                     </>
                   ) : (
                     <>
@@ -378,7 +378,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
             {/* Size Chart Description */}
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                MÃ´ táº£ báº£ng size
+                Mô tả bảng size
               </label>
               <textarea
                 value={formData.sizeChart.description}
@@ -414,13 +414,13 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                   d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
                 />
               </svg>
-              HÆ°á»›ng dáº«n Ä‘o
+              Hướng dẫn đo
             </h3>
 
             {/* Measurement Guide Image URL */}
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                HÃ¬nh áº£nh hÆ°á»›ng dáº«n Ä‘o
+                Hình ảnh hướng dẫn đo
               </label>
               <div className="flex gap-2">
                 <input
@@ -474,7 +474,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                         />
                       </svg>
-                      Äang táº£i...
+                      Đang tải...
                     </>
                   ) : (
                     <>
@@ -513,7 +513,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
             {/* Measurement Guide Description */}
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-2">
-                MÃ´ táº£ hÆ°á»›ng dáº«n Ä‘o
+                Mô tả hướng dẫn đo
               </label>
               <textarea
                 value={formData.measurementGuide.description}
@@ -527,7 +527,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                   })
                 }
                 rows={4}
-                placeholder="HÆ°á»›ng dáº«n chi tiáº¿t cÃ¡ch Ä‘o chÃ¢n Ä‘á»ƒ chá»n size phÃ¹ há»£p..."
+                placeholder="Hướng dẫn chi tiết cách đo chân để chọn size phù hợp..."
                 className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
               />
             </div>
@@ -541,14 +541,14 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
               className="px-6 py-2 text-sm font-medium text-mono-700 bg-mono-100 rounded-lg hover:bg-mono-200 transition-colors"
               disabled={loading}
             >
-              Há»§y
+              Hủy
             </button>
             <button
               type="submit"
               className="px-6 py-2 text-sm font-medium text-white bg-mono-black rounded-lg hover:bg-mono-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading}
             >
-              {loading ? "Äang lÆ°u..." : sizeGuide ? "Cáº­p nháº­t" : "Táº¡o má»›i"}
+              {loading ? "Đang lưu..." : sizeGuide ? "Cập nhật" : "Tạo mới"}
             </button>
           </div>
         </form>

@@ -1,6 +1,6 @@
 ﻿/**
  * Size Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n KÃ­ch thÆ°á»›c
+ * Định nghĩa các interface liên quan đến Kích thước
  */
 
 // =======================

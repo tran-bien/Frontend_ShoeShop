@@ -17,7 +17,7 @@ export interface VariantSize {
   description?: string;
   sku?: string;
 
-  // ThÃ´ng tin giÃ¡ tá»« InventoryItem (BE tráº£ vá» trong variants.sizes)
+  // Thông tin giá từ InventoryItem (BE trả về trong variants.sizes)
   price?: number; // sellingPrice tá»« InventoryItem
   finalPrice?: number; // finalPrice tá»« InventoryItem
   discountPercent?: number; // discountPercent tá»« InventoryItem
@@ -26,7 +26,7 @@ export interface VariantSize {
   isAvailable?: boolean; // quantity > 0
   isLowStock?: boolean;
   isOutOfStock?: boolean;
-  isSizeAvailable?: boolean; // deprecated, dÃ¹ng isAvailable
+  isSizeAvailable?: boolean; // deprecated, dùng isAvailable
 }
 
 export interface Variant {
@@ -45,11 +45,11 @@ export interface Variant {
     displayOrder: number;
   }>;
 
-  // REMOVED: CÃ¡c fields nÃ y Ä‘Ã£ bá»‹ xÃ³a khá»i BE Variant schema
+  // REMOVED: Các fields này đã bị xóa khỏi BE Variant schema
   // price, costPrice, percentDiscount, priceFinal, profit, profitPercentage
-  // GiÃ¡ giá» Ä‘Æ°á»£c lÆ°u trong InventoryItem vÃ  tráº£ vá» qua variants.sizes[]
+  // Giá giờ được lưu trong InventoryItem và trả về qua variants.sizes[]
 
-  // ADDED: Inventory summary tá»« BE (cho admin view)
+  // ADDED: Inventory summary từ BE (cho admin view)
   inventorySummary?: {
     totalQuantity: number;
     availableSizes: number;

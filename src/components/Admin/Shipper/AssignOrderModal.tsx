@@ -30,12 +30,12 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
     e.preventDefault();
 
     if (!formData.orderId.trim()) {
-      setError("Vui lòng nhập mã don hàng");
+      setError("Vui lòng nhập mã đơn hàng");
       return;
     }
 
     if (!formData.shipperId) {
-      setError("Vui lòng chơn shipper");
+      setError("Vui lòng chọn shipper");
       return;
     }
 
@@ -45,11 +45,11 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
       await adminShipperService.assignOrderToShipper(formData.orderId, {
         shipperId: formData.shipperId,
       });
-      alert("Gán don hàng cho shipper thành công!");
+      alert("Gán đơn hàng cho shipper thành công!");
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Có lỗi x?y ra");
+      setError(error.response?.data?.message || "Có lỗi xảy ra");
     } finally {
       setLoading(false);
     }
@@ -71,14 +71,14 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full">
         <h2 className="text-xl font-bold mb-4 text-mono-800">
-          ?? Gán don hàng cho Shipper
+          📦 Gán đơn hàng cho Shipper
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Order ID */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Mã don hàng <span className="text-mono-800">*</span>
+              Mã đơn hàng <span className="text-mono-800">*</span>
             </label>
             <input
               type="text"
@@ -87,7 +87,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
                 setFormData({ ...formData, orderId: e.target.value })
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
-              placeholder="Nhập ID ho?c mã don hàng"
+              placeholder="Nhập ID hoặc mã đơn hàng"
               required
             />
           </div>
@@ -95,13 +95,13 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
           {/* Shipper Selection */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Chơn Shipper <span className="text-mono-800">*</span>
+              Chọn Shipper <span className="text-mono-800">*</span>
             </label>
 
             {availableShippers.length === 0 ? (
               <div className="bg-mono-100 border border-mono-200 text-mono-800 px-4 py-3 rounded-lg text-sm">
-                ?? Không có shipper khọ đếng. Tất cả shipper đang bẩn ho?c dã
-                đặt giới hơn don hàng.
+                Không có shipper khả dụng. Tất cả shipper đang bận hoặc đã đặt
+                giới hạn đơn hàng.
               </div>
             ) : (
               <div className="space-y-2 max-h-64 overflow-y-auto border border-mono-200 rounded-lg p-2">
@@ -195,7 +195,7 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
               disabled={loading || availableShippers.length === 0}
               className="flex-1 bg-mono-black text-white py-3 rounded-lg hover:bg-mono-800 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
             >
-              {loading ? "Ðang xử lý..." : "Gán don hàng"}
+              {loading ? "Đang xử lý..." : "Gán đơn hàng"}
             </button>
             <button
               type="button"
@@ -212,8 +212,3 @@ const AssignOrderModal = ({ shippers, onClose, onSuccess }: Props) => {
 };
 
 export default AssignOrderModal;
-
-
-
-
-

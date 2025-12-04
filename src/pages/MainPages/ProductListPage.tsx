@@ -15,14 +15,14 @@ import {
 import { Product, ProductQueryParams } from "../../types/product";
 import { toast } from "react-hot-toast";
 
-// Helper function d? xử lý split cho string ho?c array
+// Helper function để xử lý split cho string hoặc array
 const safeStringToArray = (value: string | string[] | undefined): string[] => {
   if (!value) return [];
   if (Array.isArray(value)) return value;
   return value.split(",");
 };
 
-// Hàm d? chuyện đổi từ chu?i query params thành đổi tuẩng
+// Hàm để chuyển đổi từ chuỗi query params thành đối tượng
 const parseQueryParams = (
   searchParams: URLSearchParams
 ): ProductQueryParams => {
@@ -76,14 +76,14 @@ const ProductListPage: React.FC = () => {
     brands: [],
   });
 
-  // L?y thông tin bỏ lọc từ URL
+  // Lấy thông tin bộ lọc từ URL
   const queryParamsFromUrl = parseQueryParams(searchParams);
 
-  // Giá trở bỏ lọc hiện tại (sử dụng useState d? duy trì giỏa các lẩn render)
+  // Giá trị bộ lọc hiện tại (sử dụng useState để duy trì giữa các lần render)
   const [filtersState, setFiltersState] =
     useState<ProductQueryParams>(queryParamsFromUrl);
 
-  // L?y danh sách sản phẩm d?a trên bỏ lọc
+  // Lấy danh sách sản phẩm dựa trên bộ lọc
   const fetchProducts = async () => {
     setLoading(true);
     setError(null);
@@ -157,13 +157,13 @@ const ProductListPage: React.FC = () => {
         hasNext: false,
         hasPrev: false,
       });
-      toast.error("Không thể tại danh sách sản phẩm");
+      toast.error("Không thể tải danh sách sản phẩm");
     } finally {
       setLoading(false);
     }
   };
 
-  // L?y danh sách danh mục, thuong hi?u, màu sắc và kích thước
+  // Lấy danh sách danh mục, thương hiệu, màu sắc và kích thước
   useEffect(() => {
     const fetchFilterOptions = async () => {
       try {
@@ -180,7 +180,7 @@ const ProductListPage: React.FC = () => {
           });
           console.log("Loaded filter options:", data.filters);
 
-          // N?u chua có giá trở minPrice và maxPrice trong URL, kh?i t?o chúng từ API
+          // Nếu chưa có giá trị minPrice và maxPrice trong URL, khởi tạo chúng từ API
           if (filtersState.minPrice === undefined) {
             setFiltersState((prev) => ({
               ...prev,
@@ -208,19 +208,19 @@ const ProductListPage: React.FC = () => {
     fetchProducts();
   }, [searchParams]);
 
-  // Áp dụng bỏ lọc
+  // Áp dụng bộ lọc
   const applyFilters = () => {
-    // Lo?i bỏ các filter undefined, null ho?c empty string
+    // Loại bỏ các filter undefined, null hoặc empty string
     const newParams: Record<string, string> = {};
 
-    // Thêm tổng tham số hợp lệ vào URL
+    // Thêm tất cả tham số hợp lệ vào URL
     Object.entries(filtersState).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
         newParams[key] = String(value);
       }
     });
 
-    // Reset v? trang 1 khi thay đổi bỏ lọc
+    // Reset về trang 1 khi thay đổi bộ lọc
     newParams.page = "1";
 
     setSearchParams(newParams);
@@ -264,16 +264,16 @@ const ProductListPage: React.FC = () => {
     );
   };
 
-  // Xử lý khi nhập giá trởc tiếp
+  // Xử lý khi nhập giá trực tiếp
   const handlePriceInput = (type: "min" | "max", value: string) => {
     const numValue = value === "" ? undefined : Number(value);
 
-    // N?u là giá không hợp lệ, không cập nhật
+    // Nếu là giá không hợp lệ, không cập nhật
     if (numValue !== undefined && isNaN(numValue)) {
       return;
     }
 
-    // Ki?m tra giới hơn
+    // Kiểm tra giới hạn
     if (type === "min") {
       if (numValue !== undefined) {
         // Đảm bảo giá min không vượt quá giá max
@@ -352,28 +352,28 @@ const ProductListPage: React.FC = () => {
     return buttons;
   };
 
-  // Chỉc nang lọc bảng checkbox cho danh mục, thuong hi?u, size
+  // Chức năng lọc bảng checkbox cho danh mục, thương hiệu, size
   const handleCheckboxFilter = (
     type: "category" | "brand" | "sizes" | "colors",
     id: string
   ) => {
-    // L?y giá trở hiện tại
+    // Lấy giá trị hiện tại
     const currentValue = filtersState[type];
     let newValue: string | undefined;
 
     if (!currentValue) {
-      // N?u chua có giá trở, gán giá trở mới
+      // Nếu chưa có giá trị, gán giá trị mới
       newValue = id;
     } else {
-      // N?u dã có, ki?m tra xem có tên tại không
+      // Nếu đã có, kiểm tra xem có tồn tại không
       const currentValueStr = String(currentValue);
       const values = currentValueStr.split(",");
       if (values.includes(id)) {
-        // N?u có, lo?i b?
+        // Nếu có, loại bỏ
         const newValues = values.filter((v: string) => v !== id);
         newValue = newValues.length > 0 ? newValues.join(",") : undefined;
       } else {
-        // N?u chua có, thêm vào
+        // Nếu chưa có, thêm vào
         newValue = `${currentValueStr},${id}`;
       }
     }
@@ -423,13 +423,13 @@ const ProductListPage: React.FC = () => {
             <div className="sticky top-24 space-y-6">
               {/* Filters heading with reset button */}
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-semibold">Bỏ lọc</h2>
+                <h2 className="text-xl font-semibold">Bộ lọc</h2>
                 {hasActiveFilters() && (
                   <button
                     onClick={resetFilters}
                     className="text-sm text-mono-black hover:text-mono-800"
                   >
-                    Ð?t lỗi
+                    Đặt lại
                   </button>
                 )}
               </div>
@@ -692,7 +692,7 @@ const ProductListPage: React.FC = () => {
 
               {/* Brand filter */}
               <div className="space-y-2">
-                <h3 className="font-medium text-mono-700">Thuong hi?u</h3>
+                <h3 className="font-medium text-mono-700">Thương hiệu</h3>
                 <div className="space-y-1 max-h-40 overflow-y-auto">
                   {filters.brands.map((brand) => (
                     <div key={brand._id} className="flex items-center">
@@ -938,7 +938,7 @@ const ProductListPage: React.FC = () => {
                           }
                           onChange={(e) => {
                             const value = Number(e.target.value);
-                            // Ð?m b?o minPrice không vu?t quá maxPrice
+                            // Đảm bảo minPrice không vượt quá maxPrice
                             if (
                               value <=
                               (filtersState.maxPrice ||
@@ -1068,7 +1068,7 @@ const ProductListPage: React.FC = () => {
 
                   {/* Brand filter */}
                   <div className="space-y-2">
-                    <h3 className="font-medium text-mono-700">Thuong hi?u</h3>
+                    <h3 className="font-medium text-mono-700">Thương hiệu</h3>
                     <div className="space-y-1 max-h-40 overflow-y-auto">
                       {filters.brands.map((brand) => (
                         <div key={brand._id} className="flex items-center">
@@ -1181,7 +1181,7 @@ const ProductListPage: React.FC = () => {
                       onClick={resetFilters}
                       className="flex-1 py-2 border border-mono-300 rounded-md"
                     >
-                      Ð?t lỗi
+                      Đặt lại
                     </button>
                     <button
                       onClick={applyFilters}

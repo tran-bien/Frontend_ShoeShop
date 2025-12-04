@@ -4,7 +4,7 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { reviewApi } from "../../services/ReviewService";
 
-// Ð?m b?o modal có thọ truy c?p được cho screen readers
+// Đảm bảo modal có thể truy cập được cho screen readers
 Modal.setAppElement("#root");
 
 interface CreateReviewModalProps {
@@ -34,7 +34,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (rating === 0) {
-      toast.error("Vui lòng chơn số sao đánh giá");
+      toast.error("Vui lòng chọn số sao đánh giá");
       return;
     }
 
@@ -44,7 +44,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
     }
 
     if (content.trim().length < 10) {
-      toast.error("Nội dung đánh giá ph?i có ít nh?t 10 ký t?");
+      toast.error("Nội dung đánh giá phải có ít nhất 10 ký tự");
       return;
     }
 
@@ -57,11 +57,11 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
         content: content.trim(),
       };
 
-      console.log("Ðang gửi đánh giá với dữ liệu:", reviewData);
+      console.log("Đang gửi đánh giá với dữ liệu:", reviewData);
       const response = await reviewApi.createReview(reviewData);
       console.log("Response từ API:", response);
 
-      // Ki?m tra response structure linh ho?t hon
+      // Kiểm tra response structure linh hoạt hơn
       const responseData = response.data || response;
       const isSuccess = responseData.success === true;
 
@@ -171,13 +171,13 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Chia số trởi nghi?m của bẩn v? sản phẩm... (ít nh?t 10 ký t?)"
+            placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm... (ít nhất 10 ký tự)"
             className="w-full p-2 border border-mono-300 rounded-md resize-none focus:ring-2 focus:ring-mono-500 focus:border-transparent"
             rows={4}
             maxLength={500}
           />
           <div className="text-xs text-mono-500 mt-1">
-            {content.length}/500 ký t?
+            {content.length}/500 ký tự
           </div>
         </div>
 

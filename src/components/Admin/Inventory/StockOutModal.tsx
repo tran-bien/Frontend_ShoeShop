@@ -22,12 +22,12 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
 
     // Validation
     if (formData.quantity <= 0) {
-      setError("Số lượng ph?i lẩn hon 0");
+      setError("Số lượng phải lớn hơn 0");
       return;
     }
 
     if (formData.quantity > item.quantity) {
-      setError(`Số lượng xuất không được vu?t quá tên kho (${item.quantity})`);
+      setError(`Số lượng xuất không được vượt quá tồn kho (${item.quantity})`);
       return;
     }
 
@@ -46,7 +46,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Có lỗi x?y ra");
+      setError(error.response?.data?.message || "Có lỗi xảy ra");
     } finally {
       setLoading(false);
     }
@@ -106,7 +106,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
           {/* Order ID (optional) */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Mã don hàng (n?u có)
+              Mã đơn hàng (nếu có)
             </label>
             <input
               type="text"
@@ -115,7 +115,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
                 setFormData({ ...formData, orderId: e.target.value })
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
-              placeholder="Nhập mã don hàng"
+              placeholder="Nhập mã đơn hàng"
             />
           </div>
 
@@ -166,6 +166,3 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
 };
 
 export default StockOutModal;
-
-
-

@@ -87,18 +87,18 @@ const LoginForm: React.FC = () => {
       });
       console.log("Phần h?i từ API:", response);
 
-      toast.success("Ðang ký thành công! Vui lòng ki?m tra email d? xác thực.");
+      toast.success("Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
       navigate("/otp-verification", {
         state: { email: registerEmail },
       });
     } catch (error: any) {
-      let errorMessage = "Ðang ký thểt b?i!";
+      let errorMessage = "Đăng ký thất bại!";
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       } else if (error.message) {
         errorMessage = error.message;
       }
-      console.error("?? Ðang ký thểt b?i:", errorMessage);
+      console.error("❌ Đăng ký thất bại:", errorMessage);
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -163,7 +163,7 @@ const LoginForm: React.FC = () => {
                     <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
                     <input
                       type="email"
-                      placeholder="Nhập email của bẩn"
+                      placeholder="Nhập email của bạn"
                       className="w-full pl-11 pr-4 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-black focus:border-transparent transition-all"
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
@@ -244,7 +244,7 @@ const LoginForm: React.FC = () => {
                     <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
                     <input
                       type="email"
-                      placeholder="Nhập email của bẩn"
+                      placeholder="Nhập email của bạn"
                       className="w-full pl-11 pr-4 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-black focus:border-transparent transition-all"
                       value={registerEmail}
                       onChange={(e) => setRegisterEmail(e.target.value)}
@@ -261,7 +261,7 @@ const LoginForm: React.FC = () => {
                     <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
                     <input
                       type={showRegisterPassword ? "text" : "password"}
-                      placeholder="T?o mật khẩu"
+                      placeholder="Tạo mật khẩu"
                       className="w-full pl-11 pr-12 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-black focus:border-transparent transition-all"
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
@@ -321,4 +321,3 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
-

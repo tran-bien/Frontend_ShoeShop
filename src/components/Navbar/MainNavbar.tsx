@@ -70,7 +70,7 @@ const MainNavbar = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/productsẩname=${encodeURIComponent(searchQuery.trim())}`);
+      navigate(`/products?name=${encodeURIComponent(searchQuery.trim())}`);
       setShowSuggestions(false);
       setSearchQuery("");
     }
@@ -171,7 +171,7 @@ const MainNavbar = () => {
         <form onSubmit={handleSearch} className="w-full relative">
           <input
             type="text"
-            placeholder="Tìm kiếm sản phẩm, thuong hi?u..."
+            placeholder="Tìm kiếm sản phẩm, thương hiệu..."
             className="border border-mono-300 p-2 px-5 rounded-3xl w-full pr-10 focus:outline-none focus:border-mono-500 focus:ring-1 focus:ring-mono-500"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -226,7 +226,7 @@ const MainNavbar = () => {
                         <div className="text-sm text-mono-500 capitalize">
                           {suggestion.type === "product" && "Sản phẩm"}
                           {suggestion.type === "category" && "Danh mục"}
-                          {suggestion.type === "brand" && "Thuong hi?u"}
+                          {suggestion.type === "brand" && "Thương hiệu"}
                         </div>
                       </div>
                     </button>

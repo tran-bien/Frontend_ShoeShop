@@ -40,17 +40,17 @@ const ShipperLayout = () => {
     {
       path: "/shipper/orders",
       icon: <FaBox size={20} />,
-      label: "�on h�ng của t�i",
+      label: "Đơn hàng của tôi",
     },
     {
       path: "/shipper/completed",
       icon: <FaCheckCircle size={20} />,
-      label: "�� giao",
+      label: "Đã giao",
     },
     {
       path: "/shipper/profile",
       icon: <FaUser size={20} />,
-      label: "Họ so",
+      label: "Hồ sơ",
     },
   ];
 
@@ -104,7 +104,7 @@ const ShipperLayout = () => {
         <div className="border-t border-mono-700">
           {user && sidebarOpen && (
             <div className="px-6 py-4">
-              <p className="text-sm text-mono-200">Xin ch�o,</p>
+              <p className="text-sm text-mono-200">Xin chào,</p>
               <p className="font-bold truncate">{user.name}</p>
               <p className="text-xs text-mono-200 truncate">{user.email}</p>
             </div>
@@ -114,7 +114,7 @@ const ShipperLayout = () => {
             className="flex items-center gap-4 px-6 py-3 mx-3 mb-3 rounded-lg hover:bg-mono-900 transition-all w-[calc(100%-1.5rem)]"
           >
             <FaSignOutAlt size={20} />
-            {sidebarOpen && <span>�ang xuất</span>}
+            {sidebarOpen && <span>Đăng xuất</span>}
           </button>
         </div>
       </aside>
@@ -153,4 +153,3 @@ const ShipperLayout = () => {
 };
 
 export default ShipperLayout;
-

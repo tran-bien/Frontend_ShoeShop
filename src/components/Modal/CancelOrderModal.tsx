@@ -26,17 +26,17 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
 
     // Validation
     if (!reason.trim()) {
-      setError("Vui lòng nhập lý đo hủy don hàng");
+      setError("Vui lòng nhập lý do hủy đơn hàng");
       return;
     }
 
     if (reason.trim().length < 3) {
-      setError("Lý đo hủy ph?i có ít nh?t 3 ký t?");
+      setError("Lý do hủy phải có ít nhất 3 ký tự");
       return;
     }
 
     if (reason.trim().length > 500) {
-      setError("Lý đo hủy không được vu?t quá 500 ký t?");
+      setError("Lý do hủy không được vượt quá 500 ký tự");
       return;
     }
 
@@ -47,13 +47,13 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
       // Reset form sau khi thành công
       setReason("");
       setError("");
-      // Không cẩn toast ? dây vì dã được xử lý trong component cha (UserOrderDetailPage)
+      // Không cần toast ở đây vì đã được xử lý trong component cha (UserOrderDetailPage)
     } catch (error: any) {
-      // Ðã có xử lý lỗi ? component cha, nhung thêm xử lý ? dây d? d?m b?o
+      // Đã có xử lý lỗi ở component cha, nhưng thêm xử lý ở đây để đảm bảo
       const errorMessage =
         error?.response?.data?.message ||
         error?.message ||
-        "Có lỗi x?y ra khi hủy don hàng";
+        "Có lỗi xảy ra khi hủy đơn hàng";
       toast.error(errorMessage);
     }
   };
@@ -67,11 +67,11 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
   };
 
   const predefinedReasons = [
-    "Thay đổi ý đếnh mua hàng",
-    "Tìm được sản phẩm tuong từ với giá t?t hon",
+    "Thay đổi ý định mua hàng",
+    "Tìm được sản phẩm tương tự với giá tốt hơn",
     "Thay đổi sản phẩm/kích thước/màu sắc",
-    "Sản phẩm bỏ lỗi ho?c không dúng mô t?",
-    "Khác (nhập lý đo c? thể)",
+    "Sản phẩm bị lỗi hoặc không đúng mô tả",
+    "Khác (nhập lý do cụ thể)",
   ];
 
   if (!isOpen) return null;
@@ -84,7 +84,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
           <div className="flex items-center gap-3">
             <FaExclamationTriangle className="text-mono-800 text-xl" />
             <h2 className="text-xl font-semibold text-mono-800">
-              Hủy don hàng
+              Hủy đơn hàng
             </h2>
           </div>
           <button
@@ -100,19 +100,19 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
         <form onSubmit={handleSubmit} className="p-6">
           <div className="mb-4">
             <p className="text-mono-700 mb-2">
-              Bẩn có chỉc chơn muẩn hủy don hàng{" "}
+              Bạn có chắc chắn muốn hủy đơn hàng{" "}
               <span className="font-semibold text-mono-black">{orderCode}</span>
               ?
             </p>
             <p className="text-sm text-mono-500">
-              Vui lòng cho bi?t lý đo d? shop có thọ c?i thiện d?ch v?.
+              Vui lòng cho biết lý do để shop có thể cải thiện dịch vụ.
             </p>
           </div>
 
           {/* Predefined reasons */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Chơn lý đo có sẩn:
+              Chọn lý do có sẵn:
             </label>
             <div className="space-y-2">
               {predefinedReasons.map((predefinedReason, index) => (
@@ -143,7 +143,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
           {/* Custom reason input */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Ho?c nhập lý đo c? th?:
+              Hoặc nhập lý do cụ thể:
             </label>
             <textarea
               value={reason}
@@ -151,7 +151,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
                 setReason(e.target.value);
                 setError("");
               }}
-              placeholder="Nhập lý đo hủy don hàng của bẩn..."
+              placeholder="Nhập lý do hủy đơn hàng của bạn..."
               className="w-full p-3 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent resize-none"
               rows={4}
               maxLength={500}
@@ -159,7 +159,7 @@ const CancelOrderModal: React.FC<CancelOrderModalProps> = ({
             />
             <div className="flex justify-between items-center mt-1">
               <span className="text-xs text-mono-500">
-                {reason.length}/500 ký t?
+                {reason.length}/500 ký tự
               </span>
               {error && <span className="text-xs text-mono-800">{error}</span>}
             </div>

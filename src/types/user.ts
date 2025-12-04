@@ -1,6 +1,6 @@
 ﻿/**
  * User Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n NgÆ°á»i dÃ¹ng
+ * Định nghĩa các interface liên quan đến Người dùng
  */
 
 // =======================

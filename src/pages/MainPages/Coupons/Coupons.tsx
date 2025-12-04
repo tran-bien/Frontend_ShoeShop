@@ -328,7 +328,7 @@ const CouponsPage: React.FC = () => {
                   Sao chép mã
                 </h3>
                 <p className="text-sm text-mono-600">
-                  Nhơn vào nút du?i mới mã giảm giá d? sao chép mã vào bỏ nh?
+                  Nhấn vào nút dưới mỗi mã giảm giá để sao chép mã vào bộ nhớ
                   tạm
                 </p>
               </div>

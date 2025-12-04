@@ -4,28 +4,28 @@ import { ApiResponse } from "../types/api";
 
 // Admin Size Service
 export const adminSizeService = {
-  // Láº¥y táº¥t cáº£ kÃ­ch cá»¡
+  // Lấy tất cả kích cỡ
   getAll: (params?: SizeQueryParams): Promise<{ data: ApiResponse<Size[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/sizes", { params }),
 
-  // Láº¥y kÃ­ch cá»¡ Ä‘Ã£ xÃ³a
+  // Lấy kích cỡ đã xóa
   getDeleted: (
     params?: SizeQueryParams
   ): Promise<{ data: ApiResponse<Size[]> }> =>
     axiosInstanceAuth.get("/api/v1/admin/sizes/deleted", { params }),
 
-  // Láº¥y chi tiáº¿t kÃ­ch cá»¡ theo ID
+  // Lấy chi tiết kích cỡ theo ID
   getById: (id: string): Promise<{ data: ApiResponse<Size> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/sizes/${id}`),
 
-  // Táº¡o má»›i kÃ­ch cá»¡
+  // Tạo mới kích cỡ
   create: (data: {
     value: string;
     region: string;
   }): Promise<{ data: ApiResponse<Size> }> =>
     axiosInstanceAuth.post("/api/v1/admin/sizes", data),
 
-  // Cáº­p nháº­t kÃ­ch cá»¡
+  // Cập nhật kích cỡ
   update: (
     id: string,
     data: {
@@ -35,11 +35,11 @@ export const adminSizeService = {
   ): Promise<{ data: ApiResponse<Size> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/sizes/${id}`, data),
 
-  // XÃ³a má»m kÃ­ch cá»¡
+  // Xóa mềm kích cỡ
   delete: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/admin/sizes/${id}`),
 
-  // KhÃ´i phá»¥c kÃ­ch cá»¡ Ä‘Ã£ xÃ³a
+  // Khôi phục kích cỡ đã xóa
   restore: (id: string): Promise<{ data: ApiResponse<Size> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/sizes/${id}/restore`),
 };
