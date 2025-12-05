@@ -38,6 +38,7 @@ import UserSessionsPage from "../pages/MainPages/UserPage/UserSessionsPage";
 import InventoryPage from "../pages/AdminPages/InventoryPage/InventoryPage";
 import ShipperPage from "../pages/AdminPages/ShipperPage/ShipperPage";
 import ReturnPage from "../pages/AdminPages/ReturnPage/ReturnPage";
+import ReviewPage from "../pages/AdminPages/ReviewPage/ReviewPage";
 import ShipperLayout from "./layout/ShipperLayout";
 import ShipperDashboardPage from "../pages/ShipperPages/ShipperDashboardPage";
 import MyOrdersPage from "../pages/ShipperPages/MyOrdersPage";
@@ -113,6 +114,7 @@ const AppRouter = () => {
         <Route path="inventory" element={<InventoryPage />} />
         <Route path="shippers" element={<ShipperPage />} />
         <Route path="returns" element={<ReturnPage />} />
+        <Route path="reviews" element={<ReviewPage />} />
         <Route path="blogs" element={<AdminBlogPage />} />
         <Route path="size-guides" element={<AdminSizeGuidePage />} />
         <Route path="loyalty-tiers" element={<AdminLoyaltyTierPage />} />
@@ -299,4 +301,3 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
-

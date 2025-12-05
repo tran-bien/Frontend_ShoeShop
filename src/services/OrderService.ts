@@ -116,6 +116,20 @@ export const adminOrderService = {
       `/api/v1/admin/orders/cancel-requests/${requestId}`,
       data
     ),
+
+  // Xác nhận nhận hàng trả về (khi khách trả hàng)
+  confirmReturn: (
+    orderId: string
+  ): Promise<{ data: UpdateOrderStatusResponse }> =>
+    axiosInstanceAuth.post(`/api/v1/admin/orders/${orderId}/confirm-return`),
+
+  // Force xác nhận thanh toán cho VNPAY failed callbacks (Admin Only)
+  forceConfirmPayment: (
+    orderId: string
+  ): Promise<{ data: UpdateOrderStatusResponse }> =>
+    axiosInstanceAuth.post(
+      `/api/v1/admin/orders/${orderId}/force-confirm-payment`
+    ),
 };
 
 // =======================

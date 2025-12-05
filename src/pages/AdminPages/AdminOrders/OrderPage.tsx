@@ -3,6 +3,7 @@ import { adminOrderService } from "../../../services/OrderService";
 import CancelRequestList from "./CancelRequestList";
 import { useAuth } from "../../../hooks/useAuth";
 import type { Order } from "../../../types/order";
+import { toast } from "react-hot-toast";
 
 // Simplified order interface for list display
 interface OrderListItem {
@@ -13,13 +14,14 @@ interface OrderListItem {
   phone: string;
   price: string;
   paymentStatus: string;
+  paymentStatusRaw?: string;
   paymentMethod?: string;
   orderStatus: string;
   orderStatusRaw?: string;
 }
 
 const ListOrderPage: React.FC = () => {
-  const { canProcessOrders } = useAuth();
+  const { canProcessOrders, hasAdminOnlyAccess } = useAuth();
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [paymentFilter, setPaymentFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
@@ -56,6 +58,7 @@ const ListOrderPage: React.FC = () => {
             o.payment?.paymentStatus === "paid"
               ? "Đã thanh toán"
               : "Chưa thanh toán",
+          paymentStatusRaw: o.payment?.paymentStatus,
           paymentMethod:
             o.payment?.method === "VNPAY"
               ? "VNPAY"
@@ -73,6 +76,8 @@ const ListOrderPage: React.FC = () => {
               ? "Giao hàng thành công"
               : o.status === "cancelled"
               ? "Đã hủy"
+              : o.status === "returning"
+              ? "Đang trả hàng"
               : o.status || "",
           orderStatusRaw: o.status,
         }))
@@ -116,6 +121,7 @@ const ListOrderPage: React.FC = () => {
           o.payment?.paymentStatus === "paid"
             ? "Đã thanh toán"
             : "Chưa thanh toán",
+        paymentStatusRaw: o.payment?.paymentStatus,
         paymentMethod:
           o.payment?.method === "VNPAY"
             ? "VNPAY"
@@ -133,6 +139,8 @@ const ListOrderPage: React.FC = () => {
             ? "Giao hàng thành công"
             : o.status === "cancelled"
             ? "Đã hủy"
+            : o.status === "returning"
+            ? "Đang trả hàng"
             : o.status || "",
         orderStatusRaw: o.status,
       });
@@ -169,6 +177,39 @@ const ListOrderPage: React.FC = () => {
     const validStatus = status as "confirmed" | "shipping" | "delivered";
     await adminOrderService.updateOrderStatus(orderId, { status: validStatus });
     fetchOrders();
+  };
+
+  // Xác nhận nhận hàng trả về (khi khách trả hàng)
+  const handleConfirmReturn = async (orderId: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xác nhận đã nhận hàng trả về?")) return;
+
+    try {
+      await adminOrderService.confirmReturn(orderId);
+      toast.success("Đã xác nhận nhận hàng trả về");
+      fetchOrders();
+    } catch (error) {
+      console.error("Error confirming return:", error);
+      toast.error("Không thể xác nhận nhận hàng trả về");
+    }
+  };
+
+  // Force xác nhận thanh toán cho VNPAY failed callbacks (Admin Only)
+  const handleForceConfirmPayment = async (orderId: string) => {
+    if (
+      !confirm(
+        "Bạn có chắc chắn muốn xác nhận thanh toán cho đơn hàng này? Hành động này chỉ nên dùng khi VNPAY callback failed."
+      )
+    )
+      return;
+
+    try {
+      await adminOrderService.forceConfirmPayment(orderId);
+      toast.success("Đã xác nhận thanh toán thành công");
+      fetchOrders();
+    } catch (error) {
+      console.error("Error forcing payment confirmation:", error);
+      toast.error("Không thể xác nhận thanh toán");
+    }
   };
 
   return (
@@ -344,6 +385,32 @@ const ListOrderPage: React.FC = () => {
                               Chờ xem
                             </span>
                           )}
+
+                          {/* Nút xác nhận nhận hàng trả về - cho đơn đang trong quá trình đổi trả */}
+                          {canProcessOrders() &&
+                            order.orderStatusRaw === "returning" && (
+                              <button
+                                className="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all w-32"
+                                onClick={() => handleConfirmReturn(order._id)}
+                              >
+                                Xác nhận trả hàng
+                              </button>
+                            )}
+
+                          {/* Nút force xác nhận thanh toán - Admin Only, cho đơn VNPAY chưa thanh toán */}
+                          {hasAdminOnlyAccess() &&
+                            order.paymentMethod === "VNPAY" &&
+                            order.paymentStatusRaw !== "paid" && (
+                              <button
+                                className="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-600 text-white text-xs px-3 py-1 rounded-full shadow-sm transition-all w-32"
+                                onClick={() =>
+                                  handleForceConfirmPayment(order._id)
+                                }
+                                title="Force xác nhận thanh toán khi VNPAY callback failed"
+                              >
+                                Xác nhận TT
+                              </button>
+                            )}
                         </div>
                       </td>
                     </tr>

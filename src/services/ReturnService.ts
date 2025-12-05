@@ -78,6 +78,12 @@ export const adminReturnService = {
   ): Promise<{ data: ApiResponse<GetReturnRequestsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/returns", { params }),
 
+  // Lấy chi tiết yêu cầu đổi/trả hàng (Admin)
+  getReturnRequestById: (
+    id: string
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.get(`/api/v1/admin/returns/${id}`),
+
   // Lấy thống kê đổi trả (Admin)
   getReturnStats: (): Promise<{ data: ApiResponse<ReturnStatsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/returns/stats/summary"),

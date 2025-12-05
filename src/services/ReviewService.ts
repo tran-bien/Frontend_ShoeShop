@@ -77,6 +77,12 @@ export const reviewApi = {
   ): Promise<{ data: ApiResponse<{ numberOfLikes: number }> }> =>
     axiosInstanceAuth.post(`/api/v1/users/reviews/${reviewId}/like`),
 
+  // Bỏ thích đánh giá
+  unlikeReview: (
+    reviewId: string
+  ): Promise<{ data: ApiResponse<{ numberOfLikes: number }> }> =>
+    axiosInstanceAuth.delete(`/api/v1/users/reviews/${reviewId}/like`),
+
   // Lấy danh sách sản phẩm có thể đánh giá (từ đơn hàng đã giao thành công)
   getReviewableProducts: (): Promise<{
     data: ApiResponse<ReviewableProduct[]>;
@@ -85,13 +91,49 @@ export const reviewApi = {
 
 // Admin Review Service - Quản lý đánh giá cho admin/staff
 export const adminReviewApi = {
+  // Lấy danh sách tất cả đánh giá (admin)
+  getAllReviews: (
+    params: ReviewQueryParams = {}
+  ): Promise<{ data: ApiResponse<Review[]> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/reviews", { params }),
+
+  // Lấy danh sách đánh giá đã xóa mềm
+  getAllReviewsDeleted: (
+    params: ReviewQueryParams = {}
+  ): Promise<{ data: ApiResponse<Review[]> }> =>
+    axiosInstanceAuth.get("/api/v1/admin/reviews/deleted", { params }),
+
+  // Lấy chi tiết đánh giá theo ID (bao gồm cả đã xóa)
+  getReviewById: (reviewId: string): Promise<{ data: ApiResponse<Review> }> =>
+    axiosInstanceAuth.get(`/api/v1/admin/reviews/${reviewId}`),
+
+  // Lấy thống kê đánh giá của sản phẩm
+  getProductReviewStats: (
+    productId: string
+  ): Promise<{
+    data: ApiResponse<{
+      averageRating: number;
+      totalReviews: number;
+      ratingDistribution: Record<number, number>;
+    }>;
+  }> => axiosInstanceAuth.get(`/api/v1/admin/reviews/${productId}/stats`),
+
+  // Ẩn/hiện đánh giá
+  toggleReviewVisibility: (
+    reviewId: string,
+    isHidden: boolean
+  ): Promise<{ data: ApiResponse<Review> }> =>
+    axiosInstanceAuth.patch(`/api/v1/admin/reviews/${reviewId}/visibility`, {
+      isHidden,
+    }),
+
   // Trả lời đánh giá
   replyToReview: (
     reviewId: string,
     replyContent: string
   ): Promise<{ data: ApiResponse<Review> }> =>
     axiosInstanceAuth.post(`/api/v1/admin/reviews/${reviewId}/reply`, {
-      replyContent,
+      content: replyContent,
     }),
 
   // Cập nhật trả lời
@@ -100,7 +142,7 @@ export const adminReviewApi = {
     replyContent: string
   ): Promise<{ data: ApiResponse<Review> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/reviews/${reviewId}/reply`, {
-      replyContent,
+      content: replyContent,
     }),
 
   // Xóa trả lời

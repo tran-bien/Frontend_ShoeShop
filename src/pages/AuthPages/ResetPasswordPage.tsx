@@ -1,13 +1,19 @@
 ﻿import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../../hooks/useAuth";
-import { FiEye, FiEyeOff, FiLock, FiArrowLeft } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiLock, FiArrowLeft, FiCheck } from "react-icons/fi";
+import AuthLayout from "../../components/Auth/AuthLayout";
 
 const ResetPasswordPage: React.FC = () => {
   const { token } = useParams<{ token: string }>();
+  const location = useLocation();
   const navigate = useNavigate();
   const { resetPassword } = useAuth();
+
+  // Get email and otp from location state (from OTP verification)
+  const emailFromState = location.state?.email || "";
+  const otpFromState = location.state?.otp || "";
 
   const [formData, setFormData] = useState({
     password: "",
@@ -19,11 +25,12 @@ const ResetPasswordPage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (!token) {
-      toast.error("Token không hợp lệ");
+    // Check if we have token (from email link) or email+otp (from OTP verification)
+    if (!token && !emailFromState) {
+      toast.error("Truy cập không hợp lệ");
       navigate("/login");
     }
-  }, [token, navigate]);
+  }, [token, emailFromState, navigate]);
 
   const validatePassword = (password: string) => {
     const minLength = 8;
@@ -32,23 +39,27 @@ const ResetPasswordPage: React.FC = () => {
     const hasNumbers = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-    if (password.length < minLength) {
-      return "Mật khẩu phải có ít nhất 8 ký tự";
-    }
-    if (!hasUpperCase) {
-      return "Mật khẩu phải có ít nhất 1 chữ hoa";
-    }
-    if (!hasLowerCase) {
-      return "Mật khẩu phải có ít nhất 1 chữ thường";
-    }
-    if (!hasNumbers) {
-      return "Mật khẩu phải có ít nhất 1 số";
-    }
-    if (!hasSpecialChar) {
+    return {
+      minLength: password.length >= minLength,
+      hasUpperCase,
+      hasLowerCase,
+      hasNumbers,
+      hasSpecialChar,
+    };
+  };
+
+  const getPasswordError = (password: string) => {
+    const checks = validatePassword(password);
+    if (!checks.minLength) return "Mật khẩu phải có ít nhất 8 ký tự";
+    if (!checks.hasUpperCase) return "Mật khẩu phải có ít nhất 1 chữ hoa";
+    if (!checks.hasLowerCase) return "Mật khẩu phải có ít nhất 1 chữ thường";
+    if (!checks.hasNumbers) return "Mật khẩu phải có ít nhất 1 số";
+    if (!checks.hasSpecialChar)
       return "Mật khẩu phải có ít nhất 1 ký tự đặc biệt";
-    }
     return "";
   };
+
+  const passwordChecks = validatePassword(formData.password);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -57,67 +68,32 @@ const ResetPasswordPage: React.FC = () => {
       [name]: value,
     }));
 
-    // Clear errors when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
         [name]: "",
       }));
     }
-
-    // Validate password confirmation in real-time
-    if (name === "confirmPassword" && formData.password && value) {
-      if (formData.password !== value) {
-        setErrors((prev) => ({
-          ...prev,
-          confirmPassword: "Mật khẩu xác nhận không khợp",
-        }));
-      } else {
-        setErrors((prev) => ({
-          ...prev,
-          confirmPassword: "",
-        }));
-      }
-    }
-
-    // If the password field changes, validate the confirmation field if it has a value
-    if (name === "password" && formData.confirmPassword) {
-      if (value !== formData.confirmPassword) {
-        setErrors((prev) => ({
-          ...prev,
-          confirmPassword: "Mật khẩu xác nhận không khợp",
-        }));
-      } else {
-        setErrors((prev) => ({
-          ...prev,
-          confirmPassword: "",
-        }));
-      }
-    }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
 
-    // Kiểm tra cơ bản ở client
     const newErrors: Record<string, string> = {};
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = "Vui lòng nhập mật khẩu mới";
     } else {
-      const passwordError = validatePassword(formData.password);
+      const passwordError = getPasswordError(formData.password);
       if (passwordError) {
         newErrors.password = passwordError;
       }
     }
 
-    // Confirmation validation
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
     } else if (formData.password !== formData.confirmPassword) {
-      // Ensure exact string comparison
-      newErrors.confirmPassword = "Mật khẩu xác nhận không khợp";
+      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -125,192 +101,177 @@ const ResetPasswordPage: React.FC = () => {
       return;
     }
 
-    if (!token) {
-      toast.error("Token không hợp lệ");
-      return;
-    }
-
     setLoading(true);
     try {
-      // Trim passwords to ensure no whitespace issues
       const trimmedPassword = formData.password.trim();
       const trimmedConfirmPassword = formData.confirmPassword.trim();
 
-      // Pass both password and confirmPassword to the resetPassword function
-      await resetPassword(token, trimmedPassword, trimmedConfirmPassword);
-      toast.success("Đặt lại mật khẩu thành công!");
+      if (token) {
+        // Reset via email link token
+        await resetPassword(token, trimmedPassword, trimmedConfirmPassword);
+      } else {
+        // Reset via OTP - need to implement this API call
+        await resetPassword(
+          otpFromState,
+          trimmedPassword,
+          trimmedConfirmPassword
+        );
+      }
 
-      // Chuyển hướng sau khi đặt lại mật khẩu thành công
+      toast.success("Đặt lại mật khẩu thành công!");
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error: any) {
-      console.error("Reset password error:", error);
-
-      // Xử lý thông báo lỗi chi tiết từ backend
       let errorMessage = "Đặt lại mật khẩu thất bại";
 
-      if (
-        error.response?.data?.errors &&
-        error.response.data.errors.length > 0
-      ) {
-        // Nếu là lỗi validation từ validator của backend
+      if (error.response?.data?.errors?.length > 0) {
         errorMessage = error.response.data.errors[0].msg;
-
-        // Chỉ xử lý lỗi mật khẩu không khớp để hiển thị trên form
         if (errorMessage.includes("không khớp")) {
-          setErrors({
-            confirmPassword: errorMessage,
-          });
-          // Không show toast cho lỗi này vì đã hiển thị trên form
+          setErrors({ confirmPassword: errorMessage });
           return;
         }
       } else if (error.response?.data?.message) {
-        // Nếu là lỗi khác từ API
         errorMessage = error.response.data.message;
-      } else if (error.message) {
-        errorMessage = error.message;
       }
 
-      // Chỉ hiển thị toast, không hiển thị trên form nữa
       toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
+  const RequirementItem = ({ met, text }: { met: boolean; text: string }) => (
+    <li
+      className={`flex items-center gap-2 ${
+        met ? "text-green-600" : "text-slate-500"
+      }`}
+    >
+      <FiCheck
+        className={`w-4 h-4 ${met ? "text-green-600" : "text-slate-300"}`}
+      />
+      <span>{text}</span>
+    </li>
+  );
+
   return (
-    <div className="min-h-screen bg-mono-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center">
-          <FiLock className="text-4xl text-mono-600" />
-        </div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-mono-900 tracking-tight">
-          Đặt lại mật khẩu
-        </h2>
-        <p className="mt-2 text-center text-sm text-mono-600 leading-relaxed">
-          Vui lòng nhập mật khẩu mới cho tài khoản của bạn
-        </p>
-      </div>
-
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {/* New Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-mono-700"
-              >
-                Mật khẩu mới
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className={`appearance-none block w-full px-3 py-2 border ${
-                    errors.password ? "border-mono-400" : "border-mono-300"
-                  } rounded-md placeholder-gray-400 focus:outline-none focus:ring-mono-500 focus:border-mono-500 sm:text-sm`}
-                  placeholder="Nhập mật khẩu mới"
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <FiEyeOff className="h-5 w-5 text-mono-400" />
-                  ) : (
-                    <FiEye className="h-5 w-5 text-mono-400" />
-                  )}
-                </button>
-              </div>
-              {errors.password && (
-                <p className="mt-2 text-sm text-mono-900">{errors.password}</p>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-mono-700"
-              >
-                Xác nhận mật khẩu
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  className={`appearance-none block w-full px-3 py-2 border ${
-                    errors.confirmPassword
-                      ? "border-mono-400"
-                      : "border-mono-300"
-                  } rounded-md placeholder-gray-400 focus:outline-none focus:ring-mono-500 focus:border-mono-500 sm:text-sm`}
-                  placeholder="Nhập lỗi mật khẩu mới"
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? (
-                    <FiEyeOff className="h-5 w-5 text-mono-400" />
-                  ) : (
-                    <FiEye className="h-5 w-5 text-mono-400" />
-                  )}
-                </button>
-              </div>
-              {errors.confirmPassword && (
-                <p className="mt-2 text-sm text-mono-900">
-                  {errors.confirmPassword}
-                </p>
-              )}
-            </div>
-
-            {/* Password Requirements */}
-            <div className="text-xs text-mono-600 bg-mono-50 p-3 rounded-md">
-              <p className="font-medium mb-1">Mật khẩu phải chứa:</p>
-              <ul className="space-y-1 list-disc list-inside">
-                <li>Ít nhất 8 ký tự</li>
-                <li>Ít nhất 1 chữ hoa</li>
-                <li>Ít nhất 1 chữ thường</li>
-                <li>Ít nhất 1 số</li>
-                <li>Ít nhất 1 ký tự đặc biệt</li>
-              </ul>
-            </div>
-
-            {/* Submit Button */}
-            <div>
+    <AuthLayout
+      title="Đặt lại mật khẩu"
+      subtitle="Tạo mật khẩu mới cho tài khoản của bạn"
+    >
+      <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* New Password */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Mật khẩu mới
+            </label>
+            <div className="relative">
+              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Nhập mật khẩu mới"
+                className={`w-full pl-11 pr-12 py-3 bg-slate-50 border rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all ${
+                  errors.password ? "border-red-400" : "border-slate-200"
+                }`}
+                value={formData.password}
+                onChange={handleInputChange}
+              />
               <button
-                type="submit"
-                disabled={loading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-mono-600 hover:bg-mono-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-mono-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
-                {loading ? "Đang đặt lại..." : "Đặt lại mật khẩu"}
+                {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
-          </form>
-
-          {/* Back to login */}
-          <div className="mt-6">
-            <Link
-              to="/login"
-              className="flex items-center justify-center space-x-2 text-sm text-mono-600 hover:text-mono-500"
-            >
-              <FiArrowLeft />
-              <span>Quay lại đăng nhập</span>
-            </Link>
+            {errors.password && (
+              <p className="mt-2 text-sm text-red-600">{errors.password}</p>
+            )}
           </div>
-        </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Xác nhận mật khẩu
+            </label>
+            <div className="relative">
+              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                placeholder="Nhập lại mật khẩu mới"
+                className={`w-full pl-11 pr-12 py-3 bg-slate-50 border rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all ${
+                  errors.confirmPassword ? "border-red-400" : "border-slate-200"
+                }`}
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
+            {errors.confirmPassword && (
+              <p className="mt-2 text-sm text-red-600">
+                {errors.confirmPassword}
+              </p>
+            )}
+          </div>
+
+          {/* Password Requirements */}
+          <div className="bg-slate-50 p-4 rounded-xl">
+            <p className="text-sm font-medium text-slate-700 mb-3">
+              Mật khẩu phải chứa:
+            </p>
+            <ul className="space-y-2 text-sm">
+              <RequirementItem
+                met={passwordChecks.minLength}
+                text="Ít nhất 8 ký tự"
+              />
+              <RequirementItem
+                met={passwordChecks.hasUpperCase}
+                text="Ít nhất 1 chữ hoa"
+              />
+              <RequirementItem
+                met={passwordChecks.hasLowerCase}
+                text="Ít nhất 1 chữ thường"
+              />
+              <RequirementItem
+                met={passwordChecks.hasNumbers}
+                text="Ít nhất 1 số"
+              />
+              <RequirementItem
+                met={passwordChecks.hasSpecialChar}
+                text="Ít nhất 1 ký tự đặc biệt"
+              />
+            </ul>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-900/20"
+          >
+            {loading ? "Đang đặt lại..." : "Đặt lại mật khẩu"}
+          </button>
+
+          {/* Back to Login */}
+          <Link
+            to="/login"
+            className="flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
+          >
+            <FiArrowLeft />
+            <span>Quay lại đăng nhập</span>
+          </Link>
+        </form>
       </div>
-    </div>
+    </AuthLayout>
   );
 };
 

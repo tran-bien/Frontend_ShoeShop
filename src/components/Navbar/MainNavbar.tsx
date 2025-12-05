@@ -104,18 +104,20 @@ const MainNavbar = () => {
     <nav className="flex items-center justify-between px-6 lg:px-12 py-4 shadow-luxury sticky top-0 bg-white z-50 border-b border-mono-100">
       {/* logo */}
       <div className="h-10 flex items-center flex-shrink-0">
-        <Link to="/">
-          <h1
-            style={{
-              fontFamily: "'Lobster', cursive",
-              fontSize: "2.5rem",
-              color: "black",
-              letterSpacing: "-0.02em",
-            }}
-            className="text-2xl whitespace-nowrap"
-          >
-            ShoeStore
-          </h1>
+        <Link to="/" className="group">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+              <span className="text-lg font-black italic text-white">S</span>
+            </div>
+            <div>
+              <h1 className="text-xl font-black tracking-tighter uppercase italic leading-none text-black">
+                ShoeStore
+              </h1>
+              <p className="text-[10px] text-neutral-500 tracking-widest uppercase font-bold">
+                Premium Sneakers
+              </p>
+            </div>
+          </div>
         </Link>
       </div>
 

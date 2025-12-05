@@ -55,17 +55,22 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
 
   const handleLikeReview = async (reviewId: string) => {
     if (!isAuthenticated) {
-      toast.error("Vui lòng đang nhập d? thích đánh giá");
+      toast.error("Vui lòng đăng nhập để thích đánh giá");
       navigate("/login");
       return;
     }
 
     setLikeLoading((prev) => ({ ...prev, [reviewId]: true }));
     try {
-      const response = await reviewApi.likeReview(reviewId);
+      // Toggle: nếu đã like thì gọi unlike, ngược lại gọi like
+      const isCurrentlyLiked = likedReviews[reviewId];
+      const response = isCurrentlyLiked
+        ? await reviewApi.unlikeReview(reviewId)
+        : await reviewApi.likeReview(reviewId);
+
       if (response.data.success) {
         // Cập nhật trạng thái like
-        setLikedReviews((prev) => ({ ...prev, [reviewId]: !prev[reviewId] }));
+        setLikedReviews((prev) => ({ ...prev, [reviewId]: !isCurrentlyLiked }));
 
         // Cập nhật số lượng like trong reviews
         setReviews((prev) =>
@@ -74,15 +79,19 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
               ? {
                   ...review,
                   numberOfLikes:
-                    response.data.data?.numberOfLikes || review.numberOfLikes,
+                    response.data.data?.numberOfLikes ?? review.numberOfLikes,
                 }
               : review
           )
         );
+
+        toast.success(
+          isCurrentlyLiked ? "Đã bỏ thích đánh giá" : "Đã thích đánh giá"
+        );
       }
     } catch (error) {
-      console.error("Error liking review:", error);
-      toast.error("Không thể thích đánh giá này");
+      console.error("Error toggling like review:", error);
+      toast.error("Không thể thực hiện thao tác này");
     } finally {
       setLikeLoading((prev) => ({ ...prev, [reviewId]: false }));
     }

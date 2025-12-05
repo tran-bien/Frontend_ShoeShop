@@ -20,6 +20,7 @@ import {
   FaStar,
   FaBookOpen,
   FaComments,
+  FaRegCommentDots,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -92,6 +93,7 @@ const AdminSidebar = () => {
     { name: "Inventory", href: "/admin/inventory", icon: FaWarehouse },
     { name: "Shippers", href: "/admin/shippers", icon: FaTruck },
     { name: "Returns", href: "/admin/returns", icon: FaExchangeAlt },
+    { name: "Reviews", href: "/admin/reviews", icon: FaRegCommentDots },
     { name: "Blogs", href: "/admin/blogs", icon: FaBlog },
     { name: "Size Guides", href: "/admin/size-guides", icon: FaBookOpen },
     { name: "Loyalty Tiers", href: "/admin/loyalty-tiers", icon: FaStar },
@@ -184,4 +186,3 @@ const AdminSidebar = () => {
 };
 
 export default AdminSidebar;
-

@@ -22,16 +22,22 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Column 1: About */}
           <div>
-            <Link to="/" className="inline-block mb-6">
-              <h3
-                style={{
-                  fontFamily: "'Lobster', cursive",
-                  fontSize: "2rem",
-                }}
-                className="text-mono-black"
-              >
-                ShoeStore
-              </h3>
+            <Link to="/" className="inline-block mb-6 group">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
+                  <span className="text-lg font-black italic text-white">
+                    S
+                  </span>
+                </div>
+                <div>
+                  <h1 className="text-xl font-black tracking-tighter uppercase italic leading-none text-black">
+                    ShoeStore
+                  </h1>
+                  <p className="text-[10px] text-neutral-500 tracking-widest uppercase font-bold">
+                    Premium Sneakers
+                  </p>
+                </div>
+              </div>
             </Link>
             <p className="text-mono-600 mb-6 text-sm leading-relaxed">
               Cửa hàng giày chính hãng với nhiều mẫu mã đa dạng, phù hợp với mọi

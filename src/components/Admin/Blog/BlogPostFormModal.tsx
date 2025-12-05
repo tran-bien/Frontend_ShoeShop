@@ -178,7 +178,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              TiÃªu Ä‘á» <span className="text-mono-500">*</span>
+              Tiêu đề <span className="text-mono-500">*</span>
             </label>
             <input
               type="text"
@@ -186,7 +186,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              placeholder="Nháº­p tiÃªu Ä‘á» bÃ i viáº¿t..."
+              placeholder="Nhập tiêu đề bài viết..."
               className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
               required
             />
@@ -244,7 +244,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           {/* Excerpt */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              TÃ³m táº¯t
+              Tóm tắt
             </label>
             <textarea
               value={formData.excerpt}
@@ -260,7 +260,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           {/* Content */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              Ná»™i dung <span className="text-mono-500">*</span>
+              Nội dung <span className="text-mono-500">*</span>
             </label>
             <textarea
               value={formData.content}
@@ -280,7 +280,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           {/* Featured Image */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">
-              áº¢nh Ä‘áº¡i diá»‡n
+              Ảnh đại diện
             </label>
             <div className="flex gap-2">
               <input
@@ -457,6 +457,3 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
 };
 
 export default BlogPostFormModal;
-
-
-
