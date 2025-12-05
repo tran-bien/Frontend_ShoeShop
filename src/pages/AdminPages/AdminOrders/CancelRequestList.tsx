@@ -86,7 +86,7 @@ const CancelRequestList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            ) : loading ? (
+            {loading ? (
               <tr>
                 <td colSpan={6} className="text-center py-4">
                   Đang tải...
@@ -157,4 +157,3 @@ const CancelRequestList: React.FC = () => {
 };
 
 export default CancelRequestList;
-

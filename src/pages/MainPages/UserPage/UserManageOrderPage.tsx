@@ -317,7 +317,7 @@ const UserManageOrder: React.FC = () => {
                     </p>
                     <p className="text-mono-700">
                       <strong>Địa chỉ:</strong> {order.shippingAddress?.detail},{" "}
-                      {order.shippingAddress?.ward},{" "}}
+                      {order.shippingAddress?.ward},{" "}
                       {order.shippingAddress?.district},{" "}
                       {order.shippingAddress?.province}
                     </p>
