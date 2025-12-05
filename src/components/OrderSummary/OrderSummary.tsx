@@ -241,7 +241,7 @@ const OrderSummary: React.FC = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-mono-black">
-                        {(item.price * item.quantity).toLocaleString()}d
+                        {(item.price * item.quantity).toLocaleString()}đ
                       </p>
                     </div>
                   </div>
@@ -395,15 +395,15 @@ const OrderSummary: React.FC = () => {
                     <span>Phí vẩn chuyện:</span>
                     <span>
                       {previewData.shippingFee > 0
-                        ? `${previewData.shippingFee.toLocaleString()}d`
-                        : "Miẩn phí"}
+                        ? `${previewData.shippingFee.toLocaleString()}đ`
+                        : "Miễn phí"}
                     </span>
                   </div>
                   <hr className="border-mono-300" />
                   <div className="flex justify-between font-semibold text-lg">
-                    <span>Tổng cẩng:</span>
+                    <span>Tổng cộng:</span>
                     <span className="text-mono-900">
-                      {previewData.totalPrice.toLocaleString()}d
+                      {previewData.totalPrice.toLocaleString()}đ
                     </span>
                   </div>
                 </div>

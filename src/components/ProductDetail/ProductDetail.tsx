@@ -244,7 +244,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   useEffect(() => {
     const checkWishlistStatus = async () => {
       if (isAuthenticated && product && product._id && selectedColorId) {
-        const variantId = getVariantId();
+        // Tính variantId inline để tránh dependency issue
+        if (!variants || !selectedGender || !selectedColorId) return;
+        const variantKey = `${selectedGender}-${selectedColorId}`;
+        const variant = variants[variantKey];
+        const variantId = variant?._id || null;
         if (!variantId) return;
 
         try {
@@ -478,10 +482,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           setIsLiked(true);
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Lỗi khi thêm/xóa wishlist:", error);
+      const apiError = error as ApiError;
       const errorMessage =
-        error.response?.data?.message || "Có lỗi xảy ra khi xử lý yêu thích";
+        apiError.response?.data?.message || "Có lỗi xảy ra khi xử lý yêu thích";
       toast.error(errorMessage);
     } finally {
       setLikeLoading(false);
@@ -513,12 +518,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
       let brandLogo: { url: string; public_id: string } | undefined = undefined;
       const brand = p.brand;
       if (brand && typeof brand === "object" && "logo" in brand) {
-        const brandObj = brand as any;
+        const brandObj = brand as {
+          logo?: string | { url?: string; public_id?: string };
+        };
         if (brandObj.logo) {
           if (typeof brandObj.logo === "string") {
             brandLogo = { url: brandObj.logo, public_id: "" };
           } else if (typeof brandObj.logo === "object") {
-            const logoObj = brandObj.logo as any;
+            const logoObj = brandObj.logo;
             brandLogo = {
               url: logoObj.url || "",
               public_id: logoObj.public_id || "",
@@ -543,8 +550,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         brand:
           typeof p.brand === "object"
             ? {
-                _id: (p.brand as any)?._id || "",
-                name: (p.brand as any)?.name || "Chưa có thương hiệu",
+                _id: (p.brand as { _id?: string })?._id || "",
+                name:
+                  (p.brand as { name?: string })?.name || "Chưa có thương hiệu",
                 logo: brandLogo,
               }
             : undefined,
@@ -635,14 +643,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                       selectedSizeInfo.price ||
                       0
                     ).toLocaleString()}
-                    Ä‘
+                    đ
                   </p>
 
                   {selectedSizeInfo.discountPercent &&
                     selectedSizeInfo.discountPercent > 0 && (
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-lg text-mono-500 line-through">
-                          {(selectedSizeInfo.price || 0).toLocaleString()}Ä‘
+                          {(selectedSizeInfo.price || 0).toLocaleString()}đ
                         </span>
                         <span className="text-sm font-medium text-mono-900 bg-mono-200 px-2 py-1 rounded">
                           -{selectedSizeInfo.discountPercent}%
