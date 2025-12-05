@@ -15,7 +15,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Branding & Visual */}
-      <div className="hidden lg:flex lg:w-[45%] bg-neutral-950 text-white p-12 flex-col justify-between relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-[45%] bg-zinc-800 text-white p-12 flex-col justify-between relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-white/5 rounded-full blur-[120px] animate-pulse-slow" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px]" />
