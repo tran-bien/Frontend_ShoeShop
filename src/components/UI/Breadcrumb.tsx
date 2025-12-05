@@ -77,7 +77,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
               className="flex items-center gap-1 text-mono-500 hover:text-mono-900 transition-colors"
             >
               <FiHome className="w-4 h-4" />
-              <span>Trang chá»§</span>
+              <span>Trang chủ</span>
             </Link>
             {breadcrumbItems.length > 0 && (
               <FiChevronRight className="mx-2 text-mono-400 w-4 h-4" />

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import InventoryService from "../../../services/InventoryService";
 import { productAdminService } from "../../../services/ProductService";
@@ -463,7 +463,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                             className="w-full border border-mono-300 px-3 py-2.5 rounded-lg text-sm bg-white focus:ring-2 focus:ring-mono-500 focus:border-mono-500"
                             required
                           >
-                            <option value="">-- Chá»n size --</option>
+                            <option value="">-- Chọn size --</option>
                             {availableSizes.map((sizeItem) => (
                               <option
                                 key={sizeItem.size._id}
@@ -473,10 +473,10 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                                   index
                                 )}
                               >
-                                Size {sizeItem.size.value} (Tá»“n:{" "}
+                                Size {sizeItem.size.value} (Tồn:{" "}
                                 {sizeItem.quantity})
                                 {isSizeSelected(sizeItem.size._id, index) &&
-                                  " - ÄÃ£ chá»n"}
+                                  " - Đã chọn"}
                               </option>
                             ))}
                           </select>
@@ -569,12 +569,12 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                         costPrice: parseInt(e.target.value) || 0,
                       })
                     }
-                    placeholder="Nháº­p giÃ¡ vá»‘n"
+                    placeholder="Nhập giá vốn"
                     className="w-full border border-mono-300 px-4 py-2.5 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-mono-500 font-semibold text-mono-900"
                     min="0"
                     required
                   />
-                  {/* Äá» xuáº¥t giÃ¡ nhanh */}
+                  {/* Đề xuất giá nhanh */}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       type="button"
@@ -689,7 +689,7 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                     min="0"
                     max="100"
                   />
-                  {/* Äá» xuáº¥t % giáº£m giÃ¡ */}
+                  {/* Đề xuất % giảm giá */}
                   <div className="mt-2 flex flex-wrap gap-2">
                     <button
                       type="button"

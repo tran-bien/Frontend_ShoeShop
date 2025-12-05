@@ -1,4 +1,4 @@
-﻿import { PriceRange, ProductImage, StockStatus } from "./common";
+import { PriceRange, ProductImage, StockStatus } from "./common";
 import type { Color } from "./color";
 import type { Size } from "./size";
 import type { Brand } from "./brand";
@@ -18,9 +18,9 @@ export interface VariantSize {
   sku?: string;
 
   // Thông tin giá từ InventoryItem (BE trả về trong variants.sizes)
-  price?: number; // sellingPrice tá»« InventoryItem
-  finalPrice?: number; // finalPrice tá»« InventoryItem
-  discountPercent?: number; // discountPercent tá»« InventoryItem
+  price?: number; // sellingPrice từ InventoryItem
+  finalPrice?: number; // finalPrice từ InventoryItem
+  discountPercent?: number; // discountPercent từ InventoryItem
 
   // Stock status
   isAvailable?: boolean; // quantity > 0
@@ -125,10 +125,10 @@ export interface ProductVariants {
     colorType?: string;
     colors?: string[];
     gender?: string;
-    sizes?: VariantSize[]; // Má»—i size cÃ³ price, finalPrice, discountPercent
+    sizes?: VariantSize[]; // Mỗi size có price, finalPrice, discountPercent
     totalQuantity?: number;
-    // REMOVED: price, priceFinal, percentDiscount á»Ÿ variant level
-    // GiÃ¡ Ä‘Æ°á»£c lÆ°u á»Ÿ tá»«ng size trong sizes[]
+    // REMOVED: price, priceFinal, percentDiscount ở variant level
+    // Giá được lưu ở từng size trong sizes[]
   };
 }
 

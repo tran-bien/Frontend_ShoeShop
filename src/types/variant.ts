@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Variant Types
  * Định nghĩa các interface liên quan đến Biến thể sản phẩm
  * Giá và số lượng giờ được quản lý trong Inventory, không còn trong Variant
@@ -88,5 +88,5 @@ export interface VariantQueryParams {
   includeDeleted?: boolean;
   sort?: string;
   // REMOVED: costPriceMin, costPriceMax, priceMin, priceMax, finalPriceMin, finalPriceMax
-  // GiÃ¡ giá» khÃ´ng filter á»Ÿ Variant ná»¯a
+  // Giá giờ không filter ở Variant nữa
 }

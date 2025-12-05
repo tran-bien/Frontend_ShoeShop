@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { publicSizeGuideService } from "../../services/SizeGuideService";
 import type { SizeGuide } from "../../types/sizeGuide";
 import { XMarkIcon } from "@heroicons/react/24/outline";
@@ -163,7 +163,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
         <div className="space-y-4">
           <h4 className="font-semibold text-mono-black flex items-center gap-2">
             <span className="text-lg">ðŸ“</span>
-            HÆ°á»›ng dáº«n Ä‘o
+            Hướng dẫn đo
           </h4>
           {measurementGuide.description && (
             <p className="text-sm text-mono-600">
@@ -172,7 +172,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
           )}
           <img
             src={measurementGuide.image.url}
-            alt="HÆ°á»›ng dáº«n Ä‘o"
+            alt="Hướng dẫn đo"
             className="w-full rounded-lg border border-mono-200"
           />
         </div>
@@ -190,7 +190,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
         <div className="bg-mono-50 rounded-xl p-6">
           <h4 className="font-semibold text-mono-black mb-3 flex items-center gap-2">
             <span className="text-lg">ðŸ“</span>
-            HÆ°á»›ng dáº«n Ä‘o
+            Hướng dẫn đo
           </h4>
           <ul className="space-y-2">
             {instructions.map((instruction, index) => (

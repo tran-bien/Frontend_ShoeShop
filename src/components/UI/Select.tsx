@@ -24,7 +24,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       error,
       helperText,
       options,
-      placeholder = "Chá»n má»™t tÃ¹y chá»n",
+      placeholder = "Chọn một tùy chọn",
       variant = "default",
       className = "",
       id,
@@ -95,4 +95,3 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 Select.displayName = "Select";
 
 export default Select;
-

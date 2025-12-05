@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Order Types
  * Định nghĩa các interface liên quan đến Đơn hàng
  */
@@ -342,7 +342,7 @@ export interface VnpayCallbackParams {
   vnp_TxnRef: string;
   vnp_SecureHashType: string;
   vnp_SecureHash: string;
-  // CÃ¡c tham sá»‘ bá»• sung tá»« backend redirect
+  // Các tham số bổ sung từ backend redirect
   orderId?: string;
   orderCode?: string;
   message?: string;

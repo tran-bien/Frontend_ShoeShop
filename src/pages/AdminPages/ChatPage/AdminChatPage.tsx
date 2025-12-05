@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   FiMessageCircle,
   FiSend,
@@ -219,7 +219,7 @@ const AdminChatPage: React.FC = () => {
             error?: string;
           }) => {
             if (!response.success) {
-              toast.error(response.error || "KhÃ´ng thá»ƒ gá»­i tin nháº¯n");
+              toast.error(response.error || "Không thể gửi tin nhắn");
             }
             setIsSending(false);
           }
@@ -303,7 +303,7 @@ const AdminChatPage: React.FC = () => {
           {/* Header */}
           <div className="p-4 border-b border-mono-200">
             <h2 className="text-xl font-bold text-mono-900 mb-4">
-              Chat Há»— Trá»£
+              Chat Hỗ Trợ
             </h2>
 
             {/* Search */}

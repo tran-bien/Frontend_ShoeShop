@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { adminSizeGuideService } from "../../../services/SizeGuideService";
 import { sizeGuideImageService } from "../../../services/ImageService";
 import { productAdminService } from "../../../services/ProductService";
@@ -392,7 +392,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                   })
                 }
                 rows={4}
-                placeholder="MÃ´ táº£ chi tiáº¿t vá» báº£ng size nÃ y..."
+                placeholder="Mô tả chi tiết về bảng size này..."
                 className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
               />
             </div>

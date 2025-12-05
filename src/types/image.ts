@@ -1,6 +1,6 @@
-﻿/**
+/**
  * Image Types
- * Äá»‹nh nghÄ©a cÃ¡c interface liÃªn quan Ä‘áº¿n Image/Media
+ * Định nghĩa các interface liên quan đến Image/Media
  */
 
 // =======================

@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { useCompare } from "../../contexts/CompareContext";
 import ColorSwatch from "../../components/Custom/ColorSwatch";
@@ -263,7 +263,7 @@ const ProductComparePage: React.FC = () => {
                 {validProducts.map((product) => (
                   <td key={product._id} className="p-4 text-center">
                     <div className="text-mono-600">
-                      {product.variantSummary?.sizeCount || 0} kÃ­ch cá»¡
+                      {product.variantSummary?.sizeCount || 0} kích cỡ
                     </div>
                   </td>
                 ))}

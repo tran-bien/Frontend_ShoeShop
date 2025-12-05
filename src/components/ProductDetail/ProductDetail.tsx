@@ -197,7 +197,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   // Track product view
   useEffect(() => {
     if (product?._id) {
-      // Track view sau 2 giÃ¢y Ä‘á»ƒ Ä‘áº£m báº£o user tháº­t sá»± xem
+      // Track view sau 2 giây để đảm bảo user thật sự xem
       const timer = setTimeout(() => {
         publicViewHistoryService.trackView(product._id).catch((error) => {
           console.error("Failed to track view:", error);
@@ -509,7 +509,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         mainImage = main?.url || "";
       }
 
-      // Xá»­ lÃ½ brand.logo Ä‘á»ƒ Ä‘áº£m báº£o Ä‘Ãºng Ä‘á»‹nh dáº¡ng yÃªu cáº§u
+      // Xử lý brand.logo để đảm bảo đúng định dạng yêu cầu
       let brandLogo: { url: string; public_id: string } | undefined = undefined;
       const brand = p.brand;
       if (brand && typeof brand === "object" && "logo" in brand) {
@@ -840,7 +840,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           {/* Quantity selection */}
           {selectedSizeId && availableStock > 0 && (
             <div>
-              <h3 className="text-lg font-medium mb-3">Sá»‘ lÆ°á»£ng:</h3>
+              <h3 className="text-lg font-medium mb-3">Số lượng:</h3>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => {

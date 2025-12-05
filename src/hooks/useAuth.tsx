@@ -1,4 +1,4 @@
-﻿import React, {
+import React, {
   createContext,
   ReactNode,
   useState,
@@ -400,7 +400,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, [user]);
 
   const getRoleDisplayName = useCallback(() => {
-    return user ? roleHelpers.getRoleDisplayName(user.role) : "KhÃ¡ch";
+    return user ? roleHelpers.getRoleDisplayName(user.role) : "Khách";
   }, [user]);
 
   const canDelete = useCallback(() => {

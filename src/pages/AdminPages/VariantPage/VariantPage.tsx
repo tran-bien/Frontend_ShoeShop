@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { adminVariantService } from "../../../services/VariantService";
 import { Variant } from "../../../types/variant";
 import VariantForm from "./VariantForm";
@@ -594,7 +594,7 @@ const VariantPage: React.FC = () => {
                                     fetchVariants(currentPage);
                                   }}
                                   title={
-                                    v.isActive ? "Táº¯t hoáº¡t Ä‘á»™ng" : "KÃ­ch hoáº¡t"
+                                    v.isActive ? "Tắt hoạt động" : "Kích hoạt"
                                   }
                                 >
                                   <svg

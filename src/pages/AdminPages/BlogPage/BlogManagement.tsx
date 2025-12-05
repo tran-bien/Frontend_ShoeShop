@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FiPlus,
   FiEdit2,
@@ -298,7 +298,7 @@ const BlogManagement: React.FC = () => {
                 disabled={page === 1}
                 className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
               >
-                TrÆ°á»›c
+                Trước
               </button>
 
               <span className="text-gray-600">

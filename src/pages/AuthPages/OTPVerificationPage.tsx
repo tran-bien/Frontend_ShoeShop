@@ -77,20 +77,21 @@ const OTPVerificationPage: React.FC = () => {
     try {
       if (type === "reset-password") {
         // Verify OTP for password reset
-        await authService.verifyOTP(email, otpCode);
+        await authService.verifyOtp({ email, otp: otpCode });
         toast.success("Xác thực thành công!");
         navigate("/reset-password", {
           state: { email, otp: otpCode },
         });
       } else {
         // Verify OTP for registration
-        await authService.verifyOTP(email, otpCode);
+        await authService.verifyOtp({ email, otp: otpCode });
         toast.success("Xác thực thành công! Vui lòng đăng nhập.");
         navigate("/login");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
       const errorMessage =
-        error.response?.data?.message || "Mã OTP không hợp lệ!";
+        err.response?.data?.message || "Mã OTP không hợp lệ!";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -101,15 +102,15 @@ const OTPVerificationPage: React.FC = () => {
     setResendLoading(true);
     try {
       if (type === "reset-password") {
-        await authService.forgotPassword(email);
+        await authService.forgotPassword({ email });
       } else {
-        await authService.resendOTP(email);
+        await authService.forgotPassword({ email }); // Resend uses same endpoint
       }
       toast.success("Mã OTP mới đã được gửi!");
       setCountdown(60);
       setOtp(["", "", "", "", "", ""]);
       inputRefs.current[0]?.focus();
-    } catch (error: any) {
+    } catch {
       toast.error("Gửi lại OTP thất bại!");
     } finally {
       setResendLoading(false);

@@ -48,7 +48,7 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
         setSessions(response.data.data);
       }
     } catch (_) {
-      message.error("KhÃ´ng thá»ƒ táº£i danh sÃ¡ch phiÃªn Ä‘Äƒng nháº­p");
+      message.error("Không thể tải danh sách phiên đăng nhập");
     } finally {
       setLoading(false);
     }
@@ -192,10 +192,10 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
                 size="small"
                 extra={
                   <Popconfirm
-                    title="ÄÄƒng xuáº¥t phiÃªn nÃ y?"
+                    title="Đăng xuất phiên này?"
                     onConfirm={() => handleLogoutSession(session._id)}
-                    okText="Äá»“ng Ã½"
-                    cancelText="Há»§y"
+                    okText="Đồng ý"
+                    cancelText="Hủy"
                   >
                     <Button
                       type="text"
@@ -266,4 +266,3 @@ const UserSessions: React.FC<UserSessionsProps> = ({ visible, onClose }) => {
 };
 
 export default UserSessions;
-
