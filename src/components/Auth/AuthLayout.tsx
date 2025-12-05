@@ -91,9 +91,9 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
       </div>
 
       {/* Right Side - Auth Form */}
-      <div className="w-full lg:w-[55%] flex items-center justify-center p-8 bg-slate-50 relative">
+      <div className="w-full lg:w-[55%] flex items-center justify-center p-8 bg-mono-50 relative">
         {/* Mobile Background Pattern */}
-        <div className="absolute inset-0 lg:hidden bg-slate-900 overflow-hidden">
+        <div className="absolute inset-0 lg:hidden bg-mono-900 overflow-hidden">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-white rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-blob"></div>
           <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-neutral-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
@@ -124,8 +124,8 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/50">
             {/* Welcome Text */}
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-slate-900">{title}</h2>
-              <p className="text-slate-500 mt-2">{subtitle}</p>
+              <h2 className="text-3xl font-bold text-mono-900">{title}</h2>
+              <p className="text-mono-500 mt-2">{subtitle}</p>
             </div>
 
             {/* Form Content */}
@@ -135,7 +135,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
             <div className="text-center mt-6">
               <Link
                 to="/"
-                className="text-slate-500 hover:text-black transition-colors inline-flex items-center gap-2 font-medium"
+                className="text-mono-500 hover:text-mono-black transition-colors inline-flex items-center gap-2 font-medium"
               >
                 ← Quay lại trang chủ
               </Link>

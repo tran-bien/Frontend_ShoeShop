@@ -56,7 +56,7 @@ const Button: React.FC<ButtonProps> = ({
       {isLoading ? (
         <>
           <FiLoader className="animate-spin" />
-          <span>Äang xá»­ lÃ½...</span>
+          <span>Đang xử lý...</span>
         </>
       ) : (
         <>
@@ -70,4 +70,3 @@ const Button: React.FC<ButtonProps> = ({
 };
 
 export default Button;
-

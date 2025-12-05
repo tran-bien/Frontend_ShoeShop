@@ -78,20 +78,20 @@ const RegisterPage: React.FC = () => {
       title="Tạo tài khoản mới"
       subtitle="Đăng ký để nhận nhiều ưu đãi hấp dẫn"
     >
-      <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
+      <div className="bg-white rounded-2xl shadow-xl border border-mono-200 p-8">
         <div className="space-y-5">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Họ và tên
             </label>
             <div className="relative">
-              <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <FiUser className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
               <input
                 type="text"
                 name="name"
                 placeholder="Nhập họ và tên"
-                className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                className="w-full pl-11 pr-4 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent transition-all"
                 value={formData.name}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
@@ -101,16 +101,16 @@ const RegisterPage: React.FC = () => {
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Email
             </label>
             <div className="relative">
-              <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
               <input
                 type="email"
                 name="email"
                 placeholder="Nhập email của bạn"
-                className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                className="w-full pl-11 pr-4 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent transition-all"
                 value={formData.email}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
@@ -120,16 +120,16 @@ const RegisterPage: React.FC = () => {
 
           {/* Password */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Mật khẩu
             </label>
             <div className="relative">
-              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Tạo mật khẩu"
-                className="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                className="w-full pl-11 pr-12 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent transition-all"
                 value={formData.password}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
@@ -137,7 +137,7 @@ const RegisterPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-mono-400 hover:text-mono-600"
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
@@ -146,16 +146,16 @@ const RegisterPage: React.FC = () => {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Xác nhận mật khẩu
             </label>
             <div className="relative">
-              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="Nhập lại mật khẩu"
-                className="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                className="w-full pl-11 pr-12 py-3 bg-mono-50 border border-mono-200 rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent transition-all"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
@@ -163,7 +163,7 @@ const RegisterPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-mono-400 hover:text-mono-600"
               >
                 {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
               </button>
@@ -174,19 +174,19 @@ const RegisterPage: React.FC = () => {
           <button
             onClick={handleRegister}
             disabled={loading}
-            className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-900/20"
+            className="w-full py-3.5 bg-mono-900 text-white rounded-xl font-semibold hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-mono-900/20"
           >
             {loading ? "Đang đăng ký..." : "Đăng ký"}
           </button>
 
           {/* Terms */}
-          <p className="text-center text-xs text-slate-500">
+          <p className="text-center text-xs text-mono-500">
             Bằng việc đăng ký, bạn đồng ý với{" "}
-            <Link to="/terms" className="text-slate-900 hover:underline">
+            <Link to="/terms" className="text-mono-900 hover:underline">
               Điều khoản sử dụng
             </Link>{" "}
             và{" "}
-            <Link to="/privacy" className="text-slate-900 hover:underline">
+            <Link to="/privacy" className="text-mono-900 hover:underline">
               Chính sách bảo mật
             </Link>
           </p>
@@ -194,10 +194,10 @@ const RegisterPage: React.FC = () => {
           {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200"></div>
+              <div className="w-full border-t border-mono-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-slate-500">
+              <span className="px-4 bg-white text-mono-500">
                 Đã có tài khoản?
               </span>
             </div>
@@ -206,7 +206,7 @@ const RegisterPage: React.FC = () => {
           {/* Login Link */}
           <Link
             to="/login"
-            className="block w-full py-3.5 text-center border-2 border-slate-900 text-slate-900 rounded-xl font-semibold hover:bg-slate-900 hover:text-white transition-all"
+            className="block w-full py-3.5 text-center border-2 border-mono-900 text-mono-900 rounded-xl font-semibold hover:bg-mono-900 hover:text-white transition-all"
           >
             Đăng nhập
           </Link>

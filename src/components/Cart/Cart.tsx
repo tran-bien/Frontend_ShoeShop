@@ -876,8 +876,7 @@ const Cart: React.FC = () => {
                   </button>
 
                   <div className="mt-4 text-center text-sm text-mono-500">
-                    <div className="flex items-center justify-center space-x-1">
-                      <span>???</span>
+                    <div className="flex items-center justify-center space-x-1">      
                       <span>Thanh toán an toàn và bảo mật</span>
                     </div>
                   </div>

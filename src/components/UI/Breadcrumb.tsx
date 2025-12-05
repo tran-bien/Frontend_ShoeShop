@@ -28,24 +28,24 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
     const breadcrumbs: BreadcrumbItem[] = [];
 
     const pathMap: { [key: string]: string } = {
-      products: "Sáº£n pháº©m",
-      product: "Chi tiáº¿t sáº£n pháº©m",
-      cart: "Giá» hÃ ng",
-      checkout: "Thanh toÃ¡n",
-      "order-confirmation": "XÃ¡c nháº­n Ä‘Æ¡n hÃ ng",
-      "user-information": "ThÃ´ng tin tÃ i khoáº£n",
-      "user-manage-order": "Quáº£n lÃ½ Ä‘Æ¡n hÃ ng",
-      "user-reviews": "ÄÃ¡nh giÃ¡ cá»§a tÃ´i",
+      products: "Sản phẩm",
+      product: "Chi tiết sản phẩm",
+      cart: "Giỏ hàng",
+      checkout: "Thanh toán",
+      "order-confirmation": "Xác nhận đơn hàng",
+      "user-information": "Thông tin tài khoản",
+      "user-manage-order": "Quản lý đơn hàng",
+      "user-reviews": "Đánh giá của tôi",
       blog: "Blog",
-      coupons: "MÃ£ giáº£m giÃ¡",
-      compare: "So sÃ¡nh sáº£n pháº©m",
-      wishlist: "YÃªu thÃ­ch",
-      "like-page": "Sáº£n pháº©m yÃªu thÃ­ch",
-      notifications: "ThÃ´ng bÃ¡o",
+      coupons: "Mã giảm giá",
+      compare: "So sánh sản phẩm",
+      wishlist: "Yêu thích",
+      "like-page": "Sản phẩm yêu thích",
+      notifications: "Thông báo",
       loyalty: "Loyalty",
-      returns: "Äá»•i tráº£",
-      recommendations: "Gá»£i Ã½ cho báº¡n",
-      "view-history": "Lá»‹ch sá»­ xem",
+      returns: "Đổi trả",
+      recommendations: "Gợi ý cho bạn",
+      "view-history": "Lịch sử xem",
     };
 
     let currentPath = "";
@@ -110,4 +110,3 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 };
 
 export default Breadcrumb;
-

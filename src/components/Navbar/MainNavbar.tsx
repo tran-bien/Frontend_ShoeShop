@@ -84,7 +84,7 @@ const MainNavbar = () => {
     if (suggestion.type === "product") {
       navigate(`/product/${suggestion.slug || suggestion.id}`);
     } else if (suggestion.type === "category") {
-      navigate(`/productsắcategory=${suggestion.id}`);
+      navigate(`/products?category=${suggestion.id}`);
     } else if (suggestion.type === "brand") {
       navigate(`/products?brand=${suggestion.id}`);
     }

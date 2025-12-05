@@ -395,7 +395,7 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Lo?i giảm giá
+                  Loại giảm giá
                 </label>
                 <select
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
@@ -482,13 +482,13 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Số lu?t sử dụng tại da
+                  Số lượt sử dụng tại đa
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="maxUses"
                   type="number"
-                  placeholder="Số lu?t sử dụng tại da"
+                  placeholder="Số lượt sử dụng tại đa"
                   value={form.maxUses}
                   onChange={handleChange}
                   min={1}

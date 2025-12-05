@@ -118,17 +118,17 @@ const OTPVerificationPage: React.FC = () => {
 
   return (
     <AuthLayout title="Xác thực OTP" subtitle="Nhập mã xác thực để tiếp tục">
-      <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
+      <div className="bg-white rounded-2xl shadow-xl border border-mono-200 p-8">
         <div className="space-y-6">
           {/* Email Info */}
-          <div className="flex items-center justify-center gap-2 text-slate-600 bg-slate-50 py-3 px-4 rounded-xl">
-            <FiMail className="text-slate-500" />
+          <div className="flex items-center justify-center gap-2 text-mono-600 bg-mono-50 py-3 px-4 rounded-xl">
+            <FiMail className="text-mono-500" />
             <span className="text-sm">Mã OTP đã được gửi đến</span>
-            <span className="font-medium text-slate-900">{email}</span>
+            <span className="font-medium text-mono-900">{email}</span>
           </div>
 
           {/* Description */}
-          <p className="text-slate-600 text-center text-sm">
+          <p className="text-mono-600 text-center text-sm">
             Vui lòng kiểm tra hộp thư (bao gồm cả thư rác) và nhập mã 6 số
           </p>
 
@@ -145,7 +145,7 @@ const OTPVerificationPage: React.FC = () => {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
-                className="w-12 h-14 text-center text-2xl font-bold bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                className="w-12 h-14 text-center text-2xl font-bold bg-mono-50 border-2 border-mono-200 rounded-xl text-mono-900 focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent transition-all"
               />
             ))}
           </div>
@@ -154,7 +154,7 @@ const OTPVerificationPage: React.FC = () => {
           <button
             onClick={handleVerify}
             disabled={loading}
-            className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-900/20"
+            className="w-full py-3.5 bg-mono-900 text-white rounded-xl font-semibold hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-mono-900/20"
           >
             {loading ? "Đang xác thực..." : "Xác thực"}
           </button>
@@ -162,9 +162,9 @@ const OTPVerificationPage: React.FC = () => {
           {/* Resend OTP */}
           <div className="text-center">
             {countdown > 0 ? (
-              <p className="text-slate-500 text-sm">
+              <p className="text-mono-500 text-sm">
                 Gửi lại mã sau{" "}
-                <span className="font-semibold text-slate-900">
+                <span className="font-semibold text-mono-900">
                   {countdown}s
                 </span>
               </p>
@@ -172,7 +172,7 @@ const OTPVerificationPage: React.FC = () => {
               <button
                 onClick={handleResend}
                 disabled={resendLoading}
-                className="text-slate-900 font-semibold hover:underline disabled:text-slate-400"
+                className="text-mono-900 font-semibold hover:underline disabled:text-mono-400"
               >
                 {resendLoading ? "Đang gửi..." : "Gửi lại mã OTP"}
               </button>
@@ -182,7 +182,7 @@ const OTPVerificationPage: React.FC = () => {
           {/* Back to Login */}
           <Link
             to="/login"
-            className="flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
+            className="flex items-center justify-center gap-2 text-mono-600 hover:text-mono-900 transition-colors"
           >
             <FiArrowLeft />
             <span>Quay lại đăng nhập</span>

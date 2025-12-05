@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import cartService from "../../services/CartService";
@@ -272,7 +272,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   if (!product) {
     return (
       <div className="text-center text-mono-500 mt-10">
-        KhÃ´ng tÃ¬m tháº¥y sáº£n pháº©m.
+        Không tìm thấy sản phẩm.
       </div>
     );
   }
@@ -757,7 +757,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
           )}
 
-          {/* Size selection vá»›i size description */}
+          {/* Size selection với size description */}
           {selectedGender && selectedColorId && getCurrentVariant() && (
             <div>
               <div className="flex items-center justify-between mb-3">

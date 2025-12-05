@@ -111,19 +111,18 @@ const ProductComparePage: React.FC = () => {
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
                   <div className="flex items-center gap-2">
                     <TagIcon className="h-5 w-5" />
-                    GiÃ¡
+                    Giá
                   </div>
                 </td>
                 {validProducts.map((product) => (
                   <td key={product._id} className="p-4 text-center">
                     <div className="text-2xl font-bold text-mono-900">
-                      {product.priceRange?.min?.toLocaleString("vi-VN") || 0}â‚«
+                      {product.priceRange?.min?.toLocaleString("vi-VN") || 0}VNĐ
                       {product.priceRange?.min !== product.priceRange?.max &&
                         product.priceRange?.max && (
                           <span>
                             {" "}
                             - {product.priceRange.max.toLocaleString("vi-VN")}
-                            â‚«
                           </span>
                         )}
                     </div>
@@ -131,7 +130,7 @@ const ProductComparePage: React.FC = () => {
                       product.discount?.maxPercent &&
                       product.discount.maxPercent > 0 && (
                         <div className="text-sm text-mono-900 font-semibold mt-1">
-                          Giáº£m Ä‘áº¿n {product.discount.maxPercent}%
+                          Giảm đến {product.discount.maxPercent}%
                         </div>
                       )}
                   </td>
@@ -143,7 +142,7 @@ const ProductComparePage: React.FC = () => {
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
                   <div className="flex items-center gap-2">
                     <BuildingStorefrontIcon className="h-5 w-5" />
-                    ThÆ°Æ¡ng hiá»‡u
+                    Thương hiệu
                   </div>
                 </td>
                 {validProducts.map((product) => (
@@ -162,7 +161,7 @@ const ProductComparePage: React.FC = () => {
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
                   <div className="flex items-center gap-2">
                     <Squares2X2Icon className="h-5 w-5" />
-                    Danh má»¥c
+                    Danh mục
                   </div>
                 </td>
                 {validProducts.map((product) => (
@@ -217,7 +216,7 @@ const ProductComparePage: React.FC = () => {
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
                   <div className="flex items-center gap-2">
                     <SwatchIcon className="h-5 w-5" />
-                    MÃ u sáº¯c
+                    Màu sắc
                   </div>
                 </td>
                 {validProducts.map((product) => (
@@ -273,7 +272,7 @@ const ProductComparePage: React.FC = () => {
               {/* Stock Status */}
               <tr className="border-b border-mono-100 hover:bg-mono-50">
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
-                  TÃ¬nh tráº¡ng
+                  Tình trạng
                 </td>
                 {validProducts.map((product) => (
                   <td key={product._id} className="p-4 text-center">
@@ -295,12 +294,12 @@ const ProductComparePage: React.FC = () => {
               {/* Description */}
               <tr className="hover:bg-mono-50">
                 <td className="p-4 font-medium text-mono-700 sticky left-0 bg-white">
-                  MÃ´ táº£
+                  Mô tả
                 </td>
                 {validProducts.map((product) => (
                   <td key={product._id} className="p-4">
                     <p className="text-mono-600 text-sm line-clamp-4">
-                      {product.description || "KhÃ´ng cÃ³ mÃ´ táº£"}
+                      {product.description || "Không có mô tả"}
                     </p>
                   </td>
                 ))}

@@ -73,7 +73,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
     try {
       await adminCouponService.createCoupon(data);
       handleClose();
-    } catch (err) {
+    } catch (error) {
       setError("Thêm phiếu giảm giá thất bại!");
     } finally {
       setLoading(false);
@@ -108,7 +108,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Mô t?
+              Mô tả
             </label>
             <textarea
               name="description"
@@ -121,7 +121,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Lo?i giảm giá
+              Loại giảm giá
             </label>
             <select
               name="type"
@@ -195,7 +195,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Ngày k?t thúc
+              Ngày kết thúc
             </label>
             <input
               type="date"
@@ -208,14 +208,14 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Số lu?t sử dụng tại da
+              Số lượt sử dụng tại đa
             </label>
             <input
               type="number"
               name="maxUses"
               value={form.maxUses}
               onChange={handleChange}
-              placeholder="Số lu?t sử dụng tại da"
+              placeholder="Số lượt sử dụng tại đa"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               min={1}
             />

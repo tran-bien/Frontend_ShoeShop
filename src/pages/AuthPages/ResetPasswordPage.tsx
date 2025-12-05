@@ -144,11 +144,11 @@ const ResetPasswordPage: React.FC = () => {
   const RequirementItem = ({ met, text }: { met: boolean; text: string }) => (
     <li
       className={`flex items-center gap-2 ${
-        met ? "text-green-600" : "text-slate-500"
+        met ? "text-green-600" : "text-mono-500"
       }`}
     >
       <FiCheck
-        className={`w-4 h-4 ${met ? "text-green-600" : "text-slate-300"}`}
+        className={`w-4 h-4 ${met ? "text-green-600" : "text-mono-300"}`}
       />
       <span>{text}</span>
     </li>
@@ -159,21 +159,21 @@ const ResetPasswordPage: React.FC = () => {
       title="Đặt lại mật khẩu"
       subtitle="Tạo mật khẩu mới cho tài khoản của bạn"
     >
-      <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
+      <div className="bg-white rounded-2xl shadow-xl border border-mono-200 p-8">
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* New Password */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Mật khẩu mới
             </label>
             <div className="relative">
-              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="Nhập mật khẩu mới"
-                className={`w-full pl-11 pr-12 py-3 bg-slate-50 border rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all ${
-                  errors.password ? "border-red-400" : "border-slate-200"
+                className={`w-full pl-11 pr-12 py-3 bg-mono-50 border rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent transition-all ${
+                  errors.password ? "border-red-400" : "border-mono-200"
                 }`}
                 value={formData.password}
                 onChange={handleInputChange}
@@ -181,7 +181,7 @@ const ResetPasswordPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-mono-400 hover:text-mono-600"
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
@@ -193,17 +193,17 @@ const ResetPasswordPage: React.FC = () => {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-mono-700 mb-2">
               Xác nhận mật khẩu
             </label>
             <div className="relative">
-              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-mono-400" />
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 name="confirmPassword"
                 placeholder="Nhập lại mật khẩu mới"
-                className={`w-full pl-11 pr-12 py-3 bg-slate-50 border rounded-xl text-slate-700 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all ${
-                  errors.confirmPassword ? "border-red-400" : "border-slate-200"
+                className={`w-full pl-11 pr-12 py-3 bg-mono-50 border rounded-xl text-mono-700 placeholder:text-mono-400 focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent transition-all ${
+                  errors.confirmPassword ? "border-red-400" : "border-mono-200"
                 }`}
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
@@ -211,7 +211,7 @@ const ResetPasswordPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-mono-400 hover:text-mono-600"
               >
                 {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
               </button>
@@ -224,8 +224,8 @@ const ResetPasswordPage: React.FC = () => {
           </div>
 
           {/* Password Requirements */}
-          <div className="bg-slate-50 p-4 rounded-xl">
-            <p className="text-sm font-medium text-slate-700 mb-3">
+          <div className="bg-mono-50 p-4 rounded-xl">
+            <p className="text-sm font-medium text-mono-700 mb-3">
               Mật khẩu phải chứa:
             </p>
             <ul className="space-y-2 text-sm">
@@ -256,7 +256,7 @@ const ResetPasswordPage: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-slate-900/20"
+            className="w-full py-3.5 bg-mono-900 text-white rounded-xl font-semibold hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-mono-900/20"
           >
             {loading ? "Đang đặt lại..." : "Đặt lại mật khẩu"}
           </button>
@@ -264,7 +264,7 @@ const ResetPasswordPage: React.FC = () => {
           {/* Back to Login */}
           <Link
             to="/login"
-            className="flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
+            className="flex items-center justify-center gap-2 text-mono-600 hover:text-mono-900 transition-colors"
           >
             <FiArrowLeft />
             <span>Quay lại đăng nhập</span>
