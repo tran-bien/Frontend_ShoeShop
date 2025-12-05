@@ -488,7 +488,7 @@ const ProductListPage: React.FC = () => {
                         : "border-mono-300"
                     }`}
                   >
-                    N?
+                    Nữ
                   </button>
                 </div>
               </div>

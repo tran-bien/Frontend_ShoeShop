@@ -220,7 +220,7 @@ const InventoryPage = () => {
               }
               className="w-4 h-4"
             />
-            <span className="text-sm text-mono-700">H?t hàng</span>
+            <span className="text-sm text-mono-700">Hết hàng</span>
           </label>
         </div>
       </div>

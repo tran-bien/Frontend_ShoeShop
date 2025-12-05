@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // CÃ¡c hÃ m xá»­ lÃ½ token
+  // Các hàm xử lý token
   const removeTokens = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("accessToken");
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     localStorage.removeItem("user");
   };
 
-  // Kiá»ƒm tra xem ngÆ°á»i dÃ¹ng Ä‘Ã£ Ä‘Äƒng nháº­p hay chÆ°a khi khá»Ÿi Ä‘á»™ng
+  // Kiểm tra xem người dùng đã đăng nhập hay chưa khi khởi động
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
@@ -91,23 +91,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       if (token && storedUser) {
         try {
-          // Kiá»ƒm tra xem token cÃ³ há»£p lá»‡ khÃ´ng
+          // Kiểm tra xem token có hợp lệ không
           const decodedToken = jwtDecode<{ exp: number }>(token);
           const currentTime = Date.now() / 1000;
 
           if (decodedToken.exp < currentTime) {
-            // Token Ä‘Ã£ háº¿t háº¡n
+            // Token đã hết hạn
             removeTokens();
             setIsAuthenticated(false);
             setUser(null);
           } else {
-            // Token cÃ²n háº¡n
+            // Token còn hạn
             const userData = JSON.parse(storedUser);
             setUser(userData);
             setIsAuthenticated(true);
           }
         } catch {
-          // Token khÃ´ng há»£p lá»‡
+          // Token không hợp lệ
           removeTokens();
           setIsAuthenticated(false);
           setUser(null);
@@ -122,7 +122,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     checkAuth();
   }, []);
 
-  // ÄÄƒng nháº­p
+  // Đăng nhập
   const login = async (
     email: string,
     password: string
@@ -130,13 +130,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     try {
       setLoading(true);
 
-      // Gá»i API login
+      // Gọi API login
       const response = await authService.login(email, password);
 
       console.log("Login response:", response); // Debug log
 
-      // Backend tráº£ vá» direct object, khÃ´ng cÃ³ success wrapper
-      // Kiá»ƒm tra xem response cÃ³ token khÃ´ng
+      // Backend trả về direct object, không có success wrapper
+      // Kiểm tra xem response có token không
       if (response && response.token) {
         const {
           token,
@@ -149,13 +149,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           isVerified,
         } = response;
 
-        // Kiá»ƒm tra xem token cÃ³ tá»“n táº¡i khÃ´ng
+        // Kiểm tra xem token có tồn tại không
         if (!token) {
           console.error("Access token missing in response", response);
-          throw new Error("ÄÄƒng nháº­p tháº¥t báº¡i: Thiáº¿u token xÃ¡c thá»±c");
+          throw new Error("Đăng nhập thất bại: Thiếu token xác thực");
         }
 
-        // LÆ°u tokens
+        // Lưu tokens
         localStorage.setItem("accessToken", token);
         localStorage.setItem("token", token); // Cho backwards compatibility
 
@@ -163,7 +163,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           localStorage.setItem("refreshToken", refreshToken);
         }
 
-        // Táº¡o user info tá»« response
+        // Tạo user info từ response
         const userInfo: User = {
           _id: _id,
           name: name,
@@ -179,23 +179,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           updatedAt: new Date().toISOString(),
         };
 
-        // LÆ°u user info
+        // Lưu user info
         localStorage.setItem("user", JSON.stringify(userInfo));
         setUser(userInfo);
         setIsAuthenticated(true);
 
         return { success: true, user: userInfo };
       } else {
-        // Xá»­ lÃ½ trÆ°á»ng há»£p khÃ´ng cÃ³ token trong response
+        // Xử lý trường hợp không có token trong response
         console.error("Login failed: No token in response", response);
-        throw new Error("ÄÄƒng nháº­p tháº¥t báº¡i: Pháº£n há»“i khÃ´ng há»£p lá»‡");
+        throw new Error("Đăng nhập thất bại: Phản hồi không hợp lệ");
       }
     } catch (error: unknown) {
       console.error("Login error:", error);
 
-      // Xá»­ lÃ½ pháº£n há»“i tá»« server má»™t cÃ¡ch chi tiáº¿t hÆ¡n
+      // Xử lý phản hồi từ server một cách chi tiết hơn
       if (error && typeof error === "object" && "response" in error) {
-        // Pháº£n há»“i tá»« server vá»›i mÃ£ lá»—i
+        // Phản hồi từ server với mã lỗi
         const axiosError = error as {
           response: {
             data?: { message?: string; errors?: Array<{ msg: string }> };
@@ -204,33 +204,33 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         const errorMessage =
           axiosError.response.data?.message ||
           axiosError.response.data?.errors?.[0]?.msg ||
-          "ÄÄƒng nháº­p tháº¥t báº¡i: Vui lÃ²ng kiá»ƒm tra thÃ´ng tin Ä‘Äƒng nháº­p";
+          "Đăng nhập thất bại: Vui lòng kiểm tra thông tin đăng nhập";
         throw new Error(errorMessage);
       } else if (error && typeof error === "object" && "request" in error) {
-        // KhÃ´ng nháº­n Ä‘Æ°á»£c pháº£n há»“i tá»« server
-        throw new Error("ÄÄƒng nháº­p tháº¥t báº¡i: KhÃ´ng thá»ƒ káº¿t ná»‘i Ä‘áº¿n mÃ¡y chá»§");
+        // Không nhận được phản hồi từ server
+        throw new Error("Đăng nhập thất bại: Không thể kết nối đến máy chủ");
       } else if (error instanceof Error) {
         throw new Error(error.message);
       } else {
-        throw new Error("ÄÄƒng nháº­p tháº¥t báº¡i");
+        throw new Error("Đăng nhập thất bại");
       }
     } finally {
       setLoading(false);
     }
   };
 
-  // ÄÄƒng xuáº¥t
+  // Đăng xuất
   const logout = useCallback(async () => {
     try {
-      // Hiá»ƒn thá»‹ toast trÆ°á»›c khi thá»±c hiá»‡n logout
-      toast.success("ÄÄƒng xuáº¥t thÃ nh cÃ´ng!", {
+      // Hiển thị toast trước khi thực hiện logout
+      toast.success("Đăng xuất thành công!", {
         duration: 2000,
       });
 
-      // Delay ngáº¯n Ä‘á»ƒ toast ká»‹p hiá»ƒn thá»‹
+      // Delay ngắn để toast kịp hiển thị
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // Thá»±c hiá»‡n logout
+      // Thực hiện logout
       await authService.logout();
 
       // Clear state
@@ -243,27 +243,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       localStorage.removeItem("user");
     } catch (error) {
       console.error("Logout error:", error);
-      // Váº«n clear state local náº¿u API lá»—i
+      // Vẫn clear state local nếu API lỗi
       setUser(null);
       setIsAuthenticated(false);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
 
-      toast.success("ÄÄƒng xuáº¥t thÃ nh cÃ´ng!", {
+      toast.success("Đăng xuất thành công!", {
         duration: 2000,
       });
     }
   }, []);
 
-  // ÄÄƒng kÃ½
+  // Đăng ký
   const register = async (name: string, email: string, password: string) => {
     try {
       const response = await authService.register({ name, email, password });
       if (response.data && response.data.success) {
         return response.data;
       } else {
-        throw new Error(response.data.message || "ÄÄƒng kÃ½ tháº¥t báº¡i");
+        throw new Error(response.data.message || "Đăng ký thất bại");
       }
     } catch (error: unknown) {
       console.error("Register error:", error);
@@ -271,17 +271,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         const axiosError = error as {
           response: { data: { message?: string } };
         };
-        throw new Error(axiosError.response.data.message || "ÄÄƒng kÃ½ tháº¥t báº¡i");
+        throw new Error(axiosError.response.data.message || "Đăng ký thất bại");
       } else {
         throw error;
       }
     }
   };
 
-  // XÃ¡c thá»±c OTP
+  // Xác thực OTP
   const verifyOTP = async (email: string, otp: string) => {
     try {
-      // Sá»­a tá»« verifyOTP thÃ nh verifyOtp theo Ä‘Ãºng Ä‘á»‹nh nghÄ©a trong AuthService
+      // Sửa từ verifyOTP thành verifyOtp theo đúng định nghĩa trong AuthService
       const response = await authService.verifyOtp({ email, otp });
       return response.data;
     } catch (error) {
@@ -290,14 +290,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Äáº·t láº¡i máº­t kháº©u
+  // Đặt lại mật khẩu
   const resetPassword = async (
     token: string,
     password: string,
     confirmPassword: string
   ) => {
     try {
-      // Sá»­a láº¡i tham sá»‘ phÃ¹ há»£p vá»›i Ä‘á»‹nh nghÄ©a trong AuthService
+      // Sửa lại tham số phù hợp với định nghĩa trong AuthService
       const response = await authService.resetPassword(
         token,
         password,
@@ -308,7 +308,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Reset password error:", error);
       throw error;
     }
-  }; // Äá»•i máº­t kháº©u  // Äá»•i máº­t kháº©u
+  }; // Đổi mật khẩu  // Đổi mật khẩu
   const changePassword = async (
     currentPassword: string,
     newPassword: string,
@@ -317,14 +317,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     try {
       // Validate parameters
       if (!currentPassword || !newPassword || !confirmPassword) {
-        throw new Error("Vui lÃ²ng Ä‘iá»n Ä‘áº§y Ä‘á»§ thÃ´ng tin");
+        throw new Error("Vui lòng điền đầy đủ thông tin");
       }
 
       if (newPassword !== confirmPassword) {
-        throw new Error("XÃ¡c nháº­n máº­t kháº©u khÃ´ng khá»›p");
+        throw new Error("Xác nhận mật khẩu không khớp");
       }
 
-      // Gá»i API Ä‘á»•i máº­t kháº©u
+      // Gọi API đổi mật khẩu
       const response = await authService.changePassword({
         currentPassword,
         newPassword,
@@ -338,7 +338,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Láº¥y danh sÃ¡ch sessions
+  // Lấy danh sách sessions
   const getSessions = async () => {
     try {
       const response = await authService.getSessions();
@@ -349,7 +349,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // ÄÄƒng xuáº¥t session cá»¥ thá»ƒ
+  // Đăng xuất session cụ thể
   const logoutSession = async (sessionId: string) => {
     try {
       const response = await authService.logoutSession(sessionId);
@@ -360,7 +360,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // ÄÄƒng xuáº¥t táº¥t cáº£ sessions khÃ¡c
+  // Đăng xuất tất cả sessions khác
   const logoutAllOtherSessions = async () => {
     try {
       const response = await authService.logoutAllOtherSessions();
@@ -371,11 +371,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // ÄÄƒng xuáº¥t táº¥t cáº£ sessions
+  // Đăng xuất tất cả sessions
   const logoutAll = async () => {
     try {
       const response = await authService.logoutAll();
-      // Sau khi Ä‘Äƒng xuáº¥t táº¥t cáº£, cáº§n clear local storage
+      // Sau khi đăng xuất tất cả, cần clear local storage
       removeTokens();
       setIsAuthenticated(false);
       setUser(null);
@@ -415,7 +415,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     return user ? roleHelpers.canManageUsers(user.role) : false;
   }, [user]);
 
-  // ThÃªm cÃ¡c helper methods má»›i
+  // Thêm các helper methods mới
   const canCreate = useCallback(() => {
     return user ? roleHelpers.canCreate(user.role) : false;
   }, [user]);
@@ -452,7 +452,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     login,
     logout,
     register,
-    verifyOTP, // Giá»¯ tÃªn lÃ  verifyOTP trong context Ä‘á»ƒ trÃ¡nh thay Ä‘á»•i code quÃ¡ nhiá»u
+    verifyOTP, // Giữ tên là verifyOtp trong context để tránh thay đổi code quá nhiều
     resetPassword,
     changePassword,
     getSessions,

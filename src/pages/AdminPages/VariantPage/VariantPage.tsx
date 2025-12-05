@@ -33,13 +33,13 @@ const VariantPage: React.FC = () => {
     hasAdminOnlyAccess,
   } = useAuth();
 
-  // State cho quáº£n lÃ½ áº£nh
+  // State cho quản lý ảnh
   const [showImageManager, setShowImageManager] = useState<string | null>(null);
   const [variantImages, setVariantImages] = useState<Variant["imagesvariant"]>(
     []
   );
 
-  // Láº¥y danh sÃ¡ch biáº¿n thá»ƒ
+  // Lấy danh sách biến thể
   const fetchVariants = async (page: number = 1) => {
     setLoading(true);
     try {
@@ -77,7 +77,7 @@ const VariantPage: React.FC = () => {
     }
   };
 
-  // Láº¥y danh sÃ¡ch biáº¿n thá»ƒ Ä‘Ã£ xÃ³a
+  // Lấy danh sách biến thể đã xóa
   const fetchDeletedVariants = async (page: number = 1) => {
     setLoading(true);
     try {
@@ -241,7 +241,7 @@ const VariantPage: React.FC = () => {
             <div className="flex-1">
               <input
                 type="text"
-                placeholder="ðŸ” TÃ¬m kiáº¿m biáº¿n thá»ƒ theo sáº£n pháº©m, mÃ u sáº¯c..."
+                placeholder="Tìm kiếm biến thể theo sản phẩm, màu sắc..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -318,16 +318,16 @@ const VariantPage: React.FC = () => {
           </div>
         </div>
       )}
-      {/* Modal hiá»ƒn thá»‹ form */}
+      {/* Modal hiển thị form */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl relative">
             <button
               className="absolute top-2 right-2 text-mono-500 hover:text-mono-800 text-xl"
               onClick={handleCloseForm}
-              title="ÄÃ³ng"
+              title="Đóng"
             >
-              Ã—
+              ×
             </button>
             <VariantForm
               onSuccess={handleSuccess}
@@ -555,7 +555,7 @@ const VariantPage: React.FC = () => {
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                   />
                                 </svg>
-                                áº¢nh
+                                Ảnh
                               </button>
                               {canUpdate() && (
                                 <button
@@ -610,7 +610,7 @@ const VariantPage: React.FC = () => {
                                       d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                                     />
                                   </svg>
-                                  {v.isActive ? "Táº¯t" : "Báº­t"}
+                                  {v.isActive ? "Tắt" : "Bật"}
                                 </button>
                               )}
                               {canDelete() && !v.deletedAt && (

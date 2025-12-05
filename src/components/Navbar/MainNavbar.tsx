@@ -126,7 +126,7 @@ const MainNavbar = () => {
             to="/products?sort=newest"
             className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
-            S?N PH?M M?I
+            SẢN PHẨM MỚI
           </Link>
         </li>
         <li>
@@ -134,7 +134,7 @@ const MainNavbar = () => {
             to="/products?sort=popular"
             className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
-            S?N PH?M PHọ BI?N
+            SẢN PHẨM PHỔ BIẾN
           </Link>
         </li>
         <li>
@@ -150,7 +150,7 @@ const MainNavbar = () => {
             to="/products?gender=female"
             className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
           >
-            GIÀY N?
+            GIÀY NỮ
           </Link>
         </li>
         <li>
@@ -245,7 +245,7 @@ const MainNavbar = () => {
                     }}
                     className="w-full px-4 py-3 hover:bg-mono-50 text-left transition-colors text-mono-black font-medium"
                   >
-                    Xem tất cả k?t qu? cho "{searchQuery}"
+                    Xem tất cả kết quả cho "{searchQuery}"
                   </button>
                 </li>
               </ul>

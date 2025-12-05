@@ -10,32 +10,32 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  // State cho hi?u ẩng fade-in khi ẩnh được tại
+  // State cho hiệu ứng fade-in khi ảnh được tải
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // State cho hi?u ẩng slide ẩnh
+  // State cho hiệu ứng slide ảnh
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Compare context
   const { addToCompareById, removeFromCompare, isInCompare, isLoading } =
     useCompare();
 
-  // Ki?m tra chỉc chơn images là mẩng và có nhi?u hon 1 phần t?
+  // Kiểm tra chắc chắn images là mảng và có nhiều hơn 1 phần tử
   const hasMultipleImages =
     product && Array.isArray(product.images) && product.images.length > 1;
 
-  // Hi?u ẩng slide ẩnh với t?c d? v?a ph?i (3 giây cho mới ẩnh)
+  // Hiệu ứng slide ảnh với tốc độ vừa phải (3 giây cho mỗi ảnh)
   useEffect(() => {
     if (!hasMultipleImages || !product) return;
 
     const interval = setInterval(() => {
-      // Ki?m tra images tên tại trước khi truy c?p length
+      // Kiểm tra images tồn tại trước khi truy cập length
       if (Array.isArray(product.images) && product.images.length > 0) {
         setCurrentImageIndex((prev) => (prev + 1) % product.images!.length);
-        // Reset trạng thái imageLoaded khi chuyện ẩnh
+        // Reset trạng thái imageLoaded khi chuyển ảnh
         setImageLoaded(false);
       }
-    }, 3000); // T?c d? chuyện ẩnh v?a ph?i: 3 giây
+    }, 3000); // Tốc độ chuyển ảnh vừa phải: 3 giây
 
     return () => clearInterval(interval);
   }, [product, product?.images, hasMultipleImages]);
@@ -62,7 +62,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     // Priority for displaying price:
     // 1. Use product.priceRange if valid (min/max or single)
     // 2. Fallback to product.price or originalPrice
-    // 3. If out_of_stock and price is 0 -> show "H?t hàng"
+    // 3. If out_of_stock and price is 0 -> show "Hết hàng"
 
     const inStock = product.stockStatus !== "out_of_stock";
 
@@ -77,7 +77,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     const displayMax: number | null = hasRange ? (pr!.max as number) : null;
 
     if (!inStock && (!displayMin || displayMin === 0)) {
-      return <div className="text-sm font-medium text-mono-700">H?t hàng</div>;
+      return <div className="text-sm font-medium text-mono-700">Hết hàng</div>;
     }
 
     if (hasRange && displayMax && displayMin !== displayMax) {
@@ -239,12 +239,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         {/* Stock status */}
         {product.stockStatus === "out_of_stock" && (
           <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-center py-1.5 text-sm font-medium">
-            H?t hàng
+            Hết hàng
           </div>
         )}
         {product.stockStatus === "low_stock" && (
           <div className="absolute bottom-0 left-0 right-0 bg-mono-600 bg-opacity-70 text-white text-center py-1.5 text-sm font-medium">
-            S?p h?t hàng
+            Sắp hết hàng
           </div>
         )}
       </div>

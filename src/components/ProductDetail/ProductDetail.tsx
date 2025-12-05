@@ -114,7 +114,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     fetchRelatedProducts();
   }, [product?._id]);
 
-  // Cáº­p nháº­t hiá»ƒn thá»‹ áº£nh theo variant Ä‘Æ°á»£c chá»n
+  // Cập nhật hiển thị ảnh theo variant được chọn
   useEffect(() => {
     if (!images) {
       if (product?.images?.length) {
@@ -163,14 +163,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     fetchStockInfo();
   }, [variants, selectedGender, selectedColorId, selectedSizeId]);
 
-  // Tá»± Ä‘á»™ng chá»n gender máº·c Ä‘á»‹nh khi táº£i sáº£n pháº©m
+  // Tự động chọn gender mặc định khi tải sản phẩm
   useEffect(() => {
     if (attributes?.genders?.length && !selectedGender) {
       setSelectedGender(attributes.genders[0].id);
     }
   }, [attributes?.genders, selectedGender]);
 
-  // Tá»± Ä‘á»™ng chá»n color máº·c Ä‘á»‹nh sau khi cÃ³ gender
+  // Tự động chọn color mặc định sau khi có gender
   useEffect(() => {
     if (
       attributes?.colors?.length &&
@@ -210,37 +210,37 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
   const [quantityInput, setQuantityInput] = useState("1");
 
-  // Xá»­ lÃ½ nháº­p sá»‘ lÆ°á»£ng
+  // Xử lý nhập số lượng
   const handleQuantityChange = (value: string) => {
-    // Chá»‰ cho phÃ©p nháº­p sá»‘ dÆ°Æ¡ng
+    // Chỉ cho phép nhập số dương
     const sanitizedValue = value.replace(/[^0-9]/g, "").slice(0, 2);
     setQuantityInput(sanitizedValue);
 
     const numValue = parseInt(sanitizedValue);
     if (!isNaN(numValue) && numValue > 0) {
-      // Giá»›i háº¡n sá»‘ lÆ°á»£ng khÃ´ng vÆ°á»£t quÃ¡ tá»“n kho
+      // Giới hạn số lượng không vượt quá tồn kho
       const limitedValue = Math.min(numValue, availableStock);
       setSelectedQuantity(limitedValue);
 
-      // Náº¿u giá»›i háº¡n tá»“n kho Ã­t hÆ¡n sá»‘ nháº­p, cáº­p nháº­t láº¡i input vÃ  hiá»ƒn thá»‹ thÃ´ng bÃ¡o
+      // Nếu giới hạn tồn kho ít hơn số nhập, cập nhật lại input và hiển thị thông báo
       if (limitedValue < numValue) {
         setQuantityInput(limitedValue.toString());
-        toast.error(`Sá»‘ lÆ°á»£ng tá»‘i Ä‘a cÃ³ thá»ƒ chá»n lÃ  ${availableStock}`);
+        toast.error(`Số lượng tối đa có thể chọn là ${availableStock}`);
       }
     }
   };
 
-  // Xá»­ lÃ½ khi input máº¥t focus
+  // Xử lý khi input mất focus
   const handleQuantityBlur = () => {
     const numValue = parseInt(quantityInput);
     if (isNaN(numValue) || numValue < 1) {
-      // Náº¿u giÃ¡ trá»‹ khÃ´ng há»£p lá»‡, Ä‘áº·t vá» 1
+      // Nếu giá trị không hợp lệ, đặt về 1
       setQuantityInput("1");
       setSelectedQuantity(1);
     }
   };
 
-  // Kiá»ƒm tra sáº£n pháº©m Ä‘Ã£ cÃ³ trong wishlist khi component mount hoáº·c variant thay Ä‘á»•i
+  // Kiểm tra sản phẩm đã có trong wishlist khi component mount hoặc variant thay đổi
   useEffect(() => {
     const checkWishlistStatus = async () => {
       if (isAuthenticated && product && product._id && selectedColorId) {
@@ -261,7 +261,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             setWishlistItemId(foundItem ? foundItem._id : null);
           }
         } catch (error) {
-          console.error("Lá»—i khi kiá»ƒm tra tráº¡ng thÃ¡i wishlist:", error);
+          console.error("Lỗi khi kiểm tra trạng thái wishlist:", error);
         }
       }
     };
@@ -279,7 +279,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
   const currentImage = displayedImages[currentImageIndex];
 
-  // TÃ¬m variantId theo gender vÃ  color
+  // Tìm variantId theo gender và color
   const getVariantId = () => {
     if (!variants || !selectedGender || !selectedColorId) return null;
     const variantKey = `${selectedGender}-${selectedColorId}`;
@@ -287,22 +287,22 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     return variant?._id || null;
   };
 
-  // TÃ¬m variant hiá»‡n táº¡i
+  // Tìm variant hiện tại
   const getCurrentVariant = () => {
     if (!variants || !selectedGender || !selectedColorId) return null;
     const variantKey = `${selectedGender}-${selectedColorId}`;
     return variants[variantKey] || null;
   };
 
-  // Láº¥y thÃ´ng tin size tá»« attributes
+  // Lấy thông tin size từ attributes
   const getSizeDetails = (sizeId: string): Size | null => {
     return attributes?.sizes?.find((size) => size._id === sizeId) || null;
   };
 
-  // Xá»­ lÃ½ thÃªm vÃ o giá» hÃ ng
+  // Xử lý thêm vào giỏ hàng
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
-      toast.error("Vui lÃ²ng Ä‘Äƒng nháº­p Ä‘á»ƒ thÃªm sáº£n pháº©m vÃ o giá» hÃ ng");
+      toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng");
       navigate(
         `/login?returnUrl=${encodeURIComponent(window.location.pathname)}`
       );
@@ -310,18 +310,18 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     }
 
     if (!selectedGender || !selectedColorId || !selectedSizeId) {
-      toast.error("Vui lÃ²ng chá»n Ä‘áº§y Ä‘á»§ thÃ´ng tin sáº£n pháº©m");
+      toast.error("Vui lòng chọn đầy đủ thông tin sản phẩm");
       return;
     }
 
     if (availableStock < selectedQuantity) {
-      toast.error("Sá»‘ lÆ°á»£ng vÆ°á»£t quÃ¡ tá»“n kho");
+      toast.error("Số lượng vượt quá tồn kho");
       return;
     }
 
     const variantId = getVariantId();
     if (!variantId) {
-      toast.error("KhÃ´ng tÃ¬m tháº¥y thÃ´ng tin sáº£n pháº©m");
+      toast.error("Không tìm thấy thông tin sản phẩm");
       return;
     }
 
@@ -334,21 +334,21 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
       });
 
       if (response.data.success) {
-        toast.success("ÄÃ£ thÃªm sáº£n pháº©m vÃ o giá» hÃ ng");
+        toast.success("Đã thêm sản phẩm vào giỏ hàng");
         setSelectedQuantity(1);
       }
     } catch (error: unknown) {
       console.error("Add to cart error:", error);
       const apiError = error as ApiError;
 
-      // Náº¿u lá»—i xÃ¡c thá»±c, khÃ´ng hiá»ƒn thá»‹ thÃ´ng bÃ¡o vÃ¬ interceptor Ä‘Ã£ xá»­ lÃ½
+      // Nếu lỗi xác thực, không hiển thị thông báo vì interceptor đã xử lý
       if (apiError.response?.status === 401) {
         return;
       } else {
         const errorMessage =
           apiError?.response?.data?.message ||
           apiError?.response?.data?.error ||
-          "CÃ³ lá»—i xáº£y ra khi thÃªm vÃ o giá» hÃ ng";
+          "Có lỗi xảy ra khi thêm vào giỏ hàng";
         toast.error(errorMessage);
       }
     } finally {
@@ -356,10 +356,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     }
   };
 
-  // Xá»­ lÃ½ mua ngay
+  // Xử lý mua ngay
   const handleBuyNow = async () => {
     if (!isAuthenticated) {
-      toast.error("Vui lÃ²ng Ä‘Äƒng nháº­p Ä‘á»ƒ mua hÃ ng");
+      toast.error("Vui lòng đăng nhập để mua hàng");
       navigate(
         `/login?returnUrl=${encodeURIComponent(window.location.pathname)}`
       );
@@ -367,12 +367,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     }
 
     if (!selectedGender || !selectedColorId || !selectedSizeId) {
-      toast.error("Vui lÃ²ng chá»n Ä‘áº§y Ä‘á»§ thÃ´ng tin sáº£n pháº©m");
+      toast.error("Vui lòng chọn đầy đủ thông tin sản phẩm");
       return;
     }
 
     if (availableStock < selectedQuantity) {
-      toast.error("Sá»‘ lÆ°á»£ng vÆ°á»£t quÃ¡ tá»“n kho");
+      toast.error("Số lượng vượt quá tồn kho");
       return;
     }
 
@@ -380,7 +380,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     try {
       const variantId = getVariantId();
       if (!variantId) {
-        toast.error("KhÃ´ng tÃ¬m tháº¥y thÃ´ng tin sáº£n pháº©m");
+        toast.error("Không tìm thấy thông tin sản phẩm");
         return;
       }
 
@@ -392,17 +392,17 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
       if (response.data.success) {
         navigate("/cart?checkout=true");
-        toast.success("ÄÃ£ thÃªm sáº£n pháº©m vÃ o giá» hÃ ng, chuyá»ƒn Ä‘áº¿n thanh toÃ¡n");
+        toast.success("Đã thêm sản phẩm vào giỏ hàng, chuyển đến thanh toán");
       }
     } catch (error: unknown) {
       console.error("Buy now error:", error);
       const apiError = error as ApiError;
 
       if (apiError.response?.status === 401) {
-        toast.error("PhiÃªn Ä‘Äƒng nháº­p Ä‘Ã£ háº¿t háº¡n, vui lÃ²ng Ä‘Äƒng nháº­p láº¡i");
+        toast.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
       } else {
         const errorMessage =
-          apiError?.response?.data?.message || "CÃ³ lá»—i xáº£y ra khi mua ngay";
+          apiError?.response?.data?.message || "Có lỗi xảy ra khi mua ngay";
         toast.error(errorMessage);
       }
     } finally {
@@ -410,10 +410,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     }
   };
 
-  // Xá»­ lÃ½ yÃªu thÃ­ch
+  // Xử lý yêu thích
   const handleToggleWishlist = async () => {
     if (!isAuthenticated) {
-      toast.error("Vui lÃ²ng Ä‘Äƒng nháº­p Ä‘á»ƒ sá»­ dá»¥ng tÃ­nh nÄƒng nÃ y");
+      toast.error("Vui lòng đăng nhập để sử dụng tính năng này");
       const currentPath = window.location.pathname + window.location.search;
       navigate(`/login?redirect=${encodeURIComponent(currentPath)}`);
       return;
@@ -421,7 +421,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
     const variantId = getVariantId();
     if (!variantId) {
-      toast.error("Vui lÃ²ng chá»n mÃ u sáº¯c");
+      toast.error("Vui lòng chọn màu sắc");
       return;
     }
 
@@ -434,10 +434,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         if (response.data && response.data.success) {
           setIsLiked(false);
           setWishlistItemId(null);
-          toast.success("ÄÃ£ xÃ³a khá»i danh sÃ¡ch yÃªu thÃ­ch");
+          toast.success("Đã xóa khỏi danh sách yêu thích");
         }
       } else {
-        // ThÃªm vÃ o wishlist
+        // Thêm vào wishlist
         const productId = product._id || "";
         const response = await wishlistService.addToWishlist(
           productId,
@@ -448,20 +448,20 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           if (response.data.isExisting) {
             toast.success(
               response.data.message ||
-                "Sáº£n pháº©m Ä‘Ã£ cÃ³ trong danh sÃ¡ch yÃªu thÃ­ch"
+                "Sản phẩm đã có trong danh sách yêu thích"
             );
           } else {
             toast.success(
-              response.data.message || "ÄÃ£ thÃªm vÃ o danh sÃ¡ch yÃªu thÃ­ch"
+              response.data.message || "Đã thêm vào danh sách yêu thích"
             );
           }
 
-          // Láº¥y danh sÃ¡ch wishlist má»›i Ä‘á»ƒ cÃ³ Ä‘Æ°á»£c ID cá»§a item vá»«a thÃªm
+          // Lấy danh sách wishlist mới để có được ID của item vừa thêm
           try {
             const wishlistRes = await wishlistService.getWishlist();
             const wishlistItems = wishlistRes.data.wishlist || [];
 
-            // TÃ¬m item má»›i thÃªm vÃ o
+            // Tìm item mới thêm vào
             const newItem = wishlistItems.find(
               (item) =>
                 item.product._id === product._id &&
@@ -472,16 +472,16 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               setWishlistItemId(newItem._id);
             }
           } catch (fetchError) {
-            console.error("Lá»—i khi táº£i láº¡i wishlist:", fetchError);
+            console.error("Lỗi khi tải lại wishlist:", fetchError);
           }
 
           setIsLiked(true);
         }
       }
     } catch (error: any) {
-      console.error("Lá»—i khi thÃªm/xÃ³a wishlist:", error);
+      console.error("Lỗi khi thêm/xóa wishlist:", error);
       const errorMessage =
-        error.response?.data?.message || "CÃ³ lá»—i xáº£y ra khi xá»­ lÃ½ yÃªu thÃ­ch";
+        error.response?.data?.message || "Có lỗi xảy ra khi xử lý yêu thích";
       toast.error(errorMessage);
     } finally {
       setLikeLoading(false);
@@ -544,7 +544,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           typeof p.brand === "object"
             ? {
                 _id: (p.brand as any)?._id || "",
-                name: (p.brand as any)?.name || "ChÆ°a cÃ³ thÆ°Æ¡ng hiá»‡u",
+                name: (p.brand as any)?.name || "Chưa có thương hiệu",
                 logo: brandLogo,
               }
             : undefined,
@@ -625,7 +625,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             </h1>
 
             <div className="mt-3">
-              {/* Hiá»ƒn thá»‹ giÃ¡ theo size Ä‘Æ°á»£c chá»n */}
+              {/* Hiển thị giá theo size được chọn */}
               {selectedSizeInfo &&
               (selectedSizeInfo.finalPrice || selectedSizeInfo.price) ? (
                 <>
@@ -653,8 +653,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               ) : (
                 <p className="text-3xl font-bold text-mono-900">
                   {selectedGender && selectedColorId
-                    ? "Vui lÃ²ng chá»n size"
-                    : "Vui lÃ²ng chá»n mÃ u sáº¯c"}
+                    ? "Vui lòng chọn size"
+                    : "Vui lòng chọn màu sắc"}
                 </p>
               )}
             </div>
@@ -673,7 +673,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
             <span className="text-sm text-mono-600">
               {Number(product.averageRating || 0).toFixed(1)} (
-              {product.reviewCount || 0} Ä‘Ã¡nh giÃ¡)
+              {product.reviewCount || 0} đánh giá)
             </span>
           </div>
 
@@ -699,7 +699,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           {/* Gender selection */}
           {attributes?.genders && attributes.genders.length > 0 && (
             <div>
-              <h3 className="text-lg font-medium mb-3">Giá»›i tÃ­nh:</h3>
+              <h3 className="text-lg font-medium mb-3">Giới tính:</h3>
               <div className="flex gap-2">
                 {attributes.genders.map((gender) => (
                   <button
@@ -725,7 +725,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           {/* Color selection */}
           {selectedGender && attributes?.colors && (
             <div>
-              <h3 className="text-lg font-medium mb-3">MÃ u sáº¯c:</h3>
+              <h3 className="text-lg font-medium mb-3">Màu sắc:</h3>
               <div className="flex flex-wrap gap-2">
                 {attributes.colors
                   .filter((color) => {
@@ -761,13 +761,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
           {selectedGender && selectedColorId && getCurrentVariant() && (
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-medium">KÃ­ch thÆ°á»›c:</h3>
+                <h3 className="text-lg font-medium">Kích thước:</h3>
                 <button
                   onClick={() => setShowSizeGuide(true)}
                   className="text-sm text-mono-700 hover:text-mono-black font-medium flex items-center gap-1 hover:underline"
                 >
                   <FiInfo size={16} />
-                  HÆ°á»›ng dáº«n chá»n size
+                  Hướng dẫn chọn size
                 </button>
               </div>
 
@@ -775,7 +775,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 {getCurrentVariant()?.sizes?.map((sizeInfo) => {
                   if (!sizeInfo.sizeId) return null;
                   const sizeDetails = getSizeDetails(sizeInfo.sizeId);
-                  // Sá»­ dá»¥ng stock status tá»« BE
+                  // Sử dụng stock status từ BE
                   const isOutOfStock =
                     sizeInfo.isOutOfStock || sizeInfo.quantity === 0;
                   const isLowStock = sizeInfo.isLowStock && !isOutOfStock;
@@ -797,11 +797,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                       >
                         {sizeInfo.sizeValue}
                         {isOutOfStock && (
-                          <span className="block text-xs">Háº¿t hÃ ng</span>
+                          <span className="block text-xs">Hết hàng</span>
                         )}
                         {isLowStock && (
                           <span className="block text-xs text-mono-700">
-                            Sáº¯p háº¿t
+                            Sắp hết
                           </span>
                         )}
                       </button>
@@ -875,7 +875,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                   <FiPlus />
                 </button>
                 <span className="text-sm text-mono-500">
-                  CÃ²n {availableStock} sáº£n pháº©m
+                  Còn {availableStock} sản phẩm
                 </span>
               </div>
             </div>
@@ -903,7 +903,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               ) : (
                 <>
                   <FiShoppingCart size={20} />
-                  <span>ThÃªm vÃ o giá» hÃ ng</span>
+                  <span>Thêm vào giỏ hàng</span>
                 </>
               )}
             </button>
@@ -965,7 +965,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                     : "text-mono-500 hover:text-mono-700"
                 }`}
               >
-                Chi tiáº¿t sáº£n pháº©m
+                Chi tiết sản phẩm
               </button>
               <button
                 onClick={() => setActiveTab("reviews")}
@@ -975,7 +975,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                     : "text-mono-500 hover:text-mono-700"
                 }`}
               >
-                ÄÃ¡nh giÃ¡
+                Đánh giá
               </button>
             </div>
             <div className="py-4">
@@ -994,14 +994,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         <div className="mt-16 border-t pt-12">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold text-mono-900">
-              Sáº£n pháº©m liÃªn quan
+              Sản phẩm liên quan
             </h2>
             <span className="text-sm text-mono-500">
               {loadingRelated
-                ? "Äang táº£i..."
+                ? "Đang tải..."
                 : `${
                     relatedProducts.length || similarProducts?.length || 0
-                  } sáº£n pháº©m Ä‘Æ°á»£c Ä‘á» xuáº¥t`}
+                  } sản phẩm được đề xuất`}
             </span>
           </div>
 

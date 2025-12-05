@@ -427,7 +427,7 @@ const ListCategoriesPage: React.FC = () => {
                 : "text-mono-500 border-transparent hover:text-mono-black"
             }`}
           >
-            Danh mục đang ho?t đếng
+            Danh mục đang hoạt động
           </button>
           {hasStaffAccess() && (
             <button

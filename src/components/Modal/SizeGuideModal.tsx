@@ -116,7 +116,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                   )}
                   {sizeChart[0]?.note && (
                     <th className="px-4 py-3 text-left text-sm font-semibold">
-                      Ghi chú 
+                      Ghi chú
                     </th>
                   )}
                 </tr>
@@ -221,7 +221,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-mono-200">
             <h2 className="text-2xl font-bold text-mono-black">
-              HÆ°á»›ng dáº«n chá»n size
+              Hướng dẫn chọn size
             </h2>
             <button
               onClick={onClose}
@@ -242,13 +242,17 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                 <p className="text-mono-600 mb-4">{error}</p>
                 <div className="bg-mono-50 rounded-xl p-6 max-w-md mx-auto">
                   <h4 className="font-medium mb-3 text-mono-black">
-                    HÆ°á»›ng dáº«n chung:
+                    Hướng dẫn chung:
                   </h4>
                   <div className="text-sm text-mono-600 space-y-2 text-left">
-                    <p>â€¢ Äo chiá»u dÃ i bÃ n chÃ¢n tá»« gÃ³t Ä‘áº¿n ngÃ³n cÃ¡i dÃ i nháº¥t</p>
-                    <p>â€¢ NÃªn Ä‘o vÃ o buá»•i chiá»u khi bÃ n chÃ¢n hÆ¡i phÃ¹</p>
-                    <p>â€¢ Chá»n size lá»›n hÆ¡n 0.5-1cm so vá»›i chiá»u dÃ i bÃ n chÃ¢n</p>
-                    <p>â€¢ Tham kháº£o báº£ng size cá»¥ thá»ƒ cá»§a tá»«ng thÆ°Æ¡ng hiá»‡u</p>
+                    <p>
+                      â€¢ Đo chiều dài bàn chân từ gót đến ngón cái dài nhất
+                    </p>
+                    <p>â€¢ Nên đo vào buổi chiều khi bàn chân hơi phù</p>
+                    <p>
+                      â€¢ Chọn size lớn hơn 0.5-1cm so với chiều dài bàn chân
+                    </p>
+                    <p>â€¢ Tham khảo bảng size cụ thể của từng thương hiệu</p>
                   </div>
                 </div>
               </div>
@@ -257,7 +261,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                 {/* Product Info */}
                 {sizeGuide.product && (
                   <div className="pb-4 border-b border-mono-200">
-                    <span className="text-sm text-mono-500">Sáº£n pháº©m:</span>
+                    <span className="text-sm text-mono-500">Sản phẩm:</span>
                     <h3 className="text-lg font-semibold text-mono-900">
                       {typeof sizeGuide.product === "object"
                         ? (sizeGuide.product as any).name
@@ -276,7 +280,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                 {sizeGuide.notes && (
                   <div className="bg-mono-50 rounded-xl p-6 border-l-4 border-mono-black">
                     <h4 className="font-semibold text-mono-black mb-2">
-                      âš ï¸ LÆ°u Ã½:
+                      ⚠️ Lưu ý:
                     </h4>
                     <p className="text-sm text-mono-700 whitespace-pre-line">
                       {sizeGuide.notes}
@@ -290,7 +294,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                   !sizeGuide.notes && (
                     <div className="text-center py-8">
                       <p className="text-mono-500">
-                        ChÆ°a cÃ³ ná»™i dung hÆ°á»›ng dáº«n size chi tiáº¿t
+                        Chưa có nội dung hướng dẫn size chi tiết
                       </p>
                     </div>
                   )}
@@ -304,7 +308,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
               onClick={onClose}
               className="w-full px-6 py-3 bg-mono-black text-white rounded-lg font-medium hover:bg-mono-900 transition-colors"
             >
-              ÄÃ³ng
+              Đóng
             </button>
           </div>
         </div>
