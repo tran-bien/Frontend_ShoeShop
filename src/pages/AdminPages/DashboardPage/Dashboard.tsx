@@ -124,11 +124,11 @@ const Dashboard = () => {
       if (response.data.success && response.data.data) {
         setTopProducts(response.data.data);
       } else {
-        toast.error("Không thể tại dữ liệu sản phẩm bán chủy");
+        toast.error("Không thể tại dữ liệu sản phẩm bán chạy");
       }
     } catch (error) {
       console.error("Error loading top products:", error);
-      toast.error("Không thể tại dữ liệu sản phẩm bán chủy");
+      toast.error("Không thể tại dữ liệu sản phẩm bán chạy");
     } finally {
       setLoading((prev) => ({ ...prev, topProducts: false }));
     }
@@ -360,7 +360,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: "Sản phẩm bán chủy",
+        text: "Sản phẩm bán chạy",
       },
     },
   };
@@ -520,7 +520,7 @@ const Dashboard = () => {
         {/* Top Products Chart */}
         <div className="bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold">Sản phẩm bán chủy</h3>
+            <h3 className="text-lg font-semibold">Sản phẩm bán chạy</h3>
             <select
               value={topProductPeriod}
               onChange={(e) => setTopProductPeriod(e.target.value)}
@@ -538,7 +538,7 @@ const Dashboard = () => {
             <div className="h-80 bg-mono-100 rounded animate-pulse"></div>
           ) : topProducts.length === 0 ? (
             <div className="flex items-center justify-center h-80 text-mono-500">
-              Không có dữ liệu sản phẩm bán chủy
+              Không có dữ liệu sản phẩm bán chạy
             </div>
           ) : (
             <div className="h-80">
@@ -554,7 +554,7 @@ const Dashboard = () => {
         <div className="lg:col-span-2 bg-white rounded-lg shadow-sm border p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">
-              Chi tiết sản phẩm bán chủy
+              Chi tiết sản phẩm bán chạy
             </h3>
           </div>
 
@@ -576,7 +576,7 @@ const Dashboard = () => {
             </div>
           ) : topProducts.length === 0 ? (
             <div className="flex items-center justify-center h-80 text-mono-500">
-              Không có dữ liệu sản phẩm bán chủy
+              Không có dữ liệu sản phẩm bán chạy
             </div>
           ) : (
             <div className="overflow-x-auto">

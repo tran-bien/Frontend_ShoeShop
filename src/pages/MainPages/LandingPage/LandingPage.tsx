@@ -531,7 +531,7 @@ const LandingPage: React.FC = () => {
       {/* Sản phẩm bán chạy */}
       <section className="container mx-auto px-4 py-16 bg-white">
         <SectionTitle
-          title="Sản phẩm bán chủy"
+          title="Sản phẩm bán chạy"
           linkTo="/products?sort=popular"
           linkText="Xem tất cả"
         />
