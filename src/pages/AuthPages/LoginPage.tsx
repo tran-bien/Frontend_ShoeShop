@@ -34,21 +34,32 @@ const LoginPage: React.FC = () => {
         const redirectTo = urlParams.get("redirect") || "/";
         navigate(redirectTo);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       let errorMessage = "Đăng nhập thất bại!";
 
-      if (error.response?.data?.errors?.length > 0) {
-        errorMessage = error.response.data.errors[0].msg;
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.message) {
+      const err = error as {
+        response?: {
+          data?: {
+            errors?: Array<{ msg: string }>;
+            message?: string;
+          };
+        };
+        message?: string;
+        code?: string;
+      };
+
+      if (err.response?.data?.errors?.length) {
+        errorMessage = err.response.data.errors[0].msg;
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
         if (
-          error.message.includes("Network Error") ||
-          error.code === "ERR_NETWORK"
+          err.message.includes("Network Error") ||
+          err.code === "ERR_NETWORK"
         ) {
           errorMessage = "Không thể kết nối đến server!";
         } else {
-          errorMessage = error.message;
+          errorMessage = err.message;
         }
       }
 
@@ -63,10 +74,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <AuthLayout
-      title="Chào mừng trở lại!"
-      subtitle="Đăng nhập để tiếp tục mua sắm"
-    >
+    <AuthLayout title="Welcome Back" subtitle="Đăng nhập để tiếp tục mua sắm">
       <div className="bg-white rounded-2xl shadow-xl border border-mono-200 p-8">
         <div className="space-y-5">
           {/* Email */}

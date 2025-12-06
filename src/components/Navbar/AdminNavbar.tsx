@@ -39,34 +39,32 @@ const AdminNavbar = () => {
   const getPageTitle = () => {
     const path = location.pathname;
     if (path === "/admin" || path === "/admin/dashboard") return "Dashboard";
-    if (path.includes("/admin/products")) return "Quản lý sản phẩm";
-    if (path.includes("/admin/users")) return "Quản lý người dùng";
-    if (path.includes("/admin/categories")) return "Quản lý danh mục";
-    if (path.includes("/admin/orders")) return "Quản lý đơn hàng";
-    if (path.includes("/admin/brand")) return "Quản lý thương hiệu";
-    if (path.includes("/admin/banners")) return "Quản lý banner";
-    if (path.includes("/admin/color")) return "Quản lý màu sắc";
-    if (path.includes("/admin/size")) return "Quản lý kích thước";
+    if (path.includes("/admin/products")) return "Product Management";
+    if (path.includes("/admin/users")) return "User Management";
+    if (path.includes("/admin/categories")) return "Category Management";
+    if (path.includes("/admin/orders")) return "Order Management";
+    if (path.includes("/admin/brand")) return "Brand Management";
+    if (path.includes("/admin/banners")) return "Banner Management";
+    if (path.includes("/admin/color")) return "Color Management";
+    if (path.includes("/admin/size")) return "Size Management";
+    if (path.includes("/admin/tags")) return "Tag Management";
+    if (path.includes("/admin/coupons")) return "Coupon Management";
+    if (path.includes("/admin/reviews")) return "Review Management";
+    if (path.includes("/admin/returns")) return "Return Management";
+    if (path.includes("/admin/inventory")) return "Inventory Management";
+    if (path.includes("/admin/shippers")) return "Shipper Management";
+    if (path.includes("/admin/reports")) return "Reports";
+
     return "Admin";
   };
 
+  // Tiêu đề trang dựa vào URL English
+
   return (
     <div className="w-full bg-mono-black h-16 flex justify-between items-center sticky top-0 text-white px-6 shadow-md z-10">
+      {/* Page Title Section */}
       <div className="flex items-center gap-3">
-        {/* <BiMenu className="rounded-full bg-mono-1000 h-10 w-10 p-2 hover:bg-purple-400 cursor-pointer transition-all duration-300" onClick={toggleSidebar}/> */}
-        <div className="h-10 flex items-center">
-          {/*<img className="w-auto h-full" src="/image/logo.png" alt="logo" />*/}
-          <h1
-            style={{
-              fontFamily: "'Lobster', cursive",
-              fontSize: "3rem",
-              color: "white",
-            }} // Tang kích thước chờ và đổi màu
-            className="text-2xl"
-          >
-            ShoeStore
-          </h1>
-        </div>
+        <h1 className="text-xl font-bold text-white">{getPageTitle()}</h1>
       </div>
       <div className="h-12 flex items-center gap-3 hover:bg-mono-600 cursor-pointer p-2 pr-4 rounded-full transition-all duration-300">
         <img

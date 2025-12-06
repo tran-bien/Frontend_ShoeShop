@@ -6,7 +6,7 @@ import { ApiResponse } from "../types/api";
 export const userWishlistService = {
   // Thích sản phẩm (thêm vào wishlist)
   likeProduct: (productId: string): Promise<{ data: ApiResponse }> =>
-    axiosInstanceAuth.post("/api/v1/users/wishlist/like", { productId }),
+    axiosInstanceAuth.post("/api/v1/users/wishlist", { productId }),
 
   // Bỏ thích sản phẩm (xóa khỏi wishlist)
   unlikeProduct: (productId: string): Promise<{ data: ApiResponse }> =>

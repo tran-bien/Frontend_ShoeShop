@@ -77,9 +77,9 @@ const authService = {
     return response;
   },
 
-  // Lấy thông tin user hiện tại
+  // Lấy thông tin user hiện tại (sử dụng endpoint profile)
   getMe: async () => {
-    return axiosInstanceAuth.get<AuthResponse<User>>("/api/v1/auth/me");
+    return axiosInstanceAuth.get<AuthResponse<User>>("/api/v1/users/profile");
   },
 
   // Lấy danh sách session

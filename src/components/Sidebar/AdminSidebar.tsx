@@ -32,7 +32,7 @@ interface LinkProps {
   href?: string;
   icon: React.ElementType;
   subLinks?: { name: string; href: string }[];
-  adminOnly?: boolean; // Chờ admin mới thủy
+  adminOnly?: boolean; // Chỉ admin mới thấy
 }
 
 const AdminSidebar = () => {
@@ -62,13 +62,13 @@ const AdminSidebar = () => {
       name: "Dashboard",
       href: "/admin/dashboard",
       icon: GrDashboard,
-      adminOnly: true, // Chờ admin mới thủy dashboard
+      adminOnly: true, // Chỉ admin mới thấy dashboard
     },
     {
       name: "Users",
       href: "/admin/users",
       icon: GrUser,
-      adminOnly: true, // Chờ admin mới thủy
+      adminOnly: true, // Chỉ admin mới thấy
       subLinks: [
         { name: "All Users", href: "/admin/users" },
         //{ name: "Add User", href: "/admin/users/add" },
@@ -107,11 +107,11 @@ const AdminSidebar = () => {
       name: "Settings",
       href: "/admin/settings",
       icon: GrSettingsOption,
-      adminOnly: true, // Chờ admin mới thủy
+      adminOnly: true, // Chỉ admin mới thấy
     },
   ];
 
-  // Lọc menu items theo quyẩn
+  // Lọc menu items theo quyền
   const filteredLinks = links.filter((link) => {
     if (link.adminOnly) {
       return hasAdminOnlyAccess();
@@ -123,18 +123,42 @@ const AdminSidebar = () => {
 
   return (
     <aside
-      className={`bg-mono-black border-r border-mono-800 min-h-screen transition-all duration-300 ${
-        isExpanded ? "w-48" : "w-16"
-      } sticky top-0 left-0 text-white text-center py-6`}
+      className={`bg-mono-900 border-r border-mono-800 min-h-screen transition-all duration-300 ${
+        isExpanded ? "w-56" : "w-16"
+      } sticky top-0 left-0 text-white py-4`}
       id="adminSide"
     >
+      {/* Logo - Đồng bộ với MainNavbar */}
+      <div className="px-4 mb-6">
+        <Link to="/" className="group flex items-center gap-2 justify-center">
+          <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 group-hover:scale-105 transition-all duration-300 shadow-md">
+            <span className="text-xl font-black italic text-mono-900 tracking-tighter">
+              S
+            </span>
+          </div>
+          {isExpanded && (
+            <div>
+              <h1 className="text-lg font-black tracking-tighter uppercase italic leading-none text-white group-hover:text-mono-300 transition-colors">
+                ShoeStore
+              </h1>
+              <p className="text-[8px] text-mono-400 tracking-[0.15em] uppercase font-semibold">
+                Admin Panel
+              </p>
+            </div>
+          )}
+        </Link>
+      </div>
+
+      {/* Toggle Button */}
       <button
         onClick={toggleSidebar}
-        className="text-white hover:text-mono-300 focus:outline-none mb-4 flex flex-row items-center gap-1 m-auto transition-colors duration-200"
+        className="w-full text-white hover:text-mono-300 focus:outline-none mb-4 flex flex-row items-center justify-center gap-2 px-4 transition-colors duration-200"
       >
-        <FaBars className="text-lg mx-auto" />
-        <p className={`${isExpanded ? "block" : "hidden"}`}>Menu</p>
+        <FaBars className="text-lg" />
+        {isExpanded && <span className="text-sm">Menu</span>}
       </button>
+
+      {/* Menu Items */}
       <div className="flex flex-col gap-1">
         {filteredLinks.map((link, index) => (
           <div key={index}>

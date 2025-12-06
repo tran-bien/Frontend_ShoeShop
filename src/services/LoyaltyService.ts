@@ -26,12 +26,6 @@ export const userLoyaltyService = {
     params: LoyaltyTransactionQueryParams = {}
   ): Promise<{ data: LoyaltyTransactionsResponse }> =>
     axiosInstanceAuth.get("/api/v1/users/loyalty/transactions", { params }),
-
-  // Lấy danh sách các hạng thành viên
-  getTiers: (
-    params: LoyaltyTierQueryParams = {}
-  ): Promise<{ data: LoyaltyTiersResponse }> =>
-    axiosInstanceAuth.get("/api/v1/admin/loyalty-tiers", { params }),
 };
 
 // =======================

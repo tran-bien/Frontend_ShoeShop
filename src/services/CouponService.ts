@@ -67,7 +67,8 @@ export const userCouponService = {
       discount?: number;
       message?: string;
     }>;
-  }> => axiosInstanceAuth.post("/api/v1/coupons/verify", { code, subTotal }),
+  }> =>
+    axiosInstanceAuth.post("/api/v1/users/coupons/verify", { code, subTotal }),
 };
 
 // =======================

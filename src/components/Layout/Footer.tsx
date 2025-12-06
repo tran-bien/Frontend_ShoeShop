@@ -9,8 +9,6 @@ import {
   FiMapPin,
   FiClock,
 } from "react-icons/fi";
-// @ts-expect-error - Font import doesn't have TypeScript types
-import "@fontsource/lobster";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -24,16 +22,16 @@ const Footer: React.FC = () => {
           <div>
             <Link to="/" className="inline-block mb-6 group">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300">
-                  <span className="text-lg font-black italic text-white">
+                <div className="w-9 h-9 bg-mono-900 rounded-lg flex items-center justify-center transform group-hover:rotate-12 group-hover:scale-105 transition-all duration-300 shadow-md">
+                  <span className="text-xl font-black italic text-white tracking-tighter">
                     S
                   </span>
                 </div>
                 <div>
-                  <h1 className="text-xl font-black tracking-tighter uppercase italic leading-none text-black">
+                  <h1 className="text-xl font-black tracking-tighter uppercase italic leading-none text-mono-900 group-hover:text-mono-700 transition-colors">
                     ShoeStore
                   </h1>
-                  <p className="text-[10px] text-neutral-500 tracking-widest uppercase font-bold">
+                  <p className="text-[9px] text-mono-500 tracking-[0.2em] uppercase font-semibold">
                     Premium Sneakers
                   </p>
                 </div>

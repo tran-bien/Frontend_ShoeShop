@@ -1,21 +1,24 @@
-﻿import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BiSearch } from "react-icons/bi";
 import {
   AiOutlineShoppingCart,
   AiOutlineUser,
   AiOutlineDashboard,
+  AiOutlineLogin,
+  AiOutlineLogout,
 } from "react-icons/ai";
+import { FaTruck } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { filterService, SearchSuggestion } from "../../services/FilterService";
 import { useAuth } from "../../hooks/useAuth";
 import NotificationBell from "./NotificationBell";
 import LoyaltyBadge from "./LoyaltyBadge";
-// @ts-ignore
+// @ts-expect-error - Google Fonts import does not have TypeScript declarations
 import "@fontsource/lobster";
 
 const MainNavbar = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -101,7 +104,7 @@ const MainNavbar = () => {
   };
 
   return (
-    <nav className="flex items-center justify-between px-6 lg:px-12 py-4 shadow-luxury sticky top-0 bg-white z-50 border-b border-mono-100">
+    <nav className="flex items-center justify-between px-6 lg:px-12 py-5 shadow-luxury sticky top-0 bg-white z-50 border-b border-mono-100">
       {/* logo */}
       <div className="h-10 flex items-center flex-shrink-0">
         <Link to="/" className="group">
@@ -167,7 +170,7 @@ const MainNavbar = () => {
 
       {/* search bar */}
       <div
-        className="flex items-center w-full lg:w-1/3 xl:w-1/3 mx-4 lg:mx-6 relative"
+        className="flex items-center w-full lg:w-1/4 xl:w-1/4 mx-3 lg:mx-4 relative"
         ref={searchRef}
       >
         <form onSubmit={handleSearch} className="w-full relative">
@@ -256,51 +259,109 @@ const MainNavbar = () => {
         )}
       </div>
 
-      <ul className="flex gap-2 items-center flex-shrink-0">
-        {/* Loyalty Badge - Chỉ hiển thị khi đã đăng nhập */}
-        {user && (
+      <ul className="flex gap-1 xl:gap-2 items-center flex-shrink-0">
+        {/* Loyalty Badge - Chỉ hiển thị khi đã đăng nhập và là user thường */}
+        {isAuthenticated && user?.role === "user" && (
           <li>
             <LoyaltyBadge />
           </li>
         )}
 
         {/* Notifications - Chỉ hiển thị khi đã đăng nhập */}
-        {user && (
-          <li>
+        {isAuthenticated && (
+          <li className="mr-1">
             <NotificationBell />
           </li>
         )}
 
-        {/* Giỏ hàng */}
+        {/* Giỏ hàng - Hiển thị cho tất cả */}
         <li>
           <Link
             to="/cart"
-            className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
+            className="flex items-center justify-center w-10 h-10 xl:w-11 xl:h-11 rounded-full bg-mono-50 hover:bg-mono-200 transition-all duration-200"
+            title="Giỏ hàng"
           >
-            <AiOutlineShoppingCart className="text-xl xl:text-2xl text-mono-700 hover:text-mono-black transition" />
+            <AiOutlineShoppingCart className="text-2xl xl:text-[26px] text-mono-700" />
           </Link>
         </li>
 
-        {/* User */}
-        <li>
-          <Link
-            to="/user-information"
-            className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
-          >
-            <AiOutlineUser className="text-xl xl:text-2xl text-mono-700 hover:text-mono-800 transition" />
-          </Link>
-        </li>
-        {/* Dashboard/Admin Panel - Hiện thọ cho c? admin và staff */}
-        {(user?.role === "admin" || user?.role === "staff") && (
+        {/* Trang cá nhân - Chỉ hiển thị khi đã đăng nhập */}
+        {isAuthenticated && (
           <li>
             <Link
-              to={
-                user?.role === "admin" ? "/admin/dashboard" : "/admin/products"
-              }
-              className="relative p-2 hover:bg-mono-100 rounded-full transition-colors"
+              to="/user-information"
+              className="flex items-center justify-center w-10 h-10 xl:w-11 xl:h-11 rounded-full bg-mono-50 hover:bg-mono-200 transition-all duration-200"
+              title={`Tài khoản: ${user?.name || "Người dùng"}`}
             >
-              <AiOutlineDashboard className="text-xl xl:text-2xl text-mono-700 hover:text-mono-700 transition" />
+              {user?.avatar?.url ? (
+                <img
+                  src={user.avatar.url}
+                  alt={user.name}
+                  className="w-8 h-8 xl:w-9 xl:h-9 rounded-full object-cover border-2 border-mono-300"
+                />
+              ) : (
+                <AiOutlineUser className="text-2xl xl:text-[26px] text-mono-700" />
+              )}
             </Link>
+          </li>
+        )}
+
+        {/* Dashboard - Cho Admin và Staff */}
+        {isAuthenticated &&
+          (user?.role === "admin" || user?.role === "staff") && (
+            <li>
+              <Link
+                to={
+                  user?.role === "admin"
+                    ? "/admin/dashboard"
+                    : "/admin/products"
+                }
+                className="flex items-center justify-center w-10 h-10 xl:w-11 xl:h-11 rounded-full bg-mono-50 hover:bg-mono-200 transition-all duration-200"
+                title={
+                  user?.role === "admin" ? "Admin Dashboard" : "Staff Panel"
+                }
+              >
+                <AiOutlineDashboard className="text-2xl xl:text-[26px] text-mono-700" />
+              </Link>
+            </li>
+          )}
+
+        {/* Shipper Panel - Cho Shipper */}
+        {isAuthenticated && user?.role === "shipper" && (
+          <li>
+            <Link
+              to="/shipper/dashboard"
+              className="flex items-center justify-center w-10 h-10 xl:w-11 xl:h-11 rounded-full bg-mono-50 hover:bg-mono-200 transition-all duration-200"
+              title="Shipper Dashboard"
+            >
+              <FaTruck className="text-xl xl:text-2xl text-mono-700" />
+            </Link>
+          </li>
+        )}
+
+        {/* Đăng nhập - Chỉ hiển thị khi chưa đăng nhập */}
+        {!isAuthenticated && (
+          <li>
+            <Link
+              to="/login"
+              className="flex items-center justify-center w-10 h-10 xl:w-11 xl:h-11 rounded-full bg-mono-900 hover:bg-mono-700 transition-all duration-200"
+              title="Đăng nhập"
+            >
+              <AiOutlineLogin className="text-2xl xl:text-[26px] text-white" />
+            </Link>
+          </li>
+        )}
+
+        {/* Đăng xuất - Chỉ hiển thị khi đã đăng nhập */}
+        {isAuthenticated && (
+          <li className="ml-1">
+            <button
+              onClick={() => logout()}
+              className="flex items-center justify-center w-10 h-10 xl:w-11 xl:h-11 rounded-full bg-mono-50 hover:bg-red-100 transition-all duration-200"
+              title="Đăng xuất"
+            >
+              <AiOutlineLogout className="text-2xl xl:text-[26px] text-mono-700 hover:text-red-600" />
+            </button>
           </li>
         )}
       </ul>
