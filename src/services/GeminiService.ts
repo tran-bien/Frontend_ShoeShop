@@ -1,4 +1,4 @@
-import { axiosInstanceAuth } from "../utils/axiosIntance";
+import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
 import type { ApiResponse } from "../types/api";
 
 // =======================
@@ -9,6 +9,37 @@ interface DemoModeResponse {
   isDemoMode: boolean;
   message?: string;
 }
+
+interface AIChatResponse {
+  reply: string;
+  conversationId?: string;
+  suggestions?: string[];
+}
+
+interface AIFeedbackData {
+  messageId: string;
+  rating: "helpful" | "not_helpful";
+  comment?: string;
+}
+
+// =======================
+// PUBLIC GEMINI SERVICE (AI Chat - không cần đăng nhập)
+// =======================
+
+export const publicGeminiService = {
+  // Chat với AI (public - có thể dùng mà không cần đăng nhập)
+  chatWithAI: (
+    message: string,
+    conversationId?: string
+  ): Promise<{ data: ApiResponse<AIChatResponse> }> =>
+    axiosInstance.post("/api/v1/public/ai-chat", { message, conversationId }),
+
+  // Gửi feedback cho AI response
+  sendFeedback: (
+    data: AIFeedbackData
+  ): Promise<{ data: ApiResponse<{ success: boolean }> }> =>
+    axiosInstance.post("/api/v1/public/ai-chat/feedback", data),
+};
 
 // =======================
 // ADMIN GEMINI SERVICE
@@ -26,4 +57,7 @@ export const adminGeminiService = {
     axiosInstanceAuth.post("/api/v1/admin/gemini/demo-mode", { enabled }),
 };
 
-export default adminGeminiService;
+export default {
+  public: publicGeminiService,
+  admin: adminGeminiService,
+};

@@ -1,8 +1,29 @@
-﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
 import type { Category, CategoryQueryParams } from "../types/category";
 import { ApiResponse } from "../types/api";
 
-// Admin Category Service
+// =======================
+// PUBLIC CATEGORY SERVICE
+// =======================
+
+export const publicCategoryService = {
+  // Lấy tất cả danh mục đang active (public)
+  getAllCategories: (): Promise<{ data: ApiResponse<Category[]> }> =>
+    axiosInstance.get("/api/v1/categories"),
+
+  // Lấy chi tiết danh mục theo slug
+  getCategoryBySlug: (slug: string): Promise<{ data: ApiResponse<Category> }> =>
+    axiosInstance.get(`/api/v1/categories/slug/${slug}`),
+
+  // Lấy chi tiết danh mục theo ID
+  getCategoryById: (id: string): Promise<{ data: ApiResponse<Category> }> =>
+    axiosInstance.get(`/api/v1/categories/${id}`),
+};
+
+// =======================
+// ADMIN CATEGORY SERVICE
+// =======================
+
 export const adminCategoryService = {
   // Lấy tất cả danh mục
   getAll: (
@@ -64,4 +85,7 @@ export const adminCategoryService = {
     axiosInstanceAuth.patch(`/api/v1/admin/categories/${id}/status`, data),
 };
 
-export default adminCategoryService;
+export default {
+  public: publicCategoryService,
+  admin: adminCategoryService,
+};

@@ -1,8 +1,29 @@
-﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
+﻿import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
 import type { Brand, BrandQueryParams } from "../types/brand";
 import { ApiResponse } from "../types/api";
 
-// Admin Brand Service
+// =======================
+// PUBLIC BRAND SERVICE
+// =======================
+
+export const publicBrandService = {
+  // Lấy tất cả thương hiệu đang active (public)
+  getAllBrands: (): Promise<{ data: ApiResponse<Brand[]> }> =>
+    axiosInstance.get("/api/v1/brands"),
+
+  // Lấy chi tiết thương hiệu theo slug
+  getBrandBySlug: (slug: string): Promise<{ data: ApiResponse<Brand> }> =>
+    axiosInstance.get(`/api/v1/brands/slug/${slug}`),
+
+  // Lấy chi tiết thương hiệu theo ID
+  getBrandById: (id: string): Promise<{ data: ApiResponse<Brand> }> =>
+    axiosInstance.get(`/api/v1/brands/${id}`),
+};
+
+// =======================
+// ADMIN BRAND SERVICE
+// =======================
+
 export const adminBrandService = {
   // Lấy tất cả thương hiệu
   getAll: (
@@ -55,4 +76,7 @@ export const adminBrandService = {
     axiosInstanceAuth.patch(`/api/v1/admin/brands/${id}/status`, data),
 };
 
-export default adminBrandService;
+export default {
+  public: publicBrandService,
+  admin: adminBrandService,
+};

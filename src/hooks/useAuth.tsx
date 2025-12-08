@@ -237,18 +237,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setUser(null);
       setIsAuthenticated(false);
 
-      // Clear localStorage
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
+      // Clear localStorage - Dùng removeTokens() để đảm bảo xóa đủ 4 keys
+      removeTokens();
     } catch (error) {
       console.error("Logout error:", error);
       // Vẫn clear state local nếu API lỗi
       setUser(null);
       setIsAuthenticated(false);
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
+      removeTokens();
 
       toast.success("Đăng xuất thành công!", {
         duration: 2000,
@@ -488,4 +484,3 @@ export const useAuth = () => {
   }
   return context;
 };
-

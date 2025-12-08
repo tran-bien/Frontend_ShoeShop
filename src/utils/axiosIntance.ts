@@ -27,6 +27,26 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
+// ============================================================
+// TOKEN REFRESH QUEUE - Tránh race condition khi nhiều request 401 đồng thời
+// ============================================================
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token!);
+    }
+  });
+  failedQueue = [];
+};
+
 // Request interceptor cho authenticated routes
 axiosInstanceAuth.interceptors.request.use(
   (config) => {
@@ -56,15 +76,32 @@ axiosInstanceAuth.interceptors.response.use(
       originalRequest &&
       !originalRequest._retry
     ) {
+      // Nếu đang refresh, thêm request vào queue
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return axiosInstanceAuth(originalRequest as AxiosRequestConfig);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         // Lấy refresh token từ localStorage
         const refreshToken = localStorage.getItem("refreshToken");
         if (!refreshToken) {
           // Nếu không có refresh token, đăng xuất
+          processQueue(new Error("No refresh token"), null);
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
+          localStorage.removeItem("token");
           localStorage.removeItem("user");
 
           // Thông báo và chuyển hướng
@@ -85,7 +122,11 @@ axiosInstanceAuth.interceptors.response.use(
 
           // Lưu token mới vào localStorage
           localStorage.setItem("accessToken", newAccessToken);
+          localStorage.setItem("token", newAccessToken); // Backwards compatibility
           localStorage.setItem("refreshToken", newRefreshToken);
+
+          // Process queue với token mới
+          processQueue(null, newAccessToken);
 
           // Cập nhật Authorization header và thực hiện lại request
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -94,8 +135,10 @@ axiosInstanceAuth.interceptors.response.use(
           return axiosInstanceAuth(originalRequest as AxiosRequestConfig);
         } else {
           // Nếu refresh không thành công, đăng xuất
+          processQueue(new Error("Refresh failed"), null);
           localStorage.removeItem("accessToken");
           localStorage.removeItem("refreshToken");
+          localStorage.removeItem("token");
           localStorage.removeItem("user");
 
           window.location.href = "/login";
@@ -103,14 +146,17 @@ axiosInstanceAuth.interceptors.response.use(
         }
       } catch (refreshError) {
         // Xử lý lỗi refresh token
+        processQueue(refreshError, null);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("token");
         localStorage.removeItem("user");
 
         // Không hiển thị toast ở đây để tránh conflict với logout toast
-        // toast.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
         window.location.href = "/login";
         return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
 

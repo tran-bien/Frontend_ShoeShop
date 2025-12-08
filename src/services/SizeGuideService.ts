@@ -12,19 +12,8 @@ import type {
 // =======================
 
 export const publicSizeGuideService = {
-  // Lấy danh sách size guide (public)
-  getSizeGuides: (
-    params: SizeGuideQueryParams = {}
-  ): Promise<{ data: SizeGuidesResponse }> =>
-    axiosInstance.get("/api/v1/size-guides", { params }),
-
-  // Lấy chi tiết size guide
-  getSizeGuideById: (
-    sizeGuideId: string
-  ): Promise<{ data: SizeGuideDetailResponse }> =>
-    axiosInstance.get(`/api/v1/size-guides/${sizeGuideId}`),
-
   // Lấy size guide theo productId (đúng với BE route)
+  // BE chỉ có endpoint này: GET /api/v1/products/:productId/size-guide
   getProductSizeGuide: (
     productId: string
   ): Promise<{ data: SizeGuideDetailResponse }> =>

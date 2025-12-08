@@ -26,7 +26,10 @@ const ShipperLayout = () => {
   }, []);
 
   const handleLogout = () => {
+    // Xóa tất cả tokens và user data
     localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
     navigate("/login");
   };
