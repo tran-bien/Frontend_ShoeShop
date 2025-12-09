@@ -1,58 +1,17 @@
 ﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type { ApiResponse } from "../types/api";
+import type {
+  InventoryReportItem,
+  InventoryReportParams,
+  InventoryReportResponse,
+} from "../types/report";
 
-// =======================
-// REPORT TYPES
-// =======================
-
-export interface InventoryReportItem {
-  product: {
-    _id: string;
-    name: string;
-    slug: string;
-    category?: {
-      _id: string;
-      name: string;
-    };
-    brand?: {
-      _id: string;
-      name: string;
-    };
-  };
-  variant: {
-    _id: string;
-    color?: {
-      _id: string;
-      name: string;
-      code: string;
-    };
-    gender?: string;
-  };
-  size: {
-    _id: string;
-    value: string | number;
-  };
-  quantity: number;
-  status: "in_stock" | "low_stock" | "out_of_stock";
-}
-
-export interface InventoryReportParams {
-  lowStock?: number;
-  category?: string;
-  sortBy?: "stock" | "name";
-  order?: "asc" | "desc";
-  includeInactive?: boolean;
-}
-
-interface InventoryReportResponse {
-  items: InventoryReportItem[];
-  summary: {
-    totalProducts: number;
-    outOfStock: number;
-    lowStock: number;
-    inStock: number;
-  };
-}
+// Re-export types để tiện sử dụng
+export type {
+  InventoryReportItem,
+  InventoryReportParams,
+  InventoryReportResponse,
+};
 
 // =======================
 // ADMIN REPORT SERVICE

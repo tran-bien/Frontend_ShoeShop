@@ -1,62 +1,48 @@
 ﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
+import type { ApiResponse } from "../types/api";
+import type {
+  ChatParticipant,
+  ConversationMessage,
+  ChatConversation,
+  CreateConversationData,
+  SendMessageData,
+  ConversationsQueryParams,
+  MessagesQueryParams,
+} from "../types/chat";
+
+// Re-export types để tiện sử dụng
+export type {
+  ChatParticipant,
+  ConversationMessage,
+  ChatConversation,
+  CreateConversationData,
+  SendMessageData,
+  ConversationsQueryParams,
+  MessagesQueryParams,
+};
 
 // =======================
-// TYPES
+// RESPONSE TYPES
 // =======================
 
-export interface ChatParticipant {
-  userId: {
-    _id: string;
-    name: string;
-    email: string;
-    avatar?: { url: string };
+interface GetConversationsResponse {
+  conversations: ChatConversation[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
   };
-  role: "user" | "staff" | "admin" | "shipper";
-  joinedAt: string;
-  lastReadAt?: string;
 }
 
-export interface ChatMessage {
-  _id: string;
-  conversationId: string;
-  senderId: {
-    _id: string;
-    name: string;
-    avatar?: { url: string };
+interface GetMessagesResponse {
+  messages: ConversationMessage[];
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
   };
-  type: "text" | "image" | "system";
-  text?: string;
-  images?: Array<{ url: string; public_id: string }>;
-  isRead: boolean;
-  readBy: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ChatConversation {
-  _id: string;
-  participants: ChatParticipant[];
-  status: "active" | "closed";
-  lastMessage?: {
-    text?: string;
-    type: string;
-    createdAt: string;
-    senderId: string;
-  };
-  unreadCount?: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateConversationData {
-  participantIds?: string[];
-  initialMessage?: string;
-}
-
-export interface SendMessageData {
-  type: "text" | "image";
-  text?: string;
-  images?: Array<{ url: string; public_id: string }>;
 }
 
 // =======================
@@ -66,38 +52,46 @@ export interface SendMessageData {
 export const chatService = {
   // Get all conversations for current user
   getConversations: (
-    params: { status?: string; page?: number; limit?: number } = {}
-  ) => axiosInstanceAuth.get("/api/v1/users/chat/conversations", { params }),
+    params: ConversationsQueryParams = {}
+  ): Promise<{ data: ApiResponse<GetConversationsResponse> }> =>
+    axiosInstanceAuth.get("/api/v1/users/chat/conversations", { params }),
 
   // Create a new conversation
-  createConversation: (data: CreateConversationData) =>
+  createConversation: (
+    data: CreateConversationData
+  ): Promise<{ data: ApiResponse<ChatConversation> }> =>
     axiosInstanceAuth.post("/api/v1/users/chat/conversations", data),
 
   // Get messages in a conversation
   getMessages: (
     conversationId: string,
-    params: { page?: number; limit?: number } = {}
-  ) =>
+    params: MessagesQueryParams = {}
+  ): Promise<{ data: ApiResponse<GetMessagesResponse> }> =>
     axiosInstanceAuth.get(
       `/api/v1/users/chat/conversations/${conversationId}/messages`,
       { params }
     ),
 
   // Send a message (HTTP fallback when Socket.IO is not available)
-  sendMessage: (conversationId: string, data: SendMessageData) =>
+  sendMessage: (
+    conversationId: string,
+    data: SendMessageData
+  ): Promise<{ data: ApiResponse<ConversationMessage> }> =>
     axiosInstanceAuth.post(
       `/api/v1/users/chat/conversations/${conversationId}/messages`,
       data
     ),
 
   // Mark conversation as read
-  markAsRead: (conversationId: string) =>
+  markAsRead: (conversationId: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.put(
       `/api/v1/users/chat/conversations/${conversationId}/read`
     ),
 
   // Close a conversation
-  closeConversation: (conversationId: string) =>
+  closeConversation: (
+    conversationId: string
+  ): Promise<{ data: ApiResponse<ChatConversation> }> =>
     axiosInstanceAuth.put(
       `/api/v1/users/chat/conversations/${conversationId}/close`
     ),

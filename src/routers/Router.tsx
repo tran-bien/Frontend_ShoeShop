@@ -62,6 +62,7 @@ import PrivacyPolicyPage from "../pages/PrivacyPolicyPage";
 import ContactPage from "../pages/ContactPage";
 import FAQPage from "../pages/FAQPage";
 import AdminChatPage from "../pages/AdminPages/ChatPage/AdminChatPage";
+import KnowledgeBasePage from "../pages/AdminPages/KnowledgeBasePage";
 
 const AppRouter = () => {
   return (
@@ -119,6 +120,7 @@ const AppRouter = () => {
         <Route path="size-guides" element={<AdminSizeGuidePage />} />
         <Route path="loyalty-tiers" element={<AdminLoyaltyTierPage />} />
         <Route path="chat" element={<AdminChatPage />} />
+        <Route path="knowledge-base" element={<KnowledgeBasePage />} />
 
         {/* Routes chỉ dành cho Admin */}
         <Route

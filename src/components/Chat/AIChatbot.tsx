@@ -1,19 +1,37 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { FiMessageSquare, FiX, FiSend, FiLoader } from "react-icons/fi";
+import {
+  FiMessageSquare,
+  FiX,
+  FiSend,
+  FiLoader,
+  FiAlertCircle,
+} from "react-icons/fi";
 import { axiosInstance } from "../../utils/axiosIntance";
+import type {
+  ChatMessage,
+  ChatApiResponse,
+  ChatRequestBody,
+} from "../../types/chat";
 
-interface Message {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  timestamp: Date;
-}
+// Helper function để clean markdown từ response
+const cleanMarkdown = (text: string): string => {
+  return text
+    .replace(/\*\*\*(.+?)\*\*\*/g, "$1") // Remove ***bold italic***
+    .replace(/\*\*(.+?)\*\*/g, "$1") // Remove **bold**
+    .replace(/\*(.+?)\*/g, "$1") // Remove *italic*
+    .replace(/^\s*[*-]\s+/gm, "• ") // Replace * - bullets with •
+    .replace(/^\s*#{1,6}\s*/gm, "") // Remove # headers
+    .replace(/`([^`]+)`/g, "$1") // Remove inline code
+    .replace(/```[\s\S]*?```/g, "") // Remove code blocks
+    .trim();
+};
 
 const AIChatbot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -51,7 +69,7 @@ const AIChatbot: React.FC = () => {
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
 
-    const userMessage: Message = {
+    const userMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "user",
       content: inputMessage.trim(),
@@ -63,40 +81,78 @@ const AIChatbot: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const response = await axiosInstance.post("/api/v1/public/ai-chat", {
-        message: userMessage.content,
-      });
+      // Chuẩn bị history cho BE (chỉ lấy 10 tin nhắn gần nhất, không tính initial)
+      const historyForBE = messages
+        .filter((m) => m.id !== "initial")
+        .slice(-10)
+        .map((m) => ({
+          role: m.role,
+          text: m.content,
+        }));
 
-      if (response.data.success) {
-        const assistantMessage: Message = {
+      // Chỉ gửi sessionId nếu có giá trị (không gửi null)
+      const requestBody: ChatRequestBody = {
+        message: userMessage.content,
+        history: historyForBE,
+      };
+
+      if (sessionId) {
+        requestBody.sessionId = sessionId;
+      }
+
+      const response = await axiosInstance.post<ChatApiResponse>(
+        "/api/v1/public/ai-chat",
+        requestBody
+      );
+
+      // Lưu sessionId từ response
+      if (response.data.data?.sessionId) {
+        setSessionId(response.data.data.sessionId);
+      }
+
+      if (response.data.success && response.data.data) {
+        const { data } = response.data;
+
+        // Xác định loại message
+        const isWarning =
+          data.rateLimited || data.quotaExhausted || data.outOfScope;
+        const isError = false;
+
+        const assistantMessage: ChatMessage = {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          content:
-            response.data.data?.response ||
-            response.data.response ||
-            "Xin lỗi, tôi không thể xử lý yêu cầu này.",
+          content: cleanMarkdown(
+            data.response || "Xin lỗi, tôi không thể xử lý yêu cầu này."
+          ),
           timestamp: new Date(),
+          isWarning,
+          isError,
         };
         setMessages((prev) => [...prev, assistantMessage]);
       } else {
-        // Handle unsuccessful response
-        const errorMessage: Message = {
+        // Handle unsuccessful response (success: false từ BE)
+        const errorContent =
+          response.data.data?.response ||
+          response.data.message ||
+          "Xin lỗi, tôi không thể xử lý yêu cầu này.";
+
+        const errorMessage: ChatMessage = {
           id: (Date.now() + 1).toString(),
           role: "assistant",
-          content:
-            response.data.message ||
-            "Xin lỗi, tôi không thể xử lý yêu cầu này.",
+          content: cleanMarkdown(errorContent),
           timestamp: new Date(),
+          isWarning: true,
         };
         setMessages((prev) => [...prev, errorMessage]);
       }
-    } catch (error) {
-      const errorMessage: Message = {
+    } catch {
+      const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content:
           "Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau hoặc liên hệ hotline 1900 1234 để được hỗ trợ.",
         timestamp: new Date(),
+        isError: true,
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
@@ -149,7 +205,7 @@ const AIChatbot: React.FC = () => {
           </div>
 
           {/* Messages */}
-          <div className="h-80 overflow-y-auto p-4 space-y-4 bg-mono-50">
+          <div className="h-[400px] overflow-y-auto p-4 space-y-4 bg-mono-50 scroll-smooth">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -158,19 +214,44 @@ const AIChatbot: React.FC = () => {
                 }`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-2xl ${
+                  className={`max-w-[90%] p-3 rounded-2xl ${
                     message.role === "user"
                       ? "bg-mono-black text-white rounded-br-sm"
+                      : message.isError
+                      ? "bg-red-50 text-red-800 border border-red-200 rounded-bl-sm"
+                      : message.isWarning
+                      ? "bg-amber-50 text-amber-800 border border-amber-200 rounded-bl-sm"
                       : "bg-white text-mono-800 border border-mono-200 rounded-bl-sm"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">
+                  {(message.isError || message.isWarning) &&
+                    message.role === "assistant" && (
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <FiAlertCircle
+                          className={`w-3.5 h-3.5 ${
+                            message.isError ? "text-red-500" : "text-amber-500"
+                          }`}
+                        />
+                        <span
+                          className={`text-xs font-medium ${
+                            message.isError ? "text-red-600" : "text-amber-600"
+                          }`}
+                        >
+                          {message.isError ? "Lỗi hệ thống" : "Lưu ý"}
+                        </span>
+                      </div>
+                    )}
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed break-words">
                     {message.content}
                   </p>
                   <span
-                    className={`text-[10px] mt-1 block ${
+                    className={`text-[10px] mt-1.5 block ${
                       message.role === "user"
                         ? "text-mono-300"
+                        : message.isError
+                        ? "text-red-400"
+                        : message.isWarning
+                        ? "text-amber-400"
                         : "text-mono-400"
                     }`}
                   >
@@ -227,4 +308,3 @@ const AIChatbot: React.FC = () => {
 };
 
 export default AIChatbot;
-

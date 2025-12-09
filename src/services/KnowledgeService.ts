@@ -1,77 +1,27 @@
 ﻿import { axiosInstanceAuth } from "../utils/axiosIntance";
-import type { ApiResponse, PaginationParams } from "../types/api";
+import type { ApiResponse } from "../types/api";
+import type {
+  KnowledgeDocument,
+  CreateKnowledgeDocumentData,
+  UpdateKnowledgeDocumentData,
+  KnowledgeQueryParams,
+  KnowledgeDocumentsResponse,
+  KnowledgeStatisticsResponse,
+  ExcelValidationResponse,
+  ExcelImportResponse,
+} from "../types/knowledge";
 
-// =======================
-// KNOWLEDGE DOCUMENT TYPES
-// =======================
-
-export interface KnowledgeDocument {
-  _id: string;
-  title: string;
-  content: string;
-  category: string;
-  tags: string[];
-  isActive: boolean;
-  source?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateKnowledgeDocumentData {
-  title: string;
-  content: string;
-  category: string;
-  tags?: string[];
-  isActive?: boolean;
-  source?: string;
-}
-
-export interface UpdateKnowledgeDocumentData {
-  title?: string;
-  content?: string;
-  category?: string;
-  tags?: string[];
-  isActive?: boolean;
-  source?: string;
-}
-
-export interface KnowledgeQueryParams extends PaginationParams {
-  category?: string;
-  isActive?: boolean;
-  search?: string;
-}
-
-// =======================
-// RESPONSE TYPES
-// =======================
-
-interface KnowledgeDocumentsResponse {
-  documents: KnowledgeDocument[];
-  pagination?: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
-interface KnowledgeStatisticsResponse {
-  totalDocuments: number;
-  activeDocuments: number;
-  categoryCounts: Record<string, number>;
-}
-
-interface ExcelValidationResponse {
-  valid: boolean;
-  errors?: string[];
-  rowCount?: number;
-}
-
-interface ExcelImportResponse {
-  imported: number;
-  skipped: number;
-  errors?: string[];
-}
+// Re-export types để tiện sử dụng
+export type {
+  KnowledgeDocument,
+  CreateKnowledgeDocumentData,
+  UpdateKnowledgeDocumentData,
+  KnowledgeQueryParams,
+  KnowledgeDocumentsResponse,
+  KnowledgeStatisticsResponse,
+  ExcelValidationResponse,
+  ExcelImportResponse,
+};
 
 // =======================
 // ADMIN KNOWLEDGE SERVICE

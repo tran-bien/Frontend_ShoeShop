@@ -16,12 +16,6 @@ interface AIChatResponse {
   suggestions?: string[];
 }
 
-interface AIFeedbackData {
-  messageId: string;
-  rating: "helpful" | "not_helpful";
-  comment?: string;
-}
-
 // =======================
 // PUBLIC GEMINI SERVICE (AI Chat - không cần đăng nhập)
 // =======================
@@ -33,12 +27,6 @@ export const publicGeminiService = {
     conversationId?: string
   ): Promise<{ data: ApiResponse<AIChatResponse> }> =>
     axiosInstance.post("/api/v1/public/ai-chat", { message, conversationId }),
-
-  // Gửi feedback cho AI response
-  sendFeedback: (
-    data: AIFeedbackData
-  ): Promise<{ data: ApiResponse<{ success: boolean }> }> =>
-    axiosInstance.post("/api/v1/public/ai-chat/feedback", data),
 };
 
 // =======================
