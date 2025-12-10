@@ -62,10 +62,6 @@ export const adminKnowledgeService = {
     data: ApiResponse<KnowledgeStatisticsResponse>;
   }> => axiosInstanceAuth.get("/api/v1/admin/knowledge-base/statistics"),
 
-  // Clear cache Gemini responses
-  clearCache: (): Promise<{ data: ApiResponse }> =>
-    axiosInstanceAuth.post("/api/v1/admin/knowledge-base/clear-cache"),
-
   // Clear all documents (Admin only - DANGEROUS)
   clearAllDocuments: (): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete("/api/v1/admin/knowledge-base/clear-all"),

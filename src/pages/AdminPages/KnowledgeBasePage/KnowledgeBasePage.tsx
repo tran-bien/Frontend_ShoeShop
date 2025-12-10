@@ -6,7 +6,6 @@ import {
   FiSearch,
   FiDownload,
   FiUpload,
-  FiRefreshCw,
   FiDatabase,
   FiFileText,
   FiCheckCircle,
@@ -27,7 +26,7 @@ import { KnowledgeModal, ImportModal, DeleteConfirmModal } from "./components";
 // Các category có sẵn - khớp với BE enum
 const CATEGORIES: { value: KnowledgeCategory; label: string; icon: string }[] =
   [
-    { value: "category_info", label: "Danh mục SP", icon: "📚" },
+    { value: "category_info", label: "Danh mục Sản phẩm", icon: "📚" },
     { value: "policy", label: "Chính sách", icon: "📋" },
     { value: "faq", label: "FAQ", icon: "❓" },
     { value: "brand_info", label: "Thương hiệu", icon: "🏷️" },
@@ -152,16 +151,6 @@ const KnowledgeBasePage: React.FC = () => {
     }
   };
 
-  const handleClearCache = async () => {
-    try {
-      await adminKnowledgeService.clearCache();
-      toast.success("Đã xóa cache AI");
-    } catch (error) {
-      console.error("Clear cache error:", error);
-      toast.error("Không thể xóa cache");
-    }
-  };
-
   const handleDownloadTemplate = async () => {
     try {
       const blob = await adminKnowledgeService.downloadExcelTemplate();
@@ -194,7 +183,13 @@ const KnowledgeBasePage: React.FC = () => {
   };
 
   const getCategoryInfo = (category: string) => {
-    return CATEGORIES.find((c) => c.value === category) || CATEGORIES[7];
+    return (
+      CATEGORIES.find((c) => c.value === category) || {
+        value: category,
+        label: category,
+        icon: "📄",
+      }
+    );
   };
 
   return (
@@ -211,13 +206,6 @@ const KnowledgeBasePage: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button
-            onClick={handleClearCache}
-            className="px-4 py-2 bg-amber-100 text-amber-700 rounded-lg hover:bg-amber-200 transition-colors flex items-center gap-2"
-          >
-            <FiRefreshCw className="w-4 h-4" />
-            Xóa Cache
-          </button>
           <button
             onClick={handleDownloadTemplate}
             className="px-4 py-2 bg-mono-100 text-mono-700 rounded-lg hover:bg-mono-200 transition-colors flex items-center gap-2"

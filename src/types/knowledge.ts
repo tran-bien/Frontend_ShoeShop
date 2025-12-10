@@ -20,7 +20,7 @@ export const KNOWLEDGE_CATEGORIES: {
   label: string;
   icon: string;
 }[] = [
-  { value: "category_info", label: "Danh mục SP", icon: "📚" },
+  { value: "category_info", label: "Danh mục Sản phẩm", icon: "📚" },
   { value: "policy", label: "Chính sách", icon: "📋" },
   { value: "faq", label: "FAQ", icon: "❓" },
   { value: "brand_info", label: "Thương hiệu", icon: "🏷️" },
