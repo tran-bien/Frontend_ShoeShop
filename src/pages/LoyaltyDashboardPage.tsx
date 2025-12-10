@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  FiAward,
-  FiTrendingUp,
-  FiGift,
-  FiClock,
-  FiChevronRight,
-} from "react-icons/fi";
+  Award,
+  TrendingUp,
+  Gift,
+  Clock,
+  ChevronRight,
+  ChevronLeft,
+  Loader2,
+  AlertCircle,
+  Star,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { userLoyaltyService } from "../services/LoyaltyService";
-import type { UserLoyaltyInfo, LoyaltyTransaction } from "../types/loyalty";
+import Sidebar from "../components/User/Sidebar";
+import type {
+  UserLoyaltyInfo,
+  LoyaltyTransaction,
+  LoyaltyTier,
+} from "../types/loyalty";
 
-const LoyaltyDashboard: React.FC = () => {
+const LoyaltyDashboardContent: React.FC = () => {
   const [stats, setStats] = useState<UserLoyaltyInfo | null>(null);
   const [transactions, setTransactions] = useState<LoyaltyTransaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,12 +37,14 @@ const LoyaltyDashboard: React.FC = () => {
         userLoyaltyService.getTransactions({ page: 1, limit: 10 }),
       ]);
 
+      console.log("Loyalty stats response:", statsRes.data);
+
       if (statsRes.data.success) {
         setStats(statsRes.data.data);
       }
       if (transRes.data.success) {
-        setTransactions(transRes.data.data.transactions);
-        setTotalPages(transRes.data.data.pagination.totalPages);
+        setTransactions(transRes.data.data.transactions || []);
+        setTotalPages(transRes.data.data.pagination?.totalPages || 1);
       }
     } catch (error) {
       console.error("Error fetching loyalty data:", error);
@@ -47,8 +61,8 @@ const LoyaltyDashboard: React.FC = () => {
         limit: 10,
       });
       if (response.data.success) {
-        setTransactions(response.data.data.transactions);
-        setTotalPages(response.data.data.pagination.totalPages);
+        setTransactions(response.data.data.transactions || []);
+        setTotalPages(response.data.data.pagination?.totalPages || 1);
       }
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -60,24 +74,123 @@ const LoyaltyDashboard: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    fetchTransactions();
+    if (page > 1) {
+      fetchTransactions();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
+  // Helper functions
+  const getTransactionTypeLabel = (type: string) => {
+    const labels: Record<string, string> = {
+      EARN: "Tích điểm",
+      REDEEM: "Đổi điểm",
+      EXPIRE: "Hết hạn",
+      ADJUST: "Điều chỉnh",
+    };
+    return labels[type] || type;
+  };
+
+  const getTransactionIcon = (type: string) => {
+    switch (type) {
+      case "EARN":
+        return <ArrowUp className="w-4 h-4 text-green-600" />;
+      case "REDEEM":
+        return <ArrowDown className="w-4 h-4 text-red-600" />;
+      case "EXPIRE":
+        return <Clock className="w-4 h-4 text-orange-600" />;
+      default:
+        return <Gift className="w-4 h-4 text-gray-600" />;
+    }
+  };
+
   const getTransactionColor = (type: string) => {
-    return type === "earn" ? "text-mono-600" : "text-mono-700";
+    switch (type) {
+      case "EARN":
+        return "text-green-600";
+      case "REDEEM":
+      case "EXPIRE":
+        return "text-red-600";
+      default:
+        return "text-gray-600";
+    }
   };
 
   const getTransactionPrefix = (type: string) => {
-    return type === "earn" ? "+" : "-";
+    return type === "EARN" ? "+" : "-";
+  };
+
+  // Get current tier from stats (BE returns tier or currentTier)
+  const getCurrentTier = (): LoyaltyTier | null => {
+    if (!stats) return null;
+    return stats.tier || stats.currentTier || null;
+  };
+
+  // Get lifetime points (BE returns totalEarned or lifetimePoints)
+  const getLifetimePoints = (): number => {
+    if (!stats) return 0;
+    return stats.totalEarned || stats.lifetimePoints || 0;
+  };
+
+  // Get expiring points as number
+  const getExpiringPointsValue = (): number => {
+    if (!stats || !stats.expiringPoints) return 0;
+    if (typeof stats.expiringPoints === "number") {
+      return stats.expiringPoints;
+    }
+    return stats.expiringPoints.points || 0;
+  };
+
+  // Calculate progress percentage
+  const getProgressPercentage = (): number => {
+    if (!stats) return 0;
+    const currentTier = getCurrentTier();
+    const nextTier = stats.nextTier;
+
+    if (!currentTier || !nextTier) return 100;
+
+    const currentMinPoints = currentTier.minPoints || 0;
+    const nextMinPoints =
+      typeof nextTier === "object" && "minPoints" in nextTier
+        ? nextTier.minPoints
+        : 0;
+
+    if (nextMinPoints <= currentMinPoints) return 100;
+
+    return Math.min(
+      ((stats.currentPoints - currentMinPoints) /
+        (nextMinPoints - currentMinPoints)) *
+        100,
+      100
+    );
+  };
+
+  // Get next tier info
+  const getNextTierInfo = () => {
+    if (!stats || !stats.nextTier) return null;
+
+    const nextTier = stats.nextTier;
+    if (typeof nextTier === "object" && "name" in nextTier) {
+      return {
+        name: nextTier.name,
+        minPoints: nextTier.minPoints,
+        pointsNeeded:
+          "pointsNeeded" in nextTier
+            ? nextTier.pointsNeeded
+            : nextTier.minPoints - stats.currentPoints,
+      };
+    }
+    return null;
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tải...</p>
+          <Loader2 className="w-10 h-10 animate-spin text-gray-400 mx-auto" />
+          <p className="mt-4 text-gray-500">
+            Đang tải thông tin điểm thưởng...
+          </p>
         </div>
       </div>
     );
@@ -85,229 +198,320 @@ const LoyaltyDashboard: React.FC = () => {
 
   if (!stats) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <p className="text-gray-500">Không thể tải thông tin</p>
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-gray-500">
+        <AlertCircle className="w-12 h-12 mb-4 opacity-50" />
+        <p className="text-lg font-medium">
+          Không thể tải thông tin điểm thưởng
+        </p>
+        <button
+          onClick={fetchData}
+          className="mt-4 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          Thử lại
+        </button>
       </div>
     );
   }
 
-  const progressPercentage = stats.nextTier
-    ? ((stats.currentPoints - stats.currentTier.minPoints) /
-        (stats.nextTier.minPoints - stats.currentTier.minPoints)) *
-      100
-    : 100;
+  const currentTier = getCurrentTier();
+  const nextTierInfo = getNextTierInfo();
+  const lifetimePoints = getLifetimePoints();
+  const expiringPoints = getExpiringPointsValue();
+  const progressPercentage = getProgressPercentage();
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-black mb-2 flex items-center gap-2">
-            <FiAward className="w-8 h-8" />
-            Điểm Thưởng
-          </h1>
-          <p className="text-gray-600">
-            Quản lý điểm thưởng và hạng thành viên
-          </p>
-        </div>
+    <div className="max-w-5xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+          <Award className="w-7 h-7" />
+          Điểm Thưởng
+        </h1>
+        <p className="text-gray-500 mt-1">
+          Quản lý điểm thưởng và hạng thành viên của bạn
+        </p>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Current Points */}
-          <div className="bg-gradient-to-br from-black to-gray-800 text-white p-6 rounded-lg">
-            <div className="flex items-center justify-between mb-4">
-              <FiGift className="w-8 h-8" />
-              <span className="text-sm opacity-80">Điểm hiện tại</span>
-            </div>
-            <p className="text-4xl font-bold mb-2">
-              {stats.currentPoints.toLocaleString()}
-            </p>
-            <p className="text-sm opacity-80">điểm</p>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Current Points */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-black text-white p-6 rounded-xl"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <Gift className="w-8 h-8 opacity-80" />
+            <span className="text-sm opacity-70">Điểm hiện tại</span>
           </div>
+          <p className="text-4xl font-bold mb-1">
+            {stats.currentPoints?.toLocaleString() || 0}
+          </p>
+          <p className="text-sm opacity-70">điểm</p>
+        </motion.div>
 
-          {/* Current Tier */}
-          <div className="p-6 rounded-lg border-2 border-gray-300">
-            <div className="flex items-center justify-between mb-4">
-              <FiAward className="w-8 h-8" />
-              <span className="text-sm text-gray-600">Hạng hiện tại</span>
-            </div>
-            <p className="text-2xl font-bold mb-2">{stats.currentTier.name}</p>
+        {/* Current Tier */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white border-2 border-gray-200 p-6 rounded-xl"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <Star className="w-8 h-8 text-gray-700" />
+            <span className="text-sm text-gray-500">Hạng hiện tại</span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 mb-1">
+            {currentTier?.name || stats.tierName || "Chưa có"}
+          </p>
+          {currentTier?.displayOrder && (
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-gray-900" />
-              <span className="text-sm text-gray-600">
-                Thứ tự: {stats.currentTier.displayOrder}
+              <span className="w-2 h-2 rounded-full bg-black" />
+              <span className="text-sm text-gray-500">
+                Cấp độ {currentTier.displayOrder}
               </span>
             </div>
+          )}
+        </motion.div>
+
+        {/* Lifetime Points */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-gray-50 p-6 rounded-xl"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <TrendingUp className="w-8 h-8 text-gray-600" />
+            <span className="text-sm text-gray-500">Tổng điểm tích lũy</span>
+          </div>
+          <p className="text-4xl font-bold text-gray-900 mb-1">
+            {lifetimePoints.toLocaleString()}
+          </p>
+          <p className="text-sm text-gray-500">điểm</p>
+        </motion.div>
+      </div>
+
+      {/* Progress to Next Tier */}
+      {nextTierInfo && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white border border-gray-200 rounded-xl p-6 mb-8"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-1">
+                Tiến trình lên hạng
+              </h3>
+              <p className="text-sm text-gray-500">
+                Còn{" "}
+                <span className="font-medium text-black">
+                  {nextTierInfo.pointsNeeded?.toLocaleString()}
+                </span>{" "}
+                điểm để lên{" "}
+                <span className="font-medium">{nextTierInfo.name}</span>
+              </p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-gray-400" />
           </div>
 
-          {/* Lifetime Points */}
-          <div className="bg-gray-50 p-6 rounded-lg">
-            <div className="flex items-center justify-between mb-4">
-              <FiTrendingUp className="w-8 h-8 text-gray-700" />
-              <span className="text-sm text-gray-600">Tổng điểm tích lũy</span>
-            </div>
-            <p className="text-4xl font-bold text-gray-900 mb-2">
-              {stats.lifetimePoints.toLocaleString()}
-            </p>
-            <p className="text-sm text-gray-600">điểm</p>
+          {/* Progress Bar */}
+          <div className="relative h-3 bg-gray-100 rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercentage}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute top-0 left-0 h-full bg-black rounded-full"
+            />
           </div>
-        </div>
 
-        {/* Progress to Next Tier */}
-        {stats.nextTier && (
-          <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-semibold text-black mb-1">
-                  Tiến trình lên hạng
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Còn {stats.pointsToNextTier?.toLocaleString()} điểm để lên{" "}
-                  {stats.nextTier.name}
-                </p>
-              </div>
-              <FiChevronRight className="w-6 h-6 text-gray-400" />
-            </div>
-
-            {/* Progress Bar */}
-            <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="absolute top-0 left-0 h-full bg-black transition-all duration-500"
-                style={{ width: `${Math.min(progressPercentage, 100)}%` }}
-              />
-            </div>
-
-            {/* Points Range */}
-            <div className="flex justify-between mt-2 text-xs text-gray-600">
-              <span>{stats.currentTier.minPoints.toLocaleString()} điểm</span>
-              <span>{stats.nextTier.minPoints.toLocaleString()} điểm</span>
-            </div>
+          {/* Points Range */}
+          <div className="flex justify-between mt-2 text-xs text-gray-500">
+            <span>{currentTier?.minPoints?.toLocaleString() || 0} điểm</span>
+            <span>{nextTierInfo.minPoints?.toLocaleString()} điểm</span>
           </div>
-        )}
+        </motion.div>
+      )}
 
-        {/* Tier Benefits */}
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8">
-          <h3 className="font-semibold text-black mb-4">Quyền lợi của bạn</h3>
+      {/* Tier Benefits */}
+      {currentTier?.benefits && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-8"
+        >
+          <h3 className="font-semibold text-gray-900 mb-4">
+            Quyền lợi của bạn
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-100">
               <div className="w-10 h-10 bg-black text-white rounded-lg flex items-center justify-center flex-shrink-0">
-                <FiGift className="w-5 h-5" />
+                <Gift className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-medium text-black">Tích điểm</p>
-                <p className="text-sm text-gray-600">
-                  x{stats.currentTier.benefits.pointsMultiplier} điểm cho mỗi
-                  đơn hàng
+                <p className="font-medium text-gray-900">Nhân điểm tích lũy</p>
+                <p className="text-sm text-gray-500">
+                  x{currentTier.benefits.pointsMultiplier || 1} điểm cho mỗi đơn
+                  hàng
                 </p>
               </div>
             </div>
-            {stats.currentTier.benefits.prioritySupport && (
-              <div className="flex items-start gap-3">
+            {currentTier.benefits.prioritySupport && (
+              <div className="flex items-start gap-4 p-4 bg-white rounded-lg border border-gray-100">
                 <div className="w-10 h-10 bg-black text-white rounded-lg flex items-center justify-center flex-shrink-0">
-                  <FiGift className="w-5 h-5" />
+                  <Star className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="font-medium text-black">Hỗ trợ ưu tiên</p>
-                  <p className="text-sm text-gray-600">
-                    Được hỗ trợ nhanh chóng
+                  <p className="font-medium text-gray-900">Hỗ trợ ưu tiên</p>
+                  <p className="text-sm text-gray-500">
+                    Được hỗ trợ nhanh chóng từ đội ngũ CSKH
                   </p>
                 </div>
               </div>
             )}
           </div>
+        </motion.div>
+      )}
+
+      {/* Expiring Points Warning */}
+      {expiringPoints > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="bg-orange-50 border border-orange-200 rounded-xl p-6 mb-8"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <Clock className="w-5 h-5 text-orange-600" />
+            <h3 className="font-semibold text-orange-800">Điểm sắp hết hạn</h3>
+          </div>
+          <p className="text-orange-700">
+            Bạn có{" "}
+            <span className="font-bold">{expiringPoints.toLocaleString()}</span>{" "}
+            điểm sắp hết hạn trong 30 ngày tới. Hãy sử dụng điểm trước khi hết
+            hạn!
+          </p>
+        </motion.div>
+      )}
+
+      {/* Transaction History */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6 }}
+        className="bg-white border border-gray-200 rounded-xl overflow-hidden"
+      >
+        <div className="p-6 border-b border-gray-200">
+          <h3 className="font-semibold text-gray-900">Lịch sử giao dịch</h3>
         </div>
 
-        {/* Expiring Points */}
-        {stats.expiringPoints && (
-          <div className="bg-mono-100 border border-mono-200 rounded-lg p-6 mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <FiClock className="w-5 h-5 text-mono-700" />
-              <h3 className="font-semibold text-black">Điểm sắp hết hạn</h3>
-            </div>
-            <div className="flex justify-between items-center py-2">
-              <span className="text-gray-700">
-                {stats.expiringPoints.points.toLocaleString()} điểm
-              </span>
-              <span className="text-sm text-gray-600">
-                Hết hạn:{" "}
-                {new Date(stats.expiringPoints.expiresAt).toLocaleDateString(
-                  "vi-VN"
-                )}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Transaction History */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="font-semibold text-black">Lịch sử giao dịch</h3>
-          </div>
-
+        <AnimatePresence mode="wait">
           {transactions.length === 0 ? (
-            <div className="p-8 text-center text-gray-500">
-              Chưa có giao dịch nào
-            </div>
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="p-12 text-center text-gray-500"
+            >
+              <Gift className="w-12 h-12 mx-auto mb-4 opacity-30" />
+              <p>Chưa có giao dịch nào</p>
+            </motion.div>
           ) : (
-            <>
-              <div className="divide-y divide-gray-200">
-                {transactions.map((transaction) => (
-                  <div key={transaction._id} className="p-4 hover:bg-gray-50">
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <p className="font-medium text-black mb-1">
-                          {transaction.description}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {new Date(transaction.createdAt).toLocaleString(
-                            "vi-VN"
-                          )}
-                        </p>
+            <motion.div
+              key="transactions"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className="divide-y divide-gray-100">
+                {transactions.map((transaction, index) => (
+                  <motion.div
+                    key={transaction._id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="p-4 hover:bg-gray-50 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                          {getTransactionIcon(transaction.type)}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {transaction.description ||
+                              getTransactionTypeLabel(transaction.type)}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(transaction.createdAt).toLocaleString(
+                              "vi-VN"
+                            )}
+                          </p>
+                        </div>
                       </div>
-                      <div className="text-right ml-4">
+                      <div className="text-right">
                         <p
                           className={`text-lg font-semibold ${getTransactionColor(
                             transaction.type
                           )}`}
                         >
                           {getTransactionPrefix(transaction.type)}
-                          {transaction.points.toLocaleString()}
+                          {Math.abs(transaction.points).toLocaleString()}
                         </p>
-                        <p className="text-sm text-gray-600">
-                          Còn: {transaction.balanceAfter.toLocaleString()}
+                        <p className="text-sm text-gray-500">
+                          Số dư:{" "}
+                          {transaction.balanceAfter?.toLocaleString() || 0}
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 p-4 border-t border-gray-200">
+                <div className="flex items-center justify-center gap-4 p-4 border-t border-gray-200">
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
+                    <ChevronLeft className="w-4 h-4" />
                     Trước
                   </button>
-
-                  <span className="text-gray-600">
+                  <span className="text-sm text-gray-600">
                     Trang {page} / {totalPages}
                   </span>
-
                   <button
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
-                    className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Sau
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
               )}
-            </>
+            </motion.div>
           )}
+        </AnimatePresence>
+      </motion.div>
+    </div>
+  );
+};
+
+// Wrapper component with Sidebar
+const LoyaltyDashboard: React.FC = () => {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-1 bg-mono-100">
+        <Sidebar />
+        <div className="flex-1 p-8">
+          <LoyaltyDashboardContent />
         </div>
       </div>
     </div>
@@ -315,6 +519,3 @@ const LoyaltyDashboard: React.FC = () => {
 };
 
 export default LoyaltyDashboard;
-
-
-

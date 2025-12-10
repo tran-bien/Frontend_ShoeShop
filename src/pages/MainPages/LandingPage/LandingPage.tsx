@@ -13,6 +13,8 @@ import { publicCouponService } from "../../../services/CouponService";
 import { Coupon } from "../../../types/coupon";
 import { bannerPublicService } from "../../../services/BannerService";
 import type { Banner } from "../../../types/banner";
+import { userRecommendationService } from "../../../services/RecommendationService";
+import { useAuth } from "../../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 import {
   FiChevronRight,
@@ -22,17 +24,20 @@ import {
   FiCopy,
   FiCalendar,
 } from "react-icons/fi";
-import { BsArrowLeft, BsArrowRight } from "react-icons/bs";
+import { BsArrowLeft, BsArrowRight, BsStars } from "react-icons/bs";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [bestSellers, setBestSellers] = useState<Product[]>([]);
   const [newArrivals, setNewArrivals] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
   const [publicCoupons, setPublicCoupons] = useState<Coupon[]>([]);
   const [banners, setBanners] = useState<Banner[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
 
@@ -158,6 +163,68 @@ const LandingPage: React.FC = () => {
 
     fetchData();
   }, []);
+
+  // Fetch recommendations khi user đã đăng nhập
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      if (!isAuthenticated) {
+        setRecommendedProducts([]);
+        return;
+      }
+
+      try {
+        setLoadingRecommendations(true);
+        const res =
+          await userRecommendationService.getPersonalizedRecommendations({
+            algorithm: "HYBRID",
+            limit: 8,
+          });
+
+        if (res.data.success) {
+          // Handle multiple response formats:
+          // 1. { data: { products: [...] } } - new format
+          // 2. { data: { recommendations: [...] } }
+          // 3. { products: [...] }
+          let products: Product[] = [];
+
+          if (res.data.data?.products) {
+            // Format 1: New format - products in data object
+            products = (res.data.data.products as Product[]).filter(
+              (p: Product) => !!p && !!p._id
+            );
+          } else if (res.data.data?.recommendations) {
+            // Format 2: Extract products from recommendations
+            products = res.data.data.recommendations
+              .map((rec: { product?: Product }) => rec.product)
+              .filter((p: Product | undefined): p is Product => !!p && !!p._id);
+          } else if (res.data.products) {
+            // Format 3: Direct products array from BE
+            products = (res.data.products as Product[]).filter(
+              (p: Product) => !!p && !!p._id
+            );
+          } else if (res.data.recommendations) {
+            // Format 4: recommendations at root level
+            const recs = res.data.recommendations as Array<
+              { product?: Product } | Product
+            >;
+            products = recs
+              .map((rec) => ("product" in rec ? rec.product : rec) as Product)
+              .filter((p: Product | undefined): p is Product => !!p && !!p._id);
+          }
+
+          console.log("Recommendations products:", products);
+          setRecommendedProducts(products);
+        }
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+        toast.error("Không thể tải gợi ý sản phẩm");
+      } finally {
+        setLoadingRecommendations(false);
+      }
+    };
+
+    fetchRecommendations();
+  }, [isAuthenticated]);
 
   // Copy coupon code to clipboard
   const copyCouponCode = async (code: string) => {
@@ -563,6 +630,78 @@ const LandingPage: React.FC = () => {
           />
         </div>
       </section>
+
+      {/* Gợi ý dành cho bạn - Chỉ hiển thị khi đã đăng nhập */}
+      {isAuthenticated && (
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="flex justify-between items-center mb-8">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-black rounded-lg flex items-center justify-center">
+                  <BsStars className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold">Gợi ý dành cho bạn</h2>
+                  <p className="text-mono-500 text-sm">
+                    Dựa trên lịch sử xem và sở thích của bạn
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/recommendations"
+                className="px-4 py-2 bg-mono-800 text-white rounded-lg hover:bg-mono-900 transition-colors flex items-center"
+              >
+                <span>Xem thêm</span>
+                <FiChevronRight className="ml-1" />
+              </Link>
+            </div>
+
+            {loadingRecommendations ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-mono-800 mx-auto"></div>
+                  <p className="mt-4 text-mono-500 text-sm">
+                    Đang tải gợi ý...
+                  </p>
+                </div>
+              </div>
+            ) : recommendedProducts.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {recommendedProducts.map((product) => {
+                  const cardProduct = convertToProductCardProduct(product);
+                  if (!cardProduct || !cardProduct._id) return null;
+                  return (
+                    <div key={product._id} className="px-2">
+                      <ProductCard
+                        product={cardProduct}
+                        onClick={() => {
+                          navigate(`/product/${product.slug || product._id}`);
+                          window.scrollTo(0, 0);
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-mono-50 rounded-lg">
+                <BsStars className="w-12 h-12 text-mono-300 mx-auto mb-4" />
+                <p className="text-mono-500">
+                  Hãy xem thêm sản phẩm để chúng tôi có thể gợi ý tốt hơn cho
+                  bạn!
+                </p>
+                <Link
+                  to="/products"
+                  className="inline-flex items-center mt-4 px-6 py-2 bg-black text-white rounded-lg hover:bg-mono-800 transition-colors"
+                >
+                  Khám phá sản phẩm
+                  <FiChevronRight className="ml-1" />
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Sản phẩm dã xem gẩn dây */}
       <RecentlyViewed limit={8} title="Sản phẩm dã xem gẩn dây" />

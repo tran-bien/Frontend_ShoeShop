@@ -158,10 +158,10 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-xl max-w-4xl w-full my-8">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-mono-200 sticky top-0 bg-white z-10 rounded-t-xl">
+        <div className="flex items-center justify-between p-6 border-b border-mono-200 flex-shrink-0">
           <h2 className="text-2xl font-bold text-mono-black">
             {post ? "Cập nhật Bài viết" : "Tạo Bài viết Mới"}
           </h2>
@@ -174,7 +174,10 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 space-y-6 overflow-y-auto flex-1"
+        >
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-mono-700 mb-2">

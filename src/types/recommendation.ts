@@ -75,6 +75,7 @@ export interface RecommendationQueryParams {
   type?: RecommendationType;
   categoryId?: string;
   excludeProductIds?: string[];
+  algorithm?: "HYBRID" | "COLLABORATIVE" | "CONTENT_BASED" | "TRENDING";
 }
 
 // =======================
@@ -99,10 +100,15 @@ export interface ViewHistoryResponse {
 
 export interface RecommendationsResponse {
   success: boolean;
-  message: string;
-  data: {
-    recommendations: Recommendation[];
+  message?: string;
+  data?: {
+    recommendations?: Recommendation[];
+    products?: Product[];
   };
+  // BE also returns products directly at root level
+  products?: Recommendation[] | Product[];
+  recommendations?: Recommendation[];
+  fromCache?: boolean;
 }
 
 export interface UserBehaviorResponse {

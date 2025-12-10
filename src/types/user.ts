@@ -45,6 +45,22 @@ export interface WishlistItem {
 }
 
 // =======================
+// NOTIFICATION PREFERENCES
+// =======================
+
+// BE Schema structure:
+// preferences: {
+//   emailNotifications: { orderUpdates: boolean },
+//   inAppNotifications: boolean
+// }
+export interface NotificationPreferences {
+  emailNotifications: {
+    orderUpdates: boolean;
+  };
+  inAppNotifications: boolean;
+}
+
+// =======================
 // MAIN USER INTERFACE
 // =======================
 
@@ -59,6 +75,7 @@ export interface User {
   avatar?: UserAvatar;
   wishlist?: WishlistItem[];
   addresses?: UserAddress[];
+  notificationPreferences?: NotificationPreferences;
   isActive?: boolean; // Account active status
   isVerified?: boolean; // Email verification status
   isBlock?: boolean;
@@ -109,6 +126,10 @@ export interface ChangePasswordData {
 export interface BlockUserData {
   isBlock: boolean;
   reason?: string;
+}
+
+export interface ChangeRoleData {
+  role: "user" | "staff" | "admin" | "shipper";
 }
 
 // =======================

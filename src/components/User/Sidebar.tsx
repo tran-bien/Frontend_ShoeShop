@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
       await authService.logout();
       localStorage.removeItem("accessToken");
       Cookie.remove("token");
-      toast.success("Ðang xuất thành công");
+      toast.success("Ðăng xuất thành công");
       navigate("/");
     } catch {
       navigate("/");
@@ -156,7 +156,7 @@ const Sidebar: React.FC = () => {
           <span className="mr-3 text-mono-500 group-hover:text-mono-500 transition-transform group-hover:scale-110">
             <FaSignOutAlt className="text-lg" />
           </span>
-          <span className="font-medium text-sm">Ðang xuất</span>
+          <span className="font-medium text-sm">Đăng xuất</span>
         </button>
       </div>
     </div>

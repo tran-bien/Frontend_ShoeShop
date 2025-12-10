@@ -52,7 +52,10 @@ const DiscountPage = () => {
   const fetchDiscounts = async () => {
     try {
       const res = await adminCouponService.getAllCoupons();
-      const coupons = res.data.data?.coupons || [];
+      // BE trả về: { success, data: [...], total, totalPages, ... }
+      const coupons = Array.isArray(res.data.data)
+        ? res.data.data
+        : res.data.data?.coupons || [];
       setDiscounts(
         coupons.map((c: Coupon) => ({
           _id: c._id,

@@ -31,6 +31,17 @@ export interface AddressResponse {
 }
 
 // =======================
+// NOTIFICATION PREFERENCES TYPE (matches BE schema)
+// =======================
+
+export interface NotificationPreferencesData {
+  emailNotifications?: {
+    orderUpdates?: boolean;
+  };
+  inAppNotifications?: boolean;
+}
+
+// =======================
 // USER PROFILE SERVICE
 // =======================
 
@@ -54,6 +65,21 @@ export const profileService = {
   // Xóa avatar
   deleteAvatar: (): Promise<{ data: ApiResponse<User> }> =>
     axiosInstanceAuth.delete("/api/v1/users/images/avatar"),
+
+  // Lấy cài đặt thông báo
+  getNotificationPreferences: (): Promise<{
+    data: ApiResponse<NotificationPreferencesData>;
+  }> =>
+    axiosInstanceAuth.get("/api/v1/users/profile/preferences/notifications"),
+
+  // Cập nhật cài đặt thông báo
+  updateNotificationPreferences: (
+    data: NotificationPreferencesData
+  ): Promise<{ data: ApiResponse<NotificationPreferencesData> }> =>
+    axiosInstanceAuth.put(
+      "/api/v1/users/profile/preferences/notifications",
+      data
+    ),
 };
 
 // =======================

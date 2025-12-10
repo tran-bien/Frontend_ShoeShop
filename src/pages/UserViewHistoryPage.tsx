@@ -3,6 +3,7 @@ import { FiClock, FiEye, FiTrash2, FiShoppingBag } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { userViewHistoryService } from "../services/ViewHistoryService";
+import Sidebar from "../components/User/Sidebar";
 import type { Product } from "../types/product";
 import type { ViewHistory } from "../types/viewHistory";
 
@@ -10,7 +11,7 @@ interface PopulatedViewHistory extends Omit<ViewHistory, "product"> {
   product: Product;
 }
 
-const UserViewHistory: React.FC = () => {
+const UserViewHistoryContent: React.FC = () => {
   const navigate = useNavigate();
   const [history, setHistory] = useState<PopulatedViewHistory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,20 +55,35 @@ const UserViewHistory: React.FC = () => {
     }
   };
 
+  // FIX: Correct time formatting logic
   const formatDate = (date: string) => {
     const d = new Date(date);
     const now = new Date();
-    const diffTime = Math.abs(now.getTime() - d.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffMs = now.getTime() - d.getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
+    if (diffMinutes < 1) return "Vừa xong";
+    if (diffMinutes < 60) return `${diffMinutes} phút trước`;
+    if (diffHours < 24) return `${diffHours} giờ trước`;
     if (diffDays === 1) return "Hôm qua";
     if (diffDays < 7) return `${diffDays} ngày trước`;
     return d.toLocaleDateString("vi-VN");
   };
 
+  // Handle product click - navigate to product detail
+  const handleProductClick = (item: PopulatedViewHistory) => {
+    if (item.product?.slug) {
+      navigate(`/product/${item.product.slug}`);
+    } else {
+      toast.error("Không tìm thấy sản phẩm");
+    }
+  };
+
   if (loading && page === 1) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
           <p className="mt-4 text-gray-600">Đang tải...</p>
@@ -77,19 +93,23 @@ const UserViewHistory: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-black mb-2">Lịch Sử Xem</h1>
-            <p className="text-gray-600">Các sản phẩm bạn đã xem gần đây</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-1">
+              Lịch Sử Xem
+            </h1>
+            <p className="text-gray-500">
+              Các sản phẩm bạn đã xem gần đây ({history.length} sản phẩm)
+            </p>
           </div>
 
           {history.length > 0 && (
             <button
               onClick={handleClearHistory}
-              className="mt-4 sm:mt-0 flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              className="mt-4 sm:mt-0 flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
             >
               <FiTrash2 className="w-4 h-4" />
               Xóa tất cả
@@ -99,17 +119,17 @@ const UserViewHistory: React.FC = () => {
 
         {/* Empty State */}
         {history.length === 0 ? (
-          <div className="text-center py-16 bg-gray-50 rounded-lg">
-            <FiEye className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <div className="text-center py-20 bg-white rounded-xl shadow-sm">
+            <FiEye className="w-20 h-20 text-gray-300 mx-auto mb-6" />
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
               Chưa có lịch sử xem
             </h3>
-            <p className="text-gray-500 mb-6">
-              Các sản phẩm bạn xem sẽ hiển thị ở đây
+            <p className="text-gray-500 mb-8 max-w-md mx-auto">
+              Các sản phẩm bạn xem sẽ được lưu lại ở đây để bạn dễ dàng tìm lại
             </p>
             <button
               onClick={() => navigate("/products")}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
             >
               <FiShoppingBag className="w-5 h-5" />
               Khám phá sản phẩm
@@ -117,56 +137,59 @@ const UserViewHistory: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* Products Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {/* Products Grid - Larger cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {history.map((item) => (
                 <div
                   key={item._id}
-                  onClick={() => navigate(`/products/${item.product.slug}`)}
-                  className="group cursor-pointer bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-all"
+                  onClick={() => handleProductClick(item)}
+                  className="group cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
                 >
                   {/* Product Image */}
-                  <div className="aspect-square bg-gray-100 overflow-hidden">
+                  <div className="aspect-square bg-gray-100 overflow-hidden relative">
                     <img
-                      src={item.product.images?.[0]?.url || "/placeholder.jpg"}
-                      alt={item.product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      src={item.product?.images?.[0]?.url || "/placeholder.jpg"}
+                      alt={item.product?.name || "Sản phẩm"}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "/placeholder.jpg";
                       }}
                     />
+                    {/* Time badge */}
+                    <div className="absolute top-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                      <FiClock className="w-3 h-3" />
+                      <span>{formatDate(item.createdAt)}</span>
+                    </div>
                   </div>
 
                   {/* Product Info */}
-                  <div className="p-3">
-                    <h3 className="text-sm font-medium text-black line-clamp-2 mb-2">
-                      {item.product.name}
+                  <div className="p-4">
+                    <h3 className="text-base font-medium text-gray-900 line-clamp-2 mb-3 min-h-[48px] group-hover:text-blue-600 transition-colors">
+                      {item.product?.name || "Sản phẩm không xác định"}
                     </h3>
 
                     {/* Price */}
-                    {item.product.priceRange && item.product.priceRange.min && (
-                      <p className="text-sm font-semibold text-black mb-2">
-                        {item.product.priceRange.min.toLocaleString("vi-VN")}â‚«
+                    {item.product?.priceRange?.min ? (
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-lg font-bold text-red-600">
+                          {item.product.priceRange.min.toLocaleString("vi-VN")}₫
+                        </span>
                         {item.product.priceRange.max &&
                           item.product.priceRange.min !==
                             item.product.priceRange.max && (
-                            <span className="text-gray-500">
-                              {" "}
+                            <span className="text-sm text-gray-500">
                               -{" "}
                               {item.product.priceRange.max.toLocaleString(
                                 "vi-VN"
                               )}
+                              ₫
                             </span>
                           )}
-                      </p>
+                      </div>
+                    ) : (
+                      <span className="text-gray-500">Liên hệ</span>
                     )}
-
-                    {/* View Time */}
-                    <div className="flex items-center gap-1 text-xs text-gray-500">
-                      <FiClock className="w-3 h-3" />
-                      <span>{formatDate(item.createdAt)}</span>
-                    </div>
                   </div>
                 </div>
               ))}
@@ -174,25 +197,25 @@ const UserViewHistory: React.FC = () => {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-8">
+              <div className="flex justify-center items-center gap-4 mt-10">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  className="px-5 py-2.5 bg-white border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors shadow-sm font-medium"
                 >
-                  Trước
+                  ← Trước
                 </button>
 
-                <span className="text-gray-600">
+                <span className="text-gray-600 font-medium">
                   Trang {page} / {totalPages}
                 </span>
 
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  className="px-5 py-2.5 bg-white border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors shadow-sm font-medium"
                 >
-                  Sau
+                  Sau →
                 </button>
               </div>
             )}
@@ -203,5 +226,18 @@ const UserViewHistory: React.FC = () => {
   );
 };
 
-export default UserViewHistory;
+// Wrapper component with Sidebar
+const UserViewHistory: React.FC = () => {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-1 bg-mono-100">
+        <Sidebar />
+        <div className="flex-1">
+          <UserViewHistoryContent />
+        </div>
+      </div>
+    </div>
+  );
+};
 
+export default UserViewHistory;

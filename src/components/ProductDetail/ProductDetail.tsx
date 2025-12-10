@@ -124,9 +124,16 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
     }
 
     if (selectedGender && selectedColorId) {
+      // Thử tìm ảnh với gender được chọn trước, sau đó fallback tới unisex
       const key = `${selectedGender}-${selectedColorId}`;
+      const unisexKey = `unisex-${selectedColorId}`;
+
       if (images[key] && images[key].length > 0) {
         setDisplayedImages(images[key]);
+        setCurrentImageIndex(0);
+        return;
+      } else if (images[unisexKey] && images[unisexKey].length > 0) {
+        setDisplayedImages(images[unisexKey]);
         setCurrentImageIndex(0);
         return;
       }
@@ -146,8 +153,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
         return;
       }
 
+      // Thử tìm variant với gender được chọn trước, sau đó fallback tới unisex
       const variantKey = `${selectedGender}-${selectedColorId}`;
-      const variant = variants[variantKey];
+      const unisexKey = `unisex-${selectedColorId}`;
+      const variant = variants[variantKey] || variants[unisexKey];
 
       if (variant && variant.sizes) {
         if (selectedSizeId) {
@@ -179,8 +188,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
       variants
     ) {
       for (const color of attributes.colors) {
+        // Kiểm tra variant với gender được chọn hoặc unisex
         const variantKey = `${selectedGender}-${color._id}`;
-        if (variants[variantKey]) {
+        const unisexKey = `unisex-${color._id}`;
+        if (variants[variantKey] || variants[unisexKey]) {
           setSelectedColorId(color._id);
           break;
         }
@@ -244,10 +255,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   useEffect(() => {
     const checkWishlistStatus = async () => {
       if (isAuthenticated && product && product._id && selectedColorId) {
-        // Tính variantId inline để tránh dependency issue
+        // Tính variantId inline để tránh dependency issue (với fallback unisex)
         if (!variants || !selectedGender || !selectedColorId) return;
         const variantKey = `${selectedGender}-${selectedColorId}`;
-        const variant = variants[variantKey];
+        const unisexKey = `unisex-${selectedColorId}`;
+        const variant = variants[variantKey] || variants[unisexKey];
         const variantId = variant?._id || null;
         if (!variantId) return;
 
@@ -283,19 +295,37 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
 
   const currentImage = displayedImages[currentImageIndex];
 
+  // Helper function để tìm variant với fallback unisex
+  const findVariantWithFallback = (
+    gender: string | null,
+    colorId: string | null
+  ) => {
+    if (!variants || !gender || !colorId) return null;
+
+    // Thử tìm với gender được chọn trước
+    const variantKey = `${gender}-${colorId}`;
+    if (variants[variantKey]) {
+      return variants[variantKey];
+    }
+
+    // Nếu không tìm thấy, thử fallback tới unisex
+    const unisexKey = `unisex-${colorId}`;
+    if (variants[unisexKey]) {
+      return variants[unisexKey];
+    }
+
+    return null;
+  };
+
   // Tìm variantId theo gender và color
   const getVariantId = () => {
-    if (!variants || !selectedGender || !selectedColorId) return null;
-    const variantKey = `${selectedGender}-${selectedColorId}`;
-    const variant = variants[variantKey];
+    const variant = findVariantWithFallback(selectedGender, selectedColorId);
     return variant?._id || null;
   };
 
   // Tìm variant hiện tại
   const getCurrentVariant = () => {
-    if (!variants || !selectedGender || !selectedColorId) return null;
-    const variantKey = `${selectedGender}-${selectedColorId}`;
-    return variants[variantKey] || null;
+    return findVariantWithFallback(selectedGender, selectedColorId);
   };
 
   // Lấy thông tin size từ attributes
@@ -737,8 +767,12 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
               <div className="flex flex-wrap gap-2">
                 {attributes.colors
                   .filter((color) => {
+                    // Kiểm tra variant với gender được chọn hoặc unisex
                     const variantKey = `${selectedGender}-${color._id}`;
-                    return variants && variants[variantKey];
+                    const unisexKey = `unisex-${color._id}`;
+                    return (
+                      variants && (variants[variantKey] || variants[unisexKey])
+                    );
                   })
                   .map((color) => (
                     <button

@@ -58,14 +58,26 @@ export interface LoyaltyTransaction {
 
 export interface UserLoyaltyInfo {
   currentPoints: number;
-  lifetimePoints: number;
-  currentTier: LoyaltyTier;
-  nextTier?: LoyaltyTier;
+  lifetimePoints?: number;
+  totalEarned?: number;
+  totalRedeemed?: number;
+  currentTier?: LoyaltyTier;
+  tier?: LoyaltyTier;
+  tierName?: string;
+  nextTier?:
+    | LoyaltyTier
+    | {
+        name: string;
+        minPoints: number;
+        pointsNeeded: number;
+      };
   pointsToNextTier?: number;
-  expiringPoints?: {
-    points: number;
-    expiresAt: string;
-  };
+  expiringPoints?:
+    | number
+    | {
+        points: number;
+        expiresAt: string;
+      };
 }
 
 // =======================

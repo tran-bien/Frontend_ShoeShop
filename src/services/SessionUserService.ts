@@ -5,12 +5,13 @@ import type {
   UsersResponse,
   UserDetailResponse,
   BlockUserData,
+  ChangeRoleData,
 } from "../types/user";
 import type { Session } from "../types/session";
 import type { ApiResponse } from "../types/api";
 
 // Re-export types for convenience
-export type { UserQueryParams, BlockUserData };
+export type { UserQueryParams, BlockUserData, ChangeRoleData };
 
 // =======================
 // RESPONSE TYPES
@@ -49,6 +50,13 @@ export const adminUserService = {
     data: BlockUserData
   ): Promise<{ data: ApiResponse<User> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/users/${userId}/block`, data),
+
+  // Chuyển đổi role user (chỉ admin)
+  changeUserRole: (
+    userId: string,
+    data: ChangeRoleData
+  ): Promise<{ data: ApiResponse<{ user: User }> }> =>
+    axiosInstanceAuth.put(`/api/v1/admin/users/${userId}/role`, data),
 };
 
 // =======================

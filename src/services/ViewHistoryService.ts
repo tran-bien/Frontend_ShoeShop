@@ -1,4 +1,4 @@
-import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
+import { axiosInstanceAuth } from "../utils/axiosIntance";
 import type {
   ViewHistoryQueryParams,
   ViewHistoryResponse,
@@ -23,9 +23,10 @@ const getGuestSessionId = (): string => {
 // =======================
 
 export const publicViewHistoryService = {
-  // Track view (public - works for both guest and logged-in users)
+  // Track view (works for both guest and logged-in users)
+  // Uses axiosInstanceAuth to send token if user is logged in
   trackView: (productId: string): Promise<{ data: TrackViewResponse }> =>
-    axiosInstance.post("/api/v1/users/view-history", {
+    axiosInstanceAuth.post("/api/v1/users/view-history", {
       productId,
       sessionId: getGuestSessionId(),
     }),

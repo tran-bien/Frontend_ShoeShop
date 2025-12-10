@@ -26,9 +26,13 @@ const AdminLoyaltyTierPage = () => {
     setLoading(true);
     try {
       const { data } = await adminLoyaltyService.getAllTiers();
+      // BE trả về: { success, data: [...], total, totalPages, ... }
       // Sort by minPoints ascending
-      const sortedTiers = data.data.tiers.sort(
-        (a, b) => a.minPoints - b.minPoints
+      const tiersArray = Array.isArray(data.data)
+        ? data.data
+        : data.data?.tiers || [];
+      const sortedTiers = tiersArray.sort(
+        (a: LoyaltyTier, b: LoyaltyTier) => a.minPoints - b.minPoints
       );
       setTiers(sortedTiers);
     } catch (error) {
@@ -471,9 +475,3 @@ const AdminLoyaltyTierPage = () => {
 };
 
 export default AdminLoyaltyTierPage;
-
-
-
-
-
-
