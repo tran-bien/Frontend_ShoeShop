@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductCard from "../../../components/ProductCard/ProductCard";
-import RecentlyViewed from "../../../components/ViewHistory/RecentlyViewed";
 import {
   productPublicService,
   convertToProductCardProduct,
@@ -702,9 +701,6 @@ const LandingPage: React.FC = () => {
           </div>
         </section>
       )}
-
-      {/* Sản phẩm dã xem gẩn dây */}
-      <RecentlyViewed limit={8} title="Sản phẩm dã xem gẩn dây" />
     </div>
   );
 };
