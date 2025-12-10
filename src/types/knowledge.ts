@@ -82,30 +82,68 @@ export interface KnowledgeQueryParams {
 // RESPONSE TYPES
 // =======================
 
+/**
+ * Response cho danh sách documents
+ * GET /api/v1/admin/knowledge-base
+ */
 export interface KnowledgeDocumentsResponse {
-  documents: KnowledgeDocument[];
-  pagination?: {
+  data: KnowledgeDocument[];
+  pagination: {
     page: number;
     limit: number;
     total: number;
-    totalPages: number;
+    pages: number;
   };
 }
 
+/**
+ * Response cho thống kê KB
+ * GET /api/v1/admin/knowledge-base/statistics
+ */
 export interface KnowledgeStatisticsResponse {
-  totalDocuments: number;
-  activeDocuments: number;
-  categoryCounts: Record<string, number>;
+  total: number;
+  active: number;
+  inactive: number;
+  byCategory: Array<{ _id: string; count: number }>;
+  bySource: Array<{ _id: string; count: number }>;
+  recentUpdates: Array<{
+    _id: string;
+    title: string;
+    category: KnowledgeCategory;
+    updatedAt: string;
+  }>;
 }
 
+/**
+ * Response cho validate Excel
+ * POST /api/v1/admin/knowledge-base/excel/validate
+ */
 export interface ExcelValidationResponse {
-  valid: boolean;
-  errors?: string[];
-  rowCount?: number;
+  totalRows: number;
+  validRows: number;
+  errorRows: number;
+  errors: Array<{ row: number; message: string }>;
+  warnings: string[];
+  preview: Array<{
+    category: KnowledgeCategory;
+    title: string;
+    content: string;
+  }>;
 }
 
+/**
+ * Response cho import Excel
+ * POST /api/v1/admin/knowledge-base/excel/import
+ */
 export interface ExcelImportResponse {
+  totalRows: number;
   imported: number;
   skipped: number;
-  errors?: string[];
+}
+
+/**
+ * Response cho clear documents
+ */
+export interface ClearDocumentsResponse {
+  deleted: number;
 }

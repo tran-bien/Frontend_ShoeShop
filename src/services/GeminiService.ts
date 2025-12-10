@@ -1,51 +1,53 @@
-import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
+import { axiosInstance } from "../utils/axiosIntance";
 import type { ApiResponse } from "../types/api";
-
-// =======================
-// RESPONSE TYPES
-// =======================
-
-interface DemoModeResponse {
-  isDemoMode: boolean;
-  message?: string;
-}
-
-interface AIChatResponse {
-  reply: string;
-  conversationId?: string;
-  suggestions?: string[];
-}
+import type {
+  ChatApiResponse,
+  ChatRequestBody,
+  TrainingStatusResponse,
+} from "../types/chat";
 
 // =======================
 // PUBLIC GEMINI SERVICE (AI Chat - không cần đăng nhập)
 // =======================
 
 export const publicGeminiService = {
-  // Chat với AI (public - có thể dùng mà không cần đăng nhập)
+  /**
+   * Chat với AI
+   * POST /api/v1/public/ai-chat
+   *
+   * LOGIC:
+   * - trained=false: AI chưa được train, trả lời bất cứ gì (demo)
+   * - trained=true: AI đã được train, chỉ trả lời trong phạm vi KB
+   */
   chatWithAI: (
     message: string,
-    conversationId?: string
-  ): Promise<{ data: ApiResponse<AIChatResponse> }> =>
-    axiosInstance.post("/api/v1/public/ai-chat", { message, conversationId }),
+    sessionId?: string,
+    history: Array<{ role: string; text: string }> = []
+  ): Promise<{ data: ChatApiResponse }> => {
+    const requestBody: ChatRequestBody = {
+      message,
+      history,
+    };
+
+    if (sessionId) {
+      requestBody.sessionId = sessionId;
+    }
+
+    return axiosInstance.post("/api/v1/public/ai-chat", requestBody);
+  },
+
+  /**
+   * Lấy trạng thái training của AI
+   * GET /api/v1/public/ai-chat/status
+   *
+   * Response:
+   * - trained: boolean - AI đã được train chưa
+   * - totalDocuments: number - Số documents trong KB
+   * - description: string - Mô tả trạng thái
+   */
+  getTrainingStatus: (): Promise<{
+    data: ApiResponse<TrainingStatusResponse>;
+  }> => axiosInstance.get("/api/v1/public/ai-chat/status"),
 };
 
-// =======================
-// ADMIN GEMINI SERVICE
-// =======================
-
-export const adminGeminiService = {
-  // Lấy trạng thái Demo Mode
-  getDemoMode: (): Promise<{ data: ApiResponse<DemoModeResponse> }> =>
-    axiosInstanceAuth.get("/api/v1/admin/gemini/demo-mode"),
-
-  // Toggle Demo Mode
-  toggleDemoMode: (
-    enabled: boolean
-  ): Promise<{ data: ApiResponse<DemoModeResponse> }> =>
-    axiosInstanceAuth.post("/api/v1/admin/gemini/demo-mode", { enabled }),
-};
-
-export default {
-  public: publicGeminiService,
-  admin: adminGeminiService,
-};
+export default publicGeminiService;

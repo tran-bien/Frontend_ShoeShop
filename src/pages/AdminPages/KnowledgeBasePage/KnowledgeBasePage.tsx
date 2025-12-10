@@ -35,10 +35,19 @@ const CATEGORIES: { value: KnowledgeCategory; label: string; icon: string }[] =
     { value: "how_to_size", label: "Hướng dẫn size", icon: "📏" },
   ];
 
+// Interface khớp với BE response
 interface Statistics {
-  totalDocuments: number;
-  activeDocuments: number;
-  categoryCounts: Record<string, number>;
+  total: number;
+  active: number;
+  inactive: number;
+  byCategory: Array<{ _id: string; count: number }>;
+  bySource: Array<{ _id: string; count: number }>;
+  recentUpdates: Array<{
+    _id: string;
+    title: string;
+    category: string;
+    updatedAt: string;
+  }>;
 }
 
 const KnowledgeBasePage: React.FC = () => {
@@ -75,9 +84,10 @@ const KnowledgeBasePage: React.FC = () => {
 
       const response = await adminKnowledgeService.getAllDocuments(params);
       if (response.data.success && response.data.data) {
-        setDocuments(response.data.data.documents || []);
+        // BE trả về: { data: [...documents], pagination: { page, limit, total, pages } }
+        setDocuments(response.data.data.data || []);
         if (response.data.data.pagination) {
-          setTotalPages(response.data.data.pagination.totalPages || 1);
+          setTotalPages(response.data.data.pagination.pages || 1);
         }
       }
     } catch (error) {
@@ -243,7 +253,7 @@ const KnowledgeBasePage: React.FC = () => {
               <div>
                 <p className="text-mono-500 text-sm">Tổng tài liệu</p>
                 <p className="text-2xl font-bold text-mono-900">
-                  {statistics.totalDocuments}
+                  {statistics.total}
                 </p>
               </div>
             </div>
@@ -256,7 +266,7 @@ const KnowledgeBasePage: React.FC = () => {
               <div>
                 <p className="text-mono-500 text-sm">Đang hoạt động</p>
                 <p className="text-2xl font-bold text-green-600">
-                  {statistics.activeDocuments}
+                  {statistics.active}
                 </p>
               </div>
             </div>
@@ -269,7 +279,7 @@ const KnowledgeBasePage: React.FC = () => {
               <div>
                 <p className="text-mono-500 text-sm">Đã tắt</p>
                 <p className="text-2xl font-bold text-red-600">
-                  {statistics.totalDocuments - statistics.activeDocuments}
+                  {statistics.inactive}
                 </p>
               </div>
             </div>
@@ -282,7 +292,7 @@ const KnowledgeBasePage: React.FC = () => {
               <div>
                 <p className="text-mono-500 text-sm">Danh mục</p>
                 <p className="text-2xl font-bold text-purple-600">
-                  {Object.keys(statistics.categoryCounts || {}).length}
+                  {statistics.byCategory?.length || 0}
                 </p>
               </div>
             </div>

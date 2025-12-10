@@ -5,6 +5,7 @@ import {
   FiSend,
   FiLoader,
   FiAlertCircle,
+  FiInfo,
 } from "react-icons/fi";
 import { axiosInstance } from "../../utils/axiosIntance";
 import type {
@@ -32,6 +33,7 @@ const AIChatbot: React.FC = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [isTrained, setIsTrained] = useState<boolean | null>(null); // Track training status
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -51,20 +53,25 @@ const AIChatbot: React.FC = () => {
     }
   }, [isOpen]);
 
-  // Initial greeting
+  // Initial greeting - Dynamic based on training status
   useEffect(() => {
     if (isOpen && messages.length === 0) {
+      const greeting =
+        isTrained === false
+          ? "⚠️ Xin chào! Tôi là AI assistant. Hiện tại tôi chưa được train nên có thể trả lời không chính xác. Bạn cần hỗ trợ gì?"
+          : "Xin chào! Tôi là trợ lý AI của ShoeStore. Tôi có thể giúp bạn tìm kiếm sản phẩm, giải đáp thắc mắc về đơn hàng, hoặc tư vấn chọn size giày phù hợp. Bạn cần hỗ trợ gì?";
+
       setMessages([
         {
           id: "initial",
           role: "assistant",
-          content:
-            "Xin chào! Tôi là trợ lý AI của ShoeStore. Tôi có thể giúp bạn tìm kiếm sản phẩm, giải đáp thắc mắc về đơn hàng, hoặc tư vấn chọn size giày phù hợp. Bạn cần hỗ trợ gì?",
+          content: greeting,
           timestamp: new Date(),
+          isWarning: isTrained === false,
         },
       ]);
     }
-  }, [isOpen, messages.length]);
+  }, [isOpen, messages.length, isTrained]);
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;
@@ -110,13 +117,21 @@ const AIChatbot: React.FC = () => {
         setSessionId(response.data.data.sessionId);
       }
 
+      // Cập nhật training status
+      if (response.data.data?.trained !== undefined) {
+        setIsTrained(response.data.data.trained);
+      }
+
       if (response.data.success && response.data.data) {
         const { data } = response.data;
 
-        // Xác định loại message
+        // Xác định loại message dựa trên response
         const isWarning =
-          data.rateLimited || data.quotaExhausted || data.outOfScope;
-        const isError = false;
+          data.rateLimited ||
+          data.quotaExhausted ||
+          data.outOfScope ||
+          data.noContext ||
+          !data.trained; // Chưa train cũng là warning
 
         const assistantMessage: ChatMessage = {
           id: (Date.now() + 1).toString(),
@@ -126,7 +141,7 @@ const AIChatbot: React.FC = () => {
           ),
           timestamp: new Date(),
           isWarning,
-          isError,
+          isError: false,
         };
         setMessages((prev) => [...prev, assistantMessage]);
       } else {
@@ -195,10 +210,19 @@ const AIChatbot: React.FC = () => {
               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                 <FiMessageSquare className="w-5 h-5" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h3 className="font-semibold">Trợ lý AI</h3>
                 <p className="text-xs text-mono-300">
-                  Luôn sẵn sàng hỗ trợ bạn
+                  {isTrained === false ? (
+                    <span className="flex items-center gap-1 text-amber-300">
+                      <FiInfo className="w-3 h-3" />
+                      Chưa train kiến thức về ShoeShop
+                    </span>
+                  ) : isTrained === true ? (
+                    "Đã sẵn sàng hỗ trợ bạn"
+                  ) : (
+                    "Luôn sẵn sàng hỗ trợ bạn"
+                  )}
                 </p>
               </div>
             </div>

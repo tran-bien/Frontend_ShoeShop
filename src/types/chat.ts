@@ -20,6 +20,11 @@ export interface AIChatMessage {
 }
 
 /**
+ * Alias cho backward compatibility
+ */
+export type ChatMessage = AIChatMessage;
+
+/**
  * Interface cho history item gửi lên BE
  */
 export interface ChatHistoryItem {
@@ -42,16 +47,20 @@ export interface ChatRequestBody {
 
 /**
  * Interface cho response data từ BE
+ * SYNC với BE: gemini.controller.js
  */
 export interface ChatResponseData {
   response: string;
   sessionId: string;
-  outOfScope?: boolean;
-  cached?: boolean;
-  noKnowledge?: boolean;
-  demoMode?: boolean;
-  rateLimited?: boolean;
-  quotaExhausted?: boolean;
+  // Training status
+  trained: boolean; // AI đã được train chưa (có KB)
+  hasContext: boolean; // Có tìm thấy context từ KB không
+  // Error flags
+  outOfScope: boolean; // Câu hỏi ngoài phạm vi (chỉ khi trained=true)
+  noContext: boolean; // Không tìm thấy context liên quan (trained=true)
+  cached: boolean; // Response từ cache
+  rateLimited: boolean; // Bị rate limit
+  quotaExhausted: boolean; // Hết quota API
 }
 
 /**
@@ -61,6 +70,16 @@ export interface ChatApiResponse {
   success: boolean;
   data?: ChatResponseData;
   message?: string;
+}
+
+/**
+ * Interface cho Training Status API
+ * GET /api/v1/public/ai-chat/status
+ */
+export interface TrainingStatusResponse {
+  trained: boolean;
+  totalDocuments: number;
+  description: string;
 }
 
 // =======================
@@ -132,6 +151,3 @@ export interface MessagesQueryParams {
   page?: number;
   limit?: number;
 }
-
-// Alias for backward compatibility
-export type ChatMessage = AIChatMessage;
