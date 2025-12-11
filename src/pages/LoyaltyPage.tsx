@@ -70,7 +70,7 @@ const LoyaltyPage = () => {
               <div className="flex items-center gap-3 mb-2">
                 <TrophyIcon className="w-8 h-8" />
                 <h1 className="text-3xl font-bold">
-                  {loyaltyInfo.currentTier.name}
+                  {loyaltyInfo.currentTier?.name || "Thành viên"}
                 </h1>
               </div>
               <p className="text-mono-300 text-sm">
@@ -102,9 +102,10 @@ const LoyaltyPage = () => {
                   style={{
                     width: `${
                       ((loyaltyInfo.currentPoints -
-                        loyaltyInfo.currentTier.minPoints) /
-                        ((loyaltyInfo.nextTier.minPoints || 0) -
-                          loyaltyInfo.currentTier.minPoints)) *
+                        (loyaltyInfo.currentTier?.minPoints || 0)) /
+                        (((loyaltyInfo.nextTier as { minPoints: number })
+                          ?.minPoints || 0) -
+                          (loyaltyInfo.currentTier?.minPoints || 0))) *
                       100
                     }%`,
                   }}
@@ -115,14 +116,34 @@ const LoyaltyPage = () => {
 
           {/* Expiring Points Warning */}
           {loyaltyInfo.expiringPoints &&
-            loyaltyInfo.expiringPoints.points > 0 && (
+            typeof loyaltyInfo.expiringPoints === "object" &&
+            (
+              loyaltyInfo.expiringPoints as {
+                points: number;
+                expiresAt: string;
+              }
+            ).points > 0 && (
               <div className="bg-mono-700/30 border border-mono-600/40 rounded-lg p-3 mt-4 flex items-center gap-2">
                 <ClockIcon className="w-5 h-5 text-mono-200" />
                 <p className="text-sm text-mono-100">
-                  <strong>{loyaltyInfo.expiringPoints.points}</strong> điểm sẽ
-                  hết hạn vào{" "}
+                  <strong>
+                    {
+                      (
+                        loyaltyInfo.expiringPoints as {
+                          points: number;
+                          expiresAt: string;
+                        }
+                      ).points
+                    }
+                  </strong>{" "}
+                  điểm sẽ hết hạn vào{" "}
                   {new Date(
-                    loyaltyInfo.expiringPoints.expiresAt
+                    (
+                      loyaltyInfo.expiringPoints as {
+                        points: number;
+                        expiresAt: string;
+                      }
+                    ).expiresAt
                   ).toLocaleDateString("vi-VN")}
                 </p>
               </div>
@@ -166,13 +187,13 @@ const LoyaltyPage = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-mono-700">Điểm tích lũy</span>
                   <span className="text-sm font-medium text-mono-black">
-                    x{loyaltyInfo.currentTier.benefits.pointsMultiplier}
+                    x{loyaltyInfo.currentTier?.benefits?.pointsMultiplier || 1}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-mono-700">Hỗ trợ ưu tiên</span>
                   <span className="text-sm font-medium text-mono-black">
-                    {loyaltyInfo.currentTier.benefits.prioritySupport
+                    {loyaltyInfo.currentTier?.benefits?.prioritySupport
                       ? "Có"
                       : "Không"}
                   </span>
@@ -192,7 +213,7 @@ const LoyaltyPage = () => {
                     Tổng điểm tích lũy
                   </p>
                   <p className="text-2xl font-bold text-mono-black">
-                    {loyaltyInfo.lifetimePoints.toLocaleString()}
+                    {(loyaltyInfo.lifetimePoints || 0).toLocaleString()}
                   </p>
                 </div>
                 <div>
@@ -257,8 +278,9 @@ const LoyaltyPage = () => {
         {activeTab === "tiers" && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {allTiers.map((tier) => {
-              const isCurrent = tier._id === loyaltyInfo.currentTier._id;
-              const isNext = tier._id === loyaltyInfo.nextTier?._id;
+              const isCurrent = tier._id === loyaltyInfo.currentTier?._id;
+              const isNext =
+                tier._id === (loyaltyInfo.nextTier as LoyaltyTier)?._id;
 
               return (
                 <div
@@ -314,4 +336,3 @@ const LoyaltyPage = () => {
 };
 
 export default LoyaltyPage;
-

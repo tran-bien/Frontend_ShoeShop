@@ -19,7 +19,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
     try {
       setLoading(true);
       const response = await adminShipperService.getShipperStats(shipper._id);
-      setStats(response.data.stats);
+      setStats(response.data.data?.stats);
     } catch (error) {
       console.error("Error fetching shipper stats:", error);
     } finally {

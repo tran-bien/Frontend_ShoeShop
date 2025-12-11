@@ -59,6 +59,17 @@ export interface LoginResponse {
   avatar?: string;
   token: string;
   refreshToken: string;
+  // Shipper info - only present for shipper role
+  shipper?: {
+    isAvailable: boolean;
+    activeOrders: number;
+    maxOrders: number;
+    deliveryStats: {
+      total: number;
+      successful: number;
+      failed: number;
+    };
+  };
 }
 
 // Re-export common types for convenience

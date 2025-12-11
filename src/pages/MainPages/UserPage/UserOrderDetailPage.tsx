@@ -13,6 +13,7 @@ import {
   FaMapMarkerAlt,
   FaCreditCard,
   FaTag,
+  FaExchangeAlt,
 } from "react-icons/fa";
 
 const UserOrderDetailPage: React.FC = () => {
@@ -170,6 +171,22 @@ const UserOrderDetailPage: React.FC = () => {
     );
   };
 
+  // Check if order can request return/exchange (delivered within 7 days)
+  const canRequestReturn = (order: Order) => {
+    if (order.status !== "delivered" || !order.deliveredAt) return false;
+    const deliveredDate = new Date(order.deliveredAt);
+    const now = new Date();
+    const daysDiff = Math.floor(
+      (now.getTime() - deliveredDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    return daysDiff <= 7;
+  };
+
+  const handleRequestReturn = () => {
+    if (!order) return;
+    navigate(`/returns/create?orderId=${order._id}`);
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen bg-mono-100">
@@ -265,6 +282,16 @@ const UserOrderDetailPage: React.FC = () => {
                       className="px-4 py-2 bg-mono-700 text-white rounded hover:bg-mono-800 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {repayLoading ? "Đang xử lý..." : "Thanh toán lại"}
+                    </button>
+                  )}
+
+                  {canRequestReturn(order) && (
+                    <button
+                      onClick={handleRequestReturn}
+                      className="px-4 py-2 bg-mono-600 text-white rounded hover:bg-mono-700 flex items-center gap-2"
+                    >
+                      <FaExchangeAlt />
+                      Đổi/Trả hàng
                     </button>
                   )}
                 </div>

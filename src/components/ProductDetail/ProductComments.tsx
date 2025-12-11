@@ -100,7 +100,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
   // Handle reply to review (admin/staff only)
   const handleReplySubmit = async (reviewId: string) => {
     if (!replyContent.trim()) {
-      toast.error("Vui lòng nhập nội dung phần h?i");
+      toast.error("Vui lòng nhập nội dung phản hồi");
       return;
     }
 
@@ -112,7 +112,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
 
       if (response.data.success) {
         toast.success(
-          editingReply ? "Ðã cập nhật phần h?i" : "Ðã gửi phần h?i"
+          editingReply ? "Đã cập nhật phản hồi" : "Đã gửi phản hồi"
         );
         // Update the review in local state
         setReviews((prev) =>
@@ -128,7 +128,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
       }
     } catch (error) {
       console.error("Error submitting reply:", error);
-      toast.error("Không thể gửi phần h?i");
+      toast.error("Không thể gửi phản hồi");
     } finally {
       setReplyLoading(false);
     }
@@ -150,7 +150,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
       }
     } catch (error) {
       console.error("Error deleting reply:", error);
-      toast.error("Không thể xóa phần h?i");
+      toast.error("Không thể xóa phản hồi");
     }
   };
 
@@ -286,7 +286,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                     >
                       {likedReviews[review._id] ? <FaHeart /> : <FaRegHeart />}
                       <span className="text-sm">
-                        {review.numberOfLikes || 0} h?u ích
+                        {review.numberOfLikes || 0} hữu ích
                       </span>
                     </button>
 
@@ -301,7 +301,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                         className="flex items-center gap-1 text-mono-500 hover:text-mono-800 transition-colors text-sm"
                       >
                         <FaReply />
-                        <span>Phần h?i</span>
+                        <span>Phản hồi</span>
                       </button>
                     )}
                   </div>
@@ -324,7 +324,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                           )}
                           <div>
                             <span className="font-medium text-mono-800 text-sm">
-                              {review.reply.repliedBy?.name || "Quận trở viên"}
+                              {review.reply.repliedBy?.name || "Quản trị viên"}
                             </span>
                             <span className="ml-2 px-2 py-0.5 bg-mono-200 text-mono-700 text-xs rounded-full">
                               {review.reply.repliedBy?.role === "admin"
@@ -349,7 +349,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                                   )
                                 }
                                 className="p-1 text-mono-500 hover:text-mono-800 transition-colors"
-                                title="Chơnh sửa"
+                                title="Chỉnh sửa"
                               >
                                 <FiEdit2 size={14} />
                               </button>

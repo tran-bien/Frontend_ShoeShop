@@ -246,13 +246,13 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                   </h4>
                   <div className="text-sm text-mono-600 space-y-2 text-left">
                     <p>
-                      â€¢ Đo chiều dài bàn chân từ gót đến ngón cái dài nhất
+                      - Đo chiều dài bàn chân từ gót đến ngón cái dài nhất
                     </p>
-                    <p>â€¢ Nên đo vào buổi chiều khi bàn chân hơi phù</p>
+                    <p>- Nên đo vào buổi chiều khi bàn chân hơi phù</p>
                     <p>
-                      â€¢ Chọn size lớn hơn 0.5-1cm so với chiều dài bàn chân
+                      - Chọn size lớn hơn 0.5-1cm so với chiều dài bàn chân
                     </p>
-                    <p>â€¢ Tham khảo bảng size cụ thể của từng thương hiệu</p>
+                    <p>- Tham khảo bảng size cụ thể của từng thương hiệu</p>
                   </div>
                 </div>
               </div>

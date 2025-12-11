@@ -61,6 +61,23 @@ export interface NotificationPreferences {
 }
 
 // =======================
+// SHIPPER INFO (for shipper role)
+// =======================
+
+export interface ShipperDeliveryStats {
+  total: number;
+  successful: number;
+  failed: number;
+}
+
+export interface UserShipperInfo {
+  isAvailable: boolean;
+  activeOrders: number;
+  maxOrders: number;
+  deliveryStats: ShipperDeliveryStats;
+}
+
+// =======================
 // MAIN USER INTERFACE
 // =======================
 
@@ -76,6 +93,7 @@ export interface User {
   wishlist?: WishlistItem[];
   addresses?: UserAddress[];
   notificationPreferences?: NotificationPreferences;
+  shipper?: UserShipperInfo; // For shipper role - from login response
   isActive?: boolean; // Account active status
   isVerified?: boolean; // Email verification status
   isBlock?: boolean;

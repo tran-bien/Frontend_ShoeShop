@@ -65,7 +65,7 @@ const STATUS_CONFIG: Record<
     color: "bg-orange-50 text-orange-700 border border-orange-200",
     icon: <FiRotateCw size={16} />,
   },
-  // DeliveryAttempts status mapping từ BE
+  // DeliveryAttempts status mapping từ BE (success, failed, out_for_delivery)
   success: {
     label: "Giao thành công",
     color: "bg-emerald-50 text-emerald-700 border border-emerald-200",

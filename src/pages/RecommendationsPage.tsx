@@ -28,7 +28,7 @@ const RecommendationsPage: React.FC = () => {
         limit: 24,
       });
       if (response.data.success) {
-        setRecommendations(response.data.data.recommendations || []);
+        setRecommendations(response.data.data?.recommendations || []);
       }
     } catch (error) {
       console.error("Error fetching recommendations:", error);

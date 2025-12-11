@@ -79,20 +79,16 @@ export interface NotificationPreferences {
 // NOTIFICATION RESPONSES
 // =======================
 
+// Cấu trúc phẳng khớp với BE response (không có nested data)
 export interface NotificationsResponse {
   success: boolean;
-  message: string;
-  data: {
-    notifications: Notification[];
-    unreadCount: number;
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-      hasNext: boolean;
-      hasPrev: boolean;
-    };
+  notifications: Notification[];
+  unreadCount: number;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
   };
 }
 

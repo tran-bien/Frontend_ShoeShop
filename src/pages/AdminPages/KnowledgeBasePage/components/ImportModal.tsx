@@ -22,8 +22,10 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose, onSuccess }) => {
   const [isImporting, setIsImporting] = useState(false);
   const [validationResult, setValidationResult] = useState<{
     valid: boolean;
-    errors?: string[];
+    errors?: Array<{ row: number; message: string }>;
     rowCount?: number;
+    totalRows?: number;
+    validRows?: number;
   } | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,11 +50,17 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose, onSuccess }) => {
 
       const response = await adminKnowledgeService.validateExcelFile(formData);
       if (response.data.success && response.data.data) {
-        setValidationResult(response.data.data);
-        if (response.data.data.valid) {
-          toast.success(
-            `File hợp lệ! Có ${response.data.data.rowCount} dòng dữ liệu`
-          );
+        const data = response.data.data;
+        const isValid = data.errorRows === 0;
+        setValidationResult({
+          valid: isValid,
+          errors: data.errors,
+          rowCount: data.totalRows,
+          totalRows: data.totalRows,
+          validRows: data.validRows,
+        });
+        if (isValid) {
+          toast.success(`File hợp lệ! Có ${data.totalRows} dòng dữ liệu`);
         } else {
           toast.error("File có lỗi, vui lòng kiểm tra lại");
         }
@@ -169,7 +177,9 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose, onSuccess }) => {
                     validationResult.errors.length > 0 && (
                       <ul className="mt-2 text-sm text-red-700 list-disc list-inside">
                         {validationResult.errors.slice(0, 5).map((err, idx) => (
-                          <li key={idx}>{err}</li>
+                          <li key={idx}>
+                            Dòng {err.row}: {err.message}
+                          </li>
                         ))}
                         {validationResult.errors.length > 5 && (
                           <li>

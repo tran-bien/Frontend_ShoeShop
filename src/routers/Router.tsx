@@ -44,6 +44,7 @@ import ShipperDashboardPage from "../pages/ShipperPages/ShipperDashboardPage";
 import MyOrdersPage from "../pages/ShipperPages/MyOrdersPage";
 import OrderDetailPage from "../pages/ShipperPages/OrderDetailPage";
 import ShipperProfilePage from "../pages/ShipperPages/ShipperProfilePage";
+import ShipperReturnsPage from "../pages/ShipperPages/ShipperReturnsPage";
 import NotificationsPage from "../pages/NotificationsPage";
 import LoyaltyPage from "../pages/LoyaltyPage";
 import BlogListPage from "../pages/BlogListPage";
@@ -54,6 +55,8 @@ import ProductComparePage from "../pages/ProductComparePage/ProductComparePage";
 import AdminLoyaltyTierPage from "../pages/AdminPages/LoyaltyTierPage/AdminLoyaltyTierPage";
 import LoyaltyDashboardPage from "../pages/LoyaltyDashboardPage";
 import ReturnListPage from "../pages/ReturnListPage";
+import CreateReturnPage from "../pages/CreateReturnPage";
+import ReturnDetailPage from "../pages/ReturnDetailPage";
 import RecommendationsPage from "../pages/RecommendationsPage";
 import UserViewHistoryPage from "../pages/UserViewHistoryPage";
 import NotFoundPage from "../pages/NotFoundPage";
@@ -88,6 +91,7 @@ const AppRouter = () => {
         <Route path="dashboard" element={<ShipperDashboardPage />} />
         <Route path="orders" element={<MyOrdersPage />} />
         <Route path="orders/:orderId" element={<OrderDetailPage />} />
+        <Route path="returns" element={<ShipperReturnsPage />} />
         <Route path="completed" element={<MyOrdersPage />} />
         <Route path="profile" element={<ShipperProfilePage />} />
       </Route>
@@ -195,6 +199,22 @@ const AppRouter = () => {
           element={
             <AuthGuard>
               <ReturnListPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="returns/create"
+          element={
+            <AuthGuard>
+              <CreateReturnPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="returns/:id"
+          element={
+            <AuthGuard>
+              <ReturnDetailPage />
             </AuthGuard>
           }
         />

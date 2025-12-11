@@ -6,9 +6,15 @@ import type {
 } from "../types/return";
 import { ApiResponse } from "../types/api";
 
+/**
+ * Return Service
+ * Quản lý yêu cầu trả hàng/hoàn tiền
+ * (Đã loại bỏ logic đổi hàng - chỉ có trả hàng/hoàn tiền toàn bộ đơn)
+ */
+
 // Define response types
 interface GetReturnRequestsResponse {
-  items: ReturnRequest[];
+  requests: ReturnRequest[];
   pagination: {
     total: number;
     page: number;
@@ -21,110 +27,127 @@ interface ReturnStatsResponse {
   totalRequests: number;
   pendingRequests: number;
   approvedRequests?: number;
+  shippingRequests?: number;
+  receivedRequests?: number;
+  refundedRequests?: number;
   completedRequests: number;
   rejectedRequests: number;
-  returnRequests?: number;
-  exchangeRequests?: number;
-}
-
-// Define eligibility check response type
-interface CheckEligibilityResponse {
-  eligible: boolean;
-  reason?: string;
-  daysRemaining?: number;
-  maxQuantity?: number;
 }
 
 // Customer Return Service
 export const customerReturnService = {
-  // Kiểm tra sản phẩm có thể đổi/trả không
-  checkEligibility: (params: {
-    orderId: string;
-    variantId: string;
-    sizeId: string;
-  }): Promise<{ data: ApiResponse<CheckEligibilityResponse> }> =>
-    axiosInstanceAuth.get("/api/v1/users/returns/check-eligibility", {
-      params,
-    }),
-
-  // Tạo yêu cầu đổi/trả hàng
+  // Tạo yêu cầu trả hàng/hoàn tiền
   createReturnRequest: (
     data: CreateReturnRequestData
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.post("/api/v1/users/returns", data),
 
-  // Lấy danh sách yêu cầu đổi/trả hàng
+  // Lấy danh sách yêu cầu trả hàng
   getReturnRequests: (
     params?: ReturnRequestQueryParams
   ): Promise<{ data: ApiResponse<GetReturnRequestsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/users/returns", { params }),
 
-  // Lấy chi tiết yêu cầu đổi/trả hàng
+  // Lấy chi tiết yêu cầu trả hàng
   getReturnRequestDetail: (
     id: string
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.get(`/api/v1/users/returns/${id}`),
 
-  // Hủy yêu cầu đổi/trả hàng
+  // Hủy yêu cầu trả hàng (chỉ khi còn pending)
   cancelReturnRequest: (id: string): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.delete(`/api/v1/users/returns/${id}`),
 };
 
 // Admin Return Service
 export const adminReturnService = {
-  // Lấy danh sách tất cả yêu cầu đổi/trả hàng (Admin)
+  // Lấy danh sách tất cả yêu cầu trả hàng (Admin)
   getAllReturnRequests: (
     params?: ReturnRequestQueryParams
   ): Promise<{ data: ApiResponse<GetReturnRequestsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/returns", { params }),
 
-  // Lấy chi tiết yêu cầu đổi/trả hàng (Admin)
+  // Lấy chi tiết yêu cầu trả hàng (Admin)
   getReturnRequestById: (
     id: string
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.get(`/api/v1/admin/returns/${id}`),
 
-  // Lấy thống kê đổi trả (Admin)
+  // Lấy thống kê trả hàng (Admin)
   getReturnStats: (): Promise<{ data: ApiResponse<ReturnStatsResponse> }> =>
     axiosInstanceAuth.get("/api/v1/admin/returns/stats/summary"),
 
-  // Phê duyệt yêu cầu đổi/trả hàng
+  // Phê duyệt yêu cầu trả hàng
   approveReturnRequest: (
     id: string,
     data?: { note?: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/approve`, data),
 
-  // Từ chối yêu cầu đổi/trả hàng
+  // Từ chối yêu cầu trả hàng
   rejectReturnRequest: (
     id: string,
     data: { reason: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/reject`, data),
 
-  // Xử lý trả hàng
-  processReturn: (
+  // Phân công shipper lấy hàng trả
+  assignShipperForReturn: (
     id: string,
-    data?: { note?: string }
+    data: { shipperId: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.post(`/api/v1/admin/returns/${id}/process-return`, data),
+    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/assign-shipper`, data),
 
-  // Xử lý đổi hàng
-  processExchange: (
+  // Xác nhận đã chuyển khoản hoàn tiền (bank_transfer)
+  confirmBankTransfer: (
     id: string,
     data?: { note?: string }
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.post(
-      `/api/v1/admin/returns/${id}/process-exchange`,
+    axiosInstanceAuth.patch(
+      `/api/v1/admin/returns/${id}/confirm-transfer`,
+      data
+    ),
+};
+
+// Shipper Return Service
+export const shipperReturnService = {
+  // Lấy danh sách yêu cầu trả hàng được giao
+  getShipperReturns: (params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+  }): Promise<{ data: ApiResponse<GetReturnRequestsResponse> }> =>
+    axiosInstanceAuth.get("/api/v1/shipper/returns", { params }),
+
+  // Lấy chi tiết yêu cầu trả hàng
+  getReturnDetail: (
+    id: string
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.get(`/api/v1/shipper/returns/${id}`),
+
+  // Xác nhận đã nhận hàng trả từ khách
+  confirmReceived: (
+    id: string,
+    data?: { note?: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.patch(
+      `/api/v1/shipper/returns/${id}/confirm-received`,
       data
     ),
 
-  // REMOVED: completeReturn endpoint không tồn tại ở backend
-  // Backend tự động chuyển sang 'completed' sau khi processReturn hoặc processExchange thành công
-  // Nếu cần endpoint này, phải thêm vào backend trước
+  // Xác nhận đã giao tiền hoàn cho khách (cash refund)
+  confirmRefundDelivered: (
+    id: string,
+    data?: { note?: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.patch(
+      `/api/v1/shipper/returns/${id}/confirm-refund-delivered`,
+      data
+    ),
 };
 
 export default {
   customer: customerReturnService,
   admin: adminReturnService,
+  shipper: shipperReturnService,
 };

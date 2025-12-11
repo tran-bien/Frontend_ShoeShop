@@ -1,5 +1,5 @@
 import { FaStar, FaRegStar, FaUser, FaTimes, FaHeart } from "react-icons/fa";
-import type { Review } from "../../../services/ReviewService";
+import type { Review, ReviewOrderItem } from "../../../types/review";
 
 interface ReviewDetailModalProps {
   review: Review;
@@ -19,6 +19,39 @@ const ReviewDetailModal = ({ review, onClose }: ReviewDetailModalProps) => {
     return <div className="flex gap-0.5">{stars}</div>;
   };
 
+  // Helper function to get product info from review
+  const getProductInfo = () => {
+    if (typeof review.orderItem === "object" && review.orderItem?.product) {
+      const orderItem = review.orderItem as ReviewOrderItem;
+      return {
+        name: orderItem.product?.name || "Sản phẩm không tồn tại",
+        image: orderItem.product?.images?.[0]?.url || null,
+        variant: orderItem.variant?.color?.name || null,
+        variantCode: orderItem.variant?.color?.code || null,
+        size: orderItem.size?.value || null,
+      };
+    }
+    if (review.product) {
+      return {
+        name: review.product.name || "Sản phẩm không tồn tại",
+        image: review.product.images?.[0]?.url || null,
+        slug: review.product.slug || null,
+        variant: null,
+        variantCode: null,
+        size: null,
+      };
+    }
+    return {
+      name: "Sản phẩm không tồn tại",
+      image: null,
+      variant: null,
+      variantCode: null,
+      size: null,
+    };
+  };
+
+  const productInfo = getProductInfo();
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -37,22 +70,39 @@ const ReviewDetailModal = ({ review, onClose }: ReviewDetailModalProps) => {
         <div className="p-6">
           {/* Product Info */}
           <div className="flex items-center gap-4 mb-6 p-4 bg-mono-50 rounded-lg">
-            {review.product?.images?.[0]?.url ? (
+            {productInfo.image ? (
               <img
-                src={review.product.images[0].url}
-                alt={review.product.name}
+                src={productInfo.image}
+                alt={productInfo.name}
                 className="w-20 h-20 rounded-lg object-cover"
               />
             ) : (
-              <div className="w-20 h-20 rounded-lg bg-mono-200" />
+              <div className="w-20 h-20 rounded-lg bg-mono-200 flex items-center justify-center text-mono-400">
+                N/A
+              </div>
             )}
             <div>
               <h3 className="font-semibold text-mono-800 text-lg">
-                {review.product?.name || "Sản phẩm không tồn tại"}
+                {productInfo.name}
               </h3>
-              <p className="text-mono-500 text-sm">
-                Slug: {review.product?.slug || "N/A"}
-              </p>
+              {/* Hiển thị variant và size nếu có */}
+              {(productInfo.variant || productInfo.size) && (
+                <div className="flex items-center gap-2 mt-1 text-sm text-mono-600">
+                  {productInfo.variant && (
+                    <span className="flex items-center gap-1">
+                      <span
+                        className="w-4 h-4 rounded-full border border-mono-300"
+                        style={{
+                          backgroundColor: productInfo.variantCode || "#ccc",
+                        }}
+                      />
+                      {productInfo.variant}
+                    </span>
+                  )}
+                  {productInfo.variant && productInfo.size && <span>•</span>}
+                  {productInfo.size && <span>Size: {productInfo.size}</span>}
+                </div>
+              )}
             </div>
           </div>
 

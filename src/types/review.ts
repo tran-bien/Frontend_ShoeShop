@@ -50,14 +50,39 @@ export interface ReviewReply {
 }
 
 // =======================
+// ORDER ITEM FOR REVIEW (from BE populate)
+// =======================
+
+export interface ReviewOrderItem {
+  _id: string;
+  product?: {
+    _id: string;
+    name: string;
+    images?: Array<{ url: string; public_id: string }>;
+  };
+  variant?: {
+    _id: string;
+    color?: { name: string; code: string };
+  };
+  size?: {
+    _id: string;
+    value: string | number;
+  };
+  quantity?: number;
+  price?: number;
+}
+
+// =======================
 // MAIN REVIEW INTERFACE
 // =======================
 
 export interface Review {
   _id: string;
   user: ReviewUser;
-  product: ReviewProduct;
-  orderItem: string;
+  // product field may not exist directly, but orderItem.product does
+  product?: ReviewProduct;
+  // orderItem can be string (ID) or populated object from BE
+  orderItem: string | ReviewOrderItem;
   rating: number;
   content: string;
   numberOfLikes: number;

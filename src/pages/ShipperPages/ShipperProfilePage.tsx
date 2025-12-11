@@ -36,7 +36,10 @@ interface LocalShipperStats {
 const ShipperProfilePage = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState<LocalShipperStats | null>(null);
-  const [isAvailable, setIsAvailable] = useState(false);
+  // Initialize from user's shipper info (from login response)
+  const [isAvailable, setIsAvailable] = useState(
+    user?.shipper?.isAvailable ?? false
+  );
   const [loading, setLoading] = useState(true);
   const [toggleLoading, setToggleLoading] = useState(false);
 
@@ -74,17 +77,18 @@ const ShipperProfilePage = () => {
         successRate,
       });
 
-      // Set initial availability from localStorage user or default false
-      // Note: BE doesn't have GET /shipper/availability, availability is in User.shipper.isAvailable
-      // This would normally come from user context after login
-      setIsAvailable(false);
+      // Get availability from user context (from login response)
+      // This is persisted in localStorage and updated on toggle
+      if (user?.shipper) {
+        setIsAvailable(user.shipper.isAvailable);
+      }
     } catch (error) {
       console.error("Error fetching profile data:", error);
       toast.error("Không thể tải thông tin profile");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [user?.shipper]);
 
   useEffect(() => {
     fetchProfileData();
@@ -97,6 +101,18 @@ const ShipperProfilePage = () => {
 
       await shipperService.updateAvailability(newStatus);
       setIsAvailable(newStatus);
+
+      // Update localStorage user data to persist availability status
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        if (userData.shipper) {
+          userData.shipper.isAvailable = newStatus;
+        } else {
+          userData.shipper = { isAvailable: newStatus };
+        }
+        localStorage.setItem("user", JSON.stringify(userData));
+      }
 
       toast.success(
         newStatus

@@ -5,7 +5,6 @@ import type {
   NotificationQueryParams,
 } from "../types/notification";
 import { BellIcon, CheckIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
 
 const NotificationsPage = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -26,8 +25,9 @@ const NotificationsPage = () => {
     setLoading(true);
     try {
       const { data } = await userNotificationService.getNotifications(params);
-      setNotifications(data.data.notifications);
-      setPagination(data.data.pagination);
+      // BE trả về cấu trúc phẳng: { success, notifications, unreadCount, pagination }
+      setNotifications(data.notifications);
+      setPagination(data.pagination);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
     } finally {
@@ -187,14 +187,6 @@ const NotificationsPage = () => {
 
                     {/* Action buttons */}
                     <div className="flex items-center gap-3">
-                      {notification.actionUrl && (
-                        <Link
-                          to={notification.actionUrl}
-                          className="text-sm font-medium text-mono-black hover:underline"
-                        >
-                          Xem chi tiết →
-                        </Link>
-                      )}
                       {!notification.isRead && (
                         <button
                           onClick={() => handleMarkAsRead(notification._id)}
@@ -251,4 +243,3 @@ const NotificationsPage = () => {
 };
 
 export default NotificationsPage;
-

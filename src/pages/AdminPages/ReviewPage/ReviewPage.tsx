@@ -9,7 +9,8 @@ import {
   FaSearch,
   FaFilter,
 } from "react-icons/fa";
-import { adminReviewApi, Review } from "../../../services/ReviewService";
+import { adminReviewApi } from "../../../services/ReviewService";
+import { Review, ReviewOrderItem } from "../../../types/review";
 import { toast } from "react-hot-toast";
 import ReviewDetailModal from "./ReviewDetailModal";
 import ReviewReplyModal from "./ReviewReplyModal";
@@ -131,6 +132,39 @@ const ReviewPage = () => {
   const onReplySuccess = () => {
     setShowReplyModal(false);
     fetchReviews(currentPage);
+  };
+
+  // Helper function to get product info from review (supports both orderItem and product)
+  const getReviewProductInfo = (review: Review) => {
+    // Check if orderItem is populated (object) with product
+    if (typeof review.orderItem === "object" && review.orderItem?.product) {
+      const orderItem = review.orderItem as ReviewOrderItem;
+      return {
+        name: orderItem.product?.name || "Sản phẩm không tồn tại",
+        image: orderItem.product?.images?.[0]?.url || null,
+        variant: orderItem.variant?.color?.name || null,
+        variantCode: orderItem.variant?.color?.code || null,
+        size: orderItem.size?.value || null,
+      };
+    }
+    // Fallback to direct product (if BE populates it directly)
+    if (review.product) {
+      return {
+        name: review.product.name || "Sản phẩm không tồn tại",
+        image: review.product.images?.[0]?.url || null,
+        variant: null,
+        variantCode: null,
+        size: null,
+      };
+    }
+    // No product info available
+    return {
+      name: "Sản phẩm không tồn tại",
+      image: null,
+      variant: null,
+      variantCode: null,
+      size: null,
+    };
   };
 
   const renderStars = (rating: number) => {
@@ -322,109 +356,139 @@ const ReviewPage = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {displayedReviews.map((review) => (
-                <tr key={review._id} className="hover:bg-mono-50">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center">
-                      {review.product?.images?.[0]?.url ? (
-                        <img
-                          src={review.product.images[0].url}
-                          alt={review.product.name}
-                          className="w-10 h-10 rounded object-cover mr-3"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded bg-mono-200 mr-3" />
-                      )}
-                      <span className="text-mono-800 font-medium truncate max-w-[150px]">
-                        {review.product?.name || "Sản phẩm không tồn tại"}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-mono-700">
-                      {review.user?.name || "Ẩn danh"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">{renderStars(review.rating)}</td>
-                  <td className="px-6 py-4">
-                    <p
-                      className="text-mono-600 truncate max-w-[200px]"
-                      title={review.content}
-                    >
-                      {review.content}
-                    </p>
-                    {review.reply && (
-                      <span className="text-xs text-blue-600 flex items-center gap-1 mt-1">
-                        <FaReply size={10} /> Đã phản hồi
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-mono-700">
-                      {review.numberOfLikes || 0}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${
-                        review.isActive
-                          ? "bg-green-100 text-green-800"
-                          : "bg-orange-100 text-orange-800"
-                      }`}
-                    >
-                      {review.isActive ? "Hiện" : "Ẩn"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-mono-500 text-sm">
-                    {new Date(review.createdAt).toLocaleDateString("vi-VN")}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex justify-end gap-2">
-                      <button
-                        onClick={() => handleViewDetail(review)}
-                        className="p-2 text-mono-500 hover:text-mono-800 hover:bg-mono-100 rounded transition-colors"
-                        title="Xem chi tiết"
-                      >
-                        <FaEye size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleToggleVisibility(review)}
-                        className={`p-2 rounded transition-colors ${
-                          review.isActive
-                            ? "text-orange-500 hover:text-orange-700 hover:bg-orange-50"
-                            : "text-green-500 hover:text-green-700 hover:bg-green-50"
-                        }`}
-                        title={
-                          review.isActive ? "Ẩn đánh giá" : "Hiện đánh giá"
-                        }
-                      >
-                        {review.isActive ? (
-                          <FaEyeSlash size={16} />
+              {displayedReviews.map((review) => {
+                const productInfo = getReviewProductInfo(review);
+                return (
+                  <tr key={review._id} className="hover:bg-mono-50">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
+                        {productInfo.image ? (
+                          <img
+                            src={productInfo.image}
+                            alt={productInfo.name}
+                            className="w-10 h-10 rounded object-cover mr-3"
+                          />
                         ) : (
-                          <FaEye size={16} />
+                          <div className="w-10 h-10 rounded bg-mono-200 mr-3 flex items-center justify-center text-xs text-mono-400">
+                            N/A
+                          </div>
                         )}
-                      </button>
-                      {!review.reply ? (
-                        <button
-                          onClick={() => handleOpenReply(review)}
-                          className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
-                          title="Phản hồi"
-                        >
-                          <FaReply size={16} />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleDeleteReply(review._id)}
-                          className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
-                          title="Xóa phản hồi"
-                        >
-                          <FaTrash size={16} />
-                        </button>
+                        <div className="flex flex-col">
+                          <span className="text-mono-800 font-medium truncate max-w-[150px]">
+                            {productInfo.name}
+                          </span>
+                          {/* Hiển thị variant và size nếu có */}
+                          {(productInfo.variant || productInfo.size) && (
+                            <span className="text-xs text-mono-500 flex items-center gap-1 mt-0.5">
+                              {productInfo.variant && (
+                                <span className="flex items-center gap-1">
+                                  <span
+                                    className="w-3 h-3 rounded-full border border-mono-300"
+                                    style={{
+                                      backgroundColor:
+                                        productInfo.variantCode || "#ccc",
+                                    }}
+                                  />
+                                  {productInfo.variant}
+                                </span>
+                              )}
+                              {productInfo.variant && productInfo.size && (
+                                <span>•</span>
+                              )}
+                              {productInfo.size && (
+                                <span>Size: {productInfo.size}</span>
+                              )}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-mono-700">
+                        {review.user?.name || "Ẩn danh"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">{renderStars(review.rating)}</td>
+                    <td className="px-6 py-4">
+                      <p
+                        className="text-mono-600 truncate max-w-[200px]"
+                        title={review.content}
+                      >
+                        {review.content}
+                      </p>
+                      {review.reply && (
+                        <span className="text-xs text-blue-600 flex items-center gap-1 mt-1">
+                          <FaReply size={10} /> Đã phản hồi
+                        </span>
                       )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-mono-700">
+                        {review.numberOfLikes || 0}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          review.isActive
+                            ? "bg-green-100 text-green-800"
+                            : "bg-orange-100 text-orange-800"
+                        }`}
+                      >
+                        {review.isActive ? "Hiện" : "Ẩn"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-mono-500 text-sm">
+                      {new Date(review.createdAt).toLocaleDateString("vi-VN")}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          onClick={() => handleViewDetail(review)}
+                          className="p-2 text-mono-500 hover:text-mono-800 hover:bg-mono-100 rounded transition-colors"
+                          title="Xem chi tiết"
+                        >
+                          <FaEye size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleToggleVisibility(review)}
+                          className={`p-2 rounded transition-colors ${
+                            review.isActive
+                              ? "text-orange-500 hover:text-orange-700 hover:bg-orange-50"
+                              : "text-green-500 hover:text-green-700 hover:bg-green-50"
+                          }`}
+                          title={
+                            review.isActive ? "Ẩn đánh giá" : "Hiện đánh giá"
+                          }
+                        >
+                          {review.isActive ? (
+                            <FaEyeSlash size={16} />
+                          ) : (
+                            <FaEye size={16} />
+                          )}
+                        </button>
+                        {!review.reply ? (
+                          <button
+                            onClick={() => handleOpenReply(review)}
+                            className="p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
+                            title="Phản hồi"
+                          >
+                            <FaReply size={16} />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleDeleteReply(review._id)}
+                            className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                            title="Xóa phản hồi"
+                          >
+                            <FaTrash size={16} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}

@@ -4,12 +4,10 @@ import type {
   LoyaltyTierQueryParams,
   CreateLoyaltyTierData,
   UpdateLoyaltyTierData,
-  // AdjustPointsData, // Removed: BE chưa implement
   LoyaltyInfoResponse,
   LoyaltyTransactionsResponse,
   LoyaltyTiersResponse,
   LoyaltyTierDetailResponse,
-  // AdjustPointsResponse, // Removed: BE chưa implement
 } from "../types/loyalty";
 
 // =======================
@@ -26,6 +24,10 @@ export const userLoyaltyService = {
     params: LoyaltyTransactionQueryParams = {}
   ): Promise<{ data: LoyaltyTransactionsResponse }> =>
     axiosInstanceAuth.get("/api/v1/users/loyalty/transactions", { params }),
+
+  // Lấy danh sách các hạng thành viên (public)
+  getTiers: (): Promise<{ data: LoyaltyTiersResponse }> =>
+    axiosInstanceAuth.get("/api/v1/users/loyalty/tiers"),
 };
 
 // =======================

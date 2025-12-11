@@ -9,6 +9,7 @@ import type {
 } from "../../../types/blog";
 import toast from "react-hot-toast";
 import { XMarkIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import MarkdownEditor from "./MarkdownEditor";
 
 interface BlogPostFormModalProps {
   post: BlogPost | null;
@@ -58,12 +59,13 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
       return;
     }
 
-    // If editing existing post, upload directly
-    if (post) {
-      setUploadingImage(true);
-      try {
-        const formDataUpload = new FormData();
-        formDataUpload.append("image", file);
+    setUploadingImage(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append("image", file);
+
+      if (post) {
+        // If editing existing post, use uploadFeaturedImage API
         const response = await blogImageService.uploadFeaturedImage(
           post._id,
           formDataUpload
@@ -75,24 +77,27 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
             public_id: response.data.public_id || "",
           },
         });
-        toast.success("Tải ảnh đại diện thành công");
-      } catch (error) {
-        console.error("Failed to upload featured image:", error);
-        toast.error("Không thể tải ảnh lên");
-      } finally {
-        setUploadingImage(false);
+      } else {
+        // For new post, upload as content image (general upload without postId)
+        const response = await blogImageService.uploadBlogContentImage(
+          formDataUpload
+        );
+        setFormData({
+          ...formData,
+          featuredImage: {
+            url: response.data.url || "",
+            public_id: response.data.public_id || "",
+          },
+        });
       }
-    } else {
-      // For new post, show preview with local URL
-      const previewUrl = URL.createObjectURL(file);
-      setFormData({
-        ...formData,
-        featuredImage: { url: previewUrl, public_id: "" },
-      });
-      toast.success(
-        "Ảnh sẽ được tải lên sau khi tạo bài viết. Vui lòng tạo bài viết trước."
-      );
+      toast.success("Tải ảnh đại diện thành công");
+    } catch (error) {
+      console.error("Failed to upload featured image:", error);
+      toast.error("Không thể tải ảnh lên");
+    } finally {
+      setUploadingImage(false);
     }
+
     // Reset input
     if (featuredImageInputRef.current) {
       featuredImageInputRef.current.value = "";
@@ -265,19 +270,12 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
             <label className="block text-sm font-medium text-mono-700 mb-2">
               Nội dung <span className="text-mono-500">*</span>
             </label>
-            <textarea
+            <MarkdownEditor
               value={formData.content}
-              onChange={(e) =>
-                setFormData({ ...formData, content: e.target.value })
-              }
-              rows={12}
+              onChange={(content) => setFormData({ ...formData, content })}
               placeholder="Nhập nội dung bài viết (hỗ trợ Markdown)..."
-              className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black font-mono text-sm"
-              required
+              minHeight={350}
             />
-            <p className="text-xs text-mono-500 mt-1">
-              Hỗ trợ Markdown: **bold**, *italic*, [link](url), ![image](url)
-            </p>
           </div>
 
           {/* Featured Image */}

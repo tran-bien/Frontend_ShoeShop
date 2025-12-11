@@ -147,6 +147,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           role,
           avatar,
           isVerified,
+          shipper, // Include shipper info for shipper role
         } = response;
 
         // Kiểm tra xem token có tồn tại không
@@ -175,6 +176,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
               : avatar
             : undefined,
           isVerified: isVerified,
+          shipper: shipper, // Include shipper info
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };

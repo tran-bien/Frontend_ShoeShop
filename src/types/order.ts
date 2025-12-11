@@ -103,7 +103,7 @@ export interface OrderStatusHistory {
  */
 export interface DeliveryAttempt {
   time: string;
-  status: "success" | "failed" | "partial";
+  status: "success" | "failed" | "out_for_delivery";
   note?: string;
   shipper?: string;
   images?: string[];

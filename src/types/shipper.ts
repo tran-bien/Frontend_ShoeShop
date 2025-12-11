@@ -27,6 +27,11 @@ export interface ShipperInfo {
   activeOrders: number; // Số đơn đang giao
   maxOrders: number; // Số đơn tối đa có thể nhận (default: 20)
   deliveryStats: ShipperDeliveryStats;
+  currentLocation?: {
+    latitude?: number;
+    longitude?: number;
+    updatedAt?: string;
+  };
 }
 
 // =======================
@@ -59,12 +64,7 @@ export interface Shipper {
  * Trạng thái delivery attempt
  * Matches BE: Order.deliveryAttempts[].status
  */
-export type DeliveryAttemptStatus =
-  | "out_for_delivery"
-  | "success"
-  | "failed"
-  | "delivery_failed"
-  | "delivered";
+export type DeliveryAttemptStatus = "out_for_delivery" | "success" | "failed";
 
 /**
  * Lần giao hàng

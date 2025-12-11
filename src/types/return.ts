@@ -1,78 +1,25 @@
 ﻿/**
  * Return Request Types
- * Định nghĩa các interface liên quan đến Yêu cầu đổi/trả hàng
+ * Định nghĩa các interface liên quan đến Yêu cầu trả hàng/hoàn tiền
+ * (Đã loại bỏ logic đổi hàng - chỉ có trả hàng/hoàn tiền toàn bộ đơn)
  */
 
 // =======================
-// RETURN REQUEST ITEM TYPES
+// RETURN REQUEST STATUS & TYPES
 // =======================
 
-export interface ReturnRequestItem {
-  variant: string;
-  size: string;
-  quantity: number;
-  reason: string;
-  images?: string[];
-  exchangeToVariant?: string; // Only for EXCHANGE
-  exchangeToSize?: string; // Only for EXCHANGE
-}
-
-export interface ReturnRequestItemDetail {
-  product: {
-    _id: string;
-    name: string;
-    slug?: string;
-    images?: Array<{
-      url: string;
-      public_id: string;
-    }>;
-  };
-  variant: {
-    _id: string;
-    color?: {
-      _id: string;
-      name: string;
-      code: string;
-    };
-    gender?: string;
-  };
-  size: {
-    _id: string;
-    value: string | number;
-    description?: string;
-  };
-  quantity: number;
-  priceAtPurchase: number;
-  exchangeToVariant?: {
-    _id: string;
-    color?: {
-      _id: string;
-      name: string;
-      code: string;
-    };
-  };
-  exchangeToSize?: {
-    _id: string;
-    value: string | number;
-  };
-}
-
-// =======================
-// RETURN REQUEST TYPES
-// =======================
-
-export type ReturnRequestType = "RETURN" | "EXCHANGE";
 export type ReturnRequestStatus =
-  | "pending"
-  | "approved"
-  | "rejected"
-  | "processing"
-  | "completed"
-  | "cancelled";
-export type RefundMethod =
-  | "original_payment"
-  | "store_credit"
-  | "bank_transfer";
+  | "pending" // Chờ duyệt
+  | "approved" // Đã duyệt, chờ shipper lấy hàng
+  | "shipping" // Shipper đang lấy hàng
+  | "received" // Đã nhận hàng trả
+  | "refunded" // Đã hoàn tiền (bank_transfer)
+  | "completed" // Hoàn tất
+  | "rejected" // Từ chối
+  | "canceled"; // Khách hủy
+
+export type RefundMethod = "cash" | "bank_transfer";
+
 export type ReturnReason =
   | "wrong_size"
   | "wrong_product"
@@ -97,11 +44,22 @@ export interface BankInfo {
 
 export interface CreateReturnRequestData {
   orderId: string;
-  type: ReturnRequestType;
-  items: ReturnRequestItem[];
-  reason: string;
-  refundMethod?: RefundMethod;
+  reason: ReturnReason;
+  reasonDetail?: string;
+  refundMethod: RefundMethod;
   bankInfo?: BankInfo;
+}
+
+// =======================
+// REFUND COLLECTED BY SHIPPER
+// =======================
+
+export interface RefundCollectedByShipper {
+  collected: boolean;
+  amount?: number;
+  collectedAt?: string;
+  shipperId?: string;
+  note?: string;
 }
 
 // =======================
@@ -110,9 +68,38 @@ export interface CreateReturnRequestData {
 
 export interface ReturnRequest {
   _id: string;
+  code?: string;
   order: {
     _id: string;
     code: string;
+    items?: Array<{
+      product: {
+        _id: string;
+        name: string;
+        images?: Array<{ url: string; public_id: string }>;
+      };
+      variant: {
+        _id: string;
+        color?: { name: string; code: string };
+      };
+      size: {
+        _id: string;
+        value: string | number;
+      };
+      quantity: number;
+      price: number;
+      priceAtPurchase?: number;
+    }>;
+    totalAfterDiscountAndShipping?: number;
+    shippingAddress?: {
+      fullName: string;
+      phone: string;
+      address: string;
+      addressLine?: string;
+      ward?: string;
+      district?: string;
+      province?: string;
+    };
     user?: {
       _id: string;
       name: string;
@@ -129,15 +116,28 @@ export interface ReturnRequest {
       public_id: string;
     };
   };
-  type: ReturnRequestType;
-  items: ReturnRequestItemDetail[];
   reason: ReturnReason;
   reasonDetail?: string;
-  images: string[];
-  refundMethod?: RefundMethod;
-  refundAmount?: number;
+  refundMethod: RefundMethod;
+  refundAmount: number;
+  returnShippingFee: number;
   bankInfo?: BankInfo;
   status: ReturnRequestStatus;
+
+  // Assigned shipper
+  assignedShipper?: {
+    _id: string;
+    name: string;
+    email: string;
+    phone?: string;
+  };
+  assignedAt?: string;
+  assignedBy?: {
+    _id: string;
+    name: string;
+  };
+
+  // Approval/Rejection
   approvedBy?: {
     _id: string;
     name: string;
@@ -151,15 +151,31 @@ export interface ReturnRequest {
   };
   rejectedAt?: string;
   rejectionReason?: string;
-  processedBy?: {
+  adminNote?: string;
+  staffNotes?: string;
+
+  // Received by shipper
+  receivedBy?: {
     _id: string;
     name: string;
-    email: string;
   };
-  processedAt?: string;
+  receivedAt?: string;
+  receivedNote?: string;
+
+  // Refund collected (for cash refund)
+  refundCollectedByShipper?: RefundCollectedByShipper;
+
+  // Completion
+  completedBy?: {
+    _id: string;
+    name: string;
+  };
   completedAt?: string;
+
+  // Cancellation
   cancelledAt?: string;
   cancellationReason?: string;
+
   createdAt: string;
   updatedAt: string;
 }
@@ -172,7 +188,6 @@ export interface ReturnRequestQueryParams {
   page?: number;
   limit?: number;
   status?: ReturnRequestStatus;
-  type?: ReturnRequestType;
   search?: string;
   sort?: string;
   fromDate?: string;
@@ -186,10 +201,12 @@ export interface ReturnRequestQueryParams {
 export interface ReturnRequestStats {
   pending: number;
   approved: number;
-  rejected: number;
-  processing: number;
+  shipping: number;
+  received: number;
+  refunded: number;
   completed: number;
-  cancelled: number;
+  rejected: number;
+  canceled: number;
   total: number;
 }
 

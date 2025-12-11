@@ -51,7 +51,8 @@ export const NotificationBell = () => {
           const { data } = await userNotificationService.getNotifications({
             limit: 5,
           });
-          setNotifications(data.data.notifications);
+          // BE trả về cấu trúc phẳng: { success, notifications, unreadCount, pagination }
+          setNotifications(data.notifications);
         } catch (error) {
           console.error("Failed to fetch notifications:", error);
           setNotifications([]);
@@ -195,4 +196,3 @@ export const NotificationBell = () => {
 };
 
 export default NotificationBell;
-

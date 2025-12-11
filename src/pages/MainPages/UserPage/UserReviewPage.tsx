@@ -630,10 +630,10 @@ const UserReviewPage: React.FC = () => {
                               <div className="flex-shrink-0">
                                 <img
                                   src={
-                                    review.product.images?.[0]?.url ||
+                                    review.product?.images?.[0]?.url ||
                                     "/placeholder-image.jpg"
                                   }
-                                  alt={review.product.name}
+                                  alt={review.product?.name || "Sản phẩm"}
                                   className="w-20 h-20 object-cover rounded-lg border border-mono-200"
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
@@ -646,7 +646,7 @@ const UserReviewPage: React.FC = () => {
                               <div className="flex-grow">
                                 <div className="flex flex-wrap items-start justify-between gap-2">
                                   <h3 className="font-medium text-lg">
-                                    {review.product.name}
+                                    {review.product?.name || "Sản phẩm"}
                                   </h3>
                                   <div className="text-xs text-mono-500 whitespace-nowrap">
                                     {format(
@@ -868,10 +868,10 @@ const UserReviewPage: React.FC = () => {
                   <div className="flex gap-3">
                     <img
                       src={
-                        selectedReview.product.images?.[0]?.url ||
+                        selectedReview.product?.images?.[0]?.url ||
                         "/placeholder-image.jpg"
                       }
-                      alt={selectedReview.product.name}
+                      alt={selectedReview.product?.name || "Sản phẩm"}
                       className="w-16 h-16 object-cover rounded-lg border border-mono-200"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
@@ -880,7 +880,7 @@ const UserReviewPage: React.FC = () => {
                     />
                     <div>
                       <h4 className="font-medium text-mono-800">
-                        {selectedReview.product.name}
+                        {selectedReview.product?.name || "Sản phẩm"}
                       </h4>
                       <p className="text-xs text-mono-500 mt-1">
                         Ngày đánh giá:{" "}

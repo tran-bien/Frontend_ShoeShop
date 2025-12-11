@@ -4,12 +4,12 @@ import {
   FiHome,
   FiTruck,
   FiPackage,
-  FiCheckCircle,
   FiUser,
   FiLogOut,
   FiMenu,
   FiX,
   FiChevronLeft,
+  FiRefreshCw,
 } from "react-icons/fi";
 
 interface ShipperUser {
@@ -53,9 +53,9 @@ const ShipperLayout = () => {
       label: "Đơn hàng",
     },
     {
-      path: "/shipper/completed",
-      icon: <FiCheckCircle size={20} />,
-      label: "Đã giao",
+      path: "/shipper/returns",
+      icon: <FiRefreshCw size={20} />,
+      label: "Trả hàng",
     },
     {
       path: "/shipper/profile",

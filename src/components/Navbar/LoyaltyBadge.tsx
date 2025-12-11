@@ -48,7 +48,7 @@ export const LoyaltyBadge = () => {
 
   return (
     <Link
-      to="/loyalty"
+      to="/loyalty/dashboard"
       className="flex items-center gap-2 px-4 py-2 bg-mono-100 hover:bg-mono-200 rounded-lg transition-colors group"
     >
       {/* Trophy Icon */}

@@ -9,11 +9,8 @@ import {
   FiCheck,
   FiCheckCircle,
 } from "react-icons/fi";
-import {
-  chatService,
-  ChatConversation,
-  ChatMessage,
-} from "../../../services/ChatService";
+import { chatService, ChatConversation } from "../../../services/ChatService";
+import type { ConversationMessage } from "../../../types/chat";
 import { useAuth } from "../../../hooks/useAuth";
 import { io, Socket } from "socket.io-client";
 import toast from "react-hot-toast";
@@ -39,7 +36,7 @@ const AdminChatPage: React.FC = () => {
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const [activeConversation, setActiveConversation] =
     useState<ChatConversation | null>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -77,7 +74,7 @@ const AdminChatPage: React.FC = () => {
 
       newSocket.on(
         "chat:newMessage",
-        (data: { message: ChatMessage; conversationId: string }) => {
+        (data: { message: ConversationMessage; conversationId: string }) => {
           if (
             activeConversation &&
             data.conversationId === activeConversation._id
@@ -140,8 +137,9 @@ const AdminChatPage: React.FC = () => {
         params.status = statusFilter;
       }
       const response = await chatService.getConversations(params);
-      if (response.data.success) {
-        setConversations(response.data.data || []);
+      if (response.data.success && response.data.data) {
+        const data = response.data.data;
+        setConversations(data.conversations || []);
       }
     } catch (error) {
       console.error("Failed to load conversations:", error);
@@ -178,8 +176,9 @@ const AdminChatPage: React.FC = () => {
       const response = await chatService.getMessages(conversationId, {
         limit: 100,
       });
-      if (response.data.success) {
-        setMessages(response.data.data || []);
+      if (response.data.success && response.data.data) {
+        const data = response.data.data;
+        setMessages(data.messages || []);
         await chatService.markAsRead(conversationId);
         // Reset unread count
         setConversations((prev) =>
@@ -215,7 +214,7 @@ const AdminChatPage: React.FC = () => {
           },
           (response: {
             success: boolean;
-            message?: ChatMessage;
+            message?: ConversationMessage;
             error?: string;
           }) => {
             if (!response.success) {
@@ -229,8 +228,9 @@ const AdminChatPage: React.FC = () => {
           type: "text",
           text: messageText,
         });
-        if (response.data.success) {
-          setMessages((prev) => [...prev, response.data.data]);
+        if (response.data.success && response.data.data) {
+          const newMessage = response.data.data;
+          setMessages((prev) => [...prev, newMessage]);
         }
         setIsSending(false);
       }
@@ -611,5 +611,3 @@ const AdminChatPage: React.FC = () => {
 };
 
 export default AdminChatPage;
-
-
