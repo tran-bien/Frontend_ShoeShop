@@ -4,6 +4,7 @@ import { FiArrowLeft, FiPackage, FiAlertCircle, FiCheck } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { customerReturnService } from "../services/ReturnService";
 import { userOrderService } from "../services/OrderService";
+import Sidebar from "../components/User/Sidebar";
 import type {
   CreateReturnRequestData,
   RefundMethod,
@@ -184,333 +185,343 @@ const CreateReturnPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <button
-            onClick={() => navigate("/returns")}
-            className="flex items-center gap-2 text-gray-600 hover:text-black mb-4"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-            Quay lại
-          </button>
-          <h1 className="text-3xl font-bold text-black">
-            Yêu Cầu Trả Hàng / Hoàn Tiền
-          </h1>
-          <p className="text-gray-600 mt-2">
-            Chọn đơn hàng bạn muốn trả và điền thông tin
-          </p>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex gap-8">
+          {/* Sidebar */}
+          <Sidebar />
 
-        {/* Notice */}
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
-          <div className="flex items-start gap-3">
-            <FiAlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
-            <div className="text-sm text-amber-800">
-              <p className="font-medium mb-1">Lưu ý:</p>
-              <ul className="list-disc pl-4 space-y-1">
-                <li>
-                  Trả hàng sẽ trả toàn bộ đơn hàng (không hỗ trợ trả từng sản
-                  phẩm)
-                </li>
-                <li>
-                  Phí trả hàng:{" "}
-                  <strong>
-                    {RETURN_SHIPPING_FEE.toLocaleString("vi-VN")}đ
-                  </strong>{" "}
-                  (trừ vào tiền hoàn)
-                </li>
-                <li>Đơn hàng phải được giao trong vòng 7 ngày gần đây</li>
-              </ul>
+          {/* Main Content */}
+          <div className="flex-1 max-w-4xl">
+            {/* Header */}
+            <div className="mb-8">
+              <button
+                onClick={() => navigate("/returns")}
+                className="flex items-center gap-2 text-gray-600 hover:text-black mb-4"
+              >
+                <FiArrowLeft className="w-5 h-5" />
+                Quay lại
+              </button>
+              <h1 className="text-3xl font-bold text-black">
+                Yêu Cầu Trả Hàng / Hoàn Tiền
+              </h1>
+              <p className="text-gray-600 mt-2">
+                Chọn đơn hàng bạn muốn trả và điền thông tin
+              </p>
             </div>
-          </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Order Selection */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Chọn đơn hàng</h2>
-            {orders.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <FiPackage className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>Không có đơn hàng nào đủ điều kiện trả hàng</p>
-                <p className="text-sm mt-1">
-                  (Đơn hàng phải đã giao trong vòng 7 ngày)
+            {/* Notice */}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <FiAlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                <div className="text-sm text-amber-800">
+                  <p className="font-medium mb-1">Lưu ý:</p>
+                  <ul className="list-disc pl-4 space-y-1">
+                    <li>
+                      Trả hàng sẽ trả toàn bộ đơn hàng (không hỗ trợ trả từng
+                      sản phẩm)
+                    </li>
+                    <li>
+                      Phí trả hàng:{" "}
+                      <strong>
+                        {RETURN_SHIPPING_FEE.toLocaleString("vi-VN")}đ
+                      </strong>{" "}
+                      (trừ vào tiền hoàn)
+                    </li>
+                    <li>Đơn hàng phải được giao trong vòng 7 ngày gần đây</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Order Selection */}
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-lg font-semibold mb-4">Chọn đơn hàng</h2>
+                {orders.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <FiPackage className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p>Không có đơn hàng nào đủ điều kiện trả hàng</p>
+                    <p className="text-sm mt-1">
+                      (Đơn hàng phải đã giao trong vòng 7 ngày)
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {orders.map((order) => (
+                      <div
+                        key={order._id}
+                        onClick={() => handleSelectOrder(order)}
+                        className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+                          selectedOrder?._id === order._id
+                            ? "border-black bg-gray-50"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-start gap-3">
+                            {selectedOrder?._id === order._id && (
+                              <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
+                                <FiCheck className="w-4 h-4 text-white" />
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-medium">{order.code}</p>
+                              <p className="text-sm text-gray-600">
+                                {order.orderItems.length} sản phẩm
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-medium">
+                              {order.totalAfterDiscountAndShipping?.toLocaleString(
+                                "vi-VN"
+                              )}
+                              đ
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              Giao ngày:{" "}
+                              {order.deliveredAt
+                                ? new Date(
+                                    order.deliveredAt
+                                  ).toLocaleDateString("vi-VN")
+                                : "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Order Items Preview */}
+              {selectedOrder && (
+                <div className="bg-white rounded-lg p-6 shadow-sm">
+                  <h2 className="text-lg font-semibold mb-4">
+                    Sản phẩm trong đơn hàng (sẽ trả toàn bộ)
+                  </h2>
+                  <div className="space-y-3">
+                    {selectedOrder.orderItems.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
+                      >
+                        <img
+                          src={
+                            item.variant.product?.images?.[0]?.url ||
+                            "/placeholder.jpg"
+                          }
+                          alt={item.productName}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                        <div className="flex-1">
+                          <p className="font-medium">{item.productName}</p>
+                          <p className="text-sm text-gray-600">
+                            {item.variant.color?.name} - Size {item.size.value}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            SL: {item.quantity} x{" "}
+                            {item.price.toLocaleString("vi-VN")}đ
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Refund calculation */}
+                  <div className="mt-4 pt-4 border-t space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Tổng đơn hàng:</span>
+                      <span>
+                        {selectedOrder.totalAfterDiscountAndShipping?.toLocaleString(
+                          "vi-VN"
+                        )}
+                        đ
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Phí trả hàng:</span>
+                      <span className="text-red-600">
+                        -{RETURN_SHIPPING_FEE.toLocaleString("vi-VN")}đ
+                      </span>
+                    </div>
+                    <div className="flex justify-between font-semibold text-lg pt-2 border-t">
+                      <span>Tiền hoàn lại:</span>
+                      <span className="text-green-600">
+                        {calculateRefundAmount().toLocaleString("vi-VN")}đ
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Reason */}
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-lg font-semibold mb-4">Lý do trả hàng</h2>
+                <select
+                  value={reason}
+                  onChange={(e) =>
+                    setReason(e.target.value as ReturnReason | "")
+                  }
+                  className="w-full px-4 py-2 border rounded-lg mb-4"
+                  required
+                >
+                  <option value="">-- Chọn lý do --</option>
+                  {reasons.map((r) => (
+                    <option key={r.value} value={r.value}>
+                      {r.label}
+                    </option>
+                  ))}
+                </select>
+
+                <textarea
+                  value={reasonDetail}
+                  onChange={(e) => setReasonDetail(e.target.value)}
+                  placeholder="Mô tả chi tiết (tùy chọn)..."
+                  rows={3}
+                  maxLength={500}
+                  className="w-full px-4 py-2 border rounded-lg"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {reasonDetail.length}/500 ký tự
                 </p>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {orders.map((order) => (
-                  <div
-                    key={order._id}
-                    onClick={() => handleSelectOrder(order)}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
-                      selectedOrder?._id === order._id
+
+              {/* Refund Method */}
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-lg font-semibold mb-4">
+                  Phương thức hoàn tiền
+                </h2>
+                <div className="space-y-3">
+                  <label
+                    className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                      refundMethod === "bank_transfer"
                         ? "border-black bg-gray-50"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-start gap-3">
-                        {selectedOrder?._id === order._id && (
-                          <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                            <FiCheck className="w-4 h-4 text-white" />
-                          </div>
-                        )}
-                        <div>
-                          <p className="font-medium">{order.code}</p>
-                          <p className="text-sm text-gray-600">
-                            {order.orderItems.length} sản phẩm
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium">
-                          {order.totalAfterDiscountAndShipping?.toLocaleString(
-                            "vi-VN"
-                          )}
-                          đ
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          Giao ngày:{" "}
-                          {order.deliveredAt
-                            ? new Date(order.deliveredAt).toLocaleDateString(
-                                "vi-VN"
-                              )
-                            : "N/A"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Order Items Preview */}
-          {selectedOrder && (
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-lg font-semibold mb-4">
-                Sản phẩm trong đơn hàng (sẽ trả toàn bộ)
-              </h2>
-              <div className="space-y-3">
-                {selectedOrder.orderItems.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
-                  >
-                    <img
-                      src={
-                        item.variant.product?.images?.[0]?.url ||
-                        "/placeholder.jpg"
+                    <input
+                      type="radio"
+                      name="refundMethod"
+                      value="bank_transfer"
+                      checked={refundMethod === "bank_transfer"}
+                      onChange={(e) =>
+                        setRefundMethod(e.target.value as RefundMethod)
                       }
-                      alt={item.productName}
-                      className="w-16 h-16 object-cover rounded"
+                      className="w-4 h-4"
                     />
-                    <div className="flex-1">
-                      <p className="font-medium">{item.productName}</p>
-                      <p className="text-sm text-gray-600">
-                        {item.variant.color?.name} - Size {item.size.value}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        SL: {item.quantity} x{" "}
-                        {item.price.toLocaleString("vi-VN")}đ
+                    <div>
+                      <p className="font-medium">Chuyển khoản ngân hàng</p>
+                      <p className="text-sm text-gray-500">
+                        Admin sẽ chuyển tiền vào tài khoản ngân hàng của bạn
                       </p>
                     </div>
+                  </label>
+
+                  <label
+                    className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                      refundMethod === "cash"
+                        ? "border-black bg-gray-50"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="refundMethod"
+                      value="cash"
+                      checked={refundMethod === "cash"}
+                      onChange={(e) =>
+                        setRefundMethod(e.target.value as RefundMethod)
+                      }
+                      className="w-4 h-4"
+                    />
+                    <div>
+                      <p className="font-medium">Tiền mặt (Shipper giao)</p>
+                      <p className="text-sm text-gray-500">
+                        Shipper sẽ lấy hàng trả và giao tiền hoàn cho bạn
+                      </p>
+                    </div>
+                  </label>
+                </div>
+
+                {refundMethod === "bank_transfer" && (
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-4">
+                    <h3 className="font-medium">Thông tin ngân hàng</h3>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Tên ngân hàng *
+                      </label>
+                      <input
+                        type="text"
+                        value={bankInfo.bankName}
+                        onChange={(e) =>
+                          setBankInfo({ ...bankInfo, bankName: e.target.value })
+                        }
+                        placeholder="VD: Vietcombank, BIDV, ..."
+                        className="w-full px-4 py-2 border rounded-lg"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Số tài khoản *
+                      </label>
+                      <input
+                        type="text"
+                        value={bankInfo.accountNumber}
+                        onChange={(e) =>
+                          setBankInfo({
+                            ...bankInfo,
+                            accountNumber: e.target.value,
+                          })
+                        }
+                        placeholder="Nhập số tài khoản"
+                        className="w-full px-4 py-2 border rounded-lg"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Tên chủ tài khoản *
+                      </label>
+                      <input
+                        type="text"
+                        value={bankInfo.accountName}
+                        onChange={(e) =>
+                          setBankInfo({
+                            ...bankInfo,
+                            accountName: e.target.value.toUpperCase(),
+                          })
+                        }
+                        placeholder="VD: NGUYEN VAN A"
+                        className="w-full px-4 py-2 border rounded-lg uppercase"
+                        required
+                      />
+                    </div>
                   </div>
-                ))}
+                )}
               </div>
 
-              {/* Refund calculation */}
-              <div className="mt-4 pt-4 border-t space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Tổng đơn hàng:</span>
-                  <span>
-                    {selectedOrder.totalAfterDiscountAndShipping?.toLocaleString(
-                      "vi-VN"
-                    )}
-                    đ
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Phí trả hàng:</span>
-                  <span className="text-red-600">
-                    -{RETURN_SHIPPING_FEE.toLocaleString("vi-VN")}đ
-                  </span>
-                </div>
-                <div className="flex justify-between font-semibold text-lg pt-2 border-t">
-                  <span>Tiền hoàn lại:</span>
-                  <span className="text-green-600">
-                    {calculateRefundAmount().toLocaleString("vi-VN")}đ
-                  </span>
-                </div>
+              {/* Submit */}
+              <div className="flex justify-end gap-4">
+                <button
+                  type="button"
+                  onClick={() => navigate("/returns")}
+                  className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || !selectedOrder || !reason}
+                  className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {submitting ? "Đang gửi..." : "Gửi yêu cầu trả hàng"}
+                </button>
               </div>
-            </div>
-          )}
-
-          {/* Reason */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Lý do trả hàng</h2>
-            <select
-              value={reason}
-              onChange={(e) => setReason(e.target.value as ReturnReason | "")}
-              className="w-full px-4 py-2 border rounded-lg mb-4"
-              required
-            >
-              <option value="">-- Chọn lý do --</option>
-              {reasons.map((r) => (
-                <option key={r.value} value={r.value}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
-
-            <textarea
-              value={reasonDetail}
-              onChange={(e) => setReasonDetail(e.target.value)}
-              placeholder="Mô tả chi tiết (tùy chọn)..."
-              rows={3}
-              maxLength={500}
-              className="w-full px-4 py-2 border rounded-lg"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              {reasonDetail.length}/500 ký tự
-            </p>
+            </form>
           </div>
-
-          {/* Refund Method */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">
-              Phương thức hoàn tiền
-            </h2>
-            <div className="space-y-3">
-              <label
-                className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                  refundMethod === "bank_transfer"
-                    ? "border-black bg-gray-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="refundMethod"
-                  value="bank_transfer"
-                  checked={refundMethod === "bank_transfer"}
-                  onChange={(e) =>
-                    setRefundMethod(e.target.value as RefundMethod)
-                  }
-                  className="w-4 h-4"
-                />
-                <div>
-                  <p className="font-medium">Chuyển khoản ngân hàng</p>
-                  <p className="text-sm text-gray-500">
-                    Admin sẽ chuyển tiền vào tài khoản ngân hàng của bạn
-                  </p>
-                </div>
-              </label>
-
-              <label
-                className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                  refundMethod === "cash"
-                    ? "border-black bg-gray-50"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="refundMethod"
-                  value="cash"
-                  checked={refundMethod === "cash"}
-                  onChange={(e) =>
-                    setRefundMethod(e.target.value as RefundMethod)
-                  }
-                  className="w-4 h-4"
-                />
-                <div>
-                  <p className="font-medium">Tiền mặt (Shipper giao)</p>
-                  <p className="text-sm text-gray-500">
-                    Shipper sẽ lấy hàng trả và giao tiền hoàn cho bạn
-                  </p>
-                </div>
-              </label>
-            </div>
-
-            {refundMethod === "bank_transfer" && (
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-4">
-                <h3 className="font-medium">Thông tin ngân hàng</h3>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Tên ngân hàng *
-                  </label>
-                  <input
-                    type="text"
-                    value={bankInfo.bankName}
-                    onChange={(e) =>
-                      setBankInfo({ ...bankInfo, bankName: e.target.value })
-                    }
-                    placeholder="VD: Vietcombank, BIDV, ..."
-                    className="w-full px-4 py-2 border rounded-lg"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Số tài khoản *
-                  </label>
-                  <input
-                    type="text"
-                    value={bankInfo.accountNumber}
-                    onChange={(e) =>
-                      setBankInfo({
-                        ...bankInfo,
-                        accountNumber: e.target.value,
-                      })
-                    }
-                    placeholder="Nhập số tài khoản"
-                    className="w-full px-4 py-2 border rounded-lg"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Tên chủ tài khoản *
-                  </label>
-                  <input
-                    type="text"
-                    value={bankInfo.accountName}
-                    onChange={(e) =>
-                      setBankInfo({
-                        ...bankInfo,
-                        accountName: e.target.value.toUpperCase(),
-                      })
-                    }
-                    placeholder="VD: NGUYEN VAN A"
-                    className="w-full px-4 py-2 border rounded-lg uppercase"
-                    required
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Submit */}
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/returns")}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              Hủy
-            </button>
-            <button
-              type="submit"
-              disabled={submitting || !selectedOrder || !reason}
-              className="px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {submitting ? "Đang gửi..." : "Gửi yêu cầu trả hàng"}
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   );

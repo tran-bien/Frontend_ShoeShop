@@ -1,5 +1,6 @@
 ﻿import { useState } from "react";
 import { adminCouponService } from "../../../services/CouponService";
+import type { CouponPriority } from "../../../types/coupon";
 
 interface AddDiscountProps {
   handleClose: () => void;
@@ -16,6 +17,11 @@ const initialForm = {
   endDate: "",
   maxUses: 1,
   isPublic: true,
+  // Advanced fields
+  isRedeemable: false,
+  pointCost: 0,
+  maxRedeemPerUser: 0,
+  priority: "MEDIUM" as CouponPriority,
 };
 
 const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
@@ -38,7 +44,9 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
       name === "value" ||
       name === "maxDiscount" ||
       name === "minOrderValue" ||
-      name === "maxUses"
+      name === "maxUses" ||
+      name === "pointCost" ||
+      name === "maxRedeemPerUser"
     ) {
       setForm((prev) => ({
         ...prev,
@@ -114,7 +122,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               name="description"
               value={form.description}
               onChange={handleChange}
-              placeholder="Nhập mô t?"
+              placeholder="Nhập mô tả"
               className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
               required
             />
@@ -153,7 +161,7 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
           {form.type === "percent" && (
             <div className="mb-4">
               <label className="block text-sm font-bold text-mono-600">
-                Giảm tại đã (VND)
+                Giảm tối đa (VND)
               </label>
               <input
                 type="number"
@@ -229,6 +237,65 @@ const AddDiscount: React.FC<AddDiscountProps> = ({ handleClose }) => {
               className="mr-2"
             />
             <span className="text-sm text-mono-700">Công khai</span>
+          </div>
+          <div className="mb-4 flex items-center">
+            <input
+              type="checkbox"
+              name="isRedeemable"
+              checked={form.isRedeemable}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <span className="text-sm text-mono-700">
+              Cho phép đổi bằng điểm
+            </span>
+          </div>
+          {form.isRedeemable && (
+            <>
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-mono-600">
+                  Số điểm cần để đổi
+                </label>
+                <input
+                  type="number"
+                  name="pointCost"
+                  value={form.pointCost}
+                  onChange={handleChange}
+                  placeholder="Số điểm cần đổi"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
+                  min={0}
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-mono-600">
+                  Giới hạn đổi/người dùng
+                </label>
+                <input
+                  type="number"
+                  name="maxRedeemPerUser"
+                  value={form.maxRedeemPerUser}
+                  onChange={handleChange}
+                  placeholder="0 = không giới hạn"
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
+                  min={0}
+                />
+              </div>
+            </>
+          )}
+          <div className="mb-4">
+            <label className="block text-sm font-bold text-mono-600">
+              Độ ưu tiên hiển thị
+            </label>
+            <select
+              name="priority"
+              value={form.priority}
+              onChange={handleChange}
+              className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
+            >
+              <option value="HIGH">Cao</option>
+              <option value="MEDIUM">Trung bình</option>
+              <option value="LOW">Thấp</option>
+            </select>
           </div>
           {error && <div className="text-mono-800 text-sm mb-2">{error}</div>}
           <div className="flex justify-end gap-4">

@@ -93,7 +93,12 @@ const LoyaltyPage = () => {
                   Tiến độ đến {loyaltyInfo.nextTier.name}
                 </p>
                 <p className="text-sm font-medium">
-                  Còn {loyaltyInfo.pointsToNextTier?.toLocaleString()} điểm
+                  Còn{" "}
+                  {loyaltyInfo.pointsToNextTier?.toLocaleString() ||
+                    (
+                      loyaltyInfo.nextTier as { spendingNeeded?: number }
+                    )?.spendingNeeded?.toLocaleString()}{" "}
+                  {loyaltyInfo.pointsToNextTier ? "điểm" : "đ"}
                 </p>
               </div>
               <div className="w-full h-2 bg-white/20 rounded-full overflow-hidden">
@@ -102,10 +107,21 @@ const LoyaltyPage = () => {
                   style={{
                     width: `${
                       ((loyaltyInfo.currentPoints -
-                        (loyaltyInfo.currentTier?.minPoints || 0)) /
-                        (((loyaltyInfo.nextTier as { minPoints: number })
-                          ?.minPoints || 0) -
-                          (loyaltyInfo.currentTier?.minPoints || 0))) *
+                        (loyaltyInfo.currentTier?.minSpending ||
+                          loyaltyInfo.currentTier?.minPoints ||
+                          0)) /
+                        (((
+                          loyaltyInfo.nextTier as {
+                            minSpending?: number;
+                            minPoints?: number;
+                          }
+                        )?.minSpending ||
+                          (loyaltyInfo.nextTier as { minPoints?: number })
+                            ?.minPoints ||
+                          0) -
+                          (loyaltyInfo.currentTier?.minSpending ||
+                            loyaltyInfo.currentTier?.minPoints ||
+                            0))) *
                       100
                     }%`,
                   }}
@@ -313,9 +329,9 @@ const LoyaltyPage = () => {
 
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-mono-600">Điểm tối thiểu</span>
+                      <span className="text-mono-600">Doanh số tối thiểu</span>
                       <span className="font-medium text-mono-black">
-                        {tier.minPoints.toLocaleString()}
+                        {tier.minSpending?.toLocaleString() || 0}đ
                       </span>
                     </div>
                     <div className="flex justify-between">

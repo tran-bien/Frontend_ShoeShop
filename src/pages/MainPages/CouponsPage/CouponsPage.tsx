@@ -137,6 +137,14 @@ const CouponsPage: React.FC = () => {
                       {formatDate(coupon.startDate)} -{" "}
                       {formatDate(coupon.endDate)}
                     </div>
+                    {coupon.isRedeemable &&
+                      coupon.pointCost &&
+                      coupon.pointCost > 0 && (
+                        <div className="text-sm text-amber-600 font-medium">
+                          🎁 Đổi với {coupon.pointCost.toLocaleString("vi-VN")}{" "}
+                          điểm
+                        </div>
+                      )}
                   </div>
 
                   {/* Collect Button */}

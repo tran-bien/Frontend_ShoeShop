@@ -2,6 +2,21 @@
 // COUPON TYPES
 // =======================
 
+// Coupon scope - applies to which items
+export type CouponScope = "ALL" | "PRODUCTS" | "VARIANTS" | "CATEGORIES";
+
+// Coupon priority for display sorting
+export type CouponPriority = "HIGH" | "MEDIUM" | "LOW";
+
+// Advanced conditions for coupon
+export interface CouponConditions {
+  minQuantity?: number;
+  maxUsagePerUser?: number;
+  requiredTiers?: string[]; // LoyaltyTier IDs
+  firstOrderOnly?: boolean;
+  requiredTotalSpent?: number;
+}
+
 export interface Coupon {
   _id: string;
   code: string;
@@ -16,6 +31,24 @@ export interface Coupon {
   currentUses: number;
   status: "active" | "inactive" | "expired" | "archived";
   isPublic: boolean;
+
+  // Redeem with loyalty points
+  isRedeemable?: boolean;
+  pointCost?: number;
+  maxRedeemPerUser?: number;
+
+  // Advanced coupon - scope restriction
+  scope?: CouponScope;
+  applicableProducts?: string[];
+  applicableVariants?: string[];
+  applicableCategories?: string[];
+
+  // Advanced conditions
+  conditions?: CouponConditions;
+
+  // Priority for display
+  priority?: CouponPriority;
+
   createdAt: string;
   updatedAt: string;
 }
@@ -93,6 +126,23 @@ export interface CreateCouponData {
   maxUses?: number;
   status?: "active" | "inactive" | "expired" | "archived";
   isPublic: boolean;
+
+  // Redeem with loyalty points
+  isRedeemable?: boolean;
+  pointCost?: number;
+  maxRedeemPerUser?: number;
+
+  // Advanced coupon - scope restriction
+  scope?: CouponScope;
+  applicableProducts?: string[];
+  applicableVariants?: string[];
+  applicableCategories?: string[];
+
+  // Advanced conditions
+  conditions?: CouponConditions;
+
+  // Priority for display
+  priority?: CouponPriority;
 }
 
 export type UpdateCouponData = Partial<Omit<CreateCouponData, "status">> & {
@@ -101,4 +151,12 @@ export type UpdateCouponData = Partial<Omit<CreateCouponData, "status">> & {
 
 export interface UpdateCouponStatusData {
   status: "active" | "inactive" | "expired" | "archived";
+}
+
+// Collect coupon response (when redeeming with points)
+export interface CollectCouponResponse {
+  success: boolean;
+  message: string;
+  pointsUsed?: number;
+  coupon: Coupon;
 }

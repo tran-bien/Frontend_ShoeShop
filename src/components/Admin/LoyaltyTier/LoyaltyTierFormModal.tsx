@@ -21,8 +21,8 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<CreateLoyaltyTierData>({
     name: tier?.name || "",
-    minPoints: tier?.minPoints || 0,
-    maxPoints: tier?.maxPoints,
+    minSpending: tier?.minSpending || 0,
+    maxSpending: tier?.maxSpending,
     benefits: {
       pointsMultiplier: tier?.benefits.pointsMultiplier || 1,
       prioritySupport: tier?.benefits.prioritySupport || false,
@@ -39,8 +39,8 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
       return;
     }
 
-    if (formData.minPoints < 0) {
-      toast.error("Điểm tối thiểu không được âm");
+    if (formData.minSpending < 0) {
+      toast.error("Doanh số tối thiểu không được âm");
       return;
     }
 
@@ -114,19 +114,20 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
               />
             </div>
 
-            {/* Points Range */}
+            {/* Spending Range */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-mono-700 mb-2">
-                  Điểm tối thiểu <span className="text-mono-500">*</span>
+                  Doanh số tối thiểu (VNĐ){" "}
+                  <span className="text-mono-500">*</span>
                 </label>
                 <input
                   type="number"
-                  value={formData.minPoints}
+                  value={formData.minSpending}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      minPoints: parseInt(e.target.value) || 0,
+                      minSpending: parseInt(e.target.value) || 0,
                     })
                   }
                   min="0"
@@ -137,15 +138,15 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
 
               <div>
                 <label className="block text-sm font-medium text-mono-700 mb-2">
-                  Điểm tối đa
+                  Doanh số tối đa (VNĐ)
                 </label>
                 <input
                   type="number"
-                  value={formData.maxPoints || ""}
+                  value={formData.maxSpending || ""}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      maxPoints: e.target.value
+                      maxSpending: e.target.value
                         ? parseInt(e.target.value)
                         : undefined,
                     })
@@ -262,6 +263,3 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
 };
 
 export default LoyaltyTierFormModal;
-
-
-

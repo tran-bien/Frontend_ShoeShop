@@ -180,12 +180,13 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 
   const processInline = (text: string): React.ReactNode => {
     const parts: React.ReactNode[] = [];
-    let remaining = text;
+    const remaining = text;
     let key = 0;
 
-    // Process bold, italic, inline code, links
+    // Process bold, italic, inline code, images, links
+    // Image must come before link in the regex to properly match ![alt](url) before [text](url)
     const inlineRegex =
-      /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(`([^`]+)`)|(\[([^\]]+)\]\(([^)]+)\))/g;
+      /(\*\*([^*]+)\*\*)|(\*([^*]+)\*)|(`([^`]+)`)|(!\[([^\]]*)\]\(([^)]+)\))|(\[([^\]]+)\]\(([^)]+)\))/g;
     let match;
     let lastIndex = 0;
 
@@ -220,16 +221,26 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
           </code>
         );
       } else if (match[7]) {
+        // Image ![alt](url)
+        parts.push(
+          <img
+            key={key++}
+            src={match[9]}
+            alt={match[8] || ""}
+            className="max-w-full h-auto rounded-lg my-4"
+          />
+        );
+      } else if (match[10]) {
         // Link [text](url)
         parts.push(
           <a
             key={key++}
-            href={match[9]}
+            href={match[12]}
             className="text-mono-black underline hover:no-underline"
             target="_blank"
             rel="noopener noreferrer"
           >
-            {match[8]}
+            {match[11]}
           </a>
         );
       }
@@ -249,4 +260,3 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 };
 
 export default MarkdownRenderer;
-

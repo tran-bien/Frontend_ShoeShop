@@ -85,7 +85,7 @@ const Sidebar: React.FC = () => {
     {
       path: "/user-sessions",
       icon: <FaLaptopCode className="text-lg" />,
-      label: "Phiên đang nhập",
+      label: "Phiên đăng nhập",
     },
   ];
 

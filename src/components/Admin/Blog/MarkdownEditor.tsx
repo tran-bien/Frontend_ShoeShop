@@ -297,15 +297,15 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       .replace(/\*\*\*(.*?)\*\*\*/g, "<strong><em>$1</em></strong>")
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.*?)\*/g, "<em>$1</em>")
-      // Links (must be before images)
-      .replace(
-        /\[(.*?)\]\((.*?)\)/g,
-        '<a href="$2" class="text-blue-600 underline hover:text-blue-800" target="_blank" rel="noopener noreferrer">$1</a>'
-      )
-      // Images
+      // Images (must be before links to avoid conflict)
       .replace(
         /!\[(.*?)\]\((.*?)\)/g,
         '<img src="$2" alt="$1" class="max-w-full h-auto rounded-lg my-4" />'
+      )
+      // Links
+      .replace(
+        /\[(.*?)\]\((.*?)\)/g,
+        '<a href="$2" class="text-blue-600 underline hover:text-blue-800" target="_blank" rel="noopener noreferrer">$1</a>'
       )
       // Code blocks
       .replace(

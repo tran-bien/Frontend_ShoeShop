@@ -33,6 +33,10 @@ const initialForm: Omit<
   endDate: "",
   maxUses: 1,
   isPublic: true,
+  isRedeemable: false,
+  pointCost: 0,
+  maxRedeemPerUser: 0,
+  priority: "MEDIUM" as const,
 };
 
 const DiscountPage = () => {
@@ -74,6 +78,10 @@ const DiscountPage = () => {
           isPublic: c.isPublic,
           createdAt: c.createdAt || "",
           updatedAt: c.updatedAt || "",
+          isRedeemable: c.isRedeemable || false,
+          pointCost: c.pointCost || 0,
+          maxRedeemPerUser: c.maxRedeemPerUser || 0,
+          priority: c.priority || "MEDIUM",
         }))
       );
     } catch {
@@ -95,6 +103,10 @@ const DiscountPage = () => {
       endDate: discount.endDate,
       maxUses: discount.maxUses,
       isPublic: discount.isPublic,
+      isRedeemable: discount.isRedeemable || false,
+      pointCost: discount.pointCost || 0,
+      maxRedeemPerUser: discount.maxRedeemPerUser || 0,
+      priority: discount.priority || "MEDIUM",
     });
     setShowEdit(true);
   };
@@ -112,6 +124,10 @@ const DiscountPage = () => {
       endDate: form.endDate,
       maxUses: form.maxUses,
       isPublic: form.isPublic,
+      isRedeemable: form.isRedeemable,
+      pointCost: form.pointCost,
+      maxRedeemPerUser: form.maxRedeemPerUser,
+      priority: form.priority,
     };
     if (form.type === "percent") {
       data.maxDiscount = form.maxDiscount;
@@ -167,7 +183,9 @@ const DiscountPage = () => {
       name === "value" ||
       name === "maxDiscount" ||
       name === "minOrderValue" ||
-      name === "maxUses"
+      name === "maxUses" ||
+      name === "pointCost" ||
+      name === "maxRedeemPerUser"
     ) {
       setForm((prev) => ({
         ...prev,
@@ -297,7 +315,7 @@ const DiscountPage = () => {
                     </span>
                   ) : (
                     <span className="bg-mono-200 text-mono-700 px-2 py-1 rounded-full text-xs font-semibold">
-                      Ngẩng
+                      Ngưng
                     </span>
                   )}
                 </td>
@@ -336,7 +354,7 @@ const DiscountPage = () => {
                           )
                         }
                       >
-                        {discount.status === "active" ? "Ngẩng" : "Kích ho?t"}
+                        {discount.status === "active" ? "Ngưng" : "Kích hoạt"}
                       </button>
                     )}
                   </div>
@@ -385,12 +403,12 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Mô t?
+                  Mô tả
                 </label>
                 <textarea
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
                   name="description"
-                  placeholder="Mô t?"
+                  placeholder="Mô tả"
                   value={form.description}
                   onChange={handleChange}
                   required
@@ -430,7 +448,7 @@ const DiscountPage = () => {
               {form.type === "percent" && (
                 <div className="mb-4">
                   <label className="block text-sm font-bold text-mono-600">
-                    Giảm tại đã (VND)
+                    Giảm tối đa (VND)
                   </label>
                   <input
                     className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
@@ -472,7 +490,7 @@ const DiscountPage = () => {
               </div>
               <div className="mb-4">
                 <label className="block text-sm font-bold text-mono-600">
-                  Ngày k?t thúc
+                  Ngày kết thúc
                 </label>
                 <input
                   className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
@@ -506,6 +524,65 @@ const DiscountPage = () => {
                   className="mr-2"
                 />
                 <span className="text-sm text-mono-700">Công khai</span>
+              </div>
+              <div className="mb-4 flex items-center">
+                <input
+                  type="checkbox"
+                  name="isRedeemable"
+                  checked={form.isRedeemable}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                <span className="text-sm text-mono-700">
+                  Cho phép đổi bằng điểm
+                </span>
+              </div>
+              {form.isRedeemable && (
+                <>
+                  <div className="mb-4">
+                    <label className="block text-sm font-bold text-mono-600">
+                      Số điểm cần để đổi
+                    </label>
+                    <input
+                      type="number"
+                      name="pointCost"
+                      value={form.pointCost}
+                      onChange={handleChange}
+                      placeholder="Số điểm cần đổi"
+                      className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
+                      min={0}
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-bold text-mono-600">
+                      Giới hạn đổi/người dùng
+                    </label>
+                    <input
+                      type="number"
+                      name="maxRedeemPerUser"
+                      value={form.maxRedeemPerUser}
+                      onChange={handleChange}
+                      placeholder="0 = không giới hạn"
+                      className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
+                      min={0}
+                    />
+                  </div>
+                </>
+              )}
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-mono-600">
+                  Độ ưu tiên hiển thị
+                </label>
+                <select
+                  name="priority"
+                  value={form.priority}
+                  onChange={handleChange}
+                  className="mt-2 block w-full px-4 py-2 border border-mono-300 rounded-md"
+                >
+                  <option value="HIGH">Cao</option>
+                  <option value="MEDIUM">Trung bình</option>
+                  <option value="LOW">Thấp</option>
+                </select>
               </div>
               <div className="flex justify-end gap-4">
                 <button

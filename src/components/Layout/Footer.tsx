@@ -101,8 +101,8 @@ const Footer: React.FC = () => {
               {[
                 { label: "Câu hỏi thường gặp", href: "/faq" },
                 { label: "Hướng dẫn mua hàng", href: "/faq" },
-                { label: "Chính sách đổi trả", href: "/returns" },
-                { label: "Hướng dẫn chọn size", href: "/products" },
+                { label: "Chính sách đổi trả", href: "/faq" },
+                { label: "Hướng dẫn chọn size", href: "/faq" },
                 { label: "Liên hệ", href: "/contact" },
                 { label: "Điều khoản sử dụng", href: "/terms" },
               ].map((link) => (

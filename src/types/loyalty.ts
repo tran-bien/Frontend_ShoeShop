@@ -11,7 +11,10 @@ export interface LoyaltyTier {
   _id: string;
   name: string;
   slug: string;
-  minPoints: number;
+  minSpending: number;
+  maxSpending?: number;
+  // Legacy support - BE may still return minPoints in some responses
+  minPoints?: number;
   maxPoints?: number;
   benefits: {
     pointsMultiplier: number;
@@ -68,8 +71,8 @@ export interface UserLoyaltyInfo {
     | LoyaltyTier
     | {
         name: string;
-        minPoints: number;
-        pointsNeeded: number;
+        minSpending: number;
+        spendingNeeded: number;
       };
   pointsToNextTier?: number;
   expiringPoints?:
@@ -103,8 +106,8 @@ export interface LoyaltyTierQueryParams {
 
 export interface CreateLoyaltyTierData {
   name: string;
-  minPoints: number;
-  maxPoints?: number;
+  minSpending: number;
+  maxSpending?: number;
   benefits: {
     pointsMultiplier: number;
     prioritySupport: boolean;

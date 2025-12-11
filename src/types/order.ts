@@ -186,6 +186,19 @@ export interface Order {
   returnConfirmedAt?: string;
   returnConfirmedBy?: string;
 
+  // Return request tracking - populated from ReturnRequest collection
+  hasReturnRequest?: boolean;
+  returnRequestStatus?:
+    | "pending"
+    | "approved"
+    | "shipping"
+    | "received"
+    | "refunded"
+    | "completed"
+    | "rejected"
+    | "canceled"
+    | null;
+
   // Shipper related - SYNCED WITH BE
   assignedShipper?:
     | string

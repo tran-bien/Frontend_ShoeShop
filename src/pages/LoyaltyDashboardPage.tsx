@@ -149,13 +149,18 @@ const LoyaltyDashboardContent: React.FC = () => {
 
     if (!currentTier || !nextTier) return 100;
 
-    const currentMinPoints = currentTier.minPoints || 0;
+    const currentMinPoints =
+      currentTier.minPoints || currentTier.minSpending || 0;
     const nextMinPoints =
-      typeof nextTier === "object" && "minPoints" in nextTier
-        ? nextTier.minPoints
+      typeof nextTier === "object" &&
+      ("minPoints" in nextTier || "minSpending" in nextTier)
+        ? (nextTier as { minPoints?: number; minSpending?: number })
+            .minPoints ||
+          (nextTier as { minSpending?: number }).minSpending ||
+          0
         : 0;
 
-    if (nextMinPoints <= currentMinPoints) return 100;
+    if (!nextMinPoints || nextMinPoints <= currentMinPoints) return 100;
 
     return Math.min(
       ((stats.currentPoints - currentMinPoints) /
@@ -171,13 +176,19 @@ const LoyaltyDashboardContent: React.FC = () => {
 
     const nextTier = stats.nextTier;
     if (typeof nextTier === "object" && "name" in nextTier) {
+      const minPoints =
+        (nextTier as { minPoints?: number; minSpending?: number }).minPoints ||
+        (nextTier as { minSpending?: number }).minSpending ||
+        0;
       return {
         name: nextTier.name,
-        minPoints: nextTier.minPoints,
+        minPoints: minPoints,
         pointsNeeded:
           "pointsNeeded" in nextTier
-            ? nextTier.pointsNeeded
-            : nextTier.minPoints - stats.currentPoints,
+            ? (nextTier as { pointsNeeded: number }).pointsNeeded
+            : "spendingNeeded" in nextTier
+            ? (nextTier as { spendingNeeded: number }).spendingNeeded
+            : minPoints - stats.currentPoints,
       };
     }
     return null;

@@ -171,9 +171,13 @@ const UserOrderDetailPage: React.FC = () => {
     );
   };
 
-  // Check if order can request return/exchange (delivered within 7 days)
+  // Check if order can request return/exchange (delivered within 7 days, no existing return request)
   const canRequestReturn = (order: Order) => {
     if (order.status !== "delivered" || !order.deliveredAt) return false;
+
+    // FIXED: Hide button if already has return request (any status)
+    if (order.hasReturnRequest) return false;
+
     const deliveredDate = new Date(order.deliveredAt);
     const now = new Date();
     const daysDiff = Math.floor(
@@ -291,7 +295,7 @@ const UserOrderDetailPage: React.FC = () => {
                       className="px-4 py-2 bg-mono-600 text-white rounded hover:bg-mono-700 flex items-center gap-2"
                     >
                       <FaExchangeAlt />
-                      Đổi/Trả hàng
+                      Trả hàng/Hoàn tiền
                     </button>
                   )}
                 </div>
