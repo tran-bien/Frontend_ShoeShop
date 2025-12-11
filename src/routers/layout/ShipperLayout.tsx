@@ -1,24 +1,32 @@
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
-  FaTachometerAlt,
-  FaTruck,
-  FaUser,
-  FaSignOutAlt,
-  FaBars,
-  FaTimes,
-  FaBox,
-  FaCheckCircle,
-} from "react-icons/fa";
+  FiHome,
+  FiTruck,
+  FiPackage,
+  FiCheckCircle,
+  FiUser,
+  FiLogOut,
+  FiMenu,
+  FiX,
+  FiChevronLeft,
+} from "react-icons/fi";
+
+interface ShipperUser {
+  _id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
 
 const ShipperLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [user, setUser] = useState<ShipperUser | null>(null);
 
   useEffect(() => {
-    // Get user info from localStorage
     const userStr = localStorage.getItem("user");
     if (userStr) {
       setUser(JSON.parse(userStr));
@@ -26,7 +34,6 @@ const ShipperLayout = () => {
   }, []);
 
   const handleLogout = () => {
-    // Xóa tất cả tokens và user data
     localStorage.removeItem("token");
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -37,117 +44,240 @@ const ShipperLayout = () => {
   const menuItems = [
     {
       path: "/shipper/dashboard",
-      icon: <FaTachometerAlt size={20} />,
-      label: "Dashboard",
+      icon: <FiHome size={20} />,
+      label: "Tổng quan",
     },
     {
       path: "/shipper/orders",
-      icon: <FaBox size={20} />,
-      label: "Đơn hàng của tôi",
+      icon: <FiPackage size={20} />,
+      label: "Đơn hàng",
     },
     {
       path: "/shipper/completed",
-      icon: <FaCheckCircle size={20} />,
+      icon: <FiCheckCircle size={20} />,
       label: "Đã giao",
     },
     {
       path: "/shipper/profile",
-      icon: <FaUser size={20} />,
+      icon: <FiUser size={20} />,
       label: "Hồ sơ",
     },
   ];
 
   const isActive = (path: string) => {
-    return location.pathname === path;
+    return (
+      location.pathname === path || location.pathname.startsWith(path + "/")
+    );
+  };
+
+  const getPageTitle = () => {
+    const currentItem = menuItems.find((item) => isActive(item.path));
+    return currentItem?.label || "Shipper";
   };
 
   return (
-    <div className="flex h-screen bg-mono-100">
-      {/* Sidebar */}
+    <div className="flex h-screen bg-mono-50">
+      {/* Desktop Sidebar */}
       <aside
-        className={`${
+        className={`hidden lg:flex ${
           sidebarOpen ? "w-64" : "w-20"
-        } bg-mono-900 text-white transition-all duration-300 flex flex-col`}
+        } bg-mono-900 text-white transition-all duration-300 flex-col`}
       >
         {/* Logo */}
-        <div className="p-6 flex items-center justify-between border-b border-mono-700">
-          {sidebarOpen && (
-            <div className="flex items-center gap-3">
-              <FaTruck size={32} />
-              <span className="font-bold text-xl">Shipper Panel</span>
-            </div>
-          )}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-mono-800 rounded-lg"
-          >
-            {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-          </button>
+        <div className="p-4 border-b border-mono-800">
+          <div className="flex items-center justify-between">
+            {sidebarOpen ? (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                  <FiTruck size={22} />
+                </div>
+                <div>
+                  <span className="font-bold text-lg block">Shipper</span>
+                  <span className="text-xs text-mono-400">Giao hàng</span>
+                </div>
+              </div>
+            ) : (
+              <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center mx-auto">
+                <FiTruck size={22} />
+              </div>
+            )}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className={`p-2 hover:bg-mono-800 rounded-lg transition-colors ${
+                !sidebarOpen ? "hidden" : ""
+              }`}
+            >
+              <FiChevronLeft size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 py-6">
+        <nav className="flex-1 py-4 overflow-y-auto">
           {menuItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-4 px-6 py-3 mx-3 mb-2 rounded-lg transition-all ${
+              className={`flex items-center gap-3 px-4 py-3 mx-3 mb-1 rounded-xl transition-all ${
                 isActive(item.path)
-                  ? "bg-white text-mono-black shadow-lg"
-                  : "hover:bg-mono-800"
-              }`}
+                  ? "bg-white text-mono-900 shadow-lg font-medium"
+                  : "text-mono-300 hover:bg-mono-800 hover:text-white"
+              } ${!sidebarOpen ? "justify-center px-3" : ""}`}
             >
-              <span>{item.icon}</span>
-              {sidebarOpen && <span className="font-medium">{item.label}</span>}
+              <span className={isActive(item.path) ? "text-mono-900" : ""}>
+                {item.icon}
+              </span>
+              {sidebarOpen && <span>{item.label}</span>}
             </Link>
           ))}
         </nav>
 
         {/* User Info & Logout */}
-        <div className="border-t border-mono-700">
+        <div className="border-t border-mono-800 p-4">
           {user && sidebarOpen && (
-            <div className="px-6 py-4">
-              <p className="text-sm text-mono-200">Xin chào,</p>
-              <p className="font-bold truncate">{user.name}</p>
-              <p className="text-xs text-mono-200 truncate">{user.email}</p>
+            <div className="mb-4 px-2">
+              <p className="text-xs text-mono-400">Xin chào,</p>
+              <p className="font-semibold text-white truncate">{user.name}</p>
+              <p className="text-xs text-mono-400 truncate">{user.email}</p>
             </div>
           )}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-4 px-6 py-3 mx-3 mb-3 rounded-lg hover:bg-mono-900 transition-all w-[calc(100%-1.5rem)]"
+            className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-mono-300 hover:bg-mono-800 hover:text-white transition-all ${
+              !sidebarOpen ? "justify-center px-3" : ""
+            }`}
           >
-            <FaSignOutAlt size={20} />
+            <FiLogOut size={20} />
             {sidebarOpen && <span>Đăng xuất</span>}
           </button>
         </div>
       </aside>
 
+      {/* Mobile Sidebar */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-50">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-mono-900 text-white flex flex-col">
+            {/* Logo */}
+            <div className="p-4 border-b border-mono-800 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                  <FiTruck size={22} />
+                </div>
+                <div>
+                  <span className="font-bold text-lg block">Shipper</span>
+                  <span className="text-xs text-mono-400">Giao hàng</span>
+                </div>
+              </div>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2 hover:bg-mono-800 rounded-lg"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+
+            {/* Navigation */}
+            <nav className="flex-1 py-4 overflow-y-auto">
+              {menuItems.map((item) => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 mx-3 mb-1 rounded-xl transition-all ${
+                    isActive(item.path)
+                      ? "bg-white text-mono-900 shadow-lg font-medium"
+                      : "text-mono-300 hover:bg-mono-800 hover:text-white"
+                  }`}
+                >
+                  <span className={isActive(item.path) ? "text-mono-900" : ""}>
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </nav>
+
+            {/* User Info & Logout */}
+            <div className="border-t border-mono-800 p-4">
+              {user && (
+                <div className="mb-4 px-2">
+                  <p className="text-xs text-mono-400">Xin chào,</p>
+                  <p className="font-semibold text-white truncate">
+                    {user.name}
+                  </p>
+                  <p className="text-xs text-mono-400 truncate">{user.email}</p>
+                </div>
+              )}
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-mono-300 hover:bg-mono-800 hover:text-white transition-all"
+              >
+                <FiLogOut size={20} />
+                <span>Đăng xuất</span>
+              </button>
+            </div>
+          </aside>
+        </div>
+      )}
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white shadow-sm px-6 py-4">
+        <header className="bg-white border-b border-mono-200 px-4 lg:px-6 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-mono-800">
-              {menuItems.find((item) => isActive(item.path))?.label ||
-                "Shipper Dashboard"}
-            </h1>
             <div className="flex items-center gap-4">
-              <div className="text-right">
-                <p className="text-sm text-mono-600">
+              <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="lg:hidden p-2 hover:bg-mono-100 rounded-lg transition-colors"
+              >
+                <FiMenu size={20} className="text-mono-700" />
+              </button>
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="hidden lg:block p-2 hover:bg-mono-100 rounded-lg transition-colors"
+              >
+                <FiMenu size={20} className="text-mono-700" />
+              </button>
+              <div>
+                <h1 className="text-xl font-bold text-mono-900">
+                  {getPageTitle()}
+                </h1>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-medium text-mono-700">
+                  {user?.name}
+                </p>
+                <p className="text-xs text-mono-500">
                   {new Date().toLocaleDateString("vi-VN", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
+                    weekday: "short",
                     day: "numeric",
+                    month: "short",
                   })}
                 </p>
+              </div>
+              <div className="w-10 h-10 bg-mono-200 rounded-full flex items-center justify-center">
+                {user?.avatar ? (
+                  <img
+                    src={user.avatar}
+                    alt={user.name}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <FiUser className="text-mono-500" size={18} />
+                )}
               </div>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-mono-50">
+        <main className="flex-1 overflow-y-auto">
           <Outlet />
         </main>
       </div>

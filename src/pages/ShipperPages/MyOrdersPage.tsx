@@ -1,44 +1,117 @@
 ﻿import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaTruck,
-  FaCheckCircle,
-  FaTimesCircle,
-  FaHourglassHalf,
-  FaMapMarkerAlt,
-  FaPhone,
-  FaClock,
-  FaFilter,
-} from "react-icons/fa";
+  FiTruck,
+  FiCheckCircle,
+  FiXCircle,
+  FiClock,
+  FiMapPin,
+  FiPhone,
+  FiPackage,
+  FiRefreshCw,
+  FiSearch,
+  FiX,
+  FiChevronRight,
+  FiUser,
+  FiAlertCircle,
+} from "react-icons/fi";
 import { shipperService } from "../../services/ShipperService";
+
+// Use local interface to avoid type conflicts with global Order type
+interface DeliveryAttempt {
+  time?: string; // BE field name
+  status: string;
+  note?: string;
+}
+
+interface ShipperOrder {
+  _id: string;
+  orderNumber?: string;
+  code?: string;
+  status: string;
+  createdAt: string;
+  user?: { name: string; phone?: string };
+  shippingAddress?: {
+    name?: string;
+    phone?: string;
+    detail?: string;
+    ward?: string;
+    district?: string;
+    province?: string;
+    address?: string;
+  };
+  totalAfterDiscountAndShipping?: number;
+  finalTotal?: number;
+  totalAmount?: number;
+  items?: { _id: string }[];
+  payment?: {
+    method?: string;
+    paymentStatus?: string;
+  };
+  deliveryAttempts?: DeliveryAttempt[];
+}
 
 const MyOrdersPage = () => {
   const navigate = useNavigate();
-  const [orders, setOrders] = useState<any[]>([]);
-  const [filteredOrders, setFilteredOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<ShipperOrder[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<ShipperOrder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterStatus, setFilterStatus] = useState<string>("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
   useEffect(() => {
-    if (filterStatus === "") {
-      setFilteredOrders(orders);
-    } else {
-      setFilteredOrders(orders.filter((o) => o.status === filterStatus));
+    let filtered = orders;
+
+    // Filter by status
+    if (filterStatus !== "all") {
+      filtered = filtered.filter((o) => o.status === filterStatus);
     }
-  }, [filterStatus, orders]);
+
+    // Filter by search
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (o) =>
+          (o.orderNumber || o.code || o._id).toLowerCase().includes(query) ||
+          (o.user?.name || "").toLowerCase().includes(query) ||
+          (o.shippingAddress?.phone || "").includes(query)
+      );
+    }
+
+    setFilteredOrders(filtered);
+  }, [filterStatus, searchQuery, orders]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
       const response = await shipperService.getMyOrders();
-      // Handle response structure: could be { data: { data: orders } } or { data: orders }
-      const ordersData = response.data?.data || response.data || [];
-      setOrders(Array.isArray(ordersData) ? ordersData : []);
-      setFilteredOrders(Array.isArray(ordersData) ? ordersData : []);
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      const responseData = (response.data as any)?.data || response.data;
+      const ordersData = responseData?.orders || responseData || [];
+      const mappedOrders: ShipperOrder[] = (
+        Array.isArray(ordersData) ? ordersData : []
+      ).map((o: any) => ({
+        _id: o._id,
+        orderNumber: o.orderNumber,
+        code: o.code,
+        status: o.status,
+        createdAt: o.createdAt,
+        user: o.user,
+        shippingAddress: o.shippingAddress,
+        totalAfterDiscountAndShipping: o.totalAfterDiscountAndShipping,
+        finalTotal: o.finalTotal,
+        totalAmount: o.totalAmount,
+        items: o.orderItems || o.items,
+        payment: o.payment,
+        deliveryAttempts: o.deliveryAttempts,
+      }));
+      /* eslint-enable @typescript-eslint/no-explicit-any */
+      setOrders(mappedOrders);
+      setFilteredOrders(mappedOrders);
     } catch (error) {
       console.error("Error fetching orders:", error);
     } finally {
@@ -46,250 +119,334 @@ const MyOrdersPage = () => {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    const statusMap: Record<
-      string,
-      { label: string; color: string; icon: JSX.Element }
-    > = {
-      assigned_to_shipper: {
-        label: "Đã gán",
-        color: "bg-mono-100 text-mono-800",
-        icon: <FaHourglassHalf />,
-      },
-      out_for_delivery: {
-        label: "Đang giao",
-        color: "bg-mono-100 text-mono-800",
-        icon: <FaTruck />,
-      },
-      delivered: {
-        label: "Đã giao",
-        color: "bg-mono-100 text-mono-800",
-        icon: <FaCheckCircle />,
-      },
-      delivery_failed: {
-        label: "Thất bại",
-        color: "bg-mono-200 text-mono-900",
-        icon: <FaTimesCircle />,
-      },
-    };
+  const STATUS_CONFIG: Record<
+    string,
+    { label: string; color: string; icon: JSX.Element }
+  > = {
+    assigned_to_shipper: {
+      label: "Chờ lấy hàng",
+      color: "bg-blue-50 text-blue-700 border border-blue-200",
+      icon: <FiClock size={14} />,
+    },
+    out_for_delivery: {
+      label: "Đang giao",
+      color: "bg-amber-50 text-amber-700 border border-amber-200",
+      icon: <FiTruck size={14} />,
+    },
+    delivered: {
+      label: "Đã giao",
+      color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+      icon: <FiCheckCircle size={14} />,
+    },
+    delivery_failed: {
+      label: "Thất bại",
+      color: "bg-rose-50 text-rose-700 border border-rose-200",
+      icon: <FiXCircle size={14} />,
+    },
+  };
 
-    const statusInfo = statusMap[status] || {
+  const getStatusBadge = (status: string) => {
+    const config = STATUS_CONFIG[status] || {
       label: status,
-      color: "bg-mono-100 text-mono-800",
-      icon: <FaHourglassHalf />,
+      color: "bg-mono-100 text-mono-600 border border-mono-200",
+      icon: <FiAlertCircle size={14} />,
     };
 
     return (
       <span
-        className={`px-3 py-1 rounded-full text-xs font-semibold inline-flex items-center gap-1 ${statusInfo.color}`}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.color}`}
       >
-        {statusInfo.icon}
-        {statusInfo.label}
+        {config.icon}
+        {config.label}
       </span>
     );
   };
 
-  const handleViewDetail = (orderId: string) => {
-    navigate(`/shipper/orders/${orderId}`);
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(amount || 0);
   };
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const getStatusCounts = () => {
+    return {
+      all: orders.length,
+      assigned_to_shipper: orders.filter(
+        (o) => o.status === "assigned_to_shipper"
+      ).length,
+      out_for_delivery: orders.filter((o) => o.status === "out_for_delivery")
+        .length,
+      delivered: orders.filter((o) => o.status === "delivered").length,
+      delivery_failed: orders.filter((o) => o.status === "delivery_failed")
+        .length,
+    };
+  };
+
+  const counts = getStatusCounts();
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-mono-500">Đang tải đơn hàng...</div>
+      <div className="flex items-center justify-center h-full min-h-[60vh]">
+        <div className="flex flex-col items-center gap-3">
+          <FiRefreshCw className="animate-spin text-mono-400" size={32} />
+          <span className="text-mono-500">Đang tải đơn hàng...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 bg-mono-50 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-mono-800">
-          Đơn hàng của tôi ({filteredOrders.length})
-        </h1>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-mono-900">Đơn hàng của tôi</h1>
+          <p className="text-mono-500 text-sm mt-1">
+            Quản lý và theo dõi các đơn hàng được giao
+          </p>
+        </div>
+        <button
+          onClick={fetchOrders}
+          className="inline-flex items-center gap-2 bg-white hover:bg-mono-50 text-mono-700 border border-mono-200 px-4 py-2.5 rounded-lg transition-all font-medium text-sm"
+        >
+          <FiRefreshCw size={16} />
+          Làm mới
+        </button>
       </div>
 
-      {/* Filter */}
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2 text-mono-700 font-medium">
-            <FaFilter />
-            <span>Lọc theo trạng thái:</span>
-          </div>
+      {/* Stats Tabs */}
+      <div className="flex flex-wrap gap-2 mb-6">
+        {[
+          { key: "all", label: "Tất cả", count: counts.all },
+          {
+            key: "assigned_to_shipper",
+            label: "Chờ lấy hàng",
+            count: counts.assigned_to_shipper,
+          },
+          {
+            key: "out_for_delivery",
+            label: "Đang giao",
+            count: counts.out_for_delivery,
+          },
+          { key: "delivered", label: "Đã giao", count: counts.delivered },
+          {
+            key: "delivery_failed",
+            label: "Thất bại",
+            count: counts.delivery_failed,
+          },
+        ].map((tab) => (
           <button
-            onClick={() => setFilterStatus("")}
-            className={`px-4 py-2 rounded-lg ${
-              filterStatus === ""
-                ? "bg-mono-black text-white"
-                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
-            }`}
-          >
-            Tất cả ({orders.length})
-          </button>
-          <button
-            onClick={() => setFilterStatus("assigned_to_shipper")}
-            className={`px-4 py-2 rounded-lg ${
-              filterStatus === "assigned_to_shipper"
-                ? "bg-mono-black text-white"
-                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
-            }`}
-          >
-            Đã gán (
-            {orders.filter((o) => o.status === "assigned_to_shipper").length})
-          </button>
-          <button
-            onClick={() => setFilterStatus("out_for_delivery")}
-            className={`px-4 py-2 rounded-lg ${
-              filterStatus === "out_for_delivery"
-                ? "bg-mono-700 text-white"
-                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
-            }`}
-          >
-            Đang giao (
-            {orders.filter((o) => o.status === "out_for_delivery").length})
-          </button>
-          <button
-            onClick={() => setFilterStatus("delivered")}
-            className={`px-4 py-2 rounded-lg ${
-              filterStatus === "delivered"
-                ? "bg-mono-800 text-white"
-                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
-            }`}
-          >
-            Đã giao ({orders.filter((o) => o.status === "delivered").length})
-          </button>
-          <button
-            onClick={() => setFilterStatus("delivery_failed")}
-            className={`px-4 py-2 rounded-lg ${
-              filterStatus === "delivery_failed"
+            key={tab.key}
+            onClick={() => setFilterStatus(tab.key)}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              filterStatus === tab.key
                 ? "bg-mono-900 text-white"
-                : "bg-mono-200 text-mono-700 hover:bg-mono-300"
+                : "bg-white text-mono-600 border border-mono-200 hover:bg-mono-50"
             }`}
           >
-            Thất bại (
-            {orders.filter((o) => o.status === "delivery_failed").length})
+            {tab.label}
+            <span
+              className={`px-1.5 py-0.5 rounded text-xs ${
+                filterStatus === tab.key ? "bg-white/20" : "bg-mono-100"
+              }`}
+            >
+              {tab.count}
+            </span>
           </button>
+        ))}
+      </div>
+
+      {/* Search & Filters */}
+      <div className="bg-white rounded-xl border border-mono-200 shadow-sm mb-6">
+        <div className="p-4">
+          <div className="flex flex-col lg:flex-row gap-3">
+            {/* Search */}
+            <div className="relative flex-1">
+              <FiSearch
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-mono-400"
+                size={18}
+              />
+              <input
+                type="text"
+                placeholder="Tìm mã đơn, tên khách hàng, SĐT..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-10 py-2.5 border border-mono-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-200 focus:border-mono-300"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-mono-400 hover:text-mono-600"
+                >
+                  <FiX size={16} />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Results count */}
+        <div className="px-4 py-3 bg-mono-50/50 border-t border-mono-100 text-sm text-mono-600">
+          Hiển thị{" "}
+          <span className="font-semibold text-mono-800">
+            {filteredOrders.length}
+          </span>{" "}
+          đơn hàng
         </div>
       </div>
 
-      {/* Orders List */}
+      {/* Orders Grid */}
       {filteredOrders.length === 0 ? (
-        <div className="bg-white rounded-lg shadow p-12 text-center">
-          <FaTruck size={48} className="mx-auto text-mono-400 mb-4" />
-          <p className="text-mono-500 text-lg">Không có đơn hàng nào</p>
+        <div className="bg-white rounded-xl border border-mono-200 p-12 text-center">
+          <FiPackage className="mx-auto text-mono-300 mb-4" size={48} />
+          <h3 className="text-lg font-medium text-mono-700 mb-2">
+            Không có đơn hàng nào
+          </h3>
+          <p className="text-mono-500 text-sm">
+            Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {filteredOrders.map((order) => (
             <div
               key={order._id}
-              className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow"
+              className="bg-white rounded-xl border border-mono-200 shadow-sm hover:shadow-md transition-all overflow-hidden"
             >
-              {/* Order Header */}
-              <div className="bg-gradient-to-r from-mono-500 to-mono-black text-white px-6 py-4 rounded-t-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-bold text-lg">
-                      #{order.orderNumber || order._id.slice(-8)}
-                    </p>
-                    <p className="text-sm text-mono-100">
-                      {new Date(order.createdAt).toLocaleString("vi-VN")}
-                    </p>
-                  </div>
-                  {getStatusBadge(order.status)}
-                </div>
-              </div>
-
-              {/* Order Body */}
-              <div className="p-6 space-y-4">
-                {/* Customer Info */}
+              {/* Card Header */}
+              <div className="px-5 py-4 border-b border-mono-100 flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-mono-600 mb-1">Khách hàng</p>
                   <div className="flex items-center gap-2">
-                    <p className="font-semibold text-mono-800">
-                      {order.user?.name || "N/A"}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 text-mono-600 text-sm mt-1">
-                    <FaPhone size={12} />
-                    <span>
-                      {order.user?.phone ||
-                        order.shippingAddress?.phone ||
-                        "N/A"}
+                    <span className="font-mono font-bold text-mono-900">
+                      #
+                      {(order.orderNumber || order.code || order._id)
+                        .toString()
+                        .slice(-8)
+                        .toUpperCase()}
                     </span>
                   </div>
+                  <div className="flex items-center gap-1.5 text-xs text-mono-400 mt-1">
+                    <FiClock size={12} />
+                    <span>{formatDate(order.createdAt)}</span>
+                  </div>
                 </div>
+                {getStatusBadge(order.status)}
+              </div>
 
-                {/* Shipping Address */}
-                <div>
-                  <p className="text-sm text-mono-600 mb-1 flex items-center gap-1">
-                    <FaMapMarkerAlt className="text-mono-800" />
-                    Địa chỉ giao hàng
-                  </p>
-                  <p className="text-mono-800">
-                    {order.shippingAddress?.address || "N/A"}
-                  </p>
-                  {order.shippingAddress?.ward && (
-                    <p className="text-sm text-mono-600">
-                      {order.shippingAddress.ward},{" "}
-                      {order.shippingAddress.district},{" "}
-                      {order.shippingAddress.province}
+              {/* Card Body */}
+              <div className="p-5">
+                {/* Customer */}
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="p-2 bg-mono-100 rounded-lg">
+                    <FiUser className="text-mono-600" size={16} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-semibold text-mono-900 truncate">
+                      {order.user?.name || order.shippingAddress?.name || "N/A"}
                     </p>
-                  )}
+                    <div className="flex items-center gap-1.5 text-sm text-mono-500 mt-0.5">
+                      <FiPhone size={12} />
+                      <span>
+                        {order.user?.phone ||
+                          order.shippingAddress?.phone ||
+                          "N/A"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Order Items Count */}
-                <div className="flex items-center justify-between pt-4 border-t border-mono-200">
-                  <div>
-                    <p className="text-sm text-mono-600">Số lượng sản phẩm</p>
-                    <p className="font-semibold text-mono-800">
-                      {order.items?.length || 0} mặt hàng
+                {/* Address */}
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="p-2 bg-mono-100 rounded-lg">
+                    <FiMapPin className="text-mono-600" size={16} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-mono-700 line-clamp-2">
+                      {[
+                        order.shippingAddress?.detail,
+                        order.shippingAddress?.ward,
+                        order.shippingAddress?.district,
+                        order.shippingAddress?.province,
+                      ]
+                        .filter(Boolean)
+                        .join(", ") ||
+                        order.shippingAddress?.address ||
+                        "N/A"}
                     </p>
                   </div>
+                </div>
+
+                {/* Order Info */}
+                <div className="flex items-center justify-between py-3 border-t border-mono-100">
+                  <div className="flex items-center gap-3">
+                    <div className="text-sm text-mono-500">
+                      <span className="font-medium text-mono-700">
+                        {order.items?.length || 0}
+                      </span>{" "}
+                      sản phẩm
+                    </div>
+                    <div
+                      className={`text-xs px-2 py-0.5 rounded-full ${
+                        order.payment?.paymentStatus === "paid"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-amber-100 text-amber-700"
+                      }`}
+                    >
+                      {order.payment?.paymentStatus === "paid"
+                        ? "Đã thanh toán"
+                        : "COD"}
+                    </div>
+                  </div>
                   <div className="text-right">
-                    <p className="text-sm text-mono-600">Tổng tiền</p>
-                    <p className="font-bold text-mono-black text-lg">
-                      {order.finalTotal?.toLocaleString("vi-VN")}đ
-                    </p>
+                    <span className="font-bold text-mono-900">
+                      {formatCurrency(
+                        order.totalAfterDiscountAndShipping ||
+                          order.finalTotal ||
+                          order.totalAmount ||
+                          0
+                      )}
+                    </span>
                   </div>
                 </div>
 
                 {/* Delivery Attempts */}
                 {order.deliveryAttempts &&
                   order.deliveryAttempts.length > 0 && (
-                    <div className="bg-mono-50 rounded-lg p-3">
-                      <p className="text-sm text-mono-600 mb-2 flex items-center gap-1">
-                        <FaClock />
-                        Lần giao gần nhất
-                      </p>
-                      <p className="text-sm text-mono-800">
-                        {new Date(
-                          order.deliveryAttempts[
-                            order.deliveryAttempts.length - 1
-                          ].timestamp
-                        ).toLocaleString("vi-VN")}
-                      </p>
-                      {order.deliveryAttempts[order.deliveryAttempts.length - 1]
-                        .note && (
-                        <p className="text-sm text-mono-600 mt-1">
-                          Ghi chú:{" "}
-                          {
+                    <div className="mt-3 pt-3 border-t border-mono-100">
+                      <div className="flex items-center gap-2 text-xs text-mono-500">
+                        <FiClock size={12} />
+                        <span>
+                          Lần giao gần nhất:{" "}
+                          {new Date(
                             order.deliveryAttempts[
                               order.deliveryAttempts.length - 1
-                            ].note
-                          }
-                        </p>
-                      )}
+                            ].time || order.createdAt
+                          ).toLocaleString("vi-VN")}
+                        </span>
+                      </div>
                     </div>
                   )}
+              </div>
 
-                {/* Action Button */}
+              {/* Card Footer */}
+              <div className="px-5 py-3 bg-mono-50 border-t border-mono-100">
                 <button
-                  onClick={() => handleViewDetail(order._id)}
-                  className="w-full bg-mono-black hover:bg-mono-800 text-white py-3 rounded-lg font-medium transition-colors"
+                  onClick={() => navigate(`/shipper/orders/${order._id}`)}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-mono-900 hover:bg-mono-800 text-white py-2.5 rounded-lg font-medium text-sm transition-colors"
                 >
                   Xem chi tiết & Cập nhật
+                  <FiChevronRight size={16} />
                 </button>
               </div>
             </div>

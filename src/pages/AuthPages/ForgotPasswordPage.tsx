@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import { FiMail, FiArrowLeft } from "react-icons/fi";
+import { FiMail, FiArrowLeft, FiCheckCircle } from "react-icons/fi";
 import AuthLayout from "../../components/Auth/AuthLayout";
 import authService from "../../services/AuthService";
 
 const ForgotPasswordPage: React.FC = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -26,10 +26,8 @@ const ForgotPasswordPage: React.FC = () => {
     setLoading(true);
     try {
       await authService.forgotPassword({ email: email.trim() });
-      toast.success("Mã OTP đã được gửi đến email của bạn!");
-      navigate("/otp-verification", {
-        state: { email: email.trim(), type: "reset-password" },
-      });
+      toast.success("Link đặt lại mật khẩu đã được gửi đến email của bạn!");
+      setEmailSent(true);
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
       const errorMessage =
@@ -44,17 +42,69 @@ const ForgotPasswordPage: React.FC = () => {
     if (e.key === "Enter") handleSubmit();
   };
 
+  // Hiển thị thông báo thành công sau khi gửi email
+  if (emailSent) {
+    return (
+      <AuthLayout
+        title="Kiểm tra email của bạn"
+        subtitle="Chúng tôi đã gửi link đặt lại mật khẩu"
+      >
+        <div className="bg-white rounded-2xl shadow-xl border border-mono-200 p-8">
+          <div className="space-y-6 text-center">
+            {/* Success Icon */}
+            <div className="flex justify-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <FiCheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+            </div>
+
+            {/* Message */}
+            <div className="space-y-2">
+              <p className="text-mono-700 font-medium">
+                Email đã được gửi đến:
+              </p>
+              <p className="text-mono-900 font-semibold">{email}</p>
+            </div>
+
+            <p className="text-mono-600 text-sm">
+              Vui lòng kiểm tra hộp thư (bao gồm cả thư mục Spam) và nhấp vào
+              link trong email để đặt lại mật khẩu. Link có hiệu lực trong 1
+              giờ.
+            </p>
+
+            {/* Resend Button */}
+            <button
+              onClick={() => setEmailSent(false)}
+              className="text-mono-600 hover:text-mono-900 underline text-sm transition-colors"
+            >
+              Không nhận được email? Thử lại
+            </button>
+
+            {/* Back to Login */}
+            <Link
+              to="/login"
+              className="flex items-center justify-center gap-2 text-mono-600 hover:text-mono-900 transition-colors pt-4 border-t border-mono-200"
+            >
+              <FiArrowLeft />
+              <span>Quay lại đăng nhập</span>
+            </Link>
+          </div>
+        </div>
+      </AuthLayout>
+    );
+  }
+
   return (
     <AuthLayout
       title="Quên mật khẩu?"
-      subtitle="Nhập email để nhận mã xác thực"
+      subtitle="Nhập email để nhận link đặt lại mật khẩu"
     >
       <div className="bg-white rounded-2xl shadow-xl border border-mono-200 p-8">
         <div className="space-y-6">
           {/* Description */}
           <p className="text-mono-600 text-center">
-            Vui lòng nhập địa chỉ email đã đăng ký. Chúng tôi sẽ gửi mã OTP để
-            xác thực và đặt lại mật khẩu.
+            Vui lòng nhập địa chỉ email đã đăng ký. Chúng tôi sẽ gửi link để đặt
+            lại mật khẩu qua email.
           </p>
 
           {/* Email Input */}
@@ -81,7 +131,7 @@ const ForgotPasswordPage: React.FC = () => {
             disabled={loading}
             className="w-full py-3.5 bg-mono-900 text-white rounded-xl font-semibold hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-all shadow-lg shadow-mono-900/20"
           >
-            {loading ? "Đang gửi..." : "Gửi mã xác thực"}
+            {loading ? "Đang gửi..." : "Gửi email đặt lại mật khẩu"}
           </button>
 
           {/* Back to Login */}

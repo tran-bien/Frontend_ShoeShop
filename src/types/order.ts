@@ -71,12 +71,22 @@ export interface OrderShippingAddress {
 // ORDER STATUS TYPES
 // =======================
 
+/**
+ * Trạng thái đơn hàng
+ * SYNCED WITH BE: Backend_ShoeShop_KLTN/src/models/order/schema.js
+ */
 export type OrderStatus =
   | "pending"
   | "confirmed"
-  | "shipping"
+  | "assigned_to_shipper"
+  | "out_for_delivery"
   | "delivered"
-  | "cancelled";
+  | "delivery_failed"
+  | "returning_to_warehouse"
+  | "cancelled"
+  | "returned"
+  | "refunded";
+
 export type PaymentMethod = "COD" | "VNPAY";
 export type PaymentStatus = "pending" | "paid" | "failed";
 
@@ -85,6 +95,18 @@ export interface OrderStatusHistory {
   updatedAt: string;
   updatedBy?: string;
   note?: string;
+}
+
+/**
+ * Delivery attempt by shipper
+ * SYNCED WITH BE: Order.deliveryAttempts[]
+ */
+export interface DeliveryAttempt {
+  time: string;
+  status: "success" | "failed" | "partial";
+  note?: string;
+  shipper?: string;
+  images?: string[];
 }
 
 export interface OrderPayment {
@@ -133,6 +155,7 @@ export interface Order {
     _id: string;
     name: string;
     email: string;
+    phone?: string;
     avatar?: {
       url: string;
       public_id: string;
@@ -144,6 +167,7 @@ export interface Order {
   subTotal: number;
   status: OrderStatus;
   inventoryDeducted: boolean;
+  inventoryRestored?: boolean;
   statusHistory: OrderStatusHistory[];
   payment: OrderPayment;
   paymentHistory: OrderPaymentHistory[];
@@ -152,15 +176,31 @@ export interface Order {
   shippingFee: number;
   discount: number;
   totalAfterDiscountAndShipping: number;
+
+  // Cancel/Return related
   cancelRequestId?: string;
   hasCancelRequest: boolean;
   cancelReason: string;
   cancelledAt?: string;
+  returnConfirmed?: boolean;
+  returnConfirmedAt?: string;
+  returnConfirmedBy?: string;
+
+  // Shipper related - SYNCED WITH BE
+  assignedShipper?:
+    | string
+    | {
+        _id: string;
+        name: string;
+        phone?: string;
+      };
+  assignmentTime?: string;
+  deliveryAttempts?: DeliveryAttempt[];
+
+  // Timestamps
   deliveredAt?: string;
   confirmedAt?: string;
   shippingAt?: string;
-  returnConfirmed?: boolean;
-  returnConfirmedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
