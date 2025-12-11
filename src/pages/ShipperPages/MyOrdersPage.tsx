@@ -1,4 +1,8 @@
-﻿import { useState, useEffect } from "react";
+﻿/**
+ * MyOrdersPage - Danh sách đơn hàng của Shipper
+ * SYNCED WITH BE: shipper.service.js - getShipperOrders(), updateDeliveryStatus()
+ */
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FiTruck,
@@ -14,50 +18,62 @@ import {
   FiChevronRight,
   FiUser,
   FiAlertCircle,
+  FiPlay,
+  FiRotateCw,
 } from "react-icons/fi";
 import { shipperService } from "../../services/ShipperService";
+import { toast } from "react-hot-toast";
+import type { Order, OrderStatus, DeliveryAttempt } from "../../types/order";
+import type { UpdateDeliveryStatusData } from "../../types/shipper";
 
-// Use local interface to avoid type conflicts with global Order type
-interface DeliveryAttempt {
-  time?: string; // BE field name
-  status: string;
-  note?: string;
-}
+// ===== STATUS CONFIG - ĐÚNG THEO BE shipper.service.js =====
+const STATUS_CONFIG: Record<
+  string,
+  { label: string; color: string; icon: React.ReactNode }
+> = {
+  assigned_to_shipper: {
+    label: "Chờ lấy hàng",
+    color: "bg-blue-50 text-blue-700 border border-blue-200",
+    icon: <FiClock size={14} />,
+  },
+  out_for_delivery: {
+    label: "Đang giao",
+    color: "bg-amber-50 text-amber-700 border border-amber-200",
+    icon: <FiTruck size={14} />,
+  },
+  delivered: {
+    label: "Đã giao",
+    color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    icon: <FiCheckCircle size={14} />,
+  },
+  delivery_failed: {
+    label: "Thất bại",
+    color: "bg-rose-50 text-rose-700 border border-rose-200",
+    icon: <FiXCircle size={14} />,
+  },
+  returning_to_warehouse: {
+    label: "Đang trả kho",
+    color: "bg-orange-50 text-orange-700 border border-orange-200",
+    icon: <FiRotateCw size={14} />,
+  },
+};
 
-interface ShipperOrder {
-  _id: string;
-  orderNumber?: string;
-  code?: string;
-  status: string;
-  createdAt: string;
-  user?: { name: string; phone?: string };
-  shippingAddress?: {
-    name?: string;
-    phone?: string;
-    detail?: string;
-    ward?: string;
-    district?: string;
-    province?: string;
-    address?: string;
-  };
-  totalAfterDiscountAndShipping?: number;
-  finalTotal?: number;
-  totalAmount?: number;
-  items?: { _id: string }[];
-  payment?: {
-    method?: string;
-    paymentStatus?: string;
-  };
-  deliveryAttempts?: DeliveryAttempt[];
-}
+// Status tabs cho shipper
+type ShipperStatusTab =
+  | "all"
+  | "assigned_to_shipper"
+  | "out_for_delivery"
+  | "delivered"
+  | "delivery_failed";
 
 const MyOrdersPage = () => {
   const navigate = useNavigate();
-  const [orders, setOrders] = useState<ShipperOrder[]>([]);
-  const [filteredOrders, setFilteredOrders] = useState<ShipperOrder[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<ShipperStatusTab>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -76,9 +92,9 @@ const MyOrdersPage = () => {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (o) =>
-          (o.orderNumber || o.code || o._id).toLowerCase().includes(query) ||
-          (o.user?.name || "").toLowerCase().includes(query) ||
-          (o.shippingAddress?.phone || "").includes(query)
+          o.code.toLowerCase().includes(query) ||
+          o.user?.name?.toLowerCase().includes(query) ||
+          o.shippingAddress?.phone?.includes(query)
       );
     }
 
@@ -92,60 +108,17 @@ const MyOrdersPage = () => {
       /* eslint-disable @typescript-eslint/no-explicit-any */
       const responseData = (response.data as any)?.data || response.data;
       const ordersData = responseData?.orders || responseData || [];
-      const mappedOrders: ShipperOrder[] = (
-        Array.isArray(ordersData) ? ordersData : []
-      ).map((o: any) => ({
-        _id: o._id,
-        orderNumber: o.orderNumber,
-        code: o.code,
-        status: o.status,
-        createdAt: o.createdAt,
-        user: o.user,
-        shippingAddress: o.shippingAddress,
-        totalAfterDiscountAndShipping: o.totalAfterDiscountAndShipping,
-        finalTotal: o.finalTotal,
-        totalAmount: o.totalAmount,
-        items: o.orderItems || o.items,
-        payment: o.payment,
-        deliveryAttempts: o.deliveryAttempts,
-      }));
+      setOrders(Array.isArray(ordersData) ? ordersData : []);
       /* eslint-enable @typescript-eslint/no-explicit-any */
-      setOrders(mappedOrders);
-      setFilteredOrders(mappedOrders);
     } catch (error) {
       console.error("Error fetching orders:", error);
+      toast.error("Không thể tải danh sách đơn hàng");
     } finally {
       setLoading(false);
     }
   };
 
-  const STATUS_CONFIG: Record<
-    string,
-    { label: string; color: string; icon: JSX.Element }
-  > = {
-    assigned_to_shipper: {
-      label: "Chờ lấy hàng",
-      color: "bg-blue-50 text-blue-700 border border-blue-200",
-      icon: <FiClock size={14} />,
-    },
-    out_for_delivery: {
-      label: "Đang giao",
-      color: "bg-amber-50 text-amber-700 border border-amber-200",
-      icon: <FiTruck size={14} />,
-    },
-    delivered: {
-      label: "Đã giao",
-      color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-      icon: <FiCheckCircle size={14} />,
-    },
-    delivery_failed: {
-      label: "Thất bại",
-      color: "bg-rose-50 text-rose-700 border border-rose-200",
-      icon: <FiXCircle size={14} />,
-    },
-  };
-
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: OrderStatus) => {
     const config = STATUS_CONFIG[status] || {
       label: status,
       color: "bg-mono-100 text-mono-600 border border-mono-200",
@@ -195,6 +168,46 @@ const MyOrdersPage = () => {
 
   const counts = getStatusCounts();
 
+  /**
+   * Quick action handler theo đúng BE logic (shipper.service.js):
+   * - assigned_to_shipper → out_for_delivery (Bắt đầu giao)
+   * - out_for_delivery → delivered | delivery_failed
+   * - delivery_failed → out_for_delivery (Giao lại)
+   */
+  const handleQuickAction = async (
+    orderId: string,
+    newStatus: UpdateDeliveryStatusData["status"],
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+
+    const confirmMessages: Record<string, string> = {
+      out_for_delivery: "Xác nhận bắt đầu giao hàng?",
+      delivered: "Xác nhận đã giao hàng thành công?",
+      delivery_failed: "Xác nhận giao hàng thất bại?",
+    };
+
+    if (!window.confirm(confirmMessages[newStatus])) return;
+
+    try {
+      setUpdatingOrderId(orderId);
+      await shipperService.updateDeliveryStatus(orderId, { status: newStatus });
+      toast.success(
+        newStatus === "delivered"
+          ? "Đã xác nhận giao thành công!"
+          : newStatus === "out_for_delivery"
+          ? "Đã bắt đầu giao hàng!"
+          : "Đã cập nhật trạng thái thất bại!"
+      );
+      fetchOrders();
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(err.response?.data?.message || "Có lỗi xảy ra");
+    } finally {
+      setUpdatingOrderId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-full min-h-[60vh]">
@@ -225,27 +238,29 @@ const MyOrdersPage = () => {
         </button>
       </div>
 
-      {/* Stats Tabs */}
+      {/* Status Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
-        {[
-          { key: "all", label: "Tất cả", count: counts.all },
-          {
-            key: "assigned_to_shipper",
-            label: "Chờ lấy hàng",
-            count: counts.assigned_to_shipper,
-          },
-          {
-            key: "out_for_delivery",
-            label: "Đang giao",
-            count: counts.out_for_delivery,
-          },
-          { key: "delivered", label: "Đã giao", count: counts.delivered },
-          {
-            key: "delivery_failed",
-            label: "Thất bại",
-            count: counts.delivery_failed,
-          },
-        ].map((tab) => (
+        {(
+          [
+            { key: "all", label: "Tất cả", count: counts.all },
+            {
+              key: "assigned_to_shipper",
+              label: "Chờ lấy hàng",
+              count: counts.assigned_to_shipper,
+            },
+            {
+              key: "out_for_delivery",
+              label: "Đang giao",
+              count: counts.out_for_delivery,
+            },
+            { key: "delivered", label: "Đã giao", count: counts.delivered },
+            {
+              key: "delivery_failed",
+              label: "Thất bại",
+              count: counts.delivery_failed,
+            },
+          ] as { key: ShipperStatusTab; label: string; count: number }[]
+        ).map((tab) => (
           <button
             key={tab.key}
             onClick={() => setFilterStatus(tab.key)}
@@ -267,36 +282,31 @@ const MyOrdersPage = () => {
         ))}
       </div>
 
-      {/* Search & Filters */}
+      {/* Search */}
       <div className="bg-white rounded-xl border border-mono-200 shadow-sm mb-6">
         <div className="p-4">
-          <div className="flex flex-col lg:flex-row gap-3">
-            {/* Search */}
-            <div className="relative flex-1">
-              <FiSearch
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-mono-400"
-                size={18}
-              />
-              <input
-                type="text"
-                placeholder="Tìm mã đơn, tên khách hàng, SĐT..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 border border-mono-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-200 focus:border-mono-300"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-mono-400 hover:text-mono-600"
-                >
-                  <FiX size={16} />
-                </button>
-              )}
-            </div>
+          <div className="relative">
+            <FiSearch
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-mono-400"
+              size={18}
+            />
+            <input
+              type="text"
+              placeholder="Tìm mã đơn, tên khách hàng, SĐT..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-10 py-2.5 border border-mono-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-200 focus:border-mono-300"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-mono-400 hover:text-mono-600"
+              >
+                <FiX size={16} />
+              </button>
+            )}
           </div>
         </div>
-
-        {/* Results count */}
         <div className="px-4 py-3 bg-mono-50/50 border-t border-mono-100 text-sm text-mono-600">
           Hiển thị{" "}
           <span className="font-semibold text-mono-800">
@@ -329,11 +339,7 @@ const MyOrdersPage = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-mono-900">
-                      #
-                      {(order.orderNumber || order.code || order._id)
-                        .toString()
-                        .slice(-8)
-                        .toUpperCase()}
+                      #{order.code.slice(-8).toUpperCase()}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-mono-400 mt-1">
@@ -380,9 +386,7 @@ const MyOrdersPage = () => {
                         order.shippingAddress?.province,
                       ]
                         .filter(Boolean)
-                        .join(", ") ||
-                        order.shippingAddress?.address ||
-                        "N/A"}
+                        .join(", ") || "N/A"}
                     </p>
                   </div>
                 </div>
@@ -392,7 +396,7 @@ const MyOrdersPage = () => {
                   <div className="flex items-center gap-3">
                     <div className="text-sm text-mono-500">
                       <span className="font-medium text-mono-700">
-                        {order.items?.length || 0}
+                        {order.orderItems?.length || 0}
                       </span>{" "}
                       sản phẩm
                     </div>
@@ -410,12 +414,7 @@ const MyOrdersPage = () => {
                   </div>
                   <div className="text-right">
                     <span className="font-bold text-mono-900">
-                      {formatCurrency(
-                        order.totalAfterDiscountAndShipping ||
-                          order.finalTotal ||
-                          order.totalAmount ||
-                          0
-                      )}
+                      {formatCurrency(order.totalAfterDiscountAndShipping)}
                     </span>
                   </div>
                 </div>
@@ -428,24 +427,87 @@ const MyOrdersPage = () => {
                         <FiClock size={12} />
                         <span>
                           Lần giao gần nhất:{" "}
-                          {new Date(
-                            order.deliveryAttempts[
-                              order.deliveryAttempts.length - 1
-                            ].time || order.createdAt
-                          ).toLocaleString("vi-VN")}
+                          {formatDate(
+                            (
+                              order.deliveryAttempts[
+                                order.deliveryAttempts.length - 1
+                              ] as DeliveryAttempt
+                            ).time || order.createdAt
+                          )}
                         </span>
                       </div>
                     </div>
                   )}
               </div>
 
-              {/* Card Footer */}
-              <div className="px-5 py-3 bg-mono-50 border-t border-mono-100">
+              {/* Card Footer - Quick Actions theo BE logic */}
+              <div className="px-5 py-3 bg-mono-50 border-t border-mono-100 space-y-2">
+                <div className="flex gap-2">
+                  {/* assigned_to_shipper → out_for_delivery */}
+                  {order.status === "assigned_to_shipper" && (
+                    <button
+                      onClick={(e) =>
+                        handleQuickAction(order._id, "out_for_delivery", e)
+                      }
+                      disabled={updatingOrderId === order._id}
+                      className="flex-1 inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
+                    >
+                      <FiPlay size={14} />
+                      {updatingOrderId === order._id
+                        ? "Đang xử lý..."
+                        : "Bắt đầu giao"}
+                    </button>
+                  )}
+
+                  {/* out_for_delivery → delivered | delivery_failed */}
+                  {order.status === "out_for_delivery" && (
+                    <>
+                      <button
+                        onClick={(e) =>
+                          handleQuickAction(order._id, "delivered", e)
+                        }
+                        disabled={updatingOrderId === order._id}
+                        className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
+                      >
+                        <FiCheckCircle size={14} />
+                        {updatingOrderId === order._id ? "..." : "Thành công"}
+                      </button>
+                      <button
+                        onClick={(e) =>
+                          handleQuickAction(order._id, "delivery_failed", e)
+                        }
+                        disabled={updatingOrderId === order._id}
+                        className="flex-1 inline-flex items-center justify-center gap-2 bg-rose-500 hover:bg-rose-600 text-white py-2.5 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
+                      >
+                        <FiXCircle size={14} />
+                        {updatingOrderId === order._id ? "..." : "Thất bại"}
+                      </button>
+                    </>
+                  )}
+
+                  {/* delivery_failed → out_for_delivery (Giao lại) */}
+                  {order.status === "delivery_failed" && (
+                    <button
+                      onClick={(e) =>
+                        handleQuickAction(order._id, "out_for_delivery", e)
+                      }
+                      disabled={updatingOrderId === order._id}
+                      className="flex-1 inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
+                    >
+                      <FiRotateCw size={14} />
+                      {updatingOrderId === order._id
+                        ? "Đang xử lý..."
+                        : "Giao lại"}
+                    </button>
+                  )}
+                </div>
+
+                {/* View Detail Button */}
                 <button
                   onClick={() => navigate(`/shipper/orders/${order._id}`)}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-mono-900 hover:bg-mono-800 text-white py-2.5 rounded-lg font-medium text-sm transition-colors"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-mono-100 hover:bg-mono-200 text-mono-700 py-2 rounded-lg font-medium text-sm transition-colors"
                 >
-                  Xem chi tiết & Cập nhật
+                  Xem chi tiết
                   <FiChevronRight size={16} />
                 </button>
               </div>

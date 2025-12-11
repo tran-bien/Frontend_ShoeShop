@@ -1,4 +1,13 @@
-﻿import { useState, useEffect, useCallback } from "react";
+﻿/**
+ * OrderDetailPage - Chi tiết đơn hàng của Shipper
+ * SYNCED WITH BE: shipper.service.js - updateDeliveryStatus()
+ *
+ * BE Allowed Transitions:
+ * - assigned_to_shipper → [out_for_delivery]
+ * - out_for_delivery → [delivered, delivery_failed]
+ * - delivery_failed → [out_for_delivery, delivery_failed]
+ */
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
   FiArrowLeft,
@@ -14,79 +23,70 @@ import {
   FiAlertCircle,
   FiEdit3,
   FiNavigation,
+  FiRotateCw,
 } from "react-icons/fi";
 import { shipperService } from "../../services/ShipperService";
 import { toast } from "react-hot-toast";
+import type {
+  Order,
+  OrderStatus,
+  OrderItem,
+  DeliveryAttempt,
+} from "../../types/order";
+import type { UpdateDeliveryStatusData } from "../../types/shipper";
 
-interface OrderItem {
-  _id: string;
-  product?: {
-    name: string;
-    images?: { url: string }[];
-  };
-  variant?: {
-    color?: { name: string };
-    size?: { name: string; value?: string };
-    imagesvariant?: { url: string }[];
-  };
-  quantity: number;
-  price: number;
-  finalPrice?: number;
-  size?: { value?: string };
-}
-
-interface DeliveryAttempt {
-  status: string;
-  note?: string;
-  createdAt: string;
-  timestamp?: string;
-  attemptNumber?: number;
-}
-
-interface ShipperOrderDetail {
-  _id: string;
-  orderNumber?: string;
-  code?: string;
-  status: string;
-  createdAt: string;
-  user?: { name: string; phone?: string };
-  shippingAddress?: {
-    name?: string;
-    phone?: string;
-    detail?: string;
-    ward?: string;
-    district?: string;
-    province?: string;
-    address?: string;
-  };
-  totalAfterDiscountAndShipping?: number;
-  finalTotal?: number;
-  totalAmount?: number;
-  subtotal?: number;
-  discount?: number;
-  shippingFee?: number;
-  items?: OrderItem[];
-  deliveryAttempts?: DeliveryAttempt[];
-  payment?: {
-    method?: string;
-    paymentStatus?: string;
-  };
-}
+// ===== STATUS CONFIG - ĐÚNG THEO BE =====
+const STATUS_CONFIG: Record<
+  string,
+  { label: string; color: string; icon: React.ReactNode }
+> = {
+  assigned_to_shipper: {
+    label: "Chờ lấy hàng",
+    color: "bg-blue-50 text-blue-700 border border-blue-200",
+    icon: <FiClock size={16} />,
+  },
+  out_for_delivery: {
+    label: "Đang giao",
+    color: "bg-amber-50 text-amber-700 border border-amber-200",
+    icon: <FiTruck size={16} />,
+  },
+  delivered: {
+    label: "Đã giao thành công",
+    color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    icon: <FiCheckCircle size={16} />,
+  },
+  delivery_failed: {
+    label: "Giao thất bại",
+    color: "bg-rose-50 text-rose-700 border border-rose-200",
+    icon: <FiXCircle size={16} />,
+  },
+  returning_to_warehouse: {
+    label: "Đang trả về kho",
+    color: "bg-orange-50 text-orange-700 border border-orange-200",
+    icon: <FiRotateCw size={16} />,
+  },
+  // DeliveryAttempts status mapping từ BE
+  success: {
+    label: "Giao thành công",
+    color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    icon: <FiCheckCircle size={16} />,
+  },
+  failed: {
+    label: "Giao thất bại",
+    color: "bg-rose-50 text-rose-700 border border-rose-200",
+    icon: <FiXCircle size={16} />,
+  },
+};
 
 const OrderDetailPage = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const [order, setOrder] = useState<ShipperOrderDetail | null>(null);
+  const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [formData, setFormData] = useState({
-    status: "",
     note: "",
     images: [] as string[],
-    location: {
-      latitude: 0,
-      longitude: 0,
-    },
   });
 
   const fetchOrderDetail = useCallback(async () => {
@@ -94,15 +94,13 @@ const OrderDetailPage = () => {
       setLoading(true);
       const response = await shipperService.getMyOrders();
       /* eslint-disable @typescript-eslint/no-explicit-any */
-      const ordersData = (response.data as any).data || response.data || [];
-      const orders = Array.isArray(ordersData) ? ordersData : [];
-      const foundOrder = orders.find(
-        (o: ShipperOrderDetail) => o._id === orderId
-      );
+      const responseData = (response.data as any)?.data || response.data;
+      const ordersData = responseData?.orders || responseData || [];
+      const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
+      const foundOrder = orders.find((o) => o._id === orderId);
       /* eslint-enable @typescript-eslint/no-explicit-any */
       if (foundOrder) {
         setOrder(foundOrder);
-        setFormData((prev) => ({ ...prev, status: foundOrder.status }));
       }
     } catch (error) {
       console.error("Error fetching order detail:", error);
@@ -114,43 +112,23 @@ const OrderDetailPage = () => {
 
   useEffect(() => {
     fetchOrderDetail();
-    getCurrentLocation();
   }, [fetchOrderDetail]);
 
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFormData((prev) => ({
-            ...prev,
-            location: {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-            },
-          }));
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    }
-  };
-
+  /**
+   * Update delivery status theo đúng BE logic
+   */
   const handleUpdateStatus = async (
-    newStatus: "out_for_delivery" | "delivery_failed" | "delivered"
+    newStatus: UpdateDeliveryStatusData["status"]
   ) => {
     if (!orderId) return;
 
-    const confirmMessage =
-      newStatus === "delivered"
-        ? "Xác nhận đã giao hàng thành công?"
-        : newStatus === "delivery_failed"
-        ? "Xác nhận giao hàng thất bại?"
-        : newStatus === "out_for_delivery"
-        ? "Xác nhận bắt đầu giao hàng?"
-        : "Xác nhận cập nhật trạng thái?";
+    const confirmMessages: Record<string, string> = {
+      out_for_delivery: "Xác nhận bắt đầu giao hàng?",
+      delivered: "Xác nhận đã giao hàng thành công?",
+      delivery_failed: "Xác nhận giao hàng thất bại?",
+    };
 
-    if (!window.confirm(confirmMessage)) return;
+    if (!window.confirm(confirmMessages[newStatus])) return;
 
     try {
       setUpdating(true);
@@ -158,11 +136,10 @@ const OrderDetailPage = () => {
         status: newStatus,
         note: formData.note || undefined,
         images: formData.images.length > 0 ? formData.images : undefined,
-        location: formData.location.latitude ? formData.location : undefined,
       });
       toast.success("Cập nhật trạng thái thành công!");
       fetchOrderDetail();
-      setFormData((prev) => ({ ...prev, note: "", images: [] }));
+      setFormData({ note: "", images: [] });
     } catch (error) {
       const err = error as { response?: { data?: { message?: string } } };
       toast.error(
@@ -171,32 +148,6 @@ const OrderDetailPage = () => {
     } finally {
       setUpdating(false);
     }
-  };
-
-  const STATUS_CONFIG: Record<
-    string,
-    { label: string; color: string; icon: JSX.Element }
-  > = {
-    assigned_to_shipper: {
-      label: "Chờ lấy hàng",
-      color: "bg-blue-50 text-blue-700 border border-blue-200",
-      icon: <FiClock size={16} />,
-    },
-    out_for_delivery: {
-      label: "Đang giao",
-      color: "bg-amber-50 text-amber-700 border border-amber-200",
-      icon: <FiTruck size={16} />,
-    },
-    delivered: {
-      label: "Đã giao thành công",
-      color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-      icon: <FiCheckCircle size={16} />,
-    },
-    delivery_failed: {
-      label: "Giao thất bại",
-      color: "bg-rose-50 text-rose-700 border border-rose-200",
-      icon: <FiXCircle size={16} />,
-    },
   };
 
   const getStatusBadge = (status: string) => {
@@ -279,9 +230,13 @@ const OrderDetailPage = () => {
     );
   }
 
-  const canUpdateStatus =
-    order.status === "assigned_to_shipper" ||
-    order.status === "out_for_delivery";
+  // Các trạng thái shipper có thể cập nhật theo BE
+  const canUpdateStatus: OrderStatus[] = [
+    "assigned_to_shipper",
+    "out_for_delivery",
+    "delivery_failed",
+  ];
+  const isUpdatable = canUpdateStatus.includes(order.status);
 
   return (
     <div className="p-6 bg-mono-50 min-h-screen">
@@ -304,24 +259,55 @@ const OrderDetailPage = () => {
               <div>
                 <p className="text-mono-400 text-sm mb-1">Mã đơn hàng</p>
                 <h1 className="text-2xl font-bold font-mono">
-                  #
-                  {(order.orderNumber || order.code || order._id)
-                    .toString()
-                    .slice(-8)
-                    .toUpperCase()}
+                  #{order.code.slice(-8).toUpperCase()}
                 </h1>
               </div>
               {getStatusBadge(order.status)}
             </div>
           </div>
 
-          {/* Status Actions */}
-          {canUpdateStatus && (
+          {/* Status Actions - Theo BE allowed transitions */}
+          {isUpdatable && (
             <div className="p-6 border-b border-mono-100">
               <h3 className="font-semibold text-mono-900 mb-4">
                 Cập nhật trạng thái
               </h3>
+
+              {/* Hướng dẫn luồng giao hàng */}
+              <div className="mb-4 p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                <p className="text-sm text-blue-800">
+                  <strong>📋 Luồng giao hàng:</strong>{" "}
+                  {order.status === "assigned_to_shipper" && (
+                    <>
+                      Nhấn <strong>"Bắt đầu giao"</strong> khi bạn đã lấy hàng
+                      và bắt đầu đến địa chỉ giao.
+                    </>
+                  )}
+                  {order.status === "out_for_delivery" && (
+                    <>
+                      Chọn <strong>"Giao thành công"</strong> hoặc{" "}
+                      <strong>"Giao thất bại"</strong> sau khi đến địa chỉ
+                      khách.
+                    </>
+                  )}
+                  {order.status === "delivery_failed" && (
+                    <>
+                      Nhấn <strong>"Giao lại"</strong> để thử giao lần nữa.
+                      {order.deliveryAttempts &&
+                        order.deliveryAttempts.filter(
+                          (a) => a.status === "failed"
+                        ).length >= 2 && (
+                          <span className="text-rose-600 ml-1">
+                            (Cảnh báo: Còn 1 lần thử cuối!)
+                          </span>
+                        )}
+                    </>
+                  )}
+                </p>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* assigned_to_shipper → out_for_delivery */}
                 {order.status === "assigned_to_shipper" && (
                   <button
                     onClick={() => handleUpdateStatus("out_for_delivery")}
@@ -332,8 +318,9 @@ const OrderDetailPage = () => {
                     Bắt đầu giao hàng
                   </button>
                 )}
-                {(order.status === "assigned_to_shipper" ||
-                  order.status === "out_for_delivery") && (
+
+                {/* out_for_delivery → delivered | delivery_failed */}
+                {order.status === "out_for_delivery" && (
                   <>
                     <button
                       onClick={() => handleUpdateStatus("delivered")}
@@ -352,6 +339,18 @@ const OrderDetailPage = () => {
                       Giao thất bại
                     </button>
                   </>
+                )}
+
+                {/* delivery_failed → out_for_delivery (Giao lại) */}
+                {order.status === "delivery_failed" && (
+                  <button
+                    onClick={() => handleUpdateStatus("out_for_delivery")}
+                    disabled={updating}
+                    className="inline-flex items-center justify-center gap-2 px-4 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-medium disabled:opacity-50 transition-colors"
+                  >
+                    <FiRotateCw size={18} />
+                    Giao lại
+                  </button>
                 )}
               </div>
 
@@ -422,9 +421,7 @@ const OrderDetailPage = () => {
                     order.shippingAddress?.province,
                   ]
                     .filter(Boolean)
-                    .join(", ") ||
-                    order.shippingAddress?.address ||
-                    "N/A"}
+                    .join(", ") || "N/A"}
                 </p>
                 <button
                   onClick={openGoogleMaps}
@@ -445,24 +442,17 @@ const OrderDetailPage = () => {
               <FiPackage className="text-mono-700" size={18} />
             </div>
             <h2 className="font-semibold text-mono-900">
-              Sản phẩm ({order.items?.length || 0})
+              Sản phẩm ({order.orderItems?.length || 0})
             </h2>
           </div>
 
           <div className="divide-y divide-mono-100">
-            {order.items?.map((item: OrderItem, index: number) => (
+            {order.orderItems?.map((item: OrderItem, index: number) => (
               <div key={index} className="p-4 flex items-center gap-4">
-                {(item as { variant?: { imagesvariant?: { url: string }[] } })
-                  .variant?.imagesvariant?.[0] ? (
+                {item.variant?.product?.images?.[0]?.url ? (
                   <img
-                    src={
-                      (
-                        item as {
-                          variant?: { imagesvariant?: { url: string }[] };
-                        }
-                      ).variant!.imagesvariant![0].url
-                    }
-                    alt={item.product?.name}
+                    src={item.variant.product.images[0].url}
+                    alt={item.productName}
                     className="w-20 h-20 object-cover rounded-lg border border-mono-200"
                   />
                 ) : (
@@ -472,7 +462,7 @@ const OrderDetailPage = () => {
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-mono-900 truncate">
-                    {item.product?.name || "N/A"}
+                    {item.productName || item.variant?.product?.name || "N/A"}
                   </p>
                   <p className="text-sm text-mono-500 mt-0.5">
                     Màu: {item.variant?.color?.name || "N/A"} | Size:{" "}
@@ -484,13 +474,11 @@ const OrderDetailPage = () => {
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-mono-900">
-                    {formatCurrency(item.finalPrice || item.price)}
+                    {formatCurrency(item.price)}
                   </p>
                   <p className="text-xs text-mono-500 mt-0.5">
                     x{item.quantity} ={" "}
-                    {formatCurrency(
-                      (item.finalPrice || item.price) * item.quantity
-                    )}
+                    {formatCurrency(item.price * item.quantity)}
                   </p>
                 </div>
               </div>
@@ -502,29 +490,22 @@ const OrderDetailPage = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-sm text-mono-600">
                 <span>Tạm tính</span>
-                <span>
-                  {formatCurrency(order.subtotal || order.totalAmount || 0)}
-                </span>
+                <span>{formatCurrency(order.subTotal)}</span>
               </div>
-              {(order.discount || 0) > 0 && (
+              {order.discount > 0 && (
                 <div className="flex justify-between text-sm text-emerald-600">
                   <span>Giảm giá</span>
-                  <span>-{formatCurrency(order.discount || 0)}</span>
+                  <span>-{formatCurrency(order.discount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm text-mono-600">
                 <span>Phí vận chuyển</span>
-                <span>{formatCurrency(order.shippingFee || 0)}</span>
+                <span>{formatCurrency(order.shippingFee)}</span>
               </div>
               <div className="flex justify-between text-lg font-bold text-mono-900 pt-3 border-t border-mono-200">
                 <span>Tổng cộng</span>
                 <span>
-                  {formatCurrency(
-                    order.totalAfterDiscountAndShipping ||
-                      order.finalTotal ||
-                      order.totalAmount ||
-                      0
-                  )}
+                  {formatCurrency(order.totalAfterDiscountAndShipping)}
                 </span>
               </div>
               <div className="pt-2">
@@ -567,11 +548,11 @@ const OrderDetailPage = () => {
                         <div className="flex flex-col items-center">
                           <div
                             className={`w-3 h-3 rounded-full ${
-                              attempt.status === "delivered"
+                              attempt.status === "success"
                                 ? "bg-emerald-500"
-                                : attempt.status === "delivery_failed"
+                                : attempt.status === "failed"
                                 ? "bg-rose-500"
-                                : "bg-mono-400"
+                                : "bg-amber-400"
                             }`}
                           />
                           {order.deliveryAttempts &&
@@ -582,7 +563,7 @@ const OrderDetailPage = () => {
                         <div className="flex-1 pb-4">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-semibold text-mono-900">
-                              Lần {attempt.attemptNumber || index + 1}
+                              Lần {index + 1}
                             </span>
                             <span
                               className={`text-xs px-2 py-0.5 rounded-full ${config.color}`}
@@ -591,7 +572,7 @@ const OrderDetailPage = () => {
                             </span>
                           </div>
                           <p className="text-sm text-mono-500">
-                            {formatDate(attempt.timestamp || attempt.createdAt)}
+                            {formatDate(attempt.time)}
                           </p>
                           {attempt.note && (
                             <p className="text-sm text-mono-600 mt-1 bg-mono-50 rounded-lg px-3 py-2">

@@ -454,7 +454,7 @@ const UserOrderDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Tổng cẩng */}
+              {/* Tổng cộng */}
               <div className="border-t pt-6 mt-6">
                 <div className="bg-mono-50 p-4 rounded-lg">
                   <div className="space-y-2">
@@ -474,7 +474,7 @@ const UserOrderDetailPage: React.FC = () => {
                     )}
                     <hr />
                     <div className="flex justify-between text-lg font-bold text-mono-900">
-                      <span>Tổng cẩng:</span>
+                      <span>Tổng cộng:</span>
                       <span>
                         {order.totalAfterDiscountAndShipping?.toLocaleString()}d
                       </span>

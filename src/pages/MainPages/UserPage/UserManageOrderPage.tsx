@@ -365,10 +365,10 @@ const UserManageOrder: React.FC = () => {
                   ))}
                 </div>
 
-                {/* Tổng cẩng */}
+                {/* Tổng cộng */}
                 <div className="flex justify-end mt-4 pt-4 border-t">
                   <p className="text-lg font-bold text-mono-900">
-                    Tổng cẩng:{" "}
+                    Tổng cộng:{" "}
                     {order.totalAfterDiscountAndShipping?.toLocaleString()}d
                   </p>
                 </div>

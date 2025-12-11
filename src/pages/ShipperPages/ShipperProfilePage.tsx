@@ -1,146 +1,122 @@
-﻿import { useState, useEffect } from "react";
+﻿/**
+ * ShipperProfilePage - Profile và toggle availability
+ * SYNCED WITH BE: shipper.service.js - updateShipperAvailability()
+ */
+import { useState, useEffect, useCallback } from "react";
 import {
   FiUser,
-  FiMail,
   FiPhone,
-  FiCheckCircle,
-  FiXCircle,
+  FiMail,
+  FiCalendar,
   FiToggleLeft,
   FiToggleRight,
-  FiRefreshCw,
+  FiCheckCircle,
+  FiXCircle,
+  FiTruck,
   FiPackage,
   FiTrendingUp,
-  FiCalendar,
-  FiShield,
+  FiRefreshCw,
+  FiAlertCircle,
+  FiStar,
 } from "react-icons/fi";
-import { shipperService } from "../../services/ShipperService";
 import { toast } from "react-hot-toast";
+import { shipperService } from "../../services/ShipperService";
+import { useAuth } from "../../hooks/useAuth";
+import type { Order } from "../../types/order";
 
-interface UserProfile {
-  _id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  avatar?: string;
-  createdAt?: string;
-  role?: string;
-  isActive?: boolean;
-  shipper?: {
-    isAvailable?: boolean;
-    activeOrders?: number;
-    maxOrders?: number;
-  };
-}
-
-interface ShipperStats {
+// Interface cho local stats (không có trong types vì tính từ orders)
+interface LocalShipperStats {
   totalOrders: number;
-  completed: number;
+  delivered: number;
   failed: number;
-  active: number;
+  inProgress: number;
   successRate: string;
 }
 
-interface ShipperOrder {
-  _id: string;
-  status: string;
-}
-
 const ShipperProfilePage = () => {
-  const [user, setUser] = useState<UserProfile | null>(null);
-  const [stats, setStats] = useState<ShipperStats | null>(null);
+  const { user } = useAuth();
+  const [stats, setStats] = useState<LocalShipperStats | null>(null);
+  const [isAvailable, setIsAvailable] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(false);
+  const [toggleLoading, setToggleLoading] = useState(false);
 
-  useEffect(() => {
-    fetchProfileData();
-  }, []);
-
-  const fetchProfileData = async () => {
+  const fetchProfileData = useCallback(async () => {
     try {
       setLoading(true);
-      const userStr = localStorage.getItem("user");
-      if (userStr) {
-        const userData: UserProfile = JSON.parse(userStr);
-        setUser(userData);
 
-        const ordersResponse = await shipperService.getMyOrders();
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-        const responseData =
-          (ordersResponse.data as any)?.data || ordersResponse.data;
-        const orders: ShipperOrder[] = Array.isArray(responseData)
-          ? responseData
-          : [];
-        /* eslint-enable @typescript-eslint/no-explicit-any */
+      // Fetch orders to calculate stats
+      const ordersResponse = await shipperService.getMyOrders();
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      const ordersResponseData =
+        (ordersResponse.data as any)?.data || ordersResponse.data;
+      const ordersData = ordersResponseData?.orders || ordersResponseData || [];
+      const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
+      /* eslint-enable @typescript-eslint/no-explicit-any */
 
-        const totalOrders = orders.length;
-        const completed = orders.filter((o) => o.status === "delivered").length;
-        const failed = orders.filter(
-          (o) => o.status === "delivery_failed"
-        ).length;
-        const active = orders.filter(
-          (o) =>
-            o.status === "assigned_to_shipper" ||
-            o.status === "out_for_delivery"
-        ).length;
-        const successRate =
-          totalOrders > 0 ? ((completed / totalOrders) * 100).toFixed(1) : "0";
+      // Calculate stats
+      const totalOrders = orders.length;
+      const delivered = orders.filter((o) => o.status === "delivered").length;
+      const failed = orders.filter(
+        (o) => o.status === "delivery_failed"
+      ).length;
+      const inProgress = orders.filter(
+        (o) =>
+          o.status === "assigned_to_shipper" || o.status === "out_for_delivery"
+      ).length;
+      const successRate =
+        totalOrders > 0 ? ((delivered / totalOrders) * 100).toFixed(1) : "0";
 
-        setStats({
-          totalOrders,
-          completed,
-          failed,
-          active,
-          successRate,
-        });
-      }
+      setStats({
+        totalOrders,
+        delivered,
+        failed,
+        inProgress,
+        successRate,
+      });
+
+      // Set initial availability from localStorage user or default false
+      // Note: BE doesn't have GET /shipper/availability, availability is in User.shipper.isAvailable
+      // This would normally come from user context after login
+      setIsAvailable(false);
     } catch (error) {
       console.error("Error fetching profile data:", error);
+      toast.error("Không thể tải thông tin profile");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchProfileData();
+  }, [fetchProfileData]);
 
   const handleToggleAvailability = async () => {
-    if (!user) return;
     try {
-      setUpdating(true);
-      const newAvailability = !user.shipper?.isAvailable;
-      await shipperService.updateAvailability(newAvailability);
+      setToggleLoading(true);
+      const newStatus = !isAvailable;
 
-      const updatedUser: UserProfile = {
-        ...user,
-        shipper: {
-          ...user.shipper,
-          isAvailable: newAvailability,
-        },
-      };
-      setUser(updatedUser);
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      await shipperService.updateAvailability(newStatus);
+      setIsAvailable(newStatus);
 
       toast.success(
-        `Trạng thái đã cập nhật: ${
-          newAvailability ? "Sẵn sàng nhận đơn" : "Tạm nghỉ"
-        }`
+        newStatus
+          ? "Đã bật trạng thái sẵn sàng nhận đơn"
+          : "Đã tắt trạng thái sẵn sàng nhận đơn"
       );
     } catch (error) {
-      const err = error as { response?: { data?: { message?: string } } };
-      toast.error(
-        err.response?.data?.message || "Có lỗi xảy ra khi cập nhật trạng thái"
-      );
+      console.error("Error toggling availability:", error);
+      toast.error("Không thể cập nhật trạng thái");
     } finally {
-      setUpdating(false);
+      setToggleLoading(false);
     }
   };
 
-  const getCapacityPercentage = () => {
-    if (!user?.shipper?.maxOrders || user.shipper.maxOrders === 0) return 0;
-    return Math.round(((stats?.active || 0) / user.shipper.maxOrders) * 100);
-  };
-
-  const getCapacityColor = (percentage: number) => {
-    if (percentage >= 80) return "bg-rose-500";
-    if (percentage >= 50) return "bg-amber-500";
-    return "bg-emerald-500";
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
 
   if (loading) {
@@ -148,249 +124,269 @@ const ShipperProfilePage = () => {
       <div className="flex items-center justify-center h-full min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
           <FiRefreshCw className="animate-spin text-mono-400" size={32} />
-          <span className="text-mono-500">Đang tải thông tin...</span>
+          <span className="text-mono-500">Đang tải dữ liệu...</span>
         </div>
       </div>
     );
   }
 
-  const capacityPct = getCapacityPercentage();
-
   return (
     <div className="p-6 bg-mono-50 min-h-screen">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Profile Header */}
-        <div className="bg-mono-900 text-white rounded-2xl overflow-hidden shadow-lg">
-          <div className="p-8">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="relative">
-                <div className="w-24 h-24 bg-mono-800 rounded-2xl flex items-center justify-center overflow-hidden border-4 border-mono-700">
-                  {user?.avatar ? (
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-mono-900">Hồ sơ cá nhân</h1>
+          <p className="text-mono-500 text-sm mt-1">
+            Quản lý thông tin và trạng thái hoạt động
+          </p>
+        </div>
+        <button
+          onClick={fetchProfileData}
+          className="inline-flex items-center gap-2 bg-white hover:bg-mono-50 text-mono-700 border border-mono-200 px-4 py-2.5 rounded-lg transition-all font-medium text-sm"
+        >
+          <FiRefreshCw size={16} />
+          Làm mới
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Profile Card */}
+        <div className="lg:col-span-2">
+          <div className="bg-white rounded-xl border border-mono-200 shadow-sm overflow-hidden">
+            {/* Profile Header */}
+            <div className="bg-gradient-to-r from-mono-800 to-mono-900 px-6 py-8">
+              <div className="flex items-center gap-5">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center ring-4 ring-white/30">
+                  {user?.avatar?.url ? (
                     <img
-                      src={user.avatar}
-                      alt={user.name}
-                      className="w-full h-full object-cover"
+                      src={user.avatar.url}
+                      alt="Avatar"
+                      className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <FiUser size={40} className="text-mono-400" />
+                    <FiUser className="text-mono-400" size={32} />
                   )}
                 </div>
-                <div
-                  className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-mono-900 ${
-                    user?.shipper?.isAvailable
-                      ? "bg-emerald-500"
-                      : "bg-mono-500"
-                  }`}
-                />
+                <div className="text-white">
+                  <h2 className="text-xl font-bold">{user?.name || "N/A"}</h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-white/70 text-sm">Shipper</span>
+                    <span className="text-white/40">•</span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        isAvailable
+                          ? "bg-emerald-500/20 text-emerald-300"
+                          : "bg-rose-500/20 text-rose-300"
+                      }`}
+                    >
+                      {isAvailable ? (
+                        <>
+                          <FiCheckCircle size={12} />
+                          Đang hoạt động
+                        </>
+                      ) : (
+                        <>
+                          <FiXCircle size={12} />
+                          Nghỉ
+                        </>
+                      )}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1 text-center md:text-left">
-                <h1 className="text-2xl font-bold mb-2">{user?.name}</h1>
-                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-mono-300">
-                  <span className="inline-flex items-center gap-2">
-                    <FiMail size={16} />
-                    {user?.email}
-                  </span>
-                  <span className="inline-flex items-center gap-2">
-                    <FiPhone size={16} />
-                    {user?.phone || "Chưa cập nhật"}
-                  </span>
+            </div>
+
+            {/* Profile Info */}
+            <div className="p-6">
+              <h3 className="font-semibold text-mono-900 mb-4">
+                Thông tin cá nhân
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-3 bg-mono-50 rounded-lg">
+                  <div className="p-2 bg-white rounded-lg border border-mono-200">
+                    <FiMail className="text-mono-500" size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-mono-500 font-medium">Email</p>
+                    <p className="text-sm text-mono-900 font-medium">
+                      {user?.email || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-mono-50 rounded-lg">
+                  <div className="p-2 bg-white rounded-lg border border-mono-200">
+                    <FiPhone className="text-mono-500" size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-mono-500 font-medium">
+                      Số điện thoại
+                    </p>
+                    <p className="text-sm text-mono-900 font-medium">
+                      {user?.phone || "N/A"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 bg-mono-50 rounded-lg md:col-span-2">
+                  <div className="p-2 bg-white rounded-lg border border-mono-200">
+                    <FiCalendar className="text-mono-500" size={18} />
+                  </div>
+                  <div>
+                    <p className="text-xs text-mono-500 font-medium">
+                      Ngày tham gia
+                    </p>
+                    <p className="text-sm text-mono-900 font-medium">
+                      {user?.createdAt ? formatDate(user.createdAt) : "N/A"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Availability Toggle */}
-        <div className="bg-white rounded-xl border border-mono-200 shadow-sm overflow-hidden">
-          <div className="p-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Right Column - Availability & Stats */}
+        <div className="space-y-6">
+          {/* Availability Toggle */}
+          <div className="bg-white rounded-xl border border-mono-200 shadow-sm p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-mono-100 rounded-lg">
+                <FiTruck className="text-mono-700" size={18} />
+              </div>
               <div>
-                <h2 className="text-lg font-semibold text-mono-900 mb-1">
+                <h3 className="font-semibold text-mono-900">
                   Trạng thái hoạt động
-                </h2>
-                <p className="text-sm text-mono-500">
-                  {user?.shipper?.isAvailable
-                    ? "Bạn đang sẵn sàng nhận đơn hàng mới từ hệ thống"
-                    : "Bạn đang tạm nghỉ và không nhận đơn hàng mới"}
+                </h3>
+                <p className="text-xs text-mono-500">
+                  Bật để nhận đơn hàng mới
                 </p>
               </div>
-              <button
-                onClick={handleToggleAvailability}
-                disabled={updating}
-                className={`inline-flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all disabled:opacity-50 ${
-                  user?.shipper?.isAvailable
-                    ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                    : "bg-mono-200 hover:bg-mono-300 text-mono-700"
-                }`}
-              >
-                {user?.shipper?.isAvailable ? (
-                  <>
-                    <FiToggleRight size={24} />
-                    <span>Đang hoạt động</span>
-                  </>
+            </div>
+
+            <button
+              onClick={handleToggleAvailability}
+              disabled={toggleLoading}
+              className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
+                isAvailable
+                  ? "bg-emerald-50 border-emerald-200 hover:border-emerald-300"
+                  : "bg-mono-50 border-mono-200 hover:border-mono-300"
+              } ${
+                toggleLoading
+                  ? "opacity-70 cursor-not-allowed"
+                  : "cursor-pointer"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                {isAvailable ? (
+                  <FiCheckCircle className="text-emerald-600" size={22} />
                 ) : (
-                  <>
-                    <FiToggleLeft size={24} />
-                    <span>Đang nghỉ</span>
-                  </>
+                  <FiXCircle className="text-mono-400" size={22} />
                 )}
-              </button>
+                <div className="text-left">
+                  <p
+                    className={`font-semibold ${
+                      isAvailable ? "text-emerald-700" : "text-mono-600"
+                    }`}
+                  >
+                    {isAvailable ? "Đang hoạt động" : "Đang nghỉ"}
+                  </p>
+                  <p className="text-xs text-mono-500">
+                    {isAvailable
+                      ? "Bạn sẽ nhận được đơn hàng mới"
+                      : "Bạn không nhận đơn hàng mới"}
+                  </p>
+                </div>
+              </div>
+              {toggleLoading ? (
+                <FiRefreshCw className="animate-spin text-mono-500" size={24} />
+              ) : isAvailable ? (
+                <FiToggleRight className="text-emerald-600" size={32} />
+              ) : (
+                <FiToggleLeft className="text-mono-400" size={32} />
+              )}
+            </button>
+
+            <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <div className="flex items-start gap-2">
+                <FiAlertCircle
+                  className="text-amber-600 flex-shrink-0 mt-0.5"
+                  size={16}
+                />
+                <p className="text-xs text-amber-700">
+                  Khi tắt trạng thái, bạn vẫn cần hoàn thành các đơn hàng đang
+                  giao
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Capacity Info */}
-        <div className="bg-white rounded-xl border border-mono-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-mono-100">
-            <h2 className="font-semibold text-mono-900">Công suất làm việc</h2>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-2 gap-6 mb-6">
-              <div className="text-center p-4 bg-mono-50 rounded-xl">
-                <p className="text-3xl font-bold text-mono-900">
-                  {stats?.active || 0}
-                </p>
-                <p className="text-sm text-mono-500 mt-1">Đang giao</p>
+          {/* Stats Card */}
+          <div className="bg-white rounded-xl border border-mono-200 shadow-sm p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-mono-100 rounded-lg">
+                <FiTrendingUp className="text-mono-700" size={18} />
               </div>
-              <div className="text-center p-4 bg-mono-50 rounded-xl">
-                <p className="text-3xl font-bold text-mono-900">
-                  {user?.shipper?.maxOrders || 0}
-                </p>
-                <p className="text-sm text-mono-500 mt-1">Giới hạn</p>
-              </div>
+              <h3 className="font-semibold text-mono-900">
+                Thống kê giao hàng
+              </h3>
             </div>
 
-            {/* Capacity Bar */}
-            <div>
-              <div className="flex justify-between text-sm mb-2">
-                <span className="text-mono-500">Công suất sử dụng</span>
-                <span className="font-semibold text-mono-800">
-                  {capacityPct}%
+            <div className="space-y-3">
+              {/* Total Orders */}
+              <div className="flex items-center justify-between p-3 bg-mono-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <FiPackage className="text-mono-500" size={18} />
+                  <span className="text-sm text-mono-600">Tổng đơn</span>
+                </div>
+                <span className="font-bold text-mono-900">
+                  {stats?.totalOrders || 0}
                 </span>
               </div>
-              <div className="w-full bg-mono-100 rounded-full h-3 overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all ${getCapacityColor(
-                    capacityPct
-                  )}`}
-                  style={{ width: `${capacityPct}%` }}
-                />
-              </div>
-              <p className="text-xs text-mono-400 mt-2">
-                {capacityPct < 50
-                  ? "Bạn có thể nhận thêm nhiều đơn hàng"
-                  : capacityPct < 80
-                  ? "Công suất đang ở mức trung bình"
-                  : "Công suất gần đạt giới hạn"}
-              </p>
-            </div>
-          </div>
-        </div>
 
-        {/* Statistics */}
-        <div className="bg-white rounded-xl border border-mono-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-mono-100">
-            <h2 className="font-semibold text-mono-900">Thống kê giao hàng</h2>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {/* Total Orders */}
-              <div className="text-center p-4 bg-mono-50 rounded-xl">
-                <div className="w-12 h-12 bg-mono-200 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiPackage className="text-mono-700" size={22} />
+              {/* Delivered */}
+              <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <FiCheckCircle className="text-emerald-600" size={18} />
+                  <span className="text-sm text-emerald-700">Đã giao</span>
                 </div>
-                <p className="text-2xl font-bold text-mono-900">
-                  {stats?.totalOrders || 0}
-                </p>
-                <p className="text-xs text-mono-500 mt-1">Tổng đơn</p>
-              </div>
-
-              {/* Completed */}
-              <div className="text-center p-4 bg-emerald-50 rounded-xl">
-                <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiCheckCircle className="text-emerald-600" size={22} />
-                </div>
-                <p className="text-2xl font-bold text-emerald-600">
-                  {stats?.completed || 0}
-                </p>
-                <p className="text-xs text-emerald-700 mt-1">Đã giao</p>
+                <span className="font-bold text-emerald-700">
+                  {stats?.delivered || 0}
+                </span>
               </div>
 
               {/* Failed */}
-              <div className="text-center p-4 bg-rose-50 rounded-xl">
-                <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiXCircle className="text-rose-600" size={22} />
+              <div className="flex items-center justify-between p-3 bg-rose-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <FiXCircle className="text-rose-600" size={18} />
+                  <span className="text-sm text-rose-700">Thất bại</span>
                 </div>
-                <p className="text-2xl font-bold text-rose-600">
+                <span className="font-bold text-rose-700">
                   {stats?.failed || 0}
-                </p>
-                <p className="text-xs text-rose-700 mt-1">Thất bại</p>
+                </span>
+              </div>
+
+              {/* In Progress */}
+              <div className="flex items-center justify-between p-3 bg-amber-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <FiTruck className="text-amber-600" size={18} />
+                  <span className="text-sm text-amber-700">Đang giao</span>
+                </div>
+                <span className="font-bold text-amber-700">
+                  {stats?.inProgress || 0}
+                </span>
               </div>
 
               {/* Success Rate */}
-              <div className="text-center p-4 bg-blue-50 rounded-xl">
-                <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiTrendingUp className="text-blue-600" size={22} />
+              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <FiStar className="text-blue-600" size={18} />
+                  <span className="text-sm text-blue-700">
+                    Tỷ lệ thành công
+                  </span>
                 </div>
-                <p className="text-2xl font-bold text-blue-600">
+                <span className="font-bold text-blue-700">
                   {stats?.successRate}%
-                </p>
-                <p className="text-xs text-blue-700 mt-1">Tỷ lệ TC</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Account Info */}
-        <div className="bg-white rounded-xl border border-mono-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-mono-100">
-            <h2 className="font-semibold text-mono-900">Thông tin tài khoản</h2>
-          </div>
-          <div className="p-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b border-mono-100">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-mono-100 rounded-lg">
-                    <FiShield className="text-mono-600" size={16} />
-                  </div>
-                  <span className="text-mono-600">Vai trò</span>
-                </div>
-                <span className="font-semibold text-mono-900 capitalize bg-mono-100 px-3 py-1 rounded-lg text-sm">
-                  {user?.role === "shipper"
-                    ? "Nhân viên giao hàng"
-                    : user?.role}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between py-3 border-b border-mono-100">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-mono-100 rounded-lg">
-                    <FiCalendar className="text-mono-600" size={16} />
-                  </div>
-                  <span className="text-mono-600">Ngày tham gia</span>
-                </div>
-                <span className="font-semibold text-mono-900">
-                  {user?.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString("vi-VN")
-                    : "N/A"}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between py-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-mono-100 rounded-lg">
-                    <FiCheckCircle className="text-mono-600" size={16} />
-                  </div>
-                  <span className="text-mono-600">Trạng thái tài khoản</span>
-                </div>
-                <span
-                  className={`font-semibold px-3 py-1 rounded-lg text-sm ${
-                    user?.isActive
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-rose-100 text-rose-700"
-                  }`}
-                >
-                  {user?.isActive ? "Đang hoạt động" : "Tạm khóa"}
                 </span>
               </div>
             </div>

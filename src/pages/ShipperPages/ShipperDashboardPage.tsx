@@ -1,4 +1,8 @@
-﻿import { useState, useEffect } from "react";
+﻿/**
+ * ShipperDashboardPage - Tổng quan hoạt động của Shipper
+ * SYNCED WITH BE: shipper.service.js - getShipperOrders()
+ */
+import { useState, useEffect } from "react";
 import {
   FiTruck,
   FiCheckCircle,
@@ -16,39 +20,48 @@ import {
 } from "react-icons/fi";
 import { shipperService } from "../../services/ShipperService";
 import { useNavigate } from "react-router-dom";
+import type { Order, OrderStatus } from "../../types/order";
 
-interface ShipperOrder {
-  _id: string;
-  orderNumber?: string;
-  code?: string;
-  createdAt: string;
-  status: string;
-  user?: { name: string };
-  shippingAddress?: {
-    name?: string;
-    detail?: string;
-    ward?: string;
-    district?: string;
-    province?: string;
-    address?: string;
-    phone?: string;
-  };
-  totalAfterDiscountAndShipping?: number;
-  finalTotal?: number;
-  totalAmount?: number;
+// ===== STATUS CONFIG =====
+const STATUS_CONFIG: Record<
+  string,
+  { label: string; color: string; icon: React.ReactNode }
+> = {
+  assigned_to_shipper: {
+    label: "Chờ lấy hàng",
+    color: "bg-blue-50 text-blue-700 border border-blue-200",
+    icon: <FiClock size={14} />,
+  },
+  out_for_delivery: {
+    label: "Đang giao",
+    color: "bg-amber-50 text-amber-700 border border-amber-200",
+    icon: <FiTruck size={14} />,
+  },
+  delivered: {
+    label: "Đã giao",
+    color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    icon: <FiCheckCircle size={14} />,
+  },
+  delivery_failed: {
+    label: "Thất bại",
+    color: "bg-rose-50 text-rose-700 border border-rose-200",
+    icon: <FiXCircle size={14} />,
+  },
+};
+
+interface ShipperStats {
+  totalOrders: number;
+  completed: number;
+  failed: number;
+  active: number;
+  successRate: string;
 }
 
 const ShipperDashboardPage = () => {
   const navigate = useNavigate();
-  const [stats, setStats] = useState<{
-    totalOrders: number;
-    completed: number;
-    failed: number;
-    active: number;
-    successRate: string;
-  } | null>(null);
-  const [todayOrders, setTodayOrders] = useState<ShipperOrder[]>([]);
-  const [activeOrders, setActiveOrders] = useState<ShipperOrder[]>([]);
+  const [stats, setStats] = useState<ShipperStats | null>(null);
+  const [todayOrders, setTodayOrders] = useState<Order[]>([]);
+  const [activeOrders, setActiveOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,13 +71,11 @@ const ShipperDashboardPage = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const ordersResponse = await shipperService.getMyOrders();
+      const response = await shipperService.getMyOrders();
       /* eslint-disable @typescript-eslint/no-explicit-any */
-      const responseData =
-        (ordersResponse.data as any)?.data || ordersResponse.data;
-      const orders: ShipperOrder[] = Array.isArray(responseData)
-        ? responseData
-        : [];
+      const responseData = (response.data as any)?.data || response.data;
+      const ordersData = responseData?.orders || responseData || [];
+      const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
       /* eslint-enable @typescript-eslint/no-explicit-any */
 
       // Filter today's orders
@@ -76,7 +87,7 @@ const ShipperDashboardPage = () => {
         return orderDate.getTime() === today.getTime();
       });
 
-      // Filter active orders
+      // Filter active orders (shipper can action on these)
       const activeOrdersList = orders.filter(
         (order) =>
           order.status === "assigned_to_shipper" ||
@@ -109,33 +120,7 @@ const ShipperDashboardPage = () => {
     }
   };
 
-  const STATUS_CONFIG: Record<
-    string,
-    { label: string; color: string; icon: JSX.Element }
-  > = {
-    assigned_to_shipper: {
-      label: "Chờ lấy hàng",
-      color: "bg-blue-50 text-blue-700 border border-blue-200",
-      icon: <FiClock size={14} />,
-    },
-    out_for_delivery: {
-      label: "Đang giao",
-      color: "bg-amber-50 text-amber-700 border border-amber-200",
-      icon: <FiTruck size={14} />,
-    },
-    delivered: {
-      label: "Đã giao",
-      color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
-      icon: <FiCheckCircle size={14} />,
-    },
-    delivery_failed: {
-      label: "Thất bại",
-      color: "bg-rose-50 text-rose-700 border border-rose-200",
-      icon: <FiXCircle size={14} />,
-    },
-  };
-
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: OrderStatus) => {
     const config = STATUS_CONFIG[status] || {
       label: status,
       color: "bg-mono-100 text-mono-600 border border-mono-200",
@@ -318,11 +303,7 @@ const ShipperDashboardPage = () => {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <p className="font-mono font-bold text-mono-900">
-                          #
-                          {(order.orderNumber || order.code || order._id)
-                            .toString()
-                            .slice(-8)
-                            .toUpperCase()}
+                          #{order.code.slice(-8).toUpperCase()}
                         </p>
                         <div className="flex items-center gap-1.5 text-sm text-mono-600 mt-0.5">
                           <FiUser size={12} />
@@ -347,9 +328,7 @@ const ShipperDashboardPage = () => {
                             order.shippingAddress?.province,
                           ]
                             .filter(Boolean)
-                            .join(", ") ||
-                            order.shippingAddress?.address ||
-                            "N/A"}
+                            .join(", ") || "N/A"}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-mono-500">
@@ -360,12 +339,7 @@ const ShipperDashboardPage = () => {
 
                     <div className="mt-3 pt-3 border-t border-mono-100 flex items-center justify-between">
                       <span className="font-bold text-mono-900">
-                        {formatCurrency(
-                          order.totalAfterDiscountAndShipping ||
-                            order.finalTotal ||
-                            order.totalAmount ||
-                            0
-                        )}
+                        {formatCurrency(order.totalAfterDiscountAndShipping)}
                       </span>
                       <div className="flex items-center gap-1 text-xs text-mono-400">
                         <FiClock size={12} />
@@ -435,11 +409,7 @@ const ShipperDashboardPage = () => {
                     >
                       <td className="px-5 py-3.5">
                         <span className="font-mono font-semibold text-mono-900">
-                          #
-                          {(order.orderNumber || order.code || order._id)
-                            .toString()
-                            .slice(-8)
-                            .toUpperCase()}
+                          #{order.code.slice(-8).toUpperCase()}
                         </span>
                       </td>
                       <td className="px-5 py-3.5 text-sm text-mono-600">
@@ -449,12 +419,7 @@ const ShipperDashboardPage = () => {
                       </td>
                       <td className="px-5 py-3.5">
                         <span className="font-semibold text-mono-900 text-sm">
-                          {formatCurrency(
-                            order.totalAfterDiscountAndShipping ||
-                              order.finalTotal ||
-                              order.totalAmount ||
-                              0
-                          )}
+                          {formatCurrency(order.totalAfterDiscountAndShipping)}
                         </span>
                       </td>
                       <td className="px-5 py-3.5">
