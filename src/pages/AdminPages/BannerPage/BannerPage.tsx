@@ -274,7 +274,7 @@ const BannerPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                V? trí hiện thể
+                Vị trí hiện thể
               </label>
               <select
                 value={formData.displayOrder}
@@ -288,14 +288,14 @@ const BannerPage: React.FC = () => {
               >
                 {[1, 2, 3, 4, 5].map((num) => (
                   <option key={num} value={num}>
-                    V? trí {num}
+                    Vị trí {num}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Liên k?t (tùy chơn)
+                Liên kết (tùy chọn)
               </label>
               <input
                 type="url"
@@ -448,7 +448,7 @@ const BannerPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                V? trí hiện thể
+                Vị trí hiện thể
               </label>
               <select
                 value={formData.displayOrder}
@@ -462,14 +462,14 @@ const BannerPage: React.FC = () => {
               >
                 {[1, 2, 3, 4, 5].map((num) => (
                   <option key={num} value={num}>
-                    V? trí {num}
+                    Vị trí {num}
                   </option>
                 ))}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Liên k?t (tùy chơn)
+                Liên kết (tùy chọn)
               </label>
               <input
                 type="url"

@@ -174,13 +174,26 @@ const SupportChat: React.FC = () => {
       });
       if (response.data.success && response.data.data) {
         const newConversation = response.data.data;
-        setConversations((prev) => [newConversation, ...prev]);
+        // Kiểm tra conversation đã tồn tại trong list chưa
+        const exists = conversations.find((c) => c._id === newConversation._id);
+        if (!exists) {
+          setConversations((prev) => [newConversation, ...prev]);
+        } else {
+          // Update conversation trong list (có thể đã được reopen)
+          setConversations((prev) =>
+            prev.map((c) =>
+              c._id === newConversation._id ? newConversation : c
+            )
+          );
+        }
         setActiveConversation(newConversation);
-        toast.success("Đã tạo cuộc hội thoại mới với bộ phận hỗ trợ");
+        // Reload conversations để có danh sách mới nhất
+        loadConversations();
+        toast.success("Đã kết nối với bộ phận hỗ trợ");
       }
     } catch (error) {
       console.error("Failed to create conversation:", error);
-      toast.error("Không thể tạo cuộc hội thoại");
+      toast.error("Không thể kết nối với bộ phận hỗ trợ");
     } finally {
       setIsLoading(false);
     }
@@ -206,8 +219,11 @@ const SupportChat: React.FC = () => {
     }
 
     try {
-      // Determine message type
-      const messageType = hasImages ? "image" : "text";
+      // Xác định loại tin nhắn: chỉ "text" hoặc "image"
+      let messageType: "text" | "image" = "text";
+      if (hasImages && !hasText) {
+        messageType = "image";
+      }
 
       // Prefer Socket.IO for real-time
       if (socket?.connected) {
@@ -216,7 +232,7 @@ const SupportChat: React.FC = () => {
           {
             conversationId: activeConversation._id,
             type: messageType,
-            text: messageText,
+            text: messageText || "", // Luôn gửi text (có thể rỗng)
             images: imagesToSend,
           },
           (response: {
@@ -234,7 +250,7 @@ const SupportChat: React.FC = () => {
         // HTTP fallback
         const response = await chatService.sendMessage(activeConversation._id, {
           type: messageType,
-          text: messageText,
+          text: messageText || "",
           images: hasImages
             ? imagesToSend.map((img) => ({ url: img, public_id: "" }))
             : undefined,
@@ -375,11 +391,12 @@ const SupportChat: React.FC = () => {
                       </div>
                     </button>
                   ))}
+                  {/* Nút liên hệ hỗ trợ - sẽ tự reopen conversation cũ nếu có */}
                   <button
                     onClick={createNewConversation}
                     className="w-full p-4 text-center text-mono-600 hover:bg-mono-50 transition-colors"
                   >
-                    + Tạo cuộc hội thoại mới
+                    + Liên hệ hỗ trợ
                   </button>
                 </div>
               )}
@@ -418,13 +435,9 @@ const SupportChat: React.FC = () => {
                               {msg.senderId.name}
                             </p>
                           )}
-                          {msg.type === "text" && (
-                            <p className="text-sm whitespace-pre-wrap">
-                              {msg.text}
-                            </p>
-                          )}
-                          {msg.type === "image" && msg.images && (
-                            <div className="flex flex-wrap gap-2">
+                          {/* Hiển thị images nếu có */}
+                          {msg.images && msg.images.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-2">
                               {msg.images.map(
                                 (
                                   img: { url: string; public_id: string },
@@ -439,6 +452,12 @@ const SupportChat: React.FC = () => {
                                 )
                               )}
                             </div>
+                          )}
+                          {/* Hiển thị text nếu có */}
+                          {msg.text && (
+                            <p className="text-sm whitespace-pre-wrap">
+                              {msg.text}
+                            </p>
                           )}
                           <span
                             className={`text-[10px] mt-1 block ${

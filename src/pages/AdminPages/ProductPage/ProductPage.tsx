@@ -82,12 +82,23 @@ const ProductPage = () => {
         ? await productAdminService.getDeletedProducts(params)
         : await productAdminService.getProducts(params);
 
-      const data = res.data.data || [];
-      const pagination = res.data.pagination;
+      // Handle response structure: data array + pagination fields at root level
+      const responseData = res.data as {
+        data?: Product[];
+        totalPages?: number;
+        total?: number;
+        pagination?: { totalPages?: number; totalItems?: number };
+      };
+      const data = responseData.data || [];
+      // BE trả về pagination fields trực tiếp: totalPages, total, currentPage
+      const totalPagesFromRes =
+        responseData.totalPages || responseData.pagination?.totalPages || 1;
+      const totalItemsFromRes =
+        responseData.total || responseData.pagination?.totalItems || 0;
 
       setProducts(data);
-      setTotalPages(pagination?.totalPages || 1);
-      setTotalProducts(pagination?.totalItems || 0);
+      setTotalPages(totalPagesFromRes);
+      setTotalProducts(totalItemsFromRes);
       setCurrentPage(page);
     } catch {
       setProducts([]);
@@ -568,13 +579,13 @@ const ProductPage = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-mono-900">
-                          {priceRange?.min && priceRange?.min > 0 ? (
-                            priceRange?.min === priceRange?.max ? (
+                          {priceRange?.min && priceRange.min > 0 ? (
+                            priceRange.min === priceRange.max ? (
                               `${priceRange.min.toLocaleString("vi-VN")}₫`
                             ) : (
-                              `${priceRange.min.toLocaleString(
-                                "vi-VN"
-                              )}₫ - ${priceRange.max.toLocaleString("vi-VN")}₫`
+                              `${priceRange.min.toLocaleString("vi-VN")}₫ - ${(
+                                priceRange.max || priceRange.min
+                              ).toLocaleString("vi-VN")}₫`
                             )
                           ) : (
                             <span className="text-mono-400 italic">

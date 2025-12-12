@@ -8,6 +8,10 @@ import {
   FiX,
   FiCheck,
   FiCheckCircle,
+  FiPlus,
+  FiRefreshCw,
+  FiImage,
+  FiTruck,
 } from "react-icons/fi";
 import { chatService, ChatConversation } from "../../../services/ChatService";
 import type { ConversationMessage } from "../../../types/chat";
@@ -30,6 +34,15 @@ interface ImageItem {
   public_id?: string;
 }
 
+interface ChatUser {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar?: { url: string };
+  phone?: string;
+}
+
 const AdminChatPage: React.FC = () => {
   const { user } = useAuth();
   const token = localStorage.getItem("token");
@@ -49,6 +62,20 @@ const AdminChatPage: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // New conversation modal states
+  const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [availableUsers, setAvailableUsers] = useState<ChatUser[]>([]);
+  const [userSearchTerm, setUserSearchTerm] = useState("");
+  const [userRoleFilter, setUserRoleFilter] = useState<
+    "all" | "user" | "shipper"
+  >("all");
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
+  // Image states
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
   // Auto scroll to bottom
   const scrollToBottom = useCallback(() => {
@@ -105,7 +132,6 @@ const AdminChatPage: React.FC = () => {
       );
 
       newSocket.on("chat:notification", () => {
-        // Reload conversations to get new ones
         loadConversations();
       });
 
@@ -156,7 +182,6 @@ const AdminChatPage: React.FC = () => {
   useEffect(() => {
     if (activeConversation) {
       loadMessages(activeConversation._id);
-      // Join socket room
       if (socket) {
         socket.emit(
           "chat:join",
@@ -180,7 +205,6 @@ const AdminChatPage: React.FC = () => {
         const data = response.data.data;
         setMessages(data.messages || []);
         await chatService.markAsRead(conversationId);
-        // Reset unread count
         setConversations((prev) =>
           prev.map((c) =>
             c._id === conversationId ? { ...c, unreadCount: 0 } : c
@@ -192,11 +216,82 @@ const AdminChatPage: React.FC = () => {
     }
   };
 
+  // Load available users for new chat
+  const loadAvailableUsers = useCallback(async () => {
+    try {
+      setLoadingUsers(true);
+      const params: { role?: string; search?: string } = {};
+      if (userRoleFilter !== "all") {
+        params.role = userRoleFilter;
+      }
+      if (userSearchTerm.trim()) {
+        params.search = userSearchTerm.trim();
+      }
+      const response = await chatService.getAvailableUsers(params);
+      if (response.data.success && response.data.data) {
+        setAvailableUsers(response.data.data.users || []);
+      }
+    } catch (error) {
+      console.error("Failed to load users:", error);
+      toast.error("Không thể tải danh sách người dùng");
+    } finally {
+      setLoadingUsers(false);
+    }
+  }, [userRoleFilter, userSearchTerm]);
+
+  useEffect(() => {
+    if (showNewChatModal) {
+      loadAvailableUsers();
+    }
+  }, [showNewChatModal, loadAvailableUsers]);
+
+  // Create new conversation with selected user
+  const handleStartChat = async (targetUser: ChatUser) => {
+    try {
+      setLoadingUsers(true);
+      const response = await chatService.createConversation({
+        targetUserId: targetUser._id,
+      });
+      if (response.data.success && response.data.data) {
+        const newConversation = response.data.data;
+        // Kiểm tra conversation đã tồn tại trong list chưa
+        const exists = conversations.find((c) => c._id === newConversation._id);
+        if (!exists) {
+          setConversations((prev) => [newConversation, ...prev]);
+        } else {
+          // Update conversation trong list (có thể đã được reopen)
+          setConversations((prev) =>
+            prev.map((c) =>
+              c._id === newConversation._id ? newConversation : c
+            )
+          );
+        }
+        setActiveConversation(newConversation);
+        setShowNewChatModal(false);
+        // Reload conversations để có danh sách mới nhất
+        loadConversations();
+        toast.success(`Bắt đầu chat với ${targetUser.name}`);
+      }
+    } catch (error) {
+      console.error("Failed to create conversation:", error);
+      toast.error("Không thể tạo cuộc hội thoại");
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
   const sendMessage = async () => {
-    if (!inputMessage.trim() || !activeConversation || isSending) return;
+    const hasText = inputMessage.trim();
+    const hasImages = selectedImages.length > 0;
+
+    if ((!hasText && !hasImages) || !activeConversation || isSending) return;
 
     const messageText = inputMessage.trim();
+    const imagesToSend = [...selectedImages];
+
     setInputMessage("");
+    setSelectedImages([]);
+    setPreviewImages([]);
     setIsSending(true);
 
     if (socket) {
@@ -204,13 +299,22 @@ const AdminChatPage: React.FC = () => {
     }
 
     try {
+      // Xác định loại tin nhắn: mixed nếu có cả text và images
+      let messageType: "text" | "image" | "mixed" = "text";
+      if (hasImages && hasText) {
+        messageType = "mixed";
+      } else if (hasImages) {
+        messageType = "image";
+      }
+
       if (socket?.connected) {
         socket.emit(
           "chat:sendMessage",
           {
             conversationId: activeConversation._id,
-            type: "text",
-            text: messageText,
+            type: messageType,
+            text: messageText || "",
+            images: imagesToSend,
           },
           (response: {
             success: boolean;
@@ -225,8 +329,11 @@ const AdminChatPage: React.FC = () => {
         );
       } else {
         const response = await chatService.sendMessage(activeConversation._id, {
-          type: "text",
-          text: messageText,
+          type: messageType,
+          text: messageText || "",
+          images: hasImages
+            ? imagesToSend.map((img) => ({ url: img, public_id: "" }))
+            : undefined,
         });
         if (response.data.success && response.data.data) {
           const newMessage = response.data.data;
@@ -251,11 +358,35 @@ const AdminChatPage: React.FC = () => {
         )
       );
       if (activeConversation?._id === conversationId) {
-        setActiveConversation(null);
+        setActiveConversation((prev) =>
+          prev ? { ...prev, status: "closed" } : null
+        );
       }
     } catch (error) {
       console.error("Failed to close conversation:", error);
       toast.error("Không thể đóng cuộc hội thoại");
+    }
+  };
+
+  const handleReopenConversation = async (conversationId: string) => {
+    try {
+      const response = await chatService.reopenConversation(conversationId);
+      if (response.data.success) {
+        toast.success("Đã mở lại cuộc hội thoại");
+        setConversations((prev) =>
+          prev.map((c) =>
+            c._id === conversationId ? { ...c, status: "active" } : c
+          )
+        );
+        if (activeConversation?._id === conversationId) {
+          setActiveConversation((prev) =>
+            prev ? { ...prev, status: "active" } : null
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Failed to reopen conversation:", error);
+      toast.error("Không thể mở lại cuộc hội thoại");
     }
   };
 
@@ -295,6 +426,25 @@ const AdminChatPage: React.FC = () => {
     )?.userId;
   };
 
+  const getRoleBadge = (role: string) => {
+    switch (role) {
+      case "shipper":
+        return (
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] bg-blue-100 text-blue-700 rounded">
+            <FiTruck className="w-3 h-3" /> Shipper
+          </span>
+        );
+      case "user":
+        return (
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] bg-gray-100 text-gray-700 rounded">
+            <FiUser className="w-3 h-3" /> Khách
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-mono-50">
       <div className="flex h-[calc(100vh-80px)]">
@@ -302,9 +452,16 @@ const AdminChatPage: React.FC = () => {
         <div className="w-80 bg-white border-r border-mono-200 flex flex-col">
           {/* Header */}
           <div className="p-4 border-b border-mono-200">
-            <h2 className="text-xl font-bold text-mono-900 mb-4">
-              Chat Hỗ Trợ
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-mono-900">Chat Hỗ Trợ</h2>
+              <button
+                onClick={() => setShowNewChatModal(true)}
+                className="p-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 transition-colors"
+                title="Tạo cuộc hội thoại mới"
+              >
+                <FiPlus className="w-5 h-5" />
+              </button>
+            </div>
 
             {/* Search */}
             <div className="relative mb-3">
@@ -350,11 +507,21 @@ const AdminChatPage: React.FC = () => {
               <div className="text-center text-mono-500 py-10">
                 <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-mono-300" />
                 <p>Không có cuộc hội thoại nào</p>
+                <button
+                  onClick={() => setShowNewChatModal(true)}
+                  className="mt-4 px-4 py-2 text-sm bg-mono-900 text-white rounded-lg hover:bg-mono-800"
+                >
+                  Bắt đầu chat mới
+                </button>
               </div>
             ) : (
               <div className="divide-y divide-mono-100">
                 {filteredConversations.map((conv) => {
                   const customer = getCustomerInfo(conv);
+                  const customerRole = conv.participants.find(
+                    (p: Participant) =>
+                      p.role === "user" || p.role === "shipper"
+                  )?.role;
                   return (
                     <button
                       key={conv._id}
@@ -379,34 +546,30 @@ const AdminChatPage: React.FC = () => {
                             )}
                           </div>
                           {conv.status === "active" && (
-                            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-mono-500 border-2 border-white rounded-full" />
+                            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between gap-2">
                             <p className="font-medium text-mono-900 truncate">
                               {customer?.name || "Khách hàng"}
                             </p>
                             {conv.unreadCount && conv.unreadCount > 0 && (
-                              <span className="ml-2 px-1.5 py-0.5 text-xs bg-mono-900 text-white rounded-full">
+                              <span className="px-1.5 py-0.5 text-xs bg-mono-900 text-white rounded-full">
                                 {conv.unreadCount}
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-mono-500 truncate">
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {customerRole && getRoleBadge(customerRole)}
+                            {conv.status === "closed" && (
+                              <span className="px-1.5 py-0.5 text-[10px] bg-red-100 text-red-700 rounded">
+                                Đã đóng
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-mono-500 truncate mt-1">
                             {conv.lastMessage?.text || "Bắt đầu cuộc hội thoại"}
-                          </p>
-                          <p className="text-xs text-mono-400 mt-1">
-                            {conv.lastMessage?.createdAt
-                              ? new Date(
-                                  conv.lastMessage.createdAt
-                                ).toLocaleString("vi-VN", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  day: "2-digit",
-                                  month: "2-digit",
-                                })
-                              : ""}
                           </p>
                         </div>
                       </div>
@@ -427,9 +590,16 @@ const AdminChatPage: React.FC = () => {
                 <h3 className="text-xl font-semibold text-mono-700 mb-2">
                   Chọn cuộc hội thoại
                 </h3>
-                <p className="text-mono-500">
+                <p className="text-mono-500 mb-4">
                   Chọn một cuộc hội thoại từ danh sách bên trái để bắt đầu
                 </p>
+                <button
+                  onClick={() => setShowNewChatModal(true)}
+                  className="px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 inline-flex items-center gap-2"
+                >
+                  <FiPlus className="w-4 h-4" />
+                  Tạo cuộc hội thoại mới
+                </button>
               </div>
             </div>
           ) : (
@@ -450,17 +620,25 @@ const AdminChatPage: React.FC = () => {
                       )}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-mono-900">
-                        {getCustomerInfo(activeConversation)?.name ||
-                          "Khách hàng"}
-                      </h3>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-mono-900">
+                          {getCustomerInfo(activeConversation)?.name ||
+                            "Khách hàng"}
+                        </h3>
+                        {getRoleBadge(
+                          activeConversation.participants.find(
+                            (p: Participant) =>
+                              p.role === "user" || p.role === "shipper"
+                          )?.role || ""
+                        )}
+                      </div>
                       <p className="text-sm text-mono-500">
                         {getCustomerInfo(activeConversation)?.email}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    {activeConversation.status === "active" && (
+                    {activeConversation.status === "active" ? (
                       <button
                         onClick={() =>
                           handleCloseConversation(activeConversation._id)
@@ -469,6 +647,16 @@ const AdminChatPage: React.FC = () => {
                       >
                         <FiCheckCircle className="w-4 h-4" />
                         Đóng hội thoại
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() =>
+                          handleReopenConversation(activeConversation._id)
+                        }
+                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
+                      >
+                        <FiRefreshCw className="w-4 h-4" />
+                        Mở lại
                       </button>
                     )}
                     <button
@@ -504,13 +692,8 @@ const AdminChatPage: React.FC = () => {
                             {msg.senderId.name}
                           </p>
                         )}
-                        {msg.type === "text" && (
-                          <p className="text-sm whitespace-pre-wrap">
-                            {msg.text}
-                          </p>
-                        )}
-                        {msg.type === "image" && msg.images && (
-                          <div className="flex flex-wrap gap-2">
+                        {msg.images && msg.images.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-2">
                             {msg.images.map((img: ImageItem, idx: number) => (
                               <img
                                 key={idx}
@@ -520,6 +703,11 @@ const AdminChatPage: React.FC = () => {
                               />
                             ))}
                           </div>
+                        )}
+                        {msg.text && (
+                          <p className="text-sm whitespace-pre-wrap">
+                            {msg.text}
+                          </p>
                         )}
                         <div
                           className={`flex items-center gap-1 mt-1 ${
@@ -567,10 +755,97 @@ const AdminChatPage: React.FC = () => {
                 <div ref={messagesEndRef} />
               </div>
 
+              {/* Image Preview */}
+              {previewImages.length > 0 && (
+                <div className="px-4 py-2 border-t border-mono-200 bg-mono-50">
+                  <div className="flex flex-wrap gap-2">
+                    {previewImages.map((img, idx) => (
+                      <div key={idx} className="relative">
+                        <img
+                          src={img}
+                          alt={`Preview ${idx + 1}`}
+                          className="w-16 h-16 object-cover rounded-lg"
+                        />
+                        <button
+                          onClick={() => {
+                            setPreviewImages((prev) =>
+                              prev.filter((_, i) => i !== idx)
+                            );
+                            setSelectedImages((prev) =>
+                              prev.filter((_, i) => i !== idx)
+                            );
+                          }}
+                          className="absolute -top-1 -right-1 w-5 h-5 bg-mono-900 text-white rounded-full text-xs flex items-center justify-center hover:bg-mono-700"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Input */}
               {activeConversation.status === "active" ? (
                 <div className="p-4 border-t border-mono-200 bg-white">
                   <div className="flex items-center gap-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = e.target.files;
+                        if (files) {
+                          const remainingSlots = 10 - selectedImages.length;
+                          const filesToProcess = Math.min(
+                            files.length,
+                            remainingSlots
+                          );
+
+                          if (files.length > remainingSlots) {
+                            toast.error("Chỉ được gửi tối đa 10 ảnh");
+                          }
+
+                          const newImages: string[] = [];
+                          const newPreviews: string[] = [];
+
+                          for (let i = 0; i < filesToProcess; i++) {
+                            const file = files[i];
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const base64 = event.target?.result as string;
+                              newImages.push(base64);
+                              newPreviews.push(base64);
+
+                              if (newImages.length === filesToProcess) {
+                                setSelectedImages((prev) => [
+                                  ...prev,
+                                  ...newImages,
+                                ]);
+                                setPreviewImages((prev) => [
+                                  ...prev,
+                                  ...newPreviews,
+                                ]);
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }
+                        e.target.value = "";
+                      }}
+                    />
+
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isSending || selectedImages.length >= 10}
+                      className="p-2.5 text-mono-600 hover:text-mono-900 hover:bg-mono-100 rounded-full disabled:text-mono-300 disabled:cursor-not-allowed transition-colors"
+                      title="Đính kèm ảnh"
+                    >
+                      <FiImage className="w-5 h-5" />
+                    </button>
+
                     <input
                       ref={inputRef}
                       type="text"
@@ -586,7 +861,10 @@ const AdminChatPage: React.FC = () => {
                     />
                     <button
                       onClick={sendMessage}
-                      disabled={!inputMessage.trim() || isSending}
+                      disabled={
+                        (!inputMessage.trim() && selectedImages.length === 0) ||
+                        isSending
+                      }
                       className="p-2.5 bg-mono-900 text-white rounded-full hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-colors"
                     >
                       {isSending ? (
@@ -599,13 +877,127 @@ const AdminChatPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="p-4 border-t border-mono-200 bg-mono-100 text-center">
-                  <p className="text-mono-500">Cuộc hội thoại này đã đóng</p>
+                  <p className="text-mono-500 mb-2">
+                    Cuộc hội thoại này đã đóng
+                  </p>
+                  <button
+                    onClick={() =>
+                      handleReopenConversation(activeConversation._id)
+                    }
+                    className="px-4 py-2 text-sm bg-mono-900 text-white rounded-lg hover:bg-mono-800 inline-flex items-center gap-2"
+                  >
+                    <FiRefreshCw className="w-4 h-4" />
+                    Mở lại hội thoại
+                  </button>
                 </div>
               )}
             </>
           )}
         </div>
       </div>
+
+      {/* New Chat Modal */}
+      {showNewChatModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col">
+            <div className="p-4 border-b border-mono-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Tạo cuộc hội thoại mới</h3>
+              <button
+                onClick={() => setShowNewChatModal(false)}
+                className="p-2 hover:bg-mono-100 rounded-lg"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 border-b border-mono-100">
+              <div className="relative mb-3">
+                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-mono-400" />
+                <input
+                  type="text"
+                  placeholder="Tìm theo tên hoặc email..."
+                  value={userSearchTerm}
+                  onChange={(e) => setUserSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-mono-50 border border-mono-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-900"
+                />
+              </div>
+              <div className="flex gap-2">
+                {(["all", "user", "shipper"] as const).map((role) => (
+                  <button
+                    key={role}
+                    onClick={() => setUserRoleFilter(role)}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+                      userRoleFilter === role
+                        ? "bg-mono-900 text-white"
+                        : "bg-mono-100 text-mono-600 hover:bg-mono-200"
+                    }`}
+                  >
+                    {role === "all"
+                      ? "Tất cả"
+                      : role === "user"
+                      ? "Khách hàng"
+                      : "Shipper"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              {loadingUsers ? (
+                <div className="flex items-center justify-center h-40">
+                  <FiLoader className="w-6 h-6 animate-spin text-mono-400" />
+                </div>
+              ) : availableUsers.length === 0 ? (
+                <div className="text-center text-mono-500 py-10">
+                  <FiUser className="w-10 h-10 mx-auto mb-3 text-mono-300" />
+                  <p>Không tìm thấy người dùng nào</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-mono-100">
+                  {availableUsers.map((chatUser) => (
+                    <button
+                      key={chatUser._id}
+                      onClick={() => handleStartChat(chatUser)}
+                      className="w-full p-4 text-left hover:bg-mono-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-mono-200 flex items-center justify-center overflow-hidden">
+                          {chatUser.avatar?.url ? (
+                            <img
+                              src={chatUser.avatar.url}
+                              alt={chatUser.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <FiUser className="w-5 h-5 text-mono-500" />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-mono-900 truncate">
+                              {chatUser.name}
+                            </p>
+                            {getRoleBadge(chatUser.role)}
+                          </div>
+                          <p className="text-sm text-mono-500 truncate">
+                            {chatUser.email}
+                          </p>
+                          {chatUser.phone && (
+                            <p className="text-xs text-mono-400">
+                              {chatUser.phone}
+                            </p>
+                          )}
+                        </div>
+                        <FiMessageCircle className="w-5 h-5 text-mono-400" />
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

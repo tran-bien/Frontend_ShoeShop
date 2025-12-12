@@ -131,8 +131,11 @@ export interface ChatConversation {
 }
 
 export interface CreateConversationData {
+  targetUserId?: string;
   participantIds?: string[];
   initialMessage?: string;
+  message?: string;
+  orderId?: string;
 }
 
 export interface SendMessageData {

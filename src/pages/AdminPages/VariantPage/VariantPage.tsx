@@ -60,18 +60,24 @@ const VariantPage: React.FC = () => {
       };
 
       const res = await adminVariantService.getAllVariants(params);
-      // Handle both formats: res.data.variants or res.data.data or res.data as array
+      // Handle response structure: data array + pagination fields at root level
       const responseData = res.data as unknown as {
         variants?: Variant[];
         data?: Variant[];
+        totalPages?: number;
+        total?: number;
         pagination?: { totalPages?: number; totalItems?: number };
       };
       const data = responseData.variants || responseData.data || [];
-      const pagination = responseData.pagination;
+      // BE trả về pagination fields trực tiếp: totalPages, total, currentPage
+      const totalPagesFromRes =
+        responseData.totalPages || responseData.pagination?.totalPages || 1;
+      const totalItemsFromRes =
+        responseData.total || responseData.pagination?.totalItems || 0;
 
       setVariants(data as Variant[]);
-      setTotalPages(pagination?.totalPages || 1);
-      setTotalVariants(pagination?.totalItems || 0);
+      setTotalPages(totalPagesFromRes);
+      setTotalVariants(totalItemsFromRes);
       setCurrentPage(page);
     } catch {
       setVariants([]);
@@ -93,18 +99,24 @@ const VariantPage: React.FC = () => {
       };
 
       const res = await adminVariantService.getDeletedVariants(params);
-      // Handle both formats: res.data.variants or res.data.data or res.data as array
+      // Handle response structure: data array + pagination fields at root level
       const responseData = res.data as unknown as {
         variants?: Variant[];
         data?: Variant[];
+        totalPages?: number;
+        total?: number;
         pagination?: { totalPages?: number; totalItems?: number };
       };
       const data = responseData.variants || responseData.data || [];
-      const pagination = responseData.pagination;
+      // BE trả về pagination fields trực tiếp: totalPages, total, currentPage
+      const totalPagesFromRes =
+        responseData.totalPages || responseData.pagination?.totalPages || 1;
+      const totalItemsFromRes =
+        responseData.total || responseData.pagination?.totalItems || 0;
 
       setDeletedVariants(data as Variant[]);
-      setTotalPages(pagination?.totalPages || 1);
-      setTotalVariants(pagination?.totalItems || 0);
+      setTotalPages(totalPagesFromRes);
+      setTotalVariants(totalItemsFromRes);
       setCurrentPage(page);
     } catch {
       setDeletedVariants([]);

@@ -11,6 +11,7 @@ import {
   FiChevronLeft,
   FiRefreshCw,
 } from "react-icons/fi";
+import SupportChat from "../../components/Chat/SupportChat";
 
 interface ShipperUser {
   _id: string;
@@ -281,6 +282,9 @@ const ShipperLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Support Chat for Shipper */}
+      <SupportChat />
     </div>
   );
 };
