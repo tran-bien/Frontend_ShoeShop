@@ -54,7 +54,6 @@ import AdminSizeGuidePage from "../pages/AdminPages/SizeGuidePage/AdminSizeGuide
 import ProductComparePage from "../pages/ProductComparePage/ProductComparePage";
 import AdminLoyaltyTierPage from "../pages/AdminPages/LoyaltyTierPage/AdminLoyaltyTierPage";
 import LoyaltyDashboardPage from "../pages/LoyaltyDashboardPage";
-import ReturnListPage from "../pages/ReturnListPage";
 import CreateReturnPage from "../pages/CreateReturnPage";
 import ReturnDetailPage from "../pages/ReturnDetailPage";
 import RecommendationsPage from "../pages/RecommendationsPage";
@@ -191,14 +190,6 @@ const AppRouter = () => {
           element={
             <AuthGuard>
               <LoyaltyDashboardPage />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="returns"
-          element={
-            <AuthGuard>
-              <ReturnListPage />
             </AuthGuard>
           }
         />

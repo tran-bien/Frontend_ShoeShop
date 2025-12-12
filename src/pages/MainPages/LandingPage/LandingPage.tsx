@@ -91,42 +91,50 @@ const LandingPage: React.FC = () => {
         // Kiểm tra và xử lý dữ liệu trả về từ API
         if (featuredRes.data.success) {
           // API có thể trả về dữ liệu trong data, products hoặc trường khác
-          const products =
-            featuredRes.data.data || featuredRes.data.products || [];
-          console.log("Featured products:", products);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const resData = featuredRes.data as any;
+          const products = resData.data || resData.products || [];
+          console.log("Featured products raw:", products);
           const flattenedProducts = Array.isArray(products)
             ? products.flat().filter((p: Product) => p && p._id)
             : [];
+          console.log("Featured products flattened:", flattenedProducts.length);
           setFeaturedProducts(flattenedProducts);
         }
 
         if (bestSellersRes.data.success) {
-          const products =
-            bestSellersRes.data.data || bestSellersRes.data.products || [];
-          console.log("Best sellers:", products);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const resData = bestSellersRes.data as any;
+          const products = resData.data || resData.products || [];
+          console.log("Best sellers raw:", products);
           const flattenedProducts = Array.isArray(products)
             ? products.flat().filter((p: Product) => p && p._id)
             : [];
+          console.log("Best sellers flattened:", flattenedProducts.length);
           setBestSellers(flattenedProducts);
         }
 
         if (newArrivalsRes.data.success) {
-          const products =
-            newArrivalsRes.data.data || newArrivalsRes.data.products || [];
-          console.log("New arrivals:", products);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const resData = newArrivalsRes.data as any;
+          const products = resData.data || resData.products || [];
+          console.log("New arrivals raw:", products);
           const flattenedProducts = Array.isArray(products)
             ? products.flat().filter((p: Product) => p && p._id)
             : [];
+          console.log("New arrivals flattened:", flattenedProducts.length);
           setNewArrivals(flattenedProducts);
         }
 
         if (allProductsRes.data.success) {
-          const products =
-            allProductsRes.data.data || allProductsRes.data.products || [];
-          console.log("All products:", products);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const resData = allProductsRes.data as any;
+          const products = resData.data || resData.products || [];
+          console.log("All products raw:", products);
           const flattenedProducts = Array.isArray(products)
             ? products.flat().filter((p: Product) => p && p._id)
             : [];
+          console.log("All products flattened:", flattenedProducts.length);
           setAllProducts(flattenedProducts);
         }
 
@@ -601,18 +609,10 @@ const LandingPage: React.FC = () => {
           linkTo="/products?sort=popular"
           linkText="Xem tất cả"
         />
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-          {bestSellers.map((product) => (
-            <ProductCard
-              key={product._id}
-              product={convertToProductCardProduct(product)}
-              onClick={() => {
-                navigate(`/product/${product.slug || product._id}`);
-                window.scrollTo(0, 0); // Add this line to scroll to top
-              }}
-            />
-          ))}
-        </div>
+        <ProductGrid
+          products={bestSellers}
+          emptyMessage="Không có sản phẩm bán chạy nào"
+        />
       </section>
 
       {/* Sản phẩm mới nhất */}

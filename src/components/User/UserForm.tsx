@@ -849,7 +849,7 @@ const UserForm: React.FC = () => {
                 </div>
 
                 {/* Date of Birth */}
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <FiCalendar className="w-4 h-4 inline mr-2" />
                     Ngày sinh
@@ -871,20 +871,6 @@ const UserForm: React.FC = () => {
                       {formatDateDisplay(user.dateOfBirth)}
                     </p>
                   )}
-                </div>
-
-                {/* Role */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Vai trò
-                  </label>
-                  <p className="px-4 py-3 bg-gray-50 rounded-lg text-gray-900 capitalize">
-                    {user.role === "admin"
-                      ? "Quản trị viên"
-                      : user.role === "shipper"
-                      ? "Shipper"
-                      : "Khách hàng"}
-                  </p>
                 </div>
               </div>
             </div>
