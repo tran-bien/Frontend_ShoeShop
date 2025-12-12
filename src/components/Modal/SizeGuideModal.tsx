@@ -162,7 +162,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
       return (
         <div className="space-y-4">
           <h4 className="font-semibold text-mono-black flex items-center gap-2">
-            <span className="text-lg">ðŸ“</span>
+            <span className="text-lg">📄</span>
             Hướng dẫn đo
           </h4>
           {measurementGuide.description && (
@@ -245,13 +245,9 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                     Hướng dẫn chung:
                   </h4>
                   <div className="text-sm text-mono-600 space-y-2 text-left">
-                    <p>
-                      - Đo chiều dài bàn chân từ gót đến ngón cái dài nhất
-                    </p>
+                    <p>- Đo chiều dài bàn chân từ gót đến ngón cái dài nhất</p>
                     <p>- Nên đo vào buổi chiều khi bàn chân hơi phù</p>
-                    <p>
-                      - Chọn size lớn hơn 0.5-1cm so với chiều dài bàn chân
-                    </p>
+                    <p>- Chọn size lớn hơn 0.5-1cm so với chiều dài bàn chân</p>
                     <p>- Tham khảo bảng size cụ thể của từng thương hiệu</p>
                   </div>
                 </div>

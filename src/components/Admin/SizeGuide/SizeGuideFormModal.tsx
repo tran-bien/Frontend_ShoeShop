@@ -76,7 +76,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
       setUploadingSizeChart(true);
       try {
         const formDataUpload = new FormData();
-        formDataUpload.append("image", file);
+        formDataUpload.append("sizeChart", file);
         const response = await sizeGuideImageService.uploadSizeChartImage(
           sizeGuide._id,
           formDataUpload
@@ -142,7 +142,7 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
       setUploadingMeasurement(true);
       try {
         const formDataUpload = new FormData();
-        formDataUpload.append("image", file);
+        formDataUpload.append("measurementGuide", file);
         const response =
           await sizeGuideImageService.uploadMeasurementGuideImage(
             sizeGuide._id,
@@ -558,6 +558,3 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
 };
 
 export default SizeGuideFormModal;
-
-
-

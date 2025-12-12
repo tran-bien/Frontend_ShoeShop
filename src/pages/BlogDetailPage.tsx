@@ -134,7 +134,7 @@ const BlogDetailPage = () => {
         </header>
 
         {/* Featured Image */}
-        {post.featuredImage && (
+        {post.featuredImage?.url && (
           <div className="aspect-video rounded-2xl overflow-hidden bg-mono-100 mb-12">
             <img
               src={post.featuredImage.url}
@@ -220,7 +220,7 @@ const BlogDetailPage = () => {
                   to={`/blog/${relatedPost.slug}`}
                   className="group bg-white rounded-xl overflow-hidden border border-mono-200 hover:shadow-medium transition-all"
                 >
-                  {relatedPost.featuredImage && (
+                  {relatedPost.featuredImage?.url && (
                     <div className="aspect-video overflow-hidden bg-mono-100">
                       <img
                         src={relatedPost.featuredImage.url}
@@ -245,4 +245,3 @@ const BlogDetailPage = () => {
 };
 
 export default BlogDetailPage;
-

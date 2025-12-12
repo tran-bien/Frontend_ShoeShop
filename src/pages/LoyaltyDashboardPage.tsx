@@ -12,29 +12,37 @@ import {
   Star,
   ArrowUp,
   ArrowDown,
+  Crown,
+  Ticket,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { userLoyaltyService } from "../services/LoyaltyService";
+import { userCouponService } from "../services/CouponService";
 import Sidebar from "../components/User/Sidebar";
 import type {
   UserLoyaltyInfo,
   LoyaltyTransaction,
   LoyaltyTier,
 } from "../types/loyalty";
+import type { Coupon } from "../types/coupon";
 
 const LoyaltyDashboardContent: React.FC = () => {
   const [stats, setStats] = useState<UserLoyaltyInfo | null>(null);
   const [transactions, setTransactions] = useState<LoyaltyTransaction[]>([]);
+  const [tiers, setTiers] = useState<LoyaltyTier[]>([]);
+  const [redeemableCoupons, setRedeemableCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
+  const [redeemLoading, setRedeemLoading] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, transRes] = await Promise.all([
+      const [statsRes, transRes, tiersRes] = await Promise.all([
         userLoyaltyService.getLoyaltyInfo(),
         userLoyaltyService.getTransactions({ page: 1, limit: 10 }),
+        userLoyaltyService.getTiers(),
       ]);
 
       console.log("Loyalty stats response:", statsRes.data);
@@ -45,6 +53,25 @@ const LoyaltyDashboardContent: React.FC = () => {
       if (transRes.data.success) {
         setTransactions(transRes.data.data.transactions || []);
         setTotalPages(transRes.data.data.pagination?.totalPages || 1);
+      }
+      if (tiersRes.data.success) {
+        setTiers(tiersRes.data.data?.tiers || []);
+      }
+
+      // Fetch redeemable coupons
+      try {
+        const couponsRes = await userCouponService.getAvailableCoupons({
+          limit: 50,
+        });
+        if (couponsRes.data.success) {
+          const allCoupons = couponsRes.data.data || [];
+          const redeemable = allCoupons.filter(
+            (c: Coupon) => c.isRedeemable && (c.pointCost ?? 0) > 0
+          );
+          setRedeemableCoupons(redeemable);
+        }
+      } catch (err) {
+        console.log("Could not fetch redeemable coupons:", err);
       }
     } catch (error) {
       console.error("Error fetching loyalty data:", error);
@@ -66,6 +93,27 @@ const LoyaltyDashboardContent: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching transactions:", error);
+    }
+  };
+
+  const handleRedeemCoupon = async (couponId: string, pointCost: number) => {
+    if (!stats || stats.currentPoints < pointCost) {
+      toast.error("Không đủ điểm để đổi coupon này");
+      return;
+    }
+
+    try {
+      setRedeemLoading(couponId);
+      await userCouponService.collectCoupon(couponId);
+      toast.success("Đổi coupon thành công!");
+      // Refresh data
+      fetchData();
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      const errorMsg = err?.response?.data?.message || "Không thể đổi coupon";
+      toast.error(errorMsg);
+    } finally {
+      setRedeemLoading(null);
     }
   };
 
@@ -405,6 +453,130 @@ const LoyaltyDashboardContent: React.FC = () => {
             điểm sắp hết hạn trong 30 ngày tới. Hãy sử dụng điểm trước khi hết
             hạn!
           </p>
+        </motion.div>
+      )}
+
+      {/* All Loyalty Tiers */}
+      {tiers.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55 }}
+          className="bg-white border border-gray-200 rounded-xl p-6 mb-8"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <Crown className="w-6 h-6 text-yellow-500" />
+            <h3 className="font-semibold text-gray-900">Hạng thành viên</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {tiers
+              .sort((a, b) => a.displayOrder - b.displayOrder)
+              .map((tier) => {
+                const isCurrentTier = currentTier?._id === tier._id;
+                return (
+                  <div
+                    key={tier._id}
+                    className={`relative p-4 rounded-lg border-2 transition-all ${
+                      isCurrentTier
+                        ? "border-black bg-gray-50 shadow-md"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    {isCurrentTier && (
+                      <span className="absolute -top-2 -right-2 bg-black text-white text-xs px-2 py-0.5 rounded-full">
+                        Hiện tại
+                      </span>
+                    )}
+                    <h4 className="font-bold text-lg mb-2">{tier.name}</h4>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Chi tiêu từ {tier.minSpending?.toLocaleString("vi-VN")}đ
+                      {tier.maxSpending
+                        ? ` đến ${tier.maxSpending.toLocaleString("vi-VN")}đ`
+                        : "+"}
+                    </p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <Gift className="w-4 h-4" />
+                        <span>
+                          x{tier.benefits?.pointsMultiplier || 1} điểm/đơn hàng
+                        </span>
+                      </div>
+                      {tier.benefits?.prioritySupport && (
+                        <div className="flex items-center gap-2 text-gray-700">
+                          <Star className="w-4 h-4" />
+                          <span>Hỗ trợ ưu tiên</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Redeemable Coupons */}
+      {redeemableCoupons.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.58 }}
+          className="bg-white border border-gray-200 rounded-xl p-6 mb-8"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <Ticket className="w-6 h-6 text-green-600" />
+            <h3 className="font-semibold text-gray-900">Đổi điểm lấy Coupon</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {redeemableCoupons.map((coupon) => {
+              const pointCost = coupon.pointCost ?? 0;
+              const canRedeem = stats && stats.currentPoints >= pointCost;
+              return (
+                <div
+                  key={coupon._id}
+                  className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <p className="font-bold text-lg text-gray-900">
+                        {coupon.code}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {coupon.description ||
+                          (coupon.type === "percent"
+                            ? `Giảm ${coupon.value}%`
+                            : `Giảm ${coupon.value?.toLocaleString("vi-VN")}đ`)}
+                      </p>
+                    </div>
+                    <span className="text-sm font-semibold text-black bg-gray-100 px-2 py-1 rounded">
+                      {pointCost.toLocaleString()} điểm
+                    </span>
+                  </div>
+                  {coupon.minOrderValue && (
+                    <p className="text-xs text-gray-500 mb-3">
+                      Đơn tối thiểu{" "}
+                      {coupon.minOrderValue?.toLocaleString("vi-VN")}đ
+                    </p>
+                  )}
+                  <button
+                    onClick={() => handleRedeemCoupon(coupon._id, pointCost)}
+                    disabled={!canRedeem || redeemLoading === coupon._id}
+                    className={`w-full py-2 rounded-lg font-medium transition-colors ${
+                      canRedeem
+                        ? "bg-black text-white hover:bg-gray-800"
+                        : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    }`}
+                  >
+                    {redeemLoading === coupon._id
+                      ? "Đang xử lý..."
+                      : canRedeem
+                      ? "Đổi ngay"
+                      : "Không đủ điểm"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </motion.div>
       )}
 

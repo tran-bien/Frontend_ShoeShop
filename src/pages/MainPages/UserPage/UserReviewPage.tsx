@@ -7,7 +7,6 @@ import {
   Input,
   Rate,
   Card,
-  Tag,
   Pagination,
   Skeleton,
   Spin,
@@ -468,7 +467,7 @@ const UserReviewPage: React.FC = () => {
                           <Badge.Ribbon
                             key={product.orderItemId}
                             text={`${product.daysLeftToReview} ngày còn lại`}
-                            color="blue"
+                            color="#374151"
                           >
                             <Card
                               className="hover:shadow-md transition-shadow overflow-hidden"
@@ -680,14 +679,17 @@ const UserReviewPage: React.FC = () => {
                                 </p>
 
                                 <div className="flex items-center flex-wrap gap-3 mt-3">
-                                  <Tag
-                                    color={review.isActive ? "green" : "red"}
-                                    className="rounded-full px-2"
+                                  <span
+                                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                      review.isActive
+                                        ? "bg-mono-800 text-white"
+                                        : "bg-mono-200 text-mono-600"
+                                    }`}
                                   >
                                     {review.isActive
                                       ? "Hiển thị công khai"
                                       : "Đã ẩn"}
-                                  </Tag>
+                                  </span>
                                   <span className="text-xs text-mono-500 flex items-center">
                                     <StarFilled className="text-mono-600 mr-1" />
                                     {review.numberOfLikes} lượt thích
@@ -776,9 +778,9 @@ const UserReviewPage: React.FC = () => {
                         {selectedProduct.size.value}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                        <Tag color="blue" className="rounded-full text-xs">
+                        <span className="bg-mono-700 text-white rounded-full text-xs px-2 py-0.5">
                           {selectedProduct.orderCode}
-                        </Tag>
+                        </span>
                         <span className="text-xs text-mono-500">
                           Ngày giao: {formatDate(selectedProduct.deliveredAt)}
                         </span>

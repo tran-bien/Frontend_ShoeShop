@@ -72,23 +72,25 @@ export interface ReturnRequest {
   order: {
     _id: string;
     code: string;
-    items?: Array<{
-      product: {
-        _id: string;
-        name: string;
-        images?: Array<{ url: string; public_id: string }>;
-      };
+    orderItems?: Array<{
       variant: {
         _id: string;
-        color?: { name: string; code: string };
+        product?: {
+          _id: string;
+          name: string;
+          images?: Array<{ url: string; public_id: string }>;
+          slug?: string;
+        };
+        color?: { _id: string; name: string; code: string };
       };
       size: {
         _id: string;
         value: string | number;
       };
+      productName: string;
       quantity: number;
       price: number;
-      priceAtPurchase?: number;
+      image?: string;
     }>;
     totalAfterDiscountAndShipping?: number;
     shippingAddress?: {

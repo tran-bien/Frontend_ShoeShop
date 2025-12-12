@@ -273,39 +273,51 @@ const UserManageOrder: React.FC = () => {
     const styles: Record<string, { bg: string; text: string; label: string }> =
       {
         pending: {
-          bg: "bg-yellow-100",
-          text: "text-yellow-800",
+          bg: "bg-mono-200",
+          text: "text-mono-700",
           label: "Chờ duyệt",
         },
         approved: {
-          bg: "bg-blue-100",
-          text: "text-blue-800",
+          bg: "bg-mono-100",
+          text: "text-mono-black",
           label: "Đã duyệt",
         },
-        rejected: { bg: "bg-red-100", text: "text-red-800", label: "Từ chối" },
+        rejected: { bg: "bg-mono-900", text: "text-white", label: "Từ chối" },
         shipping: {
-          bg: "bg-purple-100",
-          text: "text-purple-800",
+          bg: "bg-mono-300",
+          text: "text-mono-800",
           label: "Đang lấy hàng",
         },
         received: {
-          bg: "bg-indigo-100",
-          text: "text-indigo-800",
+          bg: "bg-mono-400",
+          text: "text-white",
           label: "Đã nhận hàng",
         },
         refunded: {
-          bg: "bg-teal-100",
-          text: "text-teal-800",
+          bg: "bg-mono-600",
+          text: "text-white",
           label: "Đã hoàn tiền",
         },
         completed: {
-          bg: "bg-green-100",
-          text: "text-green-800",
+          bg: "bg-mono-black",
+          text: "text-white",
           label: "Hoàn tất",
         },
-        canceled: { bg: "bg-gray-100", text: "text-gray-800", label: "Đã hủy" },
+        canceled: { bg: "bg-mono-100", text: "text-mono-500", label: "Đã hủy" },
       };
     return styles[status] || styles.pending;
+  };
+
+  const getReasonLabel = (reason: string) => {
+    const labels: Record<string, string> = {
+      wrong_size: "Sai kích cỡ",
+      wrong_product: "Sai sản phẩm (giao nhầm)",
+      defective: "Sản phẩm lỗi/hư hỏng",
+      not_as_described: "Không giống mô tả",
+      changed_mind: "Đổi ý (không muốn nữa)",
+      other: "Lý do khác",
+    };
+    return labels[reason] || reason;
   };
 
   const handleCancelReturn = async (id: string) => {
@@ -377,136 +389,124 @@ const UserManageOrder: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {returnRequests.map((request) => {
                   const statusBadge = getReturnStatusBadge(request.status);
-                  const items = request.order?.items || [];
+                  const items = request.order?.orderItems || [];
                   return (
                     <div
                       key={request._id}
                       className="bg-white shadow-md p-6 rounded-lg"
                     >
-                      {/* Header */}
+                      {/* Header giống đơn hàng */}
                       <div className="flex justify-between items-start mb-4">
-                        <div className="flex items-center gap-4">
+                        <div>
+                          <h2 className="text-lg font-semibold">
+                            Mã yêu cầu:{" "}
+                            {request.code || `#${request._id.slice(-8)}`}
+                          </h2>
+                          <p className="text-sm text-mono-500 mt-1">
+                            Đơn hàng gốc: {request.order?.code || "N/A"}
+                          </p>
                           <span
-                            className={`px-3 py-1 rounded-full text-sm font-medium ${statusBadge.bg} ${statusBadge.text}`}
+                            className={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2 ${statusBadge.bg} ${statusBadge.text}`}
                           >
                             {statusBadge.label}
                           </span>
-                          <span className="text-sm text-mono-600 flex items-center gap-1">
-                            <FiPackage className="w-4 h-4" /> Trả hàng
-                          </span>
-                          {request.code && (
-                            <span className="text-sm text-mono-500 font-mono">
-                              #{request.code}
-                            </span>
-                          )}
-                          <span className="text-sm text-mono-500">
-                            Đơn hàng: {request.order?.code || "N/A"}
-                          </span>
                         </div>
-                        <span className="text-sm text-mono-500">
-                          {new Date(request.createdAt).toLocaleDateString(
-                            "vi-VN"
+
+                        {/* Nút hành động */}
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => navigate(`/returns/${request._id}`)}
+                            className="px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-600"
+                          >
+                            Xem chi tiết
+                          </button>
+                          {request.status === "pending" && (
+                            <button
+                              onClick={() => handleCancelReturn(request._id)}
+                              className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900"
+                            >
+                              Hủy yêu cầu
+                            </button>
                           )}
-                        </span>
+                        </div>
                       </div>
 
-                      {/* Items */}
-                      {items.length > 0 && (
-                        <div className="mb-4">
-                          <p className="text-sm font-medium text-mono-700 mb-2">
-                            Sản phẩm ({items.length}):
+                      {/* Thông tin yêu cầu - Grid 2 cột giống đơn hàng */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                          <p className="text-mono-700">
+                            <strong>Lý do:</strong>{" "}
+                            {getReasonLabel(request.reason)}
                           </p>
-                          <div className="space-y-2">
-                            {items.slice(0, 2).map((item, idx) => (
-                              <div
-                                key={idx}
-                                className="flex items-center gap-3 p-2 bg-mono-50 rounded"
-                              >
-                                <img
-                                  src={
-                                    item.product?.images?.[0]?.url ||
-                                    "/placeholder.jpg"
-                                  }
-                                  alt={item.product?.name || "Product"}
-                                  className="w-12 h-12 object-cover rounded"
-                                />
-                                <div className="flex-1">
-                                  <p className="text-sm font-medium">
-                                    {item.product?.name || "Sản phẩm"}
-                                  </p>
-                                  <p className="text-xs text-mono-600">
-                                    {item.variant?.color?.name || "N/A"} -{" "}
-                                    {item.size?.value || "N/A"} - SL:{" "}
-                                    {item.quantity}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                            {items.length > 2 && (
-                              <p className="text-sm text-mono-500">
-                                +{items.length - 2} sản phẩm khác
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Reason */}
-                      <div className="mb-4">
-                        <p className="text-sm text-mono-600">
-                          Lý do: {request.reason}
-                        </p>
-                      </div>
-
-                      {/* Refund amount */}
-                      {request.refundAmount && (
-                        <div className="mb-4 p-3 bg-green-50 rounded-lg">
-                          <p className="text-sm font-medium text-green-700">
-                            Số tiền hoàn:{" "}
-                            <span className="text-lg font-bold">
-                              {request.refundAmount.toLocaleString("vi-VN")}₫
-                            </span>
-                          </p>
-                          <p className="text-xs text-green-600 mt-1">
-                            Phương thức:{" "}
+                          {request.reasonDetail && (
+                            <p className="text-mono-600 text-sm italic">
+                              "{request.reasonDetail}"
+                            </p>
+                          )}
+                          <p className="text-mono-700 mt-2">
+                            <strong>Phương thức hoàn tiền:</strong>{" "}
                             {request.refundMethod === "bank_transfer"
                               ? "Chuyển khoản"
                               : "Tiền mặt (shipper giao)"}
                           </p>
                         </div>
-                      )}
-
-                      {/* Shipper Info */}
-                      {request.assignedShipper &&
-                        request.status === "shipping" && (
-                          <div className="mb-4 p-3 bg-purple-50 rounded-lg">
-                            <p className="text-sm text-purple-700">
-                              Shipper:{" "}
-                              <strong>{request.assignedShipper.name}</strong> -{" "}
-                              {request.assignedShipper.phone}
+                        <div>
+                          <p className="text-mono-700">
+                            <strong>Ngày tạo:</strong>{" "}
+                            {new Date(request.createdAt).toLocaleString()}
+                          </p>
+                          {request.approvedAt && (
+                            <p className="text-mono-700">
+                              <strong>Ngày duyệt:</strong>{" "}
+                              {new Date(request.approvedAt).toLocaleString()}
                             </p>
-                          </div>
-                        )}
+                          )}
+                          {request.assignedShipper &&
+                            request.status === "shipping" && (
+                              <p className="text-mono-700 mt-2">
+                                <strong>Shipper:</strong>{" "}
+                                {request.assignedShipper.name} -{" "}
+                                {request.assignedShipper.phone}
+                              </p>
+                            )}
+                        </div>
+                      </div>
 
-                      {/* Actions */}
-                      <div className="flex gap-2 pt-4 border-t">
-                        <button
-                          onClick={() => navigate(`/returns/${request._id}`)}
-                          className="px-4 py-2 bg-mono-500 text-white rounded hover:bg-mono-600 flex items-center gap-2"
-                        >
-                          <FiEye className="w-4 h-4" /> Chi tiết
-                        </button>
-                        {request.status === "pending" && (
-                          <button
-                            onClick={() => handleCancelReturn(request._id)}
-                            className="px-4 py-2 bg-mono-200 text-mono-700 rounded hover:bg-mono-300 flex items-center gap-2"
-                          >
-                            <FiXCircle className="w-4 h-4" /> Hủy yêu cầu
-                          </button>
-                        )}
+                      {/* Danh sách sản phẩm - Dùng OrderCard giống đơn hàng */}
+                      <div className="border-t pt-4">
+                        {items.map((item, idx) => (
+                          <div key={idx}>
+                            <OrderCard
+                              name={
+                                item.productName ||
+                                item.variant?.product?.name ||
+                                "Sản phẩm"
+                              }
+                              quantity={item.quantity}
+                              price={item.price}
+                              image={
+                                item.image ||
+                                item.variant?.product?.images?.[0]?.url
+                              }
+                              size={item.size?.value}
+                              color={item.variant?.color?.name}
+                            />
+                            {idx < items.length - 1 && (
+                              <hr className="my-4 border-mono-300" />
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Tổng tiền hoàn */}
+                      <div className="flex justify-end mt-4 pt-4 border-t">
+                        <p className="text-lg font-bold text-mono-900">
+                          Số tiền hoàn:{" "}
+                          {request.refundAmount?.toLocaleString() || 0}đ
+                        </p>
                       </div>
                     </div>
                   );

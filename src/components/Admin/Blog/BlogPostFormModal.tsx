@@ -34,7 +34,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
     category: post?.category._id || "",
     tags: post?.tags || ([] as string[]),
     featuredImage: post?.featuredImage || undefined,
-    status: post?.status || "draft",
+    status: post?.status || "DRAFT",
     isHighlighted: post?.isHighlighted || false,
   });
 
@@ -62,7 +62,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
     setUploadingImage(true);
     try {
       const formDataUpload = new FormData();
-      formDataUpload.append("image", file);
+      formDataUpload.append("featuredImage", file);
 
       if (post) {
         // If editing existing post, use uploadFeaturedImage API
@@ -235,16 +235,16 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                   setFormData({
                     ...formData,
                     status: e.target.value as
-                      | "draft"
-                      | "published"
-                      | "archived",
+                      | "DRAFT"
+                      | "PUBLISHED"
+                      | "ARCHIVED",
                   })
                 }
                 className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
               >
-                <option value="draft">Bản nháp</option>
-                <option value="published">Xuất bản</option>
-                <option value="archived">Lưu trữ</option>
+                <option value="DRAFT">Bản nháp</option>
+                <option value="PUBLISHED">Xuất bản</option>
+                <option value="ARCHIVED">Lưu trữ</option>
               </select>
             </div>
           </div>

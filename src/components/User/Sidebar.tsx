@@ -11,6 +11,7 @@ import {
   FaGift,
   FaHistory,
   FaLightbulb,
+  FaUndo,
 } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import authService from "../../services/AuthService";
@@ -36,7 +37,12 @@ const Sidebar: React.FC = () => {
   };
 
   // Menu items cho sidebar
-  const menuItems = [
+  const menuItems: Array<{
+    path: string;
+    icon: React.ReactNode;
+    label: string;
+    matchPaths?: string[];
+  }> = [
     {
       path: "/user-information",
       icon: <FaUser className="text-lg" />,
@@ -51,6 +57,12 @@ const Sidebar: React.FC = () => {
       path: "/user-cancel-requests",
       icon: <FaTimesCircle className="text-lg" />,
       label: "Yêu cầu hủy đơn",
+    },
+    {
+      path: "/returns/create",
+      icon: <FaUndo className="text-lg" />,
+      label: "Yêu cầu trả hàng",
+      matchPaths: ["/returns/create", "/returns/"],
     },
     {
       path: "/user-reviews",
@@ -118,7 +130,11 @@ const Sidebar: React.FC = () => {
       <nav>
         <ul className="space-y-1.5">
           {menuItems.map((item) => {
-            const isActive = location.pathname === item.path;
+            // Check if current path matches item path or any of the matchPaths
+            const isActive =
+              location.pathname === item.path ||
+              (item.matchPaths &&
+                item.matchPaths.some((p) => location.pathname.startsWith(p)));
             return (
               <li key={item.path}>
                 <button

@@ -181,7 +181,7 @@ const BlogManagement: React.FC = () => {
           className="flex items-center justify-center gap-2 px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
         >
           <FiPlus className="w-5 h-5" />
-          Táº¡o bÃ i viáº¿t
+          Tạo bài viết
         </button>
       </div>
 
@@ -209,7 +209,7 @@ const BlogManagement: React.FC = () => {
               >
                 {/* Thumbnail */}
                 <div className="h-48 bg-gray-100 overflow-hidden">
-                  {post.featuredImage ? (
+                  {post.featuredImage?.url ? (
                     <img
                       src={post.featuredImage.url}
                       alt={post.title}
@@ -338,5 +338,3 @@ const BlogManagement: React.FC = () => {
 };
 
 export default BlogManagement;
-
-

@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { customerReturnService } from "../services/ReturnService";
+import Sidebar from "../components/User/Sidebar";
 import type { ReturnRequest, ReturnRequestStatus } from "../types/return";
 
 const RETURN_SHIPPING_FEE = 30000;
@@ -40,7 +41,7 @@ const ReturnDetailPage: React.FC = () => {
     } catch (error) {
       console.error("Error fetching return request:", error);
       toast.error("Không thể tải thông tin yêu cầu");
-      navigate("/returns");
+      navigate("/user-manage-order?tab=returns");
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,7 @@ const ReturnDetailPage: React.FC = () => {
     try {
       await customerReturnService.cancelReturnRequest(id!);
       toast.success("Đã hủy yêu cầu");
-      navigate("/returns");
+      navigate("/user-manage-order?tab=returns");
     } catch (error) {
       console.error("Error canceling request:", error);
       toast.error("Không thể hủy yêu cầu");
@@ -71,57 +72,57 @@ const ReturnDetailPage: React.FC = () => {
       }
     > = {
       pending: {
-        bg: "bg-yellow-100",
-        text: "text-yellow-800",
+        bg: "bg-mono-200",
+        text: "text-mono-700",
         label: "Chờ duyệt",
         icon: FiClock,
         description: "Yêu cầu đang chờ admin xem xét và phê duyệt",
       },
       approved: {
-        bg: "bg-blue-100",
-        text: "text-blue-800",
+        bg: "bg-mono-100",
+        text: "text-mono-black",
         label: "Đã duyệt",
         icon: FiCheckCircle,
         description: "Yêu cầu đã được duyệt, đang chờ phân công shipper",
       },
       shipping: {
-        bg: "bg-purple-100",
-        text: "text-purple-800",
+        bg: "bg-mono-300",
+        text: "text-mono-800",
         label: "Đang lấy hàng",
         icon: FiTruck,
         description: "Shipper đang đến lấy hàng trả",
       },
       received: {
-        bg: "bg-indigo-100",
-        text: "text-indigo-800",
+        bg: "bg-mono-400",
+        text: "text-white",
         label: "Đã nhận hàng",
         icon: FiPackage,
         description: "Cửa hàng đã nhận hàng trả, đang xử lý hoàn tiền",
       },
       refunded: {
-        bg: "bg-teal-100",
-        text: "text-teal-800",
+        bg: "bg-mono-600",
+        text: "text-white",
         label: "Đã hoàn tiền",
         icon: FiDollarSign,
         description: "Tiền đã được hoàn về cho bạn",
       },
       completed: {
-        bg: "bg-green-100",
-        text: "text-green-800",
+        bg: "bg-mono-black",
+        text: "text-white",
         label: "Hoàn tất",
         icon: FiCheckCircle,
         description: "Yêu cầu trả hàng đã hoàn tất",
       },
       rejected: {
-        bg: "bg-red-100",
-        text: "text-red-800",
+        bg: "bg-mono-900",
+        text: "text-white",
         label: "Từ chối",
         icon: FiXCircle,
         description: "Yêu cầu đã bị từ chối",
       },
       canceled: {
-        bg: "bg-gray-100",
-        text: "text-gray-800",
+        bg: "bg-mono-100",
+        text: "text-mono-500",
         label: "Đã hủy",
         icon: FiXCircle,
         description: "Bạn đã hủy yêu cầu này",
@@ -154,10 +155,15 @@ const ReturnDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
-          <p className="mt-4 text-gray-600">Đang tải...</p>
+      <div className="flex flex-col min-h-screen bg-mono-100">
+        <div className="flex flex-1">
+          <Sidebar />
+          <div className="flex-1 p-10 flex items-center justify-center">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto"></div>
+              <p className="mt-4 text-gray-600">Đang tải...</p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -165,16 +171,21 @@ const ReturnDetailPage: React.FC = () => {
 
   if (!request) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <FiPackage className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-600">Không tìm thấy yêu cầu</p>
-          <button
-            onClick={() => navigate("/returns")}
-            className="mt-4 px-4 py-2 bg-black text-white rounded-lg"
-          >
-            Quay lại
-          </button>
+      <div className="flex flex-col min-h-screen bg-mono-100">
+        <div className="flex flex-1">
+          <Sidebar />
+          <div className="flex-1 p-10 flex items-center justify-center">
+            <div className="text-center">
+              <FiPackage className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-600">Không tìm thấy yêu cầu</p>
+              <button
+                onClick={() => navigate("/user-manage-order?tab=returns")}
+                className="mt-4 px-4 py-2 bg-black text-white rounded-lg"
+              >
+                Quay lại
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -186,446 +197,480 @@ const ReturnDetailPage: React.FC = () => {
   const refundAmount = request.refundAmount || orderTotal - RETURN_SHIPPING_FEE;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <button
-            onClick={() => navigate("/returns")}
-            className="flex items-center gap-2 text-gray-600 hover:text-black mb-4"
-          >
-            <FiArrowLeft className="w-5 h-5" />
-            Quay lại danh sách
-          </button>
+    <div className="flex flex-col min-h-screen bg-mono-100">
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <Sidebar />
 
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-black flex items-center gap-2">
-                <FiPackage className="w-6 h-6" />
-                Yêu cầu trả hàng
-              </h1>
-              <p className="text-gray-600 mt-1">
-                Mã: {request.code || `#${request._id.slice(-8)}`}
-              </p>
-            </div>
-
-            <div
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${statusConfig.bg} ${statusConfig.text}`}
+        {/* Main Content */}
+        <div className="flex-1 p-10">
+          {/* Header với nút quay lại */}
+          <div className="flex items-center gap-4 mb-6">
+            <button
+              onClick={() => navigate("/user-manage-order?tab=returns")}
+              className="flex items-center gap-2 px-4 py-2 text-mono-black hover:bg-mono-50 rounded-lg transition-colors"
             >
-              <StatusIcon className="w-5 h-5" />
-              <span className="font-medium">{statusConfig.label}</span>
-            </div>
+              <FiArrowLeft className="w-5 h-5" />
+              <span>Quay lại</span>
+            </button>
+            <h1 className="text-3xl font-bold">Chi tiết yêu cầu trả hàng</h1>
           </div>
 
-          {/* Status Description */}
-          <div className={`mt-4 p-4 rounded-lg ${statusConfig.bg}`}>
-            <p className={statusConfig.text}>{statusConfig.description}</p>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          {/* Status Timeline */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Tiến trình xử lý</h2>
-            <div className="space-y-4">
-              {/* Created */}
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <FiCheckCircle className="w-4 h-4 text-green-600" />
-                </div>
+          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+            {/* Header gradient giống UserOrderDetailPage */}
+            <div className="bg-gradient-to-r from-mono-500 to-mono-black text-white p-6">
+              <div className="flex justify-between items-start">
                 <div>
-                  <p className="font-medium">Đã tạo yêu cầu</p>
-                  <p className="text-sm text-gray-500">
-                    {formatDate(request.createdAt)}
+                  <h2 className="text-2xl font-bold mb-2">
+                    Yêu cầu trả hàng{" "}
+                    {request.code || `#${request._id.slice(-8)}`}
+                  </h2>
+                  <p className="text-mono-200 text-sm mb-3">
+                    Đơn hàng: {request.order?.code || "N/A"}
                   </p>
+                  <span
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+                    style={{
+                      color: "#374151",
+                      backgroundColor: "rgba(255,255,255,0.9)",
+                    }}
+                  >
+                    <StatusIcon className="w-4 h-4" />
+                    {statusConfig.label}
+                  </span>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex gap-2">
+                  {request.status === "pending" && (
+                    <button
+                      onClick={handleCancel}
+                      className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900"
+                    >
+                      Hủy yêu cầu
+                    </button>
+                  )}
                 </div>
               </div>
+            </div>
 
-              {/* Approved */}
-              {request.approvedAt && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                    <FiCheckCircle className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Đã được duyệt</p>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(request.approvedAt)}
-                    </p>
-                    {request.adminNote && (
-                      <p className="text-sm text-gray-600 italic mt-1">
-                        "{request.adminNote}"
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
+            <div className="p-6">
+              {/* Status Description */}
+              <div className="mb-6 p-4 bg-mono-50 border border-mono-200 rounded-lg">
+                <p className="text-mono-700">{statusConfig.description}</p>
+              </div>
 
-              {/* Shipper Assigned */}
-              {request.assignedAt && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                    <FiTruck className="w-4 h-4 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Đã phân công shipper</p>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(request.assignedAt)}
-                    </p>
-                    {request.assignedShipper && (
-                      <p className="text-sm text-gray-600">
-                        Shipper: {request.assignedShipper.name} -{" "}
-                        {request.assignedShipper.phone}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Received */}
-              {request.receivedAt && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                    <FiPackage className="w-4 h-4 text-indigo-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium">Đã nhận hàng trả</p>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(request.receivedAt)}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Refund Delivered by Shipper (for cash method) */}
-              {request.refundMethod === "cash" &&
-                request.refundCollectedByShipper?.collectedAt && (
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                      <FiDollarSign className="w-4 h-4 text-teal-600" />
+              {/* Thông tin chung */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                {/* Shipping Address */}
+                {request.order?.shippingAddress && (
+                  <div className="bg-mono-50 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FiMapPin className="text-mono-500" />
+                      <h3 className="font-semibold">Địa chỉ lấy hàng</h3>
                     </div>
-                    <div>
-                      <p className="font-medium text-teal-700">
-                        Đã nhận tiền hoàn từ shipper
+                    <div className="space-y-2 text-sm">
+                      <p>
+                        <strong>Người gửi:</strong>{" "}
+                        {request.order.shippingAddress.fullName}
                       </p>
-                      <p className="text-sm text-gray-500">
-                        {formatDate(
-                          request.refundCollectedByShipper.collectedAt
-                        )}
+                      <p>
+                        <strong>SĐT:</strong>{" "}
+                        {request.order.shippingAddress.phone}
                       </p>
-                      <p className="text-sm font-semibold text-teal-700">
-                        Số tiền:{" "}
-                        {formatCurrency(
-                          request.refundCollectedByShipper.amount
-                        )}
+                      <p className="text-mono-600">
+                        {request.order.shippingAddress.addressLine ||
+                          request.order.shippingAddress.address}
+                        <br />
+                        {request.order.shippingAddress.ward},{" "}
+                        {request.order.shippingAddress.district}
+                        <br />
+                        {request.order.shippingAddress.province}
                       </p>
                     </div>
                   </div>
                 )}
 
-              {/* Bank Transfer Refunded */}
-              {request.refundMethod === "bank_transfer" &&
-                request.status === "refunded" && (
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
-                      <FiDollarSign className="w-4 h-4 text-teal-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-teal-700">
-                        Đã chuyển khoản hoàn tiền
+                {/* Refund Info */}
+                <div className="bg-mono-50 p-4 rounded-lg">
+                  <div className="flex items-center gap-2 mb-3">
+                    <FiCreditCard className="text-mono-700" />
+                    <h3 className="font-semibold">Thông tin hoàn tiền</h3>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <p>
+                      <strong>Phương thức:</strong>{" "}
+                      {request.refundMethod === "bank_transfer"
+                        ? "Chuyển khoản"
+                        : "Tiền mặt"}
+                    </p>
+                    <p>
+                      <strong>Giá trị đơn:</strong> {formatCurrency(orderTotal)}
+                    </p>
+                    <p>
+                      <strong>Phí trả hàng:</strong>{" "}
+                      <span className="text-mono-600">
+                        -{formatCurrency(RETURN_SHIPPING_FEE)}
+                      </span>
+                    </p>
+                    <p className="pt-2 border-t border-mono-200">
+                      <strong>Số tiền hoàn:</strong>{" "}
+                      <span className="text-lg font-bold text-mono-black">
+                        {formatCurrency(refundAmount)}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Request Info */}
+                <div className="bg-mono-50 p-4 rounded-lg">
+                  <div className="flex items-center gap-2 mb-3">
+                    <FiClock className="text-mono-600" />
+                    <h3 className="font-semibold">Thông tin yêu cầu</h3>
+                  </div>
+                  <div className="space-y-2 text-sm">
+                    <p>
+                      <strong>Ngày tạo:</strong> {formatDate(request.createdAt)}
+                    </p>
+                    {request.approvedAt && (
+                      <p>
+                        <strong>Ngày duyệt:</strong>{" "}
+                        {formatDate(request.approvedAt)}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        Số tiền: {formatCurrency(refundAmount)}
+                    )}
+                    {request.completedAt && (
+                      <p>
+                        <strong>Ngày hoàn tất:</strong>{" "}
+                        {formatDate(request.completedAt)}
+                      </p>
+                    )}
+                    <p className="pt-2 border-t border-mono-200">
+                      <strong>Lý do:</strong> {getReasonLabel(request.reason)}
+                    </p>
+                    {request.reasonDetail && (
+                      <p className="text-mono-600 italic">
+                        "{request.reasonDetail}"
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Tiến trình xử lý */}
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold mb-4">Tiến trình xử lý</h2>
+                <div className="bg-mono-50 rounded-lg p-4">
+                  <div className="space-y-4">
+                    {/* Created */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 bg-mono-800 rounded-full flex items-center justify-center">
+                        <FiCheckCircle className="w-4 h-4 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Đã tạo yêu cầu</p>
+                        <p className="text-sm text-mono-500">
+                          {formatDate(request.createdAt)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Approved */}
+                    {request.approvedAt && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-mono-600 rounded-full flex items-center justify-center">
+                          <FiCheckCircle className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Đã được duyệt</p>
+                          <p className="text-sm text-mono-500">
+                            {formatDate(request.approvedAt)}
+                          </p>
+                          {request.adminNote && (
+                            <p className="text-sm text-mono-600 italic mt-1">
+                              "{request.adminNote}"
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Shipper Assigned */}
+                    {request.assignedAt && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-mono-500 rounded-full flex items-center justify-center">
+                          <FiTruck className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Đã phân công shipper</p>
+                          <p className="text-sm text-mono-500">
+                            {formatDate(request.assignedAt)}
+                          </p>
+                          {request.assignedShipper && (
+                            <p className="text-sm text-mono-600">
+                              Shipper: {request.assignedShipper.name} -{" "}
+                              {request.assignedShipper.phone}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Received */}
+                    {request.receivedAt && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-mono-400 rounded-full flex items-center justify-center">
+                          <FiPackage className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Đã nhận hàng trả</p>
+                          <p className="text-sm text-mono-500">
+                            {formatDate(request.receivedAt)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Refund Delivered by Shipper (for cash method) */}
+                    {request.refundMethod === "cash" &&
+                      request.refundCollectedByShipper?.collectedAt && (
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-mono-700 rounded-full flex items-center justify-center">
+                            <FiDollarSign className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-mono-800">
+                              Đã nhận tiền hoàn từ shipper
+                            </p>
+                            <p className="text-sm text-mono-500">
+                              {formatDate(
+                                request.refundCollectedByShipper.collectedAt
+                              )}
+                            </p>
+                            <p className="text-sm font-semibold text-mono-black">
+                              Số tiền:{" "}
+                              {formatCurrency(
+                                request.refundCollectedByShipper.amount
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Bank Transfer Refunded */}
+                    {request.refundMethod === "bank_transfer" &&
+                      request.status === "refunded" && (
+                        <div className="flex items-start gap-3">
+                          <div className="w-8 h-8 bg-mono-700 rounded-full flex items-center justify-center">
+                            <FiDollarSign className="w-4 h-4 text-white" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-mono-800">
+                              Đã chuyển khoản hoàn tiền
+                            </p>
+                            <p className="text-sm text-mono-600">
+                              Số tiền: {formatCurrency(refundAmount)}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Completed */}
+                    {request.completedAt && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-mono-black rounded-full flex items-center justify-center">
+                          <FiCheckCircle className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-mono-black">
+                            Hoàn tất
+                          </p>
+                          <p className="text-sm text-mono-500">
+                            {formatDate(request.completedAt)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Rejected */}
+                    {request.status === "rejected" && request.rejectedAt && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-mono-900 rounded-full flex items-center justify-center">
+                          <FiXCircle className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-mono-900">
+                            Đã bị từ chối
+                          </p>
+                          <p className="text-sm text-mono-500">
+                            {formatDate(request.rejectedAt)}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Canceled */}
+                    {request.status === "canceled" && (
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 bg-mono-200 rounded-full flex items-center justify-center">
+                          <FiXCircle className="w-4 h-4 text-mono-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-mono-600">Đã hủy</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Products */}
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold mb-4">
+                  Sản phẩm trả ({request.order?.orderItems?.length || 0})
+                </h2>
+                <div className="border border-mono-200 rounded-lg overflow-hidden">
+                  {request.order?.orderItems?.map((item, index) => (
+                    <div
+                      key={index}
+                      className={`flex items-center gap-4 p-4 ${
+                        index > 0 ? "border-t border-mono-200" : ""
+                      }`}
+                    >
+                      <img
+                        src={
+                          item.image ||
+                          item.variant?.product?.images?.[0]?.url ||
+                          "/placeholder.jpg"
+                        }
+                        alt={item.productName || "Product"}
+                        className="w-20 h-20 object-cover rounded-lg border border-mono-200"
+                      />
+                      <div className="flex-1">
+                        <p className="font-medium text-mono-black">
+                          {item.productName ||
+                            item.variant?.product?.name ||
+                            "Sản phẩm"}
+                        </p>
+                        <p className="text-sm text-mono-600">
+                          {item.variant?.color?.name || "N/A"} | Size:{" "}
+                          {item.size?.value || "N/A"}
+                        </p>
+                        <p className="text-sm text-mono-500">
+                          Số lượng: {item.quantity}
+                        </p>
+                      </div>
+                      <p className="text-sm font-semibold text-mono-black">
+                        {formatCurrency(item.price)}
                       </p>
                     </div>
-                  </div>
-                )}
-
-              {/* Completed */}
-              {request.completedAt && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <FiCheckCircle className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-green-600">Hoàn tất</p>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(request.completedAt)}
-                    </p>
-                  </div>
+                  ))}
                 </div>
-              )}
-
-              {/* Rejected */}
-              {request.status === "rejected" && request.rejectedAt && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                    <FiXCircle className="w-4 h-4 text-red-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-red-600">Đã bị từ chối</p>
-                    <p className="text-sm text-gray-500">
-                      {formatDate(request.rejectedAt)}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Canceled */}
-              {request.status === "canceled" && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                    <FiXCircle className="w-4 h-4 text-gray-600" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-600">Đã hủy</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Order Info */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Thông tin đơn hàng</h2>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div>
-                <p className="text-sm text-gray-500">Mã đơn hàng</p>
-                <p className="font-medium">{request.order?.code || "N/A"}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Ngày tạo yêu cầu</p>
-                <p className="font-medium">{formatDate(request.createdAt)}</p>
-              </div>
-            </div>
-
-            {/* Shipping Address */}
-            {request.order?.shippingAddress && (
-              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                <div className="flex items-center gap-2 text-blue-700 font-medium mb-2">
-                  <FiMapPin className="w-4 h-4" />
-                  <span>Địa chỉ lấy hàng</span>
-                </div>
-                <div className="text-sm text-blue-800">
-                  <p className="font-medium">
-                    {request.order.shippingAddress.fullName}
-                  </p>
-                  <p>{request.order.shippingAddress.phone}</p>
-                  <p>
-                    {request.order.shippingAddress.addressLine ||
-                      request.order.shippingAddress.address}
-                  </p>
-                  <p>
-                    {request.order.shippingAddress.ward},{" "}
-                    {request.order.shippingAddress.district},{" "}
-                    {request.order.shippingAddress.province}
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Products */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">
-              Sản phẩm trả ({request.order?.items?.length || 0})
-            </h2>
-            <div className="space-y-4">
-              {request.order?.items?.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
-                >
-                  <img
-                    src={item.product?.images?.[0]?.url || "/placeholder.jpg"}
-                    alt={item.product?.name || "Product"}
-                    className="w-20 h-20 object-cover rounded-lg"
-                  />
-                  <div className="flex-1">
-                    <p className="font-medium">
-                      {item.product?.name || "Sản phẩm"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Màu: {item.variant?.color?.name || "N/A"} | Size:{" "}
-                      {item.size?.value || "N/A"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Số lượng: {item.quantity}
-                    </p>
-                    <p className="text-sm font-medium">
-                      {formatCurrency(item.priceAtPurchase || item.price)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Reason */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Lý do trả hàng</h2>
-            <p className="font-medium text-gray-800">
-              {getReasonLabel(request.reason)}
-            </p>
-            {request.reasonDetail && (
-              <p className="text-gray-600 mt-2 italic">
-                "{request.reasonDetail}"
-              </p>
-            )}
-          </div>
-
-          {/* Refund Info */}
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="flex items-center gap-2 mb-4">
-              <FiCreditCard className="w-5 h-5 text-green-600" />
-              <h2 className="text-lg font-semibold">Thông tin hoàn tiền</h2>
-            </div>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Phương thức hoàn tiền</span>
-                <span className="font-medium">
-                  {request.refundMethod === "bank_transfer"
-                    ? "Chuyển khoản ngân hàng"
-                    : "Tiền mặt (shipper giao)"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Giá trị đơn hàng</span>
-                <span className="font-medium">
-                  {formatCurrency(orderTotal)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Phí trả hàng</span>
-                <span className="font-medium text-red-600">
-                  -{formatCurrency(RETURN_SHIPPING_FEE)}
-                </span>
-              </div>
-              <div className="flex justify-between pt-3 border-t">
-                <span className="text-gray-800 font-semibold">
-                  Số tiền hoàn
-                </span>
-                <span className="font-bold text-xl text-green-600">
-                  {formatCurrency(refundAmount)}
-                </span>
               </div>
 
               {/* Bank Info */}
               {request.refundMethod === "bank_transfer" && request.bankInfo && (
-                <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                  <p className="font-medium mb-2">
-                    Thông tin ngân hàng nhận tiền:
-                  </p>
+                <div className="mb-8 p-4 bg-mono-50 border border-mono-200 rounded-lg">
+                  <h3 className="font-semibold mb-3">
+                    Thông tin ngân hàng nhận tiền
+                  </h3>
                   <div className="space-y-1 text-sm">
                     <p>
-                      Ngân hàng: <strong>{request.bankInfo.bankName}</strong>
+                      Ngân hàng:{" "}
+                      <strong className="text-mono-black">
+                        {request.bankInfo.bankName}
+                      </strong>
                     </p>
                     <p>
                       Số TK:{" "}
-                      <strong className="font-mono">
+                      <strong className="font-mono text-mono-black">
                         {request.bankInfo.accountNumber}
                       </strong>
                     </p>
                     <p>
-                      Chủ TK: <strong>{request.bankInfo.accountName}</strong>
+                      Chủ TK:{" "}
+                      <strong className="text-mono-black">
+                        {request.bankInfo.accountName}
+                      </strong>
                     </p>
                   </div>
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Shipper Info (when assigned) */}
-          {request.assignedShipper && (
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <FiTruck className="w-5 h-5 text-purple-600" />
-                <h2 className="text-lg font-semibold text-purple-800">
-                  Thông tin shipper
-                </h2>
-              </div>
-              <div className="space-y-2 text-purple-700">
-                <p>
-                  <strong>Tên:</strong> {request.assignedShipper.name}
-                </p>
-                <p>
-                  <strong>Số điện thoại:</strong>{" "}
-                  {request.assignedShipper.phone}
-                </p>
-              </div>
-              {request.refundMethod === "cash" && (
-                <p className="mt-4 text-sm text-purple-600 bg-white p-3 rounded">
-                  💵 Shipper sẽ lấy hàng và giao tiền hoàn{" "}
-                  <strong>{formatCurrency(refundAmount)}</strong> cho bạn
-                </p>
+              {/* Shipper Info (when assigned) */}
+              {request.assignedShipper && (
+                <div className="mb-8 p-4 bg-mono-100 border border-mono-300 rounded-lg">
+                  <div className="flex items-center gap-2 mb-3">
+                    <FiTruck className="w-5 h-5 text-mono-700" />
+                    <h3 className="font-semibold text-mono-800">
+                      Thông tin shipper
+                    </h3>
+                  </div>
+                  <div className="space-y-2 text-mono-700">
+                    <p>
+                      <strong>Tên:</strong> {request.assignedShipper.name}
+                    </p>
+                    <p>
+                      <strong>Số điện thoại:</strong>{" "}
+                      {request.assignedShipper.phone}
+                    </p>
+                  </div>
+                  {request.refundMethod === "cash" && (
+                    <p className="mt-4 text-sm text-mono-600 bg-white p-3 rounded border border-mono-200">
+                      💵 Shipper sẽ lấy hàng và giao tiền hoàn{" "}
+                      <strong>{formatCurrency(refundAmount)}</strong> cho bạn
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Rejection Reason */}
+              {request.status === "rejected" && request.rejectionReason && (
+                <div className="mb-8 p-4 bg-mono-100 border border-mono-400 rounded-lg">
+                  <h3 className="font-semibold text-mono-900 mb-2">
+                    Lý do từ chối
+                  </h3>
+                  <p className="text-mono-700">{request.rejectionReason}</p>
+                </div>
+              )}
+
+              {/* Instructions */}
+              {request.status === "approved" && !request.assignedShipper && (
+                <div className="mb-8 p-4 bg-mono-50 border border-mono-300 rounded-lg">
+                  <h3 className="font-semibold text-mono-800 mb-3">
+                    Thông tin
+                  </h3>
+                  <p className="text-mono-700">
+                    Yêu cầu của bạn đã được duyệt. Vui lòng đợi shipper được
+                    phân công để đến lấy hàng.
+                  </p>
+                </div>
+              )}
+
+              {request.status === "shipping" && (
+                <div className="mb-8 p-4 bg-mono-100 border border-mono-300 rounded-lg">
+                  <h3 className="font-semibold text-mono-800 mb-3">
+                    Hướng dẫn
+                  </h3>
+                  <div className="space-y-2 text-mono-700">
+                    <p className="flex items-start gap-2">
+                      <span className="font-bold">1.</span>
+                      Đóng gói sản phẩm cẩn thận trong túi/hộp ban đầu (nếu còn)
+                    </p>
+                    <p className="flex items-start gap-2">
+                      <span className="font-bold">2.</span>
+                      Chuẩn bị sẵn hàng để giao cho shipper khi đến
+                    </p>
+                    {request.refundMethod === "cash" && (
+                      <p className="flex items-start gap-2">
+                        <span className="font-bold">3.</span>
+                        Shipper sẽ giao tiền hoàn{" "}
+                        <strong>{formatCurrency(refundAmount)}</strong> cho bạn
+                      </p>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
-          )}
-
-          {/* Rejection Reason */}
-          {request.status === "rejected" && request.rejectionReason && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-red-800 mb-2">
-                Lý do từ chối
-              </h2>
-              <p className="text-red-700">{request.rejectionReason}</p>
-            </div>
-          )}
-
-          {/* Instructions for approved status */}
-          {request.status === "approved" && !request.assignedShipper && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-blue-800 mb-3">
-                Thông tin
-              </h2>
-              <p className="text-blue-700">
-                Yêu cầu của bạn đã được duyệt. Vui lòng đợi shipper được phân
-                công để đến lấy hàng.
-              </p>
-            </div>
-          )}
-
-          {request.status === "shipping" && (
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-purple-800 mb-3">
-                Hướng dẫn
-              </h2>
-              <div className="space-y-2 text-purple-700">
-                <p className="flex items-start gap-2">
-                  <span className="font-bold">1.</span>
-                  Đóng gói sản phẩm cẩn thận trong túi/hộp ban đầu (nếu còn)
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="font-bold">2.</span>
-                  Chuẩn bị sẵn hàng để giao cho shipper khi đến
-                </p>
-                {request.refundMethod === "cash" && (
-                  <p className="flex items-start gap-2">
-                    <span className="font-bold">3.</span>
-                    Shipper sẽ giao tiền hoàn{" "}
-                    <strong>{formatCurrency(refundAmount)}</strong> cho bạn
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex justify-end gap-4">
-            <button
-              onClick={() => navigate("/returns")}
-              className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
-            >
-              Quay lại
-            </button>
-            {request.status === "pending" && (
-              <button
-                onClick={handleCancel}
-                className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700"
-              >
-                Hủy yêu cầu
-              </button>
-            )}
           </div>
         </div>
       </div>

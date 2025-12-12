@@ -105,7 +105,7 @@ const BlogListPage = () => {
                 className="group bg-white rounded-xl overflow-hidden border border-mono-200 hover:shadow-luxury transition-all"
               >
                 {/* Featured Image */}
-                {post.featuredImage && (
+                {post.featuredImage?.url && (
                   <div className="aspect-video overflow-hidden bg-mono-100">
                     <img
                       src={post.featuredImage.url}
@@ -160,4 +160,3 @@ const BlogListPage = () => {
 };
 
 export default BlogListPage;
-
