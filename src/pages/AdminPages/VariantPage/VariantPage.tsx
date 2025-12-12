@@ -14,6 +14,11 @@ const VariantPage: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
 
+  // State cho expanded sizes dropdown
+  const [expandedSizes, setExpandedSizes] = useState<Record<string, boolean>>(
+    {}
+  );
+
   // Pagination & Filter States
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -385,6 +390,9 @@ const VariantPage: React.FC = () => {
                     Giới tính
                   </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
+                    Giá bán
+                  </th>
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Size & SKU
                   </th>
                   <th className="py-4 px-6 text-center text-xs font-bold text-mono-700 uppercase tracking-wider">
@@ -461,31 +469,114 @@ const VariantPage: React.FC = () => {
                             : "Unisex"}
                         </span>
                       </td>
+                      {/* Cell giá bán */}
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col">
+                          {(v as any).priceFinal ? (
+                            <>
+                              <span className="text-sm font-semibold text-mono-900">
+                                {(v as any).priceFinal?.toLocaleString("vi-VN")}
+                                ₫
+                              </span>
+                              {(v as any).percentDiscount > 0 && (
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-xs text-mono-500 line-through">
+                                    {(v as any).price?.toLocaleString("vi-VN")}₫
+                                  </span>
+                                  <span className="text-xs font-semibold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
+                                    -{(v as any).percentDiscount}%
+                                  </span>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-sm text-mono-400 italic">
+                              Chưa có giá
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      {/* Cell Size & SKU với dropdown */}
                       <td className="px-6 py-4">
                         <div className="space-y-1">
-                          {v.sizes?.slice(0, 3).map((s, idx) => (
-                            <div
-                              key={idx}
-                              className="text-xs text-mono-600 flex items-center gap-2"
-                            >
-                              <span className="font-semibold bg-mono-100 px-2 py-0.5 rounded">
-                                {typeof s.size === "object"
-                                  ? s.size.value
-                                  : s.size}
-                              </span>
-                              {s.sku && (
-                                <span
-                                  className="font-mono text-mono-500"
-                                  title="SKU"
+                          {v.sizes && v.sizes.length > 0 ? (
+                            <>
+                              {/* Hiển thị 2 sizes đầu */}
+                              {(expandedSizes[v._id]
+                                ? v.sizes
+                                : v.sizes.slice(0, 2)
+                              ).map((s, idx) => (
+                                <div
+                                  key={idx}
+                                  className="text-xs text-mono-600 flex items-center gap-2"
                                 >
-                                  {s.sku}
-                                </span>
+                                  <span className="font-semibold bg-mono-100 px-2 py-0.5 rounded min-w-[32px] text-center">
+                                    {typeof s.size === "object"
+                                      ? s.size.value
+                                      : s.size}
+                                  </span>
+                                  {s.sku && (
+                                    <span
+                                      className="font-mono text-mono-500 text-[10px] break-all"
+                                      title={s.sku}
+                                    >
+                                      {s.sku}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                              {/* Nút expand/collapse nếu có nhiều hơn 2 sizes */}
+                              {v.sizes.length > 2 && (
+                                <button
+                                  onClick={() =>
+                                    setExpandedSizes((prev) => ({
+                                      ...prev,
+                                      [v._id]: !prev[v._id],
+                                    }))
+                                  }
+                                  className="text-xs text-mono-700 font-medium hover:text-mono-900 flex items-center gap-1 transition-colors mt-1"
+                                >
+                                  {expandedSizes[v._id] ? (
+                                    <>
+                                      <svg
+                                        className="w-3 h-3"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M5 15l7-7 7 7"
+                                        />
+                                      </svg>
+                                      Thu gọn
+                                    </>
+                                  ) : (
+                                    <>
+                                      <svg
+                                        className="w-3 h-3"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth={2}
+                                          d="M19 9l-7 7-7-7"
+                                        />
+                                      </svg>
+                                      +{v.sizes.length - 2} size khác
+                                    </>
+                                  )}
+                                </button>
                               )}
-                            </div>
-                          ))}
-                          {v.sizes && v.sizes.length > 3 && (
-                            <span className="text-xs text-mono-black font-medium">
-                              +{v.sizes.length - 3} size khác
+                            </>
+                          ) : (
+                            <span className="text-xs text-mono-400 italic">
+                              Chưa có size
                             </span>
                           )}
                         </div>
@@ -533,17 +624,17 @@ const VariantPage: React.FC = () => {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex gap-2 justify-center flex-wrap">
+                      <td className="px-4 py-4">
+                        <div className="flex gap-1 justify-center">
                           {!showDeleted ? (
                             <>
                               <button
-                                className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
+                                className="p-1.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                 onClick={() => handleOpenImageManager(v)}
                                 title="Quản lý ảnh"
                               >
                                 <svg
-                                  className="w-3.5 h-3.5"
+                                  className="w-4 h-4"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -555,16 +646,15 @@ const VariantPage: React.FC = () => {
                                     d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                   />
                                 </svg>
-                                Ảnh
                               </button>
                               {canUpdate() && (
                                 <button
-                                  className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                                  className="p-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                   onClick={() => handleEdit(v)}
                                   title="Sửa biến thể"
                                 >
                                   <svg
-                                    className="w-3.5 h-3.5"
+                                    className="w-4 h-4"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -576,15 +666,14 @@ const VariantPage: React.FC = () => {
                                       d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                     />
                                   </svg>
-                                  Sửa
                                 </button>
                               )}
                               {canToggleStatus() && (
                                 <button
-                                  className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors flex items-center gap-1.5 ${
+                                  className={`p-1.5 rounded-lg border transition-colors ${
                                     v.isActive
-                                      ? "bg-mono-100 hover:bg-mono-100 text-mono-700 border-mono-200"
-                                      : "bg-mono-50 hover:bg-mono-200 text-mono-900 border-mono-200"
+                                      ? "bg-mono-100 hover:bg-mono-200 text-mono-700 border-mono-200"
+                                      : "bg-mono-50 hover:bg-mono-100 text-mono-600 border-mono-200"
                                   }`}
                                   onClick={async () => {
                                     await adminVariantService.updateStatus(
@@ -598,7 +687,7 @@ const VariantPage: React.FC = () => {
                                   }
                                 >
                                   <svg
-                                    className="w-3.5 h-3.5"
+                                    className="w-4 h-4"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -607,20 +696,23 @@ const VariantPage: React.FC = () => {
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       strokeWidth={2}
-                                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                                      d={
+                                        v.isActive
+                                          ? "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                                          : "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                                      }
                                     />
                                   </svg>
-                                  {v.isActive ? "Tắt" : "Bật"}
                                 </button>
                               )}
                               {canDelete() && !v.deletedAt && (
                                 <button
-                                  className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
+                                  className="p-1.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                   onClick={() => handleDelete(v._id)}
                                   title="Xóa biến thể"
                                 >
                                   <svg
-                                    className="w-3.5 h-3.5"
+                                    className="w-4 h-4"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -632,19 +724,18 @@ const VariantPage: React.FC = () => {
                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                     />
                                   </svg>
-                                  Xóa
                                 </button>
                               )}
                             </>
                           ) : (
                             hasAdminOnlyAccess() && (
                               <button
-                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-200 text-mono-900 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                                className="p-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                 onClick={() => handleRestore(v._id)}
                                 title="Khôi phục biến thể"
                               >
                                 <svg
-                                  className="w-3.5 h-3.5"
+                                  className="w-4 h-4"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -656,7 +747,6 @@ const VariantPage: React.FC = () => {
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                                   />
                                 </svg>
-                                Khôi phục
                               </button>
                             )
                           )}
@@ -716,8 +806,7 @@ const VariantPage: React.FC = () => {
                       }
                       disabled={currentPage === 1}
                       className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-mono-300 bg-white text-sm font-medium text-mono-500 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                    </button>
+                    ></button>
                     {[...Array(totalPages)].map((_, idx) => {
                       const page = idx + 1;
                       if (
@@ -759,8 +848,7 @@ const VariantPage: React.FC = () => {
                       }
                       disabled={currentPage === totalPages}
                       className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-mono-300 bg-white text-sm font-medium text-mono-500 hover:bg-mono-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                    </button>
+                    ></button>
                   </nav>
                 </div>
               </div>
@@ -783,7 +871,9 @@ const VariantPage: React.FC = () => {
               images={variantImages}
               reloadImages={async () => {
                 // Gọi lại API lấy variant theo id
-                const res = await adminVariantService.getVariantById(showImageManager);
+                const res = await adminVariantService.getVariantById(
+                  showImageManager
+                );
                 // Handle response structure
                 const resData = res.data as unknown as {
                   variant?: Variant;
@@ -804,6 +894,3 @@ const VariantPage: React.FC = () => {
 };
 
 export default VariantPage;
-
-
-

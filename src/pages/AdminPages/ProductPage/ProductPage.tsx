@@ -568,11 +568,19 @@ const ProductPage = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-sm font-medium text-mono-900">
-                          {priceRange?.min === priceRange?.max
-                            ? `${(priceRange?.min || 0).toLocaleString()}d`
-                            : `${(priceRange?.min || 0).toLocaleString()}d - ${(
-                                priceRange?.max || 0
-                              ).toLocaleString()}d`}
+                          {priceRange?.min && priceRange?.min > 0 ? (
+                            priceRange?.min === priceRange?.max ? (
+                              `${priceRange.min.toLocaleString("vi-VN")}₫`
+                            ) : (
+                              `${priceRange.min.toLocaleString(
+                                "vi-VN"
+                              )}₫ - ${priceRange.max.toLocaleString("vi-VN")}₫`
+                            )
+                          ) : (
+                            <span className="text-mono-400 italic">
+                              Chưa có giá
+                            </span>
+                          )}
                         </div>
                       </td>
                       <td
@@ -641,17 +649,17 @@ const ProductPage = () => {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex gap-2 justify-center flex-wrap">
+                      <td className="px-4 py-4">
+                        <div className="flex gap-1 justify-center">
                           {!showDeleted ? (
                             <>
                               <button
-                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                                className="p-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                 onClick={() => openModal("detail", product)}
                                 title="Xem chi tiết"
                               >
                                 <svg
-                                  className="w-3.5 h-3.5"
+                                  className="w-4 h-4"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -669,17 +677,16 @@ const ProductPage = () => {
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                                   />
                                 </svg>
-                                Chi tiết
                               </button>
                               {canUpdate() && (
                                 <>
                                   <button
-                                    className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                                    className="p-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                     onClick={() => openModal("edit", product)}
                                     title="Sửa sản phẩm"
                                   >
                                     <svg
-                                      className="w-3.5 h-3.5"
+                                      className="w-4 h-4"
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -691,15 +698,14 @@ const ProductPage = () => {
                                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                                       />
                                     </svg>
-                                    Sửa
                                   </button>
                                   <button
-                                    className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                                    className="p-1.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                     onClick={() => openModal("images", product)}
                                     title="Quản lý ảnh sản phẩm"
                                   >
                                     <svg
-                                      className="w-3.5 h-3.5"
+                                      className="w-4 h-4"
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -711,18 +717,17 @@ const ProductPage = () => {
                                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                                       />
                                     </svg>
-                                    Ảnh
                                   </button>
                                 </>
                               )}
                               {canDelete() && (
                                 <button
-                                  className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
+                                  className="p-1.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                   onClick={() => openModal("delete", product)}
                                   title="Xóa sản phẩm"
                                 >
                                   <svg
-                                    className="w-3.5 h-3.5"
+                                    className="w-4 h-4"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -734,19 +739,18 @@ const ProductPage = () => {
                                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                     />
                                   </svg>
-                                  Xóa
                                 </button>
                               )}
                             </>
                           ) : (
                             hasAdminOnlyAccess() && (
                               <button
-                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
+                                className="p-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 rounded-lg border border-mono-200 transition-colors"
                                 onClick={() => handleRestore(product._id)}
                                 title="Khôi phục sản phẩm"
                               >
                                 <svg
-                                  className="w-3.5 h-3.5"
+                                  className="w-4 h-4"
                                   fill="none"
                                   stroke="currentColor"
                                   viewBox="0 0 24 24"
@@ -758,7 +762,6 @@ const ProductPage = () => {
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                                   />
                                 </svg>
-                                Khôi phục
                               </button>
                             )
                           )}
