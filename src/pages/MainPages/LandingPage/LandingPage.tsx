@@ -94,11 +94,9 @@ const LandingPage: React.FC = () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const resData = featuredRes.data as any;
           const products = resData.data || resData.products || [];
-          console.log("Featured products raw:", products);
           const flattenedProducts = Array.isArray(products)
             ? products.flat().filter((p: Product) => p && p._id)
             : [];
-          console.log("Featured products flattened:", flattenedProducts.length);
           setFeaturedProducts(flattenedProducts);
         }
 
@@ -106,11 +104,9 @@ const LandingPage: React.FC = () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const resData = bestSellersRes.data as any;
           const products = resData.data || resData.products || [];
-          console.log("Best sellers raw:", products);
           const flattenedProducts = Array.isArray(products)
             ? products.flat().filter((p: Product) => p && p._id)
             : [];
-          console.log("Best sellers flattened:", flattenedProducts.length);
           setBestSellers(flattenedProducts);
         }
 
@@ -118,11 +114,9 @@ const LandingPage: React.FC = () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const resData = newArrivalsRes.data as any;
           const products = resData.data || resData.products || [];
-          console.log("New arrivals raw:", products);
           const flattenedProducts = Array.isArray(products)
             ? products.flat().filter((p: Product) => p && p._id)
             : [];
-          console.log("New arrivals flattened:", flattenedProducts.length);
           setNewArrivals(flattenedProducts);
         }
 
@@ -130,11 +124,9 @@ const LandingPage: React.FC = () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const resData = allProductsRes.data as any;
           const products = resData.data || resData.products || [];
-          console.log("All products raw:", products);
           const flattenedProducts = Array.isArray(products)
             ? products.flat().filter((p: Product) => p && p._id)
             : [];
-          console.log("All products flattened:", flattenedProducts.length);
           setAllProducts(flattenedProducts);
         }
 
@@ -142,7 +134,6 @@ const LandingPage: React.FC = () => {
         if (couponsRes.data.success) {
           // Dữ liệu coupons nằm ở level root của response, không phải trong data
           const coupons = couponsRes.data.coupons || [];
-          console.log("Public coupons:", coupons);
           setPublicCoupons(coupons);
         }
 
@@ -155,8 +146,6 @@ const LandingPage: React.FC = () => {
             data?: Banner[];
           };
           const bannerData = response.banners || response.data || [];
-          console.log("Banners response:", bannersRes.data);
-          console.log("Banner data:", bannerData);
           setBanners(bannerData);
         }
       } catch (error) {
@@ -219,7 +208,6 @@ const LandingPage: React.FC = () => {
               .filter((p: Product | undefined): p is Product => !!p && !!p._id);
           }
 
-          console.log("Recommendations products:", products);
           setRecommendedProducts(products);
         }
       } catch (error) {
