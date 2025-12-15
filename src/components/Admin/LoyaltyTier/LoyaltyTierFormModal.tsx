@@ -24,8 +24,8 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
     minSpending: tier?.minSpending || 0,
     maxSpending: tier?.maxSpending,
     benefits: {
-      pointsMultiplier: tier?.benefits.pointsMultiplier || 1,
-      prioritySupport: tier?.benefits.prioritySupport || false,
+      pointsMultiplier: tier?.benefits?.pointsMultiplier || 1,
+      prioritySupport: tier?.benefits?.prioritySupport || false,
     },
     displayOrder: tier?.displayOrder || 0,
   });
@@ -42,6 +42,14 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
     if (formData.minSpending < 0) {
       toast.error("Doanh số tối thiểu không được âm");
       return;
+    }
+
+    // Validate maxSpending > minSpending nếu có maxSpending
+    if (formData.maxSpending !== undefined && formData.maxSpending !== null) {
+      if (formData.maxSpending <= formData.minSpending) {
+        toast.error("Doanh số tối đa phải lớn hơn doanh số tối thiểu");
+        return;
+      }
     }
 
     if (
@@ -131,9 +139,14 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
                     })
                   }
                   min="0"
+                  step="100000"
+                  placeholder="VD: 0, 1000000, 5000000..."
                   className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
                   required
                 />
+                <p className="text-xs text-mono-500 mt-1">
+                  Tổng tiền mua hàng tối thiểu trong 12 tháng
+                </p>
               </div>
 
               <div>
@@ -152,9 +165,13 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
                     })
                   }
                   min="0"
-                  placeholder="Không giới hạn"
+                  step="100000"
+                  placeholder="Để trống = Không giới hạn"
                   className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
                 />
+                <p className="text-xs text-mono-500 mt-1">
+                  Để trống nếu là hạng cao nhất (không giới hạn)
+                </p>
               </div>
             </div>
 

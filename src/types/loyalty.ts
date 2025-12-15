@@ -153,10 +153,15 @@ export interface LoyaltyTransactionsResponse {
 
 export interface LoyaltyTiersResponse {
   success: boolean;
-  message: string;
-  data: {
-    tiers: LoyaltyTier[];
-  };
+  message?: string;
+  // User API returns { success, tiers }
+  tiers?: LoyaltyTier[];
+  // Admin API returns { success, data, total, ... }
+  data?: LoyaltyTier[] | { tiers: LoyaltyTier[] };
+  total?: number;
+  totalPages?: number;
+  page?: number;
+  limit?: number;
 }
 
 export interface LoyaltyTierDetailResponse {

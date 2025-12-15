@@ -32,8 +32,14 @@ const LoyaltyPage = () => {
         ]);
 
         setLoyaltyInfo(infoRes.data.data);
-        setTransactions(transactionsRes.data.data.transactions);
-        setAllTiers(tiersRes.data.data.tiers);
+        setTransactions(transactionsRes.data.data?.transactions || []);
+        // BE user API trả về { success, data: [...tiers] }
+        // data có thể là array trực tiếp hoặc object { tiers: [...] }
+        const responseData = tiersRes.data.data;
+        const tiersData = Array.isArray(responseData)
+          ? responseData
+          : tiersRes.data.tiers || responseData?.tiers || [];
+        setAllTiers(tiersData);
       } catch (error) {
         console.error("Failed to fetch loyalty data:", error);
       } finally {
@@ -331,13 +337,13 @@ const LoyaltyPage = () => {
                     <div className="flex justify-between">
                       <span className="text-mono-600">Doanh số tối thiểu</span>
                       <span className="font-medium text-mono-black">
-                        {tier.minSpending?.toLocaleString() || 0}đ
+                        {(tier.minSpending || 0).toLocaleString("vi-VN")}đ
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-mono-600">Tích điểm</span>
                       <span className="font-medium text-mono-black">
-                        x{tier.benefits.pointsMultiplier}
+                        x{tier.benefits?.pointsMultiplier || 1}
                       </span>
                     </div>
                   </div>

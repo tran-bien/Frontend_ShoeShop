@@ -26,13 +26,15 @@ const AdminLoyaltyTierPage = () => {
     setLoading(true);
     try {
       const { data } = await adminLoyaltyService.getAllTiers();
-      // BE trả về: { success, data: [...], total, totalPages, ... }
-      // Sort by minPoints ascending
+      // BE admin API trả về: { success, data: [...], total, totalPages, ... }
+      // axios wraps it: { data: { success, data: [...], ... } }
+      // Sort by minSpending ascending
       const tiersArray = Array.isArray(data.data)
         ? data.data
-        : data.data?.tiers || [];
+        : data.data?.tiers || data.tiers || [];
       const sortedTiers = tiersArray.sort(
-        (a: LoyaltyTier, b: LoyaltyTier) => a.minPoints - b.minPoints
+        (a: LoyaltyTier, b: LoyaltyTier) =>
+          (a.minSpending || 0) - (b.minSpending || 0)
       );
       setTiers(sortedTiers);
     } catch (error) {
@@ -114,8 +116,10 @@ const AdminLoyaltyTierPage = () => {
     avgMultiplier:
       tiers.length > 0
         ? (
-            tiers.reduce((sum, t) => sum + t.benefits.pointsMultiplier, 0) /
-            tiers.length
+            tiers.reduce(
+              (sum, t) => sum + (t.benefits?.pointsMultiplier ?? 1),
+              0
+            ) / tiers.length
           ).toFixed(2)
         : "0",
   };
@@ -269,18 +273,23 @@ const AdminLoyaltyTierPage = () => {
                           </div>
                           <div className="flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-2">
-                              <span className="text-mono-500">Từ:</span>
+                              <span className="text-mono-500">
+                                Doanh số từ:
+                              </span>
                               <span className="font-bold text-mono-black">
-                                {tier.minPoints.toLocaleString()} điểm
+                                {(tier.minSpending ?? 0).toLocaleString(
+                                  "vi-VN"
+                                )}
+                                đ
                               </span>
                             </div>
-                            {tier.maxPoints && (
+                            {tier.maxSpending != null && (
                               <>
                                 <span className="text-mono-400">→</span>
                                 <div className="flex items-center gap-2">
                                   <span className="text-mono-500">Đến:</span>
                                   <span className="font-bold text-mono-black">
-                                    {tier.maxPoints.toLocaleString()} điểm
+                                    {tier.maxSpending.toLocaleString("vi-VN")}đ
                                   </span>
                                 </div>
                               </>
@@ -293,7 +302,10 @@ const AdminLoyaltyTierPage = () => {
                                     Lên {nextTier.name}:
                                   </span>
                                   <span className="font-bold text-mono-black">
-                                    {nextTier.minPoints.toLocaleString()} điểm
+                                    {(nextTier.minSpending ?? 0).toLocaleString(
+                                      "vi-VN"
+                                    )}
+                                    đ
                                   </span>
                                 </div>
                               </>

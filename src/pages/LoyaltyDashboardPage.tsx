@@ -55,7 +55,13 @@ const LoyaltyDashboardContent: React.FC = () => {
         setTotalPages(transRes.data.data.pagination?.totalPages || 1);
       }
       if (tiersRes.data.success) {
-        setTiers(tiersRes.data.data?.tiers || []);
+        // BE user API trả về { success, data: [...tiers] }
+        // data có thể là array trực tiếp hoặc object { tiers: [...] }
+        const responseData = tiersRes.data.data;
+        const tiersData = Array.isArray(responseData)
+          ? responseData
+          : tiersRes.data.tiers || responseData?.tiers || [];
+        setTiers(tiersData);
       }
 
       // Fetch redeemable coupons
