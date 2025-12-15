@@ -283,67 +283,9 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
             <label className="block text-sm font-medium text-mono-700 mb-2">
               Ảnh đại diện
             </label>
-            <div className="flex gap-2">
-              <input
-                type="url"
-                value={formData.featuredImage?.url || ""}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    featuredImage: e.target.value
-                      ? {
-                          url: e.target.value,
-                          public_id: "",
-                        }
-                      : undefined,
-                  })
-                }
-                placeholder="https://example.com/image.jpg"
-                className="flex-1 px-4 py-2 border border-mono-200 rounded-lg focus:outline-none focus:border-mono-black"
-              />
-              <input
-                type="file"
-                ref={featuredImageInputRef}
-                accept="image/*"
-                onChange={handleUploadFeaturedImage}
-                className="hidden"
-              />
-              <button
-                type="button"
-                className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors flex items-center gap-2 disabled:opacity-50"
-                onClick={() => featuredImageInputRef.current?.click()}
-                disabled={uploadingImage}
-              >
-                {uploadingImage ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        fill="none"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
-                    Đang tải...
-                  </>
-                ) : (
-                  <>
-                    <ArrowUpTrayIcon className="w-5 h-5" />
-                    Upload
-                  </>
-                )}
-              </button>
-            </div>
-            {formData.featuredImage?.url && (
-              <div className="mt-2 relative">
+            {/* Image preview / upload area (upload-only, no URL input) */}
+            {formData.featuredImage?.url ? (
+              <div className="relative">
                 <img
                   src={formData.featuredImage.url}
                   alt="Featured preview"
@@ -359,7 +301,56 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                   <XMarkIcon className="w-4 h-4" />
                 </button>
               </div>
+            ) : (
+              <div
+                className="w-full h-48 border-2 border-dashed border-mono-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-mono-500 hover:bg-mono-50 transition-colors"
+                onClick={() => featuredImageInputRef.current?.click()}
+              >
+                {uploadingImage ? (
+                  <>
+                    <svg
+                      className="animate-spin h-8 w-8 text-mono-500 mb-2"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    <span className="text-sm text-mono-500">
+                      Đang tải lên...
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <ArrowUpTrayIcon className="w-8 h-8 text-mono-400 mb-2" />
+                    <span className="text-sm text-mono-500">
+                      Nhấp để tải ảnh đại diện lên
+                    </span>
+                    <span className="text-xs text-mono-400 mt-1">
+                      PNG, JPG tối đa 5MB
+                    </span>
+                  </>
+                )}
+              </div>
             )}
+            <input
+              type="file"
+              ref={featuredImageInputRef}
+              accept="image/*"
+              onChange={handleUploadFeaturedImage}
+              className="hidden"
+            />
           </div>
 
           {/* Tags */}

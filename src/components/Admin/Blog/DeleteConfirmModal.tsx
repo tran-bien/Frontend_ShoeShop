@@ -1,35 +1,28 @@
-import React from "react";
 import {
   ExclamationTriangleIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-interface Props {
+interface DeleteConfirmModalProps {
   open: boolean;
   title?: string;
   message?: string;
   itemName?: string;
   loading?: boolean;
   onClose: () => void;
-  onConfirm: () => Promise<void> | void;
+  onConfirm: () => void;
 }
 
-const DeleteConfirmModal: React.FC<Props> = ({
+const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
   open,
   title = "Xác nhận xóa",
-  message,
+  message = "Bạn có chắc muốn xóa mục này?",
   itemName,
   loading = false,
   onClose,
   onConfirm,
 }) => {
   if (!open) return null;
-
-  const defaultMessage = itemName
-    ? `Bạn có chắc muốn xóa hạng "${itemName}"? Hành động này không thể hoàn tác.`
-    : "Bạn có chắc muốn xóa? Hành động này không thể hoàn tác.";
-
-  const finalMessage = message || defaultMessage;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -51,10 +44,10 @@ const DeleteConfirmModal: React.FC<Props> = ({
         </div>
 
         <div className="p-6">
-          <p className="text-mono-600 mb-2">{finalMessage}</p>
+          <p className="text-mono-600 mb-2">{message}</p>
           {itemName && (
             <p className="text-sm text-mono-500 bg-mono-50 px-3 py-2 rounded-lg">
-              Hạng:{" "}
+              {"Tên: "}
               <span className="font-medium text-mono-700">{itemName}</span>
             </p>
           )}
@@ -74,7 +67,7 @@ const DeleteConfirmModal: React.FC<Props> = ({
           </button>
           <button
             type="button"
-            onClick={() => onConfirm()}
+            onClick={onConfirm}
             disabled={loading}
             className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2"
           >

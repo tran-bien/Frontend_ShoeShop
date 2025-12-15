@@ -14,6 +14,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import BlogPostFormModal from "../../../components/Admin/Blog/BlogPostFormModal";
+import DeleteConfirmModal from "../../../components/Admin/Blog/DeleteConfirmModal";
 import BlogCategoryFormModal from "../../../components/Admin/Blog/BlogCategoryFormModal";
 
 const AdminBlogPage = () => {
@@ -112,17 +113,34 @@ const AdminBlogPage = () => {
     handleFilterChange();
   }, [handleFilterChange]);
 
-  // Delete post
-  const handleDeletePost = async (postId: string) => {
-    if (!window.confirm("Bạn có chắc muốn xóa bài viết này?")) return;
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    post: BlogPost | null;
+    loading: boolean;
+  }>({ open: false, post: null, loading: false });
 
+  const handleDeleteClick = (post: BlogPost) => {
+    setDeleteModal({ open: true, post, loading: false });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.post) return;
+    setDeleteModal((s) => ({ ...s, loading: true }));
     try {
-      await adminBlogService.deletePost(postId);
+      await adminBlogService.deletePost(deleteModal.post._id);
       toast.success("Đã xóa bài viết");
       fetchPosts();
-    } catch {
+      setDeleteModal({ open: false, post: null, loading: false });
+    } catch (error) {
+      console.error(error);
       toast.error("Không thể xóa bài viết");
+      setDeleteModal((s) => ({ ...s, loading: false }));
     }
+  };
+
+  const handleDeleteClose = () => {
+    if (!deleteModal.loading)
+      setDeleteModal({ open: false, post: null, loading: false });
   };
 
   // Delete category
@@ -380,7 +398,7 @@ const AdminBlogPage = () => {
                               )}
                               {canDelete() && (
                                 <button
-                                  onClick={() => handleDeletePost(post._id)}
+                                  onClick={() => handleDeleteClick(post)}
                                   className="p-2 text-mono-700 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors"
                                   title="Xóa"
                                 >
@@ -529,6 +547,16 @@ const AdminBlogPage = () => {
           />
         )}
 
+        <DeleteConfirmModal
+          open={deleteModal.open}
+          title="Xác nhận xóa bài viết"
+          message="Bạn có chắc muốn xóa bài viết này?"
+          itemName={deleteModal.post?.title}
+          loading={deleteModal.loading}
+          onClose={handleDeleteClose}
+          onConfirm={handleDeleteConfirm}
+        />
+
         {showCategoryModal && (
           <BlogCategoryFormModal
             category={editingCategory}
@@ -549,4 +577,3 @@ const AdminBlogPage = () => {
 };
 
 export default AdminBlogPage;
-

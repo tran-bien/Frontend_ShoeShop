@@ -10,6 +10,7 @@ import {
 import toast from "react-hot-toast";
 import { adminBlogService } from "../../../services/BlogService";
 import BlogPostFormModal from "../../../components/Admin/Blog/BlogPostFormModal";
+import DeleteConfirmModal from "../../../components/Admin/Blog/DeleteConfirmModal";
 import type {
   BlogPost,
   BlogPostStatus,
@@ -28,6 +29,11 @@ const BlogManagement: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [deleteState, setDeleteState] = useState<{
+    open: boolean;
+    post: BlogPost | null;
+    loading: boolean;
+  }>({ open: false, post: null, loading: false });
 
   useEffect(() => {
     fetchPosts();
@@ -85,17 +91,28 @@ const BlogManagement: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Bạn có chắc muốn xóa bài viết này?")) return;
+  const handleDeleteClick = (post: BlogPost) => {
+    setDeleteState({ open: true, post, loading: false });
+  };
 
+  const handleDeleteConfirm = async () => {
+    if (!deleteState.post) return;
+    setDeleteState((s) => ({ ...s, loading: true }));
     try {
-      await adminBlogService.deletePost(id);
+      await adminBlogService.deletePost(deleteState.post._id);
       toast.success("Xóa bài viết thành công");
       fetchPosts();
+      setDeleteState({ open: false, post: null, loading: false });
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Không thể xóa bài viết");
+      setDeleteState((s) => ({ ...s, loading: false }));
     }
+  };
+
+  const handleDeleteClose = () => {
+    if (!deleteState.loading)
+      setDeleteState({ open: false, post: null, loading: false });
   };
 
   const handleSearch = () => {
@@ -279,7 +296,7 @@ const BlogManagement: React.FC = () => {
                     <span className="text-sm">Sửa</span>
                   </button>
                   <button
-                    onClick={() => handleDelete(post._id)}
+                    onClick={() => handleDeleteClick(post)}
                     className="flex-1 flex items-center justify-center gap-2 py-3 hover:bg-gray-50 transition-colors text-mono-700"
                   >
                     <FiTrash2 className="w-4 h-4" />
@@ -333,6 +350,15 @@ const BlogManagement: React.FC = () => {
           }}
         />
       )}
+      <DeleteConfirmModal
+        open={deleteState.open}
+        title="Xác nhận xóa bài viết"
+        message="Bạn có chắc muốn xóa bài viết này?"
+        itemName={deleteState.post?.title}
+        loading={deleteState.loading}
+        onClose={handleDeleteClose}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 };
