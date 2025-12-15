@@ -11,6 +11,7 @@ import {
   PhotoIcon,
 } from "@heroicons/react/24/outline";
 import SizeGuideFormModal from "../../../components/Admin/SizeGuide/SizeGuideFormModal";
+import DeleteConfirmModal from "../../../components/Admin/SizeGuide/DeleteConfirmModal";
 
 const AdminSizeGuidePage = () => {
   const { canCreate, canUpdate, canDelete } = useAuth();
@@ -22,6 +23,15 @@ const AdminSizeGuidePage = () => {
   const [editingSizeGuide, setEditingSizeGuide] =
     useState<LegacySizeGuide | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    sizeGuide: LegacySizeGuide | null;
+    loading: boolean;
+  }>({
+    open: false,
+    sizeGuide: null,
+    loading: false,
+  });
 
   // Fetch size guides
   const fetchSizeGuides = useCallback(async () => {
@@ -58,16 +68,29 @@ const AdminSizeGuidePage = () => {
   }, [searchQuery, sizeGuides]);
 
   // Delete size guide
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Bạn có chắc muốn xóa hướng dẫn size này?")) return;
+  const handleDeleteClick = (guide: LegacySizeGuide) => {
+    setDeleteModal({ open: true, sizeGuide: guide, loading: false });
+  };
 
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.sizeGuide) return;
+
+    setDeleteModal((prev) => ({ ...prev, loading: true }));
     try {
-      await adminSizeGuideService.deleteSizeGuide(id);
+      await adminSizeGuideService.deleteSizeGuide(deleteModal.sizeGuide._id);
       toast.success("Đã xóa hướng dẫn size");
       fetchSizeGuides();
+      setDeleteModal({ open: false, sizeGuide: null, loading: false });
     } catch (error) {
       console.error("Failed to delete size guide:", error);
       toast.error("Không thể xóa hướng dẫn size");
+      setDeleteModal((prev) => ({ ...prev, loading: false }));
+    }
+  };
+
+  const handleDeleteClose = () => {
+    if (!deleteModal.loading) {
+      setDeleteModal({ open: false, sizeGuide: null, loading: false });
     }
   };
 
@@ -252,7 +275,7 @@ const AdminSizeGuidePage = () => {
                     )}
                     {canDelete() && (
                       <button
-                        onClick={() => handleDelete(guide._id)}
+                        onClick={() => handleDeleteClick(guide)}
                         className="p-2 text-mono-700 hover:text-mono-800 hover:bg-mono-100 rounded-lg transition-colors"
                         title="Xóa"
                       >
@@ -343,13 +366,20 @@ const AdminSizeGuidePage = () => {
             }}
           />
         )}
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmModal
+          open={deleteModal.open}
+          title="Xác nhận xóa"
+          message="Bạn có chắc muốn xóa hướng dẫn size này?"
+          productName={deleteModal.sizeGuide?.product?.name}
+          loading={deleteModal.loading}
+          onClose={handleDeleteClose}
+          onConfirm={handleDeleteConfirm}
+        />
       </div>
     </div>
   );
 };
 
 export default AdminSizeGuidePage;
-
-
-
-

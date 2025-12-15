@@ -98,7 +98,7 @@ export interface SizeGuideQueryParams {
 // =======================
 
 export interface CreateSizeGuideData {
-  product: string;
+  productId: string;
   sizeChart: {
     image?: {
       url: string;
