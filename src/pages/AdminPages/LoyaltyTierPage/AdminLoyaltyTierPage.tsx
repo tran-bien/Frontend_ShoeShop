@@ -1,9 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { adminLoyaltyService } from "../../../services/LoyaltyService";
-import type { LoyaltyTier } from "../../../types/loyalty";
+import type {
+  LoyaltyTier,
+  CreateLoyaltyTierData,
+} from "../../../types/loyalty";
 import { useAuth } from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 import LoyaltyTierFormModal from "../../../components/Admin/LoyaltyTier/LoyaltyTierFormModal";
+import DeleteConfirmModal from "../../../components/Admin/LoyaltyTier/DeleteConfirmModal";
 import {
   PencilIcon,
   TrashIcon,
@@ -20,6 +24,14 @@ const AdminLoyaltyTierPage = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingTier, setEditingTier] = useState<LoyaltyTier | null>(null);
+  const [initialTierValues, setInitialTierValues] =
+    useState<Partial<CreateLoyaltyTierData> | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deletingTier, setDeletingTier] = useState<{
+    id: string;
+    name?: string;
+  } | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   // Fetch tiers
   const fetchTiers = useCallback(async () => {
@@ -49,17 +61,26 @@ const AdminLoyaltyTierPage = () => {
     fetchTiers();
   }, [fetchTiers]);
 
-  // Delete tier
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Bạn có chắc muốn xóa hạng thành viên này?")) return;
+  // Delete tier (open modal)
+  const handleDelete = (id: string, name?: string) => {
+    setDeletingTier({ id, name });
+    setDeleteModalOpen(true);
+  };
 
+  const confirmDelete = async () => {
+    if (!deletingTier) return;
+    setDeleting(true);
     try {
-      await adminLoyaltyService.deleteTier(id);
+      await adminLoyaltyService.deleteTier(deletingTier.id);
       toast.success("Đã xóa hạng thành viên");
+      setDeleteModalOpen(false);
+      setDeletingTier(null);
       fetchTiers();
     } catch (error) {
       console.error("Failed to delete tier:", error);
       toast.error("Không thể xóa hạng thành viên");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -109,20 +130,7 @@ const AdminLoyaltyTierPage = () => {
     return colors.silver;
   };
 
-  // Stats
-  const stats = {
-    totalTiers: tiers.length,
-    activeTiers: tiers.filter((t) => t.isActive).length,
-    avgMultiplier:
-      tiers.length > 0
-        ? (
-            tiers.reduce(
-              (sum, t) => sum + (t.benefits?.pointsMultiplier ?? 1),
-              0
-            ) / tiers.length
-          ).toFixed(2)
-        : "0",
-  };
+  // (stats cards removed)
 
   return (
     <div className="min-h-screen bg-mono-50 p-6">
@@ -138,74 +146,29 @@ const AdminLoyaltyTierPage = () => {
           </p>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-white border border-mono-200 rounded-xl p-6 hover:shadow-medium transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-mono-600 uppercase tracking-wider mb-1">
-                  Tổng số hạng
-                </p>
-                <p className="text-3xl font-bold text-mono-black">
-                  {stats.totalTiers}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-mono-100 rounded-xl flex items-center justify-center">
-                <TrophyIcon className="w-6 h-6 text-mono-700" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white border border-mono-200 rounded-xl p-6 hover:shadow-medium transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-mono-600 uppercase tracking-wider mb-1">
-                  Đang hoạt động
-                </p>
-                <p className="text-3xl font-bold text-mono-black">
-                  {stats.activeTiers}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-mono-100 rounded-xl flex items-center justify-center">
-                <SparklesIcon className="w-6 h-6 text-mono-800" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white border border-mono-200 rounded-xl p-6 hover:shadow-medium transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-mono-600 uppercase tracking-wider mb-1">
-                  Trung bình Multiplier
-                </p>
-                <p className="text-3xl font-bold text-mono-black">
-                  x{stats.avgMultiplier}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-mono-300 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-mono-900"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Actions */}
         <div className="flex justify-end mb-6">
           {canCreate() && (
             <button
               onClick={() => {
+                // Compute sensible defaults based on current tiers
+                const prev = tiers.length > 0 ? tiers[tiers.length - 1] : null;
+                let minSpending = 0;
+                let displayOrder = 0;
+                if (prev) {
+                  if (prev.maxSpending != null) {
+                    minSpending = prev.maxSpending + 1;
+                  } else {
+                    // If previous tier has no max (it's top), pick a sensible step
+                    minSpending = (prev.minSpending ?? 0) + 1000000;
+                  }
+                  displayOrder = (prev.displayOrder ?? 0) + 1;
+                }
+                setInitialTierValues({
+                  minSpending,
+                  displayOrder,
+                  benefits: { pointsMultiplier: 1, prioritySupport: false },
+                });
                 setEditingTier(null);
                 setShowModal(true);
               }}
@@ -330,7 +293,7 @@ const AdminLoyaltyTierPage = () => {
                         )}
                         {canDelete() && (
                           <button
-                            onClick={() => handleDelete(tier._id)}
+                            onClick={() => handleDelete(tier._id, tier.name)}
                             className="p-2 text-mono-700 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors"
                             title="Xóa"
                           >
@@ -467,16 +430,34 @@ const AdminLoyaltyTierPage = () => {
         </div>
 
         {/* Modal */}
+        {deleteModalOpen && (
+          <DeleteConfirmModal
+            open={deleteModalOpen}
+            title="Xóa hạng thành viên"
+            message={`Bạn có chắc muốn xóa hạng "${
+              deletingTier?.name || ""
+            }"? Hành động này không thể hoàn tác.`}
+            onClose={() => {
+              setDeleteModalOpen(false);
+              setDeletingTier(null);
+            }}
+            onConfirm={confirmDelete}
+            loading={deleting}
+          />
+        )}
         {showModal && (
           <LoyaltyTierFormModal
             tier={editingTier}
+            initialValues={initialTierValues}
             onClose={() => {
               setShowModal(false);
               setEditingTier(null);
+              setInitialTierValues(null);
             }}
             onSuccess={() => {
               setShowModal(false);
               setEditingTier(null);
+              setInitialTierValues(null);
               fetchTiers();
             }}
           />

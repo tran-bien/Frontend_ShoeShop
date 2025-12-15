@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { adminLoyaltyService } from "../../../services/LoyaltyService";
 import type {
   LoyaltyTier,
@@ -11,24 +11,51 @@ interface LoyaltyTierFormModalProps {
   tier: LoyaltyTier | null;
   onClose: () => void;
   onSuccess: () => void;
+  initialValues?: Partial<CreateLoyaltyTierData> | null;
 }
 
 const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
   tier,
   onClose,
   onSuccess,
+  initialValues = null,
 }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<CreateLoyaltyTierData>({
-    name: tier?.name || "",
-    minSpending: tier?.minSpending || 0,
-    maxSpending: tier?.maxSpending,
+    name: tier?.name ?? initialValues?.name ?? "",
+    minSpending: tier?.minSpending ?? initialValues?.minSpending ?? 0,
+    maxSpending: tier?.maxSpending ?? initialValues?.maxSpending,
     benefits: {
-      pointsMultiplier: tier?.benefits?.pointsMultiplier || 1,
-      prioritySupport: tier?.benefits?.prioritySupport || false,
+      pointsMultiplier:
+        tier?.benefits?.pointsMultiplier ??
+        initialValues?.benefits?.pointsMultiplier ??
+        1,
+      prioritySupport:
+        tier?.benefits?.prioritySupport ??
+        initialValues?.benefits?.prioritySupport ??
+        false,
     },
-    displayOrder: tier?.displayOrder || 0,
+    displayOrder: tier?.displayOrder ?? initialValues?.displayOrder ?? 0,
   });
+
+  useEffect(() => {
+    setFormData({
+      name: tier?.name ?? initialValues?.name ?? "",
+      minSpending: tier?.minSpending ?? initialValues?.minSpending ?? 0,
+      maxSpending: tier?.maxSpending ?? initialValues?.maxSpending,
+      benefits: {
+        pointsMultiplier:
+          tier?.benefits?.pointsMultiplier ??
+          initialValues?.benefits?.pointsMultiplier ??
+          1,
+        prioritySupport:
+          tier?.benefits?.prioritySupport ??
+          initialValues?.benefits?.prioritySupport ??
+          false,
+      },
+      displayOrder: tier?.displayOrder ?? initialValues?.displayOrder ?? 0,
+    });
+  }, [tier, initialValues]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
