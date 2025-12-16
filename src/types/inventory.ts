@@ -209,6 +209,7 @@ export interface InventoryListParams {
   page?: number;
   limit?: number;
   productId?: string;
+  variantId?: string;
   lowStock?: boolean;
   outOfStock?: boolean;
   sortBy?: string;

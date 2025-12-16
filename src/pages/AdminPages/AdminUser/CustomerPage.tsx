@@ -205,7 +205,7 @@ const ListCustomerPage: React.FC = () => {
     setLoadingUserId(selectedUser._id);
     try {
       await adminUserService.changeUserRole(selectedUser._id, {
-        role: newRole as "user" | "staff" | "admin",
+        role: newRole as "user" | "staff" | "shipper",
       });
       toast.success(`Đã chuyển role thành ${newRole}`);
       setShowRoleModal(false);
@@ -570,7 +570,6 @@ const ListCustomerPage: React.FC = () => {
                 <option value="user">Khách hàng (User)</option>
                 <option value="staff">Nhân viên (Staff)</option>
                 <option value="shipper">Giao hàng (Shipper)</option>
-                <option value="admin">Quản trị viên (Admin)</option>
               </select>
               <p className="text-xs text-mono-500 mt-2">
                 ⚠️ Thay đổi role sẽ ảnh hưởng đến quyền truy cập của người dùng

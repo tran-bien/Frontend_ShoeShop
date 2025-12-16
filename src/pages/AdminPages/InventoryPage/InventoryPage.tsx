@@ -5,16 +5,30 @@ import {
   FaChartLine,
   FaExclamationTriangle,
   FaDollarSign,
+  FaTimes,
 } from "react-icons/fa";
 import InventoryService, {
   InventoryStats,
 } from "../../../services/InventoryService";
+import { productAdminService } from "../../../services/ProductService";
 import type { InventoryItem } from "../../../types/inventory";
+import type { Product } from "../../../types/product";
 import StockInModal from "../../../components/Admin/Inventory/StockInModal";
 import StockOutModal from "../../../components/Admin/Inventory/StockOutModal";
 import AdjustStockModal from "../../../components/Admin/Inventory/AdjustStockModal";
 import TransactionHistoryModal from "../../../components/Admin/Inventory/TransactionHistoryModal";
 import InventoryDetailModal from "../../../components/Admin/Inventory/InventoryDetailModal";
+
+// Interface cho variant đã populate
+interface PopulatedVariant {
+  _id: string;
+  color?: {
+    _id: string;
+    name: string;
+    hexCode?: string;
+  };
+  imagesvariant?: { url: string }[];
+}
 
 const InventoryPage = () => {
   const [inventoryList, setInventoryList] = useState<InventoryItem[]>([]);
@@ -26,7 +40,28 @@ const InventoryPage = () => {
     lowStock: false,
     outOfStock: false,
     productId: "",
+    variantId: "",
   });
+
+  // Product selection state
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Product list from inventory (for dropdown)
+  const [inventoryProducts, setInventoryProducts] = useState<
+    { _id: string; name: string }[]
+  >([]);
+
+  // Variant selection state
+  const [variants, setVariants] = useState<PopulatedVariant[]>([]);
+  const [selectedVariant, setSelectedVariant] =
+    useState<PopulatedVariant | null>(null);
+
+  // Summary state
+  const [productSummary, setProductSummary] = useState<{
+    totalQuantity: number;
+    totalValue: number;
+    variantCount: number;
+  } | null>(null);
 
   // Modals
   const [showStockInModal, setShowStockInModal] = useState(false);
@@ -45,6 +80,7 @@ const InventoryPage = () => {
         lowStock: filter.lowStock || undefined,
         outOfStock: filter.outOfStock || undefined,
         productId: filter.productId || undefined,
+        variantId: filter.variantId || undefined,
       });
 
       const response = await InventoryService.getInventoryList({
@@ -53,6 +89,7 @@ const InventoryPage = () => {
         lowStock: filter.lowStock || undefined,
         outOfStock: filter.outOfStock || undefined,
         productId: filter.productId || undefined,
+        variantId: filter.variantId || undefined,
       });
 
       console.log("Inventory response:", response);
@@ -70,13 +107,50 @@ const InventoryPage = () => {
 
       setInventoryList(items);
       setTotalPages(pages);
+
+      // Calculate summary if filtering by product
+      if (filter.productId && items.length > 0) {
+        const totalQuantity = items.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+        const totalValue = items.reduce(
+          (sum, item) => sum + item.quantity * item.averageCostPrice,
+          0
+        );
+        const variantIds = new Set(items.map((item) => item.variant?._id));
+        setProductSummary({
+          totalQuantity,
+          totalValue,
+          variantCount: variantIds.size,
+        });
+      } else {
+        setProductSummary(null);
+      }
     } catch (error) {
       console.error("Error fetching inventory:", error);
       setInventoryList([]);
       setTotalPages(1);
+      setProductSummary(null);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle variant selection
+  const handleSelectVariant = (variant: PopulatedVariant | null) => {
+    setSelectedVariant(variant);
+    setFilter({ ...filter, variantId: variant?._id || "" });
+    setCurrentPage(1);
+  };
+
+  // Clear product filter
+  const handleClearProductFilter = () => {
+    setSelectedProduct(null);
+    setSelectedVariant(null);
+    setVariants([]);
+    setFilter({ ...filter, productId: "", variantId: "" });
+    setCurrentPage(1);
   };
 
   const fetchStats = async () => {
@@ -90,12 +164,84 @@ const InventoryPage = () => {
     }
   };
 
+  // Fetch unique products from inventory for dropdown
+  const fetchInventoryProducts = async () => {
+    try {
+      // Get all inventory items to extract unique products
+      const response = await InventoryService.getInventoryList({
+        page: 1,
+        limit: 100, // Get all to extract unique products
+      });
+
+      const responseData = response.data.data as unknown as {
+        items: InventoryItem[];
+      };
+      const items = responseData?.items || [];
+
+      // Extract unique products
+      const uniqueProducts = new Map<string, { _id: string; name: string }>();
+      items.forEach((item) => {
+        if (item.product?._id && item.product?.name) {
+          uniqueProducts.set(item.product._id, {
+            _id: item.product._id,
+            name: item.product.name,
+          });
+        }
+      });
+
+      setInventoryProducts(Array.from(uniqueProducts.values()));
+    } catch (error) {
+      console.error("Error fetching inventory products:", error);
+      setInventoryProducts([]);
+    }
+  };
+
+  // Handle product selection from dropdown
+  const handleSelectProductFromDropdown = async (productId: string) => {
+    if (!productId) {
+      handleClearProductFilter();
+      return;
+    }
+
+    // Find product info from inventoryProducts or fetch it
+    const productInfo = inventoryProducts.find((p) => p._id === productId);
+    if (productInfo) {
+      // Create a minimal product object for display
+      const product = {
+        _id: productInfo._id,
+        name: productInfo.name,
+      } as Product;
+
+      setSelectedProduct(product);
+      setFilter({ ...filter, productId: productInfo._id, variantId: "" });
+      setSelectedVariant(null);
+      setCurrentPage(1);
+
+      // Fetch variants for this product
+      try {
+        const response = await productAdminService.getProductById(productId);
+        const fullProduct = response.data.data as Product;
+        if (fullProduct?.variants) {
+          setVariants(fullProduct.variants as unknown as PopulatedVariant[]);
+        }
+      } catch (error) {
+        console.error("Error fetching variants:", error);
+        setVariants([]);
+      }
+    }
+  };
+
   // Fetch data on mount and when filters change
   useEffect(() => {
     fetchInventory();
     fetchStats();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, filter]);
+
+  // Fetch inventory products on mount
+  useEffect(() => {
+    fetchInventoryProducts();
+  }, []);
 
   const handleStockIn = () => {
     setShowStockInModal(true);
@@ -198,32 +344,133 @@ const InventoryPage = () => {
 
       {/* Filters */}
       <div className="bg-white p-4 rounded-lg shadow mb-6">
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={filter.lowStock}
-              onChange={(e) =>
-                setFilter({ ...filter, lowStock: e.target.checked })
-              }
-              className="w-4 h-4"
-            />
-            <span className="text-sm text-mono-700">Tên kho thấp</span>
-          </label>
+        <div className="flex flex-col gap-4">
+          {/* Row 1: Product and Variant filters */}
+          <div className="flex flex-wrap gap-4 items-end">
+            {/* Product Dropdown - Select from inventory products */}
+            <div className="min-w-[300px] flex-1 max-w-[400px]">
+              <label className="block text-sm font-medium text-mono-700 mb-1">
+                Lọc theo sản phẩm
+              </label>
+              <select
+                value={filter.productId}
+                onChange={(e) =>
+                  handleSelectProductFromDropdown(e.target.value)
+                }
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 bg-white"
+              >
+                <option value="">-- Tất cả sản phẩm --</option>
+                {inventoryProducts.map((product) => (
+                  <option key={product._id} value={product._id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={filter.outOfStock}
-              onChange={(e) =>
-                setFilter({ ...filter, outOfStock: e.target.checked })
-              }
-              className="w-4 h-4"
-            />
-            <span className="text-sm text-mono-700">Hết hàng</span>
-          </label>
+            {/* Variant Dropdown - only show when product is selected */}
+            {selectedProduct && variants.length > 0 && (
+              <div className="min-w-[200px]">
+                <label className="block text-sm font-medium text-mono-700 mb-1">
+                  Lọc theo biến thể
+                </label>
+                <select
+                  value={selectedVariant?._id || ""}
+                  onChange={(e) => {
+                    const variant = variants.find(
+                      (v) => v._id === e.target.value
+                    );
+                    handleSelectVariant(variant || null);
+                  }}
+                  className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
+                >
+                  <option value="">Tất cả biến thể</option>
+                  {variants.map((variant) => (
+                    <option key={variant._id} value={variant._id}>
+                      {variant.color?.name || "Không xác định"}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Clear filter button */}
+            {selectedProduct && (
+              <button
+                onClick={handleClearProductFilter}
+                className="px-3 py-2 text-sm text-mono-600 hover:text-mono-800 hover:bg-mono-100 rounded-lg border border-mono-300 flex items-center gap-1"
+                title="Xóa bộ lọc"
+              >
+                <FaTimes size={12} />
+                Xóa lọc
+              </button>
+            )}
+          </div>
+
+          {/* Row 2: Stock status filters */}
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={filter.lowStock}
+                onChange={(e) =>
+                  setFilter({ ...filter, lowStock: e.target.checked })
+                }
+                className="w-4 h-4"
+              />
+              <span className="text-sm text-mono-700">Tồn kho thấp</span>
+            </label>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={filter.outOfStock}
+                onChange={(e) =>
+                  setFilter({ ...filter, outOfStock: e.target.checked })
+                }
+                className="w-4 h-4"
+              />
+              <span className="text-sm text-mono-700">Hết hàng</span>
+            </label>
+          </div>
         </div>
       </div>
+
+      {/* Product Summary - show when filtering by product */}
+      {selectedProduct && productSummary && (
+        <div className="bg-gradient-to-r from-mono-100 to-mono-50 p-4 rounded-lg shadow mb-6 border border-mono-200">
+          <h3 className="text-lg font-semibold text-mono-800 mb-3">
+            📦 Tổng quan tồn kho: {selectedProduct.name}
+            {selectedVariant && (
+              <span className="text-mono-600 font-normal ml-2">
+                - Màu: {selectedVariant.color?.name}
+              </span>
+            )}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white p-3 rounded-lg shadow-sm">
+              <p className="text-sm text-mono-500">Tổng số lượng tồn</p>
+              <p className="text-2xl font-bold text-mono-800">
+                {productSummary.totalQuantity.toLocaleString("vi-VN")}
+              </p>
+            </div>
+            <div className="bg-white p-3 rounded-lg shadow-sm">
+              <p className="text-sm text-mono-500">Giá trị tồn kho</p>
+              <p className="text-2xl font-bold text-mono-800">
+                {productSummary.totalValue.toLocaleString("vi-VN")}đ
+              </p>
+            </div>
+            {!selectedVariant && (
+              <div className="bg-white p-3 rounded-lg shadow-sm">
+                <p className="text-sm text-mono-500">Số biến thể có tồn</p>
+                <p className="text-2xl font-bold text-mono-800">
+                  {productSummary.variantCount}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Inventory Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">

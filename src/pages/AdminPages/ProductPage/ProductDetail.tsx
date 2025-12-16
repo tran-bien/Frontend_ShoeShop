@@ -25,8 +25,10 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
     productAdminService
       .getProductById(product._id) // Use admin API method
       .then((res: any) => {
-        // BE trở về: { success: true, data: Product }
-        const productData = (res.data.data || res.data) as Product;
+        // BE trả về: { success: true, product: Product }
+        const productData = (res.data.product ||
+          res.data.data ||
+          res.data) as Product;
         console.log("Product detail loaded:", productData);
         setDetail(productData);
         // Set first image as selected
@@ -426,15 +428,55 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
           {/* Variants Tab */}
           {activeTab === "variants" && (
             <div className="space-y-4">
+              {/* Variant Stats */}
+              {(detail as any).variantStats && (
+                <div className="bg-mono-50 border border-mono-200 rounded-xl p-4 mb-4">
+                  <div className="text-xs text-mono-500 font-medium mb-3">
+                    Thống kê biến thể
+                  </div>
+                  <div className="grid grid-cols-4 gap-3">
+                    <div className="text-center">
+                      <div className="text-xl font-bold text-mono-800">
+                        {(detail as any).variantStats.total}
+                      </div>
+                      <div className="text-xs text-mono-500">Tổng</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xl font-bold text-green-600">
+                        {(detail as any).variantStats.active}
+                      </div>
+                      <div className="text-xs text-mono-500">Đang bán</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xl font-bold text-yellow-600">
+                        {(detail as any).variantStats.inactive}
+                      </div>
+                      <div className="text-xs text-mono-500">Ẩn</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-xl font-bold text-red-600">
+                        {(detail as any).variantStats.deleted}
+                      </div>
+                      <div className="text-xs text-mono-500">Đã xóa</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {detail.variants && detail.variants.length > 0 ? (
                 detail.variants.map((variant) => {
                   // Type guard for Variant object
                   if (typeof variant === "string") return null;
+                  const isDeleted = !!(variant as any).deletedAt;
 
                   return (
                     <div
                       key={variant._id}
-                      className="border border-mono-200 rounded-xl p-5 bg-gradient-to-br from-white to-mono-50 hover:shadow-md transition-shadow"
+                      className={`border rounded-xl p-5 hover:shadow-md transition-shadow ${
+                        isDeleted
+                          ? "border-red-200 bg-red-50/30"
+                          : "border-mono-200 bg-gradient-to-br from-white to-mono-50"
+                      }`}
                     >
                       {/* Variant Header */}
                       <div className="flex items-center justify-between mb-4">
@@ -451,69 +493,140 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                                 ? variant.color.name
                                 : variant.color}
                             </h4>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span
+                                className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  variant.gender === "male"
+                                    ? "bg-blue-100 text-blue-800"
+                                    : variant.gender === "female"
+                                    ? "bg-pink-100 text-pink-800"
+                                    : "bg-mono-200 text-mono-800"
+                                }`}
+                              >
+                                {variant.gender === "male"
+                                  ? "Nam"
+                                  : variant.gender === "female"
+                                  ? "Nữ"
+                                  : "Unisex"}
+                              </span>
+                              {variant.color &&
+                                typeof variant.color !== "string" && (
+                                  <span className="text-xs text-mono-400 font-mono">
+                                    {variant.color.code}
+                                  </span>
+                                )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {isDeleted ? (
+                            <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700">
+                              ✗ Đã xóa
+                            </span>
+                          ) : (
                             <span
-                              className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium mt-1 ${
-                                variant.gender === "Nam"
-                                  ? "bg-mono-100 text-mono-900"
-                                  : variant.gender === "N?"
-                                  ? "bg-mono-200 text-mono-900"
-                                  : "bg-mono-300 text-mono-900"
+                              className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                                variant.isActive
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-mono-100 text-mono-600"
                               }`}
                             >
-                              {variant.gender}
+                              {variant.isActive ? "✓ Đang bán" : "✗ Ẩn"}
                             </span>
-                          </div>
+                          )}
                         </div>
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            variant.isActive
-                              ? "bg-mono-100 text-mono-700"
-                              : "bg-mono-100 text-mono-600"
-                          }`}
-                        >
-                          {variant.isActive ? "✓ Đang bán" : "✗ Ẩn"}
-                        </span>
                       </div>
 
-                      {/* Price Info */}
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                        <div className="bg-white rounded-lg p-3 border border-mono-200">
-                          <div className="text-xs text-mono-500 mb-1">
-                            Giá gốc
+                      {/* Deleted Info */}
+                      {isDeleted && (variant as any).deletedBy && (
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                          <div className="text-xs text-red-600">
+                            <span className="font-medium">Đã xóa bởi:</span>{" "}
+                            {(variant as any).deletedBy?.email ||
+                              (variant as any).deletedByInfo?.email}
                           </div>
-                          <div className="text-sm font-bold text-mono-800">
-                            {(variant as any).price?.toLocaleString() || "N/A"}{" "}
-                            đ
-                          </div>
-                        </div>
-                        <div className="bg-white rounded-lg p-3 border border-mono-200">
-                          <div className="text-xs text-mono-500 mb-1">
-                            Giá bán
-                          </div>
-                          <div className="text-sm font-bold text-mono-black">
-                            {(variant as any).priceFinal?.toLocaleString() ||
-                              "N/A"}{" "}
-                            đ
+                          <div className="text-xs text-red-500">
+                            <span className="font-medium">Thời gian:</span>{" "}
+                            {new Date(
+                              (variant as any).deletedAt
+                            ).toLocaleString("vi-VN")}
                           </div>
                         </div>
-                        <div className="bg-white rounded-lg p-3 border border-mono-300">
-                          <div className="text-xs text-mono-500 mb-1">
-                            Giảm giá
+                      )}
+
+                      {/* Inventory Summary */}
+                      {(variant as any).inventorySummary && (
+                        <div className="bg-mono-50 border border-mono-200 rounded-lg p-3 mb-4">
+                          <div className="text-xs text-mono-500 font-medium mb-2">
+                            Thông tin tồn kho biến thể
                           </div>
-                          <div className="text-sm font-bold text-mono-700">
-                            {(variant as any).percentDiscount || 0}%
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div className="bg-white rounded-lg p-2 border border-mono-200">
+                              <div className="text-xs text-mono-500">
+                                Tồn kho
+                              </div>
+                              <div className="text-lg font-bold text-mono-800">
+                                {(
+                                  variant as any
+                                ).inventorySummary.totalQuantity.toLocaleString()}{" "}
+                                đôi
+                              </div>
+                            </div>
+                            <div className="bg-white rounded-lg p-2 border border-mono-200">
+                              <div className="text-xs text-mono-500">
+                                Giá vốn TB
+                              </div>
+                              <div className="text-lg font-bold text-mono-800">
+                                {(
+                                  variant as any
+                                ).inventorySummary.avgCostPrice?.toLocaleString(
+                                  "vi-VN"
+                                ) || 0}
+                                đ
+                              </div>
+                            </div>
+                            <div className="bg-white rounded-lg p-2 border border-mono-200">
+                              <div className="text-xs text-mono-500">
+                                Giá bán
+                              </div>
+                              <div className="text-lg font-bold text-green-600">
+                                {(
+                                  variant as any
+                                ).inventorySummary.finalPrice?.toLocaleString(
+                                  "vi-VN"
+                                ) || 0}
+                                đ
+                              </div>
+                            </div>
+                            <div className="bg-white rounded-lg p-2 border border-mono-200">
+                              <div className="text-xs text-mono-500">
+                                Giá trị tồn
+                              </div>
+                              <div className="text-lg font-bold text-blue-600">
+                                {(
+                                  variant as any
+                                ).inventorySummary.totalValue?.toLocaleString(
+                                  "vi-VN"
+                                ) || 0}
+                                đ
+                              </div>
+                            </div>
                           </div>
+                          {(variant as any).inventorySummary.discountPercent >
+                            0 && (
+                            <div className="mt-2 text-xs text-mono-600">
+                              <span className="bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium">
+                                Giảm{" "}
+                                {
+                                  (variant as any).inventorySummary
+                                    .discountPercent
+                                }
+                                %
+                              </span>
+                            </div>
+                          )}
                         </div>
-                        <div className="bg-white rounded-lg p-3 border border-mono-200">
-                          <div className="text-xs text-mono-500 mb-1">
-                            Lợi nhuận
-                          </div>
-                          <div className="text-sm font-bold text-mono-800">
-                            {(variant as any).profit?.toLocaleString() || "N/A"}{" "}
-                            ?
-                          </div>
-                        </div>
-                      </div>
+                      )}
 
                       {/* Images */}
                       {variant.imagesvariant &&
@@ -524,53 +637,157 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                             </div>
                             <div className="flex gap-2 flex-wrap">
                               {variant.imagesvariant.map((img) => (
-                                <img
-                                  key={img._id}
-                                  src={img.url}
-                                  alt="variant"
-                                  className="h-16 w-16 object-cover rounded-lg border-2 border-mono-200 hover:border-mono-600 transition-all"
-                                />
+                                <div key={img._id} className="relative">
+                                  <img
+                                    src={img.url}
+                                    alt="variant"
+                                    className={`h-20 w-20 object-cover rounded-lg border-2 transition-all ${
+                                      img.isMain
+                                        ? "border-mono-600"
+                                        : "border-mono-200 hover:border-mono-400"
+                                    }`}
+                                  />
+                                  {img.isMain && (
+                                    <span className="absolute -top-1 -right-1 bg-mono-800 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                                      Main
+                                    </span>
+                                  )}
+                                </div>
                               ))}
                             </div>
                           </div>
                         )}
 
-                      {/* Sizes */}
+                      {/* Sizes with Inventory Info */}
                       <div>
                         <div className="text-xs text-mono-500 font-medium mb-2">
-                          Size & Số lượng
+                          Chi tiết Size & Tồn kho ({variant.sizes?.length || 0}{" "}
+                          size)
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                          {variant.sizes && variant.sizes.length > 0 ? (
-                            variant.sizes.map((sz) => (
-                              <span
-                                key={sz._id}
-                                className="inline-flex items-center gap-2 bg-white border border-mono-300 px-3 py-2 rounded-lg text-sm hover:border-mono-600 transition-all"
-                              >
-                                <span className="font-semibold text-mono-800">
-                                  {sz.size && typeof sz.size !== "string"
-                                    ? sz.size.description || sz.size.value
-                                    : sz.size}
-                                </span>
-                                <span className="text-mono-400">|</span>
-                                <span
-                                  className={`font-medium ${
-                                    sz.quantity > 10
-                                      ? "text-mono-800"
-                                      : sz.quantity > 0
-                                      ? "text-mono-700"
-                                      : "text-mono-900"
-                                  }`}
-                                >
-                                  {sz.quantity} đôi
-                                </span>
-                              </span>
-                            ))
-                          ) : (
-                            <span className="text-mono-400 text-sm">
-                              Chưa có size
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full text-xs">
+                            <thead className="bg-mono-100">
+                              <tr>
+                                <th className="px-3 py-2 text-left font-medium text-mono-600">
+                                  Size
+                                </th>
+                                <th className="px-3 py-2 text-left font-medium text-mono-600">
+                                  SKU
+                                </th>
+                                <th className="px-3 py-2 text-right font-medium text-mono-600">
+                                  Tồn kho
+                                </th>
+                                <th className="px-3 py-2 text-right font-medium text-mono-600">
+                                  Giá vốn
+                                </th>
+                                <th className="px-3 py-2 text-right font-medium text-mono-600">
+                                  Giá bán
+                                </th>
+                                <th className="px-3 py-2 text-right font-medium text-mono-600">
+                                  Giảm giá
+                                </th>
+                                <th className="px-3 py-2 text-right font-medium text-mono-600">
+                                  Lợi nhuận
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-mono-100">
+                              {variant.sizes && variant.sizes.length > 0 ? (
+                                variant.sizes.map((sz) => {
+                                  const inv = (sz as any).inventory || {};
+                                  return (
+                                    <tr
+                                      key={sz._id}
+                                      className="hover:bg-mono-50"
+                                    >
+                                      <td className="px-3 py-2 font-semibold text-mono-800">
+                                        {sz.size && typeof sz.size !== "string"
+                                          ? `${sz.size.value} ${sz.size.type}`
+                                          : sz.size}
+                                      </td>
+                                      <td
+                                        className="px-3 py-2 font-mono text-mono-500 max-w-[120px] truncate"
+                                        title={sz.sku}
+                                      >
+                                        {sz.sku || "N/A"}
+                                      </td>
+                                      <td className="px-3 py-2 text-right">
+                                        <span
+                                          className={`font-bold ${
+                                            inv.quantity > 10
+                                              ? "text-green-600"
+                                              : inv.quantity > 0
+                                              ? "text-yellow-600"
+                                              : "text-red-600"
+                                          }`}
+                                        >
+                                          {inv.quantity || 0}
+                                        </span>
+                                      </td>
+                                      <td className="px-3 py-2 text-right text-mono-700">
+                                        {inv.costPrice?.toLocaleString(
+                                          "vi-VN"
+                                        ) || 0}
+                                        đ
+                                      </td>
+                                      <td className="px-3 py-2 text-right font-medium text-mono-800">
+                                        {inv.finalPrice?.toLocaleString(
+                                          "vi-VN"
+                                        ) || 0}
+                                        đ
+                                      </td>
+                                      <td className="px-3 py-2 text-right">
+                                        {inv.discountPercent > 0 ? (
+                                          <span className="text-red-600 font-medium">
+                                            -{inv.discountPercent}%
+                                          </span>
+                                        ) : (
+                                          <span className="text-mono-400">
+                                            0%
+                                          </span>
+                                        )}
+                                      </td>
+                                      <td className="px-3 py-2 text-right font-medium text-green-600">
+                                        {inv.profitPerItem?.toLocaleString(
+                                          "vi-VN"
+                                        ) || 0}
+                                        đ
+                                      </td>
+                                    </tr>
+                                  );
+                                })
+                              ) : (
+                                <tr>
+                                  <td
+                                    colSpan={7}
+                                    className="px-3 py-4 text-center text-mono-400"
+                                  >
+                                    Chưa có size
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      {/* Variant Metadata */}
+                      <div className="mt-4 pt-4 border-t border-mono-200">
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <span className="text-mono-500">ID:</span>
+                            <span className="ml-1 font-mono text-mono-600">
+                              {variant._id.slice(-8)}
                             </span>
-                          )}
+                          </div>
+                          <div>
+                            <span className="text-mono-500">Tạo:</span>
+                            <span className="ml-1 text-mono-600">
+                              {new Date(variant.createdAt).toLocaleDateString(
+                                "vi-VN"
+                              )}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
