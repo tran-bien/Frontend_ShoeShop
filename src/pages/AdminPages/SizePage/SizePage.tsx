@@ -142,7 +142,7 @@ const EditSizeModal: React.FC<{
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Giá trở size
+              Giá trị size
             </label>
             <input
               type="number"
@@ -156,7 +156,7 @@ const EditSizeModal: React.FC<{
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Lo?i size
+              Loại size
             </label>
             <select
               value={type}

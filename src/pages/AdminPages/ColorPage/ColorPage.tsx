@@ -141,19 +141,24 @@ const EditColorModal: React.FC<{
     setLoading(true);
     setError(null);
     try {
+      let res: any = null;
       if (type === "solid") {
-        await adminColorService.update(color._id, { name, code, type });
+        res = await adminColorService.update(color._id, { name, code, type });
       } else {
-        await adminColorService.update(color._id, {
+        res = await adminColorService.update(color._id, {
           name,
           colors: [color1, color2],
           type,
         });
       }
+      const successMsg = res?.data?.message || "Cập nhật màu thành công!";
+      toast.success(successMsg);
       onSuccess();
       onClose();
-    } catch {
-      setError("Cập nhật màu thất bại!");
+    } catch (err: any) {
+      const errMsg = err?.response?.data?.message || "Cập nhật màu thất bại!";
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
@@ -186,7 +191,7 @@ const EditColorModal: React.FC<{
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Lo?i màu
+              Loại màu
             </label>
             <select
               value={type}

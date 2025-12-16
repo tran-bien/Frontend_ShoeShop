@@ -65,7 +65,7 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
           </div>
           <div className="mb-4">
             <label className="block text-sm font-bold text-mono-600">
-              Lo?i màu
+              Loại màu
             </label>
             <select
               value={type}
