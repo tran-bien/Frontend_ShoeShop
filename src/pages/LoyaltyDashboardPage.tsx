@@ -67,15 +67,19 @@ const LoyaltyDashboardContent: React.FC = () => {
         setTiers(tiersData);
       }
 
-      // Fetch redeemable coupons
+      // Fetch redeemable coupons - filter by isRedeemable=true
       try {
         const couponsRes = await userCouponService.getAvailableCoupons({
           limit: 50,
+          isRedeemable: true,
         });
         if (couponsRes.data.success) {
-          const allCoupons = couponsRes.data.data || [];
+          // Response có thể là coupons hoặc data
+          const allCoupons =
+            couponsRes.data.coupons || couponsRes.data.data || [];
+          // Filter thêm để đảm bảo chỉ có coupon có pointCost > 0
           const redeemable = allCoupons.filter(
-            (c: Coupon) => c.isRedeemable && (c.pointCost ?? 0) > 0
+            (c: Coupon) => (c.pointCost ?? 0) > 0
           );
           setRedeemableCoupons(redeemable);
         }
@@ -553,28 +557,37 @@ const LoyaltyDashboardContent: React.FC = () => {
       )}
 
       {/* Redeemable Coupons */}
-      {redeemableCoupons.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.58 }}
-          className="bg-white border border-gray-200 rounded-xl p-6 mb-8"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <Ticket className="w-6 h-6 text-green-600" />
-              <h3 className="font-semibold text-gray-900">
-                Đổi điểm lấy Coupon
-              </h3>
-            </div>
-            <button
-              onClick={() => navigate("/my-coupons")}
-              className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
-            >
-              <Wallet className="w-4 h-4" />
-              <span>Xem kho voucher</span>
-            </button>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.58 }}
+        className="bg-white border border-gray-200 rounded-xl p-6 mb-8"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <Ticket className="w-6 h-6 text-green-600" />
+            <h3 className="font-semibold text-gray-900">Đổi điểm lấy Coupon</h3>
           </div>
+          <button
+            onClick={() => navigate("/my-coupons")}
+            className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
+          >
+            <Wallet className="w-4 h-4" />
+            <span>Xem kho voucher</span>
+          </button>
+        </div>
+
+        {redeemableCoupons.length === 0 ? (
+          <div className="text-center py-8">
+            <Gift className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <p className="text-gray-500 mb-2">
+              Hiện chưa có coupon nào để đổi bằng điểm
+            </p>
+            <p className="text-sm text-gray-400">
+              Vui lòng quay lại sau để kiểm tra các ưu đãi mới
+            </p>
+          </div>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {redeemableCoupons.map((coupon) => {
               const pointCost = coupon.pointCost ?? 0;
@@ -625,8 +638,8 @@ const LoyaltyDashboardContent: React.FC = () => {
               );
             })}
           </div>
-        </motion.div>
-      )}
+        )}
+      </motion.div>
 
       {/* Transaction History */}
       <motion.div

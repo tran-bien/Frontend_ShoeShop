@@ -1,11 +1,13 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { userOrderService } from "../../services/OrderService";
 import { profileService } from "../../services/ProfileService";
 import { cartService } from "../../services/CartService";
+import { userCouponService } from "../../services/CouponService";
 import type { UserAddress } from "../../types/user";
 import type { CartItem } from "../../types/cart";
+import type { Coupon } from "../../types/coupon";
 import {
   FaPlus,
   FaMapMarkerAlt,
@@ -14,6 +16,12 @@ import {
   FaPercent,
   FaSpinner,
   FaExclamationTriangle,
+  FaTimes,
+  FaGift,
+  FaTrash,
+  FaCheck,
+  FaCopy,
+  FaChevronRight,
 } from "react-icons/fa";
 
 // Alias for better semantics
@@ -56,6 +64,83 @@ const OrderSummary: React.FC = () => {
   const [selectedItems, setSelectedItems] = useState<CartItem[]>([]);
   const navigate = useNavigate();
 
+  // Coupon modal state
+  const [showCouponModal, setShowCouponModal] = useState(false);
+  const [collectedCoupons, setCollectedCoupons] = useState<Coupon[]>([]);
+  const [couponsLoading, setCouponsLoading] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<
+    PreviewData["couponDetail"] | null
+  >(null);
+
+  // Fetch collected coupons
+  const fetchCoupons = useCallback(async () => {
+    setCouponsLoading(true);
+    try {
+      const collectedRes = await userCouponService.getCollectedCoupons({
+        status: "active",
+      });
+      if (collectedRes.data.success) {
+        setCollectedCoupons(collectedRes.data.coupons || []);
+      }
+    } catch (error) {
+      console.error("Error fetching coupons:", error);
+    } finally {
+      setCouponsLoading(false);
+    }
+  }, []);
+
+  // Select coupon from modal
+  const selectCoupon = useCallback(async (coupon: Coupon) => {
+    setShowCouponModal(false);
+
+    try {
+      const response = await cartService.previewBeforeOrder({
+        couponCode: coupon.code,
+      });
+
+      if (response.data.success) {
+        if (response.data.preview?.couponApplied) {
+          setPreviewData(response.data.preview);
+          setAppliedCoupon(response.data.preview.couponDetail);
+          setCouponCode(coupon.code);
+          localStorage.setItem("appliedCouponCode", coupon.code);
+          toast.success("Đã áp dụng mã giảm giá thành công");
+        } else {
+          toast.error(
+            response.data.message ||
+              "Mã giảm giá không đủ điều kiện áp dụng cho các sản phẩm đã chọn"
+          );
+        }
+      } else {
+        toast.error(response.data.message || "Mã giảm giá không hợp lệ");
+      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(
+        err?.response?.data?.message || "Mã giảm giá không đủ điều kiện áp dụng"
+      );
+    }
+  }, []);
+
+  // Remove coupon
+  const removeCoupon = useCallback(async () => {
+    setCouponCode("");
+    setAppliedCoupon(null);
+    localStorage.removeItem("appliedCouponCode");
+
+    // Re-preview without coupon
+    try {
+      const previewRes = await cartService.previewBeforeOrder({});
+      if (previewRes.data.success && previewRes.data.preview) {
+        setPreviewData(previewRes.data.preview);
+      }
+    } catch (error) {
+      console.error("Error re-preview:", error);
+    }
+
+    toast.success("Đã hủy mã giảm giá");
+  }, []);
+
   // Lấy giỏ hàng và preview đơn hàng
   useEffect(() => {
     const fetchCartAndPreview = async () => {
@@ -85,13 +170,46 @@ const OrderSummary: React.FC = () => {
 
         setSelectedItems(selected);
 
-        // Preview đơn hàng KHÔNG có mã giảm giá ban đầu
-        const previewRes = await cartService.previewBeforeOrder({});
+        // Kiểm tra xem có mã giảm giá đã áp dụng từ cart không
+        const savedCouponCode = localStorage.getItem("appliedCouponCode");
 
-        if (previewRes.data.success && previewRes.data.preview) {
-          setPreviewData(previewRes.data.preview);
+        if (savedCouponCode) {
+          // Preview với coupon đã lưu
+          try {
+            const previewRes = await cartService.previewBeforeOrder({
+              couponCode: savedCouponCode,
+            });
+
+            if (previewRes.data.success && previewRes.data.preview) {
+              setPreviewData(previewRes.data.preview);
+              if (previewRes.data.preview.couponApplied) {
+                setAppliedCoupon(previewRes.data.preview.couponDetail);
+                setCouponCode(savedCouponCode);
+              } else {
+                // Mã không còn hợp lệ, xóa và preview lại không có coupon
+                localStorage.removeItem("appliedCouponCode");
+                const rePreviewRes = await cartService.previewBeforeOrder({});
+                if (rePreviewRes.data.success && rePreviewRes.data.preview) {
+                  setPreviewData(rePreviewRes.data.preview);
+                }
+              }
+            }
+          } catch {
+            // Nếu lỗi, preview không có coupon
+            localStorage.removeItem("appliedCouponCode");
+            const previewRes = await cartService.previewBeforeOrder({});
+            if (previewRes.data.success && previewRes.data.preview) {
+              setPreviewData(previewRes.data.preview);
+            }
+          }
+        } else {
+          // Preview đơn hàng KHÔNG có mã giảm giá
+          const previewRes = await cartService.previewBeforeOrder({});
+          if (previewRes.data.success && previewRes.data.preview) {
+            setPreviewData(previewRes.data.preview);
+          }
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error("Lỗi khi tải giỏ hàng:", error);
         toast.error("Không thể tải thông tin giỏ hàng");
         navigate("/cart");
@@ -122,7 +240,7 @@ const OrderSummary: React.FC = () => {
     fetchAddresses();
   }, []);
 
-  // Áp dụng mã giảm giá
+  // Áp dụng mã giảm giá (nhập tay)
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) {
       toast.error("Vui lòng nhập mã giảm giá");
@@ -137,16 +255,23 @@ const OrderSummary: React.FC = () => {
       if (previewRes.data.success && previewRes.data.preview) {
         setPreviewData(previewRes.data.preview);
         if (previewRes.data.preview.couponApplied) {
+          setAppliedCoupon(previewRes.data.preview.couponDetail);
+          localStorage.setItem("appliedCouponCode", couponCode.trim());
           toast.success("Áp dụng mã giảm giá thành công!");
         } else {
-          toast.error(previewRes.data.message || "Mã giảm giá không hợp lệ");
+          toast.error(
+            previewRes.data.message ||
+              "Mã giảm giá không đủ điều kiện áp dụng cho các sản phẩm đã chọn"
+          );
         }
       } else {
         toast.error(previewRes.data.message || "Mã giảm giá không hợp lệ");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errMsg = error as { response?: { data?: { message?: string } } };
       toast.error(
-        error.response?.data?.message || "Lỗi khi áp dụng mã giảm giá"
+        errMsg?.response?.data?.message ||
+          "Mã giảm giá không đủ điều kiện áp dụng"
       );
     }
   };
@@ -169,6 +294,9 @@ const OrderSummary: React.FC = () => {
       const res = await userOrderService.createOrder(orderData);
 
       if (res.data.success) {
+        // Xóa coupon đã lưu sau khi đặt hàng thành công
+        localStorage.removeItem("appliedCouponCode");
+
         // Nếu chọn VNPAY và có paymentUrl thì chuyển hướng
         if (paymentMethod === "VNPAY" && res.data.data?.paymentUrl) {
           window.location.href = res.data.data.paymentUrl;
@@ -178,9 +306,10 @@ const OrderSummary: React.FC = () => {
         toast.success("Đặt hàng thành công!");
         navigate("/user-manage-order");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
       const errorMessage =
-        error.response?.data?.message || "Đặt hàng thất bại! Vui lòng thử lại.";
+        err?.response?.data?.message || "Đặt hàng thất bại! Vui lòng thử lại.";
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -351,29 +480,59 @@ const OrderSummary: React.FC = () => {
 
               {/* Mã giảm giá */}
               <div className="mb-4 p-3 border border-mono-200 rounded-lg bg-white">
-                <h4 className="font-medium mb-2 flex items-center">
-                  <FaPercent className="mr-2 text-mono-700" />
-                  Mã giảm giá
-                </h4>
-                <div className="flex space-x-2">
-                  <input
-                    type="text"
-                    className="flex-1 border border-mono-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-mono-500 focus:border-transparent"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    placeholder="Nhập mã giảm giá"
-                  />
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="font-medium flex items-center">
+                    <FaPercent className="mr-2 text-mono-700" />
+                    Mã giảm giá
+                  </h4>
                   <button
-                    onClick={handleApplyCoupon}
-                    className="px-4 py-2 bg-mono-700 text-white rounded hover:bg-mono-800 transition-colors text-sm"
+                    onClick={() => {
+                      setShowCouponModal(true);
+                      fetchCoupons();
+                    }}
+                    className="text-sm text-mono-700 hover:text-mono-900 flex items-center space-x-1"
                   >
-                    Áp dụng
+                    <FaGift className="w-3 h-3" />
+                    <span>Chọn mã</span>
+                    <FaChevronRight className="w-3 h-3" />
                   </button>
                 </div>
-                {previewData?.couponApplied && previewData?.couponDetail && (
-                  <div className="mt-2 p-2 bg-mono-50 border border-mono-200 rounded text-sm text-mono-700">
-                    Ðã áp dụng mã:{" "}
-                    <strong>{previewData.couponDetail.code}</strong>
+
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between p-3 bg-mono-50 border border-mono-200 rounded-lg">
+                    <div>
+                      <div className="font-medium text-mono-800">
+                        {appliedCoupon.code}
+                      </div>
+                      <div className="text-sm text-mono-600">
+                        Giảm{" "}
+                        {appliedCoupon.type === "percent"
+                          ? `${appliedCoupon.value}%`
+                          : `${appliedCoupon.value.toLocaleString()}đ`}
+                      </div>
+                    </div>
+                    <button
+                      onClick={removeCoupon}
+                      className="text-mono-900 hover:text-mono-800 p-1"
+                    >
+                      <FaTrash className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      className="flex-1 border border-mono-300 rounded px-3 py-2 text-sm focus:ring-2 focus:ring-mono-500 focus:border-transparent"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value)}
+                      placeholder="Nhập mã giảm giá"
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      className="px-4 py-2 bg-mono-700 text-white rounded hover:bg-mono-800 transition-colors text-sm"
+                    >
+                      Áp dụng
+                    </button>
                   </div>
                 )}
               </div>
@@ -432,6 +591,219 @@ const OrderSummary: React.FC = () => {
               )}
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Coupon Selection Modal */}
+      {showCouponModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-lg w-full max-h-[80vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-mono-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-mono-900">
+                Chọn mã giảm giá
+              </h3>
+              <button
+                onClick={() => setShowCouponModal(false)}
+                className="p-2 hover:bg-mono-100 rounded-full transition-colors"
+              >
+                <FaTimes className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Info */}
+            <div className="px-4 py-2 bg-mono-50 text-sm text-mono-600">
+              Chọn mã giảm giá đã thu thập để áp dụng
+            </div>
+
+            {/* Coupon List */}
+            <div className="p-4 overflow-y-auto max-h-[50vh]">
+              {couponsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <FaSpinner className="animate-spin text-2xl text-mono-500" />
+                </div>
+              ) : collectedCoupons.length === 0 ? (
+                <div className="text-center py-8 text-mono-500">
+                  <FaGift className="mx-auto text-4xl mb-2" />
+                  <p>Chưa có mã giảm giá nào</p>
+                  <button
+                    onClick={() => {
+                      setShowCouponModal(false);
+                      navigate("/coupons");
+                    }}
+                    className="mt-2 text-mono-900 underline hover:no-underline"
+                  >
+                    Thu thập ngay
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {collectedCoupons.map((coupon) => {
+                    const isExpired = new Date(coupon.endDate) < new Date();
+                    const meetsMinOrder =
+                      (previewData?.subTotal || 0) >= coupon.minOrderValue;
+                    const canApply = !isExpired && meetsMinOrder;
+
+                    return (
+                      <OrderCouponCard
+                        key={coupon._id}
+                        coupon={coupon}
+                        isApplied={appliedCoupon?.code === coupon.code}
+                        disabled={!canApply}
+                        disabledReason={
+                          isExpired
+                            ? "Mã đã hết hạn"
+                            : !meetsMinOrder
+                            ? `Đơn tối thiểu ${coupon.minOrderValue.toLocaleString()}đ`
+                            : undefined
+                        }
+                        onSelect={() => canApply && selectCoupon(coupon)}
+                      />
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-mono-200 flex justify-between items-center">
+              <button
+                onClick={() => {
+                  setShowCouponModal(false);
+                  navigate("/my-coupons");
+                }}
+                className="text-mono-600 hover:text-mono-900 text-sm flex items-center space-x-1"
+              >
+                <FaGift className="w-3 h-3" />
+                <span>Xem kho voucher</span>
+              </button>
+              <button
+                onClick={() => setShowCouponModal(false)}
+                className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Coupon Card Component for Modal
+interface OrderCouponCardProps {
+  coupon: Coupon;
+  isApplied: boolean;
+  disabled?: boolean;
+  disabledReason?: string;
+  onSelect: () => void;
+}
+
+const OrderCouponCard: React.FC<OrderCouponCardProps> = ({
+  coupon,
+  isApplied,
+  disabled = false,
+  disabledReason,
+  onSelect,
+}) => {
+  const [copied, setCopied] = useState(false);
+
+  const copyCode = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(coupon.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const formatDiscount = () => {
+    if (coupon.type === "percent") {
+      return `${coupon.value}%`;
+    }
+    return `${coupon.value.toLocaleString()}đ`;
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("vi-VN");
+  };
+
+  return (
+    <div
+      onClick={disabled ? undefined : onSelect}
+      className={`relative p-4 border rounded-lg transition-all ${
+        isApplied
+          ? "border-green-500 bg-green-50"
+          : disabled
+          ? "border-mono-200 bg-mono-50 opacity-60"
+          : "border-mono-200 hover:border-mono-400 cursor-pointer"
+      }`}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center space-x-2 mb-1">
+            <span className="font-bold text-mono-900 text-lg">
+              {formatDiscount()}
+            </span>
+            {coupon.maxDiscount && coupon.type === "percent" && (
+              <span className="text-xs text-mono-500">
+                (Tối đa {coupon.maxDiscount.toLocaleString()}đ)
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-mono-600 mb-2">{coupon.description}</p>
+
+          <div className="flex items-center space-x-3 text-xs text-mono-500">
+            <span>
+              Mã: <span className="font-mono font-semibold">{coupon.code}</span>
+            </span>
+            <span>•</span>
+            <span>HSD: {formatDate(coupon.endDate)}</span>
+          </div>
+
+          {coupon.minOrderValue > 0 && (
+            <div className="mt-1 text-xs text-mono-500">
+              Đơn tối thiểu: {coupon.minOrderValue.toLocaleString()}đ
+            </div>
+          )}
+
+          {coupon.scope && coupon.scope !== "ALL" && (
+            <div className="mt-1 text-xs text-blue-600">
+              Áp dụng cho{" "}
+              {coupon.scope === "PRODUCTS"
+                ? "sản phẩm"
+                : coupon.scope === "CATEGORIES"
+                ? "danh mục"
+                : ""}{" "}
+              cụ thể
+            </div>
+          )}
+
+          {disabledReason && (
+            <div className="mt-1 text-xs text-red-500 font-medium">
+              {disabledReason}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col items-end space-y-2">
+          <button
+            onClick={copyCode}
+            className="p-2 hover:bg-mono-100 rounded transition-colors"
+            title="Sao chép mã"
+          >
+            {copied ? (
+              <FaCheck className="w-3 h-3 text-green-500" />
+            ) : (
+              <FaCopy className="w-3 h-3 text-mono-500" />
+            )}
+          </button>
+
+          {isApplied && (
+            <span className="text-xs font-medium text-green-600 flex items-center space-x-1">
+              <FaCheck className="w-3 h-3" />
+              <span>Đang dùng</span>
+            </span>
+          )}
         </div>
       </div>
     </div>

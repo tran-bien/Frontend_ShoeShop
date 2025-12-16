@@ -3,7 +3,7 @@
 // =======================
 
 // Coupon scope - applies to which items
-export type CouponScope = "ALL" | "PRODUCTS" | "VARIANTS" | "CATEGORIES";
+export type CouponScope = "ALL" | "PRODUCTS" | "CATEGORIES";
 
 // Coupon priority for display sorting
 export type CouponPriority = "HIGH" | "MEDIUM" | "LOW";
@@ -40,7 +40,6 @@ export interface Coupon {
   // Advanced coupon - scope restriction
   scope?: CouponScope;
   applicableProducts?: string[];
-  applicableVariants?: string[];
   applicableCategories?: string[];
 
   // Advanced conditions
@@ -69,6 +68,7 @@ export interface CouponQuery {
   type?: "percent" | "fixed";
   status?: "active" | "inactive" | "expired" | "archived";
   isPublic?: boolean;
+  isRedeemable?: boolean;
   sort?: string;
 }
 
@@ -135,7 +135,6 @@ export interface CreateCouponData {
   // Advanced coupon - scope restriction
   scope?: CouponScope;
   applicableProducts?: string[];
-  applicableVariants?: string[];
   applicableCategories?: string[];
 
   // Advanced conditions

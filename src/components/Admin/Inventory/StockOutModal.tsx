@@ -1,6 +1,7 @@
 ﻿import { useState } from "react";
 import InventoryService from "../../../services/InventoryService";
 import type { InventoryItem } from "../../../types/inventory";
+import { toast } from "react-hot-toast";
 
 interface Props {
   item: InventoryItem;
@@ -54,11 +55,13 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
         notes: formData.note || undefined,
         orderId: formData.orderId || undefined,
       });
-      alert("Xuất kho thành công!");
+      toast.success("Xuất kho thành công!");
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Có lỗi xảy ra");
+      const errorMsg = error.response?.data?.message || "Có lỗi xảy ra";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }

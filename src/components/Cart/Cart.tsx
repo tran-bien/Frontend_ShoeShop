@@ -41,11 +41,7 @@ const Cart: React.FC = () => {
   // Coupon selection modal state
   const [showCouponModal, setShowCouponModal] = useState(false);
   const [collectedCoupons, setCollectedCoupons] = useState<Coupon[]>([]);
-  const [applicableCoupons, setApplicableCoupons] = useState<Coupon[]>([]);
   const [couponsLoading, setCouponsLoading] = useState(false);
-  const [couponTab, setCouponTab] = useState<"applicable" | "collected">(
-    "applicable"
-  );
 
   // Thay đổi: Sử dụng Map để track quantity chính xác hơn
   const [optimisticQuantities, setOptimisticQuantities] = useState<
@@ -129,37 +125,23 @@ const Cart: React.FC = () => {
     }
   }, []);
 
-  // Fetch coupons for modal
+  // Fetch collected coupons for modal
   const fetchCoupons = useCallback(async () => {
     setCouponsLoading(true);
     try {
-      // Fetch collected coupons
+      // Chỉ fetch coupon đã thu thập
       const collectedRes = await userCouponService.getCollectedCoupons({
         status: "active",
       });
       if (collectedRes.data.success) {
         setCollectedCoupons(collectedRes.data.coupons || []);
       }
-
-      // Fetch applicable coupons if there are selected items
-      if (selectedItems.length > 0) {
-        const cartItemIds = selectedItems.map((item: CartItem) => item._id);
-        const applicableRes = await userCouponService.getApplicableCoupons(
-          cartItemIds,
-          optimisticTotals.subTotal
-        );
-        if (applicableRes.data.success) {
-          setApplicableCoupons(applicableRes.data.coupons || []);
-        }
-      } else {
-        setApplicableCoupons([]);
-      }
     } catch (error: any) {
       console.error("Error fetching coupons:", error);
     } finally {
       setCouponsLoading(false);
     }
-  }, [selectedItems, optimisticTotals.subTotal]);
+  }, []);
 
   // Open coupon modal
   const openCouponModal = useCallback(() => {
@@ -167,12 +149,13 @@ const Cart: React.FC = () => {
     fetchCoupons();
   }, [fetchCoupons]);
 
-  // Select coupon from modal
+  // Select coupon from modal - validate and apply
   const selectCoupon = useCallback(async (coupon: Coupon) => {
     setCouponLoading(true);
     setShowCouponModal(false);
 
     try {
+      // Gọi API preview để kiểm tra coupon có áp dụng được không
       const response = await cartService.previewBeforeOrder({
         couponCode: coupon.code,
       });
@@ -182,15 +165,24 @@ const Cart: React.FC = () => {
           setPreviewData(response.data.preview);
           setAppliedCoupon(response.data.preview.couponDetail);
           setCouponCode(coupon.code);
+          // Lưu vào localStorage để trang order-confirmation có thể sử dụng
+          localStorage.setItem("appliedCouponCode", coupon.code);
           toast.success("Đã áp dụng mã giảm giá thành công");
         } else {
-          toast.error("Mã giảm giá không áp dụng được cho giỏ hàng này");
+          // Mã không đủ điều kiện áp dụng cho các sản phẩm đã chọn
+          toast.error(
+            response.data.message ||
+              "Mã giảm giá không đủ điều kiện áp dụng cho các sản phẩm đã chọn"
+          );
         }
       } else {
         toast.error(response.data.message || "Mã giảm giá không hợp lệ");
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Mã giảm giá không hợp lệ");
+      const errorMsg =
+        error.response?.data?.message ||
+        "Mã giảm giá không đủ điều kiện áp dụng";
+      toast.error(errorMsg);
     } finally {
       setCouponLoading(false);
     }
@@ -557,7 +549,8 @@ const Cart: React.FC = () => {
   const removeCoupon = useCallback(async () => {
     setCouponCode("");
     setAppliedCoupon(null);
-    toast.success("Ðã hủy mã giảm giá");
+    localStorage.removeItem("appliedCouponCode");
+    toast.success("Đã hủy mã giảm giá");
   }, []);
 
   // Select all items
@@ -998,112 +991,59 @@ const Cart: React.FC = () => {
               </button>
             </div>
 
-            {/* Tabs */}
-            <div className="flex border-b border-mono-200">
-              <button
-                onClick={() => setCouponTab("applicable")}
-                className={`flex-1 py-3 text-sm font-medium transition-colors ${
-                  couponTab === "applicable"
-                    ? "text-mono-900 border-b-2 border-mono-900"
-                    : "text-mono-500 hover:text-mono-700"
-                }`}
-              >
-                Có thể áp dụng ({applicableCoupons.length})
-              </button>
-              <button
-                onClick={() => setCouponTab("collected")}
-                className={`flex-1 py-3 text-sm font-medium transition-colors ${
-                  couponTab === "collected"
-                    ? "text-mono-900 border-b-2 border-mono-900"
-                    : "text-mono-500 hover:text-mono-700"
-                }`}
-              >
-                Đã thu thập ({collectedCoupons.length})
-              </button>
+            {/* Header info */}
+            <div className="px-4 py-2 bg-mono-50 text-sm text-mono-600">
+              Chọn mã giảm giá đã thu thập để áp dụng
             </div>
 
-            {/* Coupon List */}
+            {/* Coupon List - Only collected coupons */}
             <div className="p-4 overflow-y-auto max-h-[50vh]">
               {couponsLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <FiLoader className="animate-spin text-2xl text-mono-500" />
                 </div>
+              ) : collectedCoupons.length === 0 ? (
+                <div className="text-center py-8 text-mono-500">
+                  <FiGift className="mx-auto text-4xl mb-2" />
+                  <p>Chưa có mã giảm giá nào</p>
+                  <button
+                    onClick={() => {
+                      setShowCouponModal(false);
+                      navigate("/coupons");
+                    }}
+                    className="mt-2 text-mono-900 underline hover:no-underline"
+                  >
+                    Thu thập ngay
+                  </button>
+                </div>
               ) : (
-                <>
-                  {couponTab === "applicable" && (
-                    <>
-                      {applicableCoupons.length === 0 ? (
-                        <div className="text-center py-8 text-mono-500">
-                          <FiTag className="mx-auto text-4xl mb-2" />
-                          <p>Không có mã giảm giá phù hợp</p>
-                          <p className="text-sm mt-1">
-                            Thêm sản phẩm vào giỏ hàng để xem mã có thể áp dụng
-                          </p>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {applicableCoupons.map((coupon) => (
-                            <CouponCard
-                              key={coupon._id}
-                              coupon={coupon}
-                              isApplied={appliedCoupon?.code === coupon.code}
-                              onSelect={() => selectCoupon(coupon)}
-                            />
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  )}
+                <div className="space-y-3">
+                  {collectedCoupons.map((coupon) => {
+                    const isExpired = new Date(coupon.endDate) < new Date();
+                    const meetsMinOrder =
+                      optimisticTotals.subTotal >= coupon.minOrderValue;
+                    // Chỉ disable UI khi hết hạn hoặc không đủ giá trị đơn hàng
+                    // Việc kiểm tra scope/sản phẩm sẽ do API xử lý khi áp dụng
+                    const canApply = !isExpired && meetsMinOrder;
 
-                  {couponTab === "collected" && (
-                    <>
-                      {collectedCoupons.length === 0 ? (
-                        <div className="text-center py-8 text-mono-500">
-                          <FiGift className="mx-auto text-4xl mb-2" />
-                          <p>Chưa có mã giảm giá nào</p>
-                          <button
-                            onClick={() => {
-                              setShowCouponModal(false);
-                              navigate("/coupons");
-                            }}
-                            className="mt-2 text-mono-900 underline hover:no-underline"
-                          >
-                            Thu thập ngay
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          {collectedCoupons.map((coupon) => {
-                            const isExpired =
-                              new Date(coupon.endDate) < new Date();
-                            const meetsMinOrder =
-                              optimisticTotals.subTotal >= coupon.minOrderValue;
-                            const canApply = !isExpired && meetsMinOrder;
-
-                            return (
-                              <CouponCard
-                                key={coupon._id}
-                                coupon={coupon}
-                                isApplied={appliedCoupon?.code === coupon.code}
-                                disabled={!canApply}
-                                disabledReason={
-                                  isExpired
-                                    ? "Mã đã hết hạn"
-                                    : !meetsMinOrder
-                                    ? `Đơn tối thiểu ${coupon.minOrderValue.toLocaleString()}đ`
-                                    : undefined
-                                }
-                                onSelect={() =>
-                                  canApply && selectCoupon(coupon)
-                                }
-                              />
-                            );
-                          })}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </>
+                    return (
+                      <CouponCard
+                        key={coupon._id}
+                        coupon={coupon}
+                        isApplied={appliedCoupon?.code === coupon.code}
+                        disabled={!canApply}
+                        disabledReason={
+                          isExpired
+                            ? "Mã đã hết hạn"
+                            : !meetsMinOrder
+                            ? `Đơn tối thiểu ${coupon.minOrderValue.toLocaleString()}đ`
+                            : undefined
+                        }
+                        onSelect={() => canApply && selectCoupon(coupon)}
+                      />
+                    );
+                  })}
+                </div>
               )}
             </div>
 

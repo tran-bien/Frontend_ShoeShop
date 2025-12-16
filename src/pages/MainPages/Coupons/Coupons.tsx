@@ -1,8 +1,12 @@
 ﻿import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { publicCouponService } from "../../../services/CouponService";
+import {
+  publicCouponService,
+  userCouponService,
+} from "../../../services/CouponService";
 import { Coupon } from "../../../types/coupon";
 import { toast } from "react-hot-toast";
+import { useAuth } from "../../../hooks/useAuth";
 import {
   FiPercent,
   FiDollarSign,
@@ -12,11 +16,13 @@ import {
   FiSearch,
   FiFilter,
   FiLoader,
-  FiShoppingCart, // Added missing import
+  FiShoppingCart,
+  FiGift,
 } from "react-icons/fi";
 
 const CouponsPage: React.FC = () => {
   const navigate = useNavigate(); // We'll use this for returning to home page
+  const { isAuthenticated } = useAuth();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,6 +32,7 @@ const CouponsPage: React.FC = () => {
   const [filterType, setFilterType] = useState<"all" | "percent" | "fixed">(
     "all"
   );
+  const [collectingId, setCollectingId] = useState<string | null>(null);
   const limit = 12; // Số lượng coupon mới trang
 
   useEffect(() => {
@@ -93,6 +100,28 @@ const CouponsPage: React.FC = () => {
     return amount.toLocaleString("vi-VN") + "d";
   };
 
+  // Handle collect coupon
+  const handleCollectCoupon = async (couponId: string) => {
+    if (!isAuthenticated) {
+      toast.error("Vui lòng đăng nhập để thu thập mã giảm giá");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setCollectingId(couponId);
+      await userCouponService.collectCoupon(couponId);
+      toast.success("Đã thu thập mã giảm giá thành công!");
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      toast.error(
+        error.response?.data?.message || "Không thể thu thập mã giảm giá"
+      );
+    } finally {
+      setCollectingId(null);
+    }
+  };
+
   // Lọc coupon theo searchTerm
   const filteredCoupons = coupons.filter(
     (coupon) =>
@@ -149,14 +178,31 @@ const CouponsPage: React.FC = () => {
             <span>HSD: {formatDate(coupon.endDate)}</span>
           </div>
 
-          {/* Copy button */}
-          <button
-            onClick={() => copyCouponCode(coupon.code)}
-            className="w-full flex items-center justify-center space-x-2 bg-mono-black hover:bg-mono-800 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
-          >
-            <span className="font-mono">{coupon.code}</span>
-            <FiCopy size={14} />
-          </button>
+          {/* Action buttons */}
+          <div className="flex gap-2">
+            {/* Copy button */}
+            <button
+              onClick={() => copyCouponCode(coupon.code)}
+              className="flex-1 flex items-center justify-center space-x-2 bg-mono-black hover:bg-mono-800 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              <span className="font-mono truncate">{coupon.code}</span>
+              <FiCopy size={14} className="flex-shrink-0" />
+            </button>
+
+            {/* Collect button */}
+            <button
+              onClick={() => handleCollectCoupon(coupon._id)}
+              disabled={collectingId === coupon._id}
+              className="flex items-center justify-center bg-mono-100 hover:bg-mono-200 text-mono-800 px-3 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              title="Thu thập mã giảm giá"
+            >
+              {collectingId === coupon._id ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-mono-800" />
+              ) : (
+                <FiGift size={16} />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

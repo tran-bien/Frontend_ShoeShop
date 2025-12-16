@@ -1,6 +1,7 @@
 ﻿import { useState } from "react";
 import InventoryService from "../../../services/InventoryService";
 import type { InventoryItem } from "../../../types/inventory";
+import { toast } from "react-hot-toast";
 
 interface Props {
   item: InventoryItem;
@@ -50,11 +51,13 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
         reason: formData.reason,
         notes: formData.notes || undefined,
       });
-      alert("Điều chỉnh tồn kho thành công!");
+      toast.success("Điều chỉnh tồn kho thành công!");
       onSuccess();
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      setError(error.response?.data?.message || "Có lỗi xảy ra");
+      const errorMsg = error.response?.data?.message || "Có lỗi xảy ra";
+      setError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }

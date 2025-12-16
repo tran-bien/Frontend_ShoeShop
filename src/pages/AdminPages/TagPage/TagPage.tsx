@@ -510,29 +510,52 @@ const TagPage: React.FC = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl max-w-md w-full p-6">
-          <h3 className="text-xl font-bold mb-4 text-mono-900">Xác Nhận Xóa</h3>
-          <p className="text-mono-700 mb-6">
-            Bạn có chắc chắn muốn xóa tag <strong>"{selectedTag.name}"</strong>?
-          </p>
-          <div className="flex gap-3">
-            <button
-              onClick={() => {
-                setShowDeleteModal(false);
-                setSelectedTag(null);
-              }}
-              disabled={submitting}
-              className="flex-1 px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50 transition-colors"
-            >
-              Hủy
-            </button>
-            <button
-              onClick={confirmDeleteTag}
-              disabled={submitting}
-              className="flex-1 px-4 py-2 bg-mono-900 hover:bg-mono-800 text-white rounded-lg transition-colors disabled:bg-mono-400"
-            >
-              {submitting ? "Đang xóa..." : "Xóa"}
-            </button>
+        <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+          <div className="p-6">
+            <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+              <svg
+                className="w-8 h-8 text-red-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-center text-mono-900 mb-2">
+              Xác nhận xóa tag
+            </h3>
+            <p className="text-center text-mono-600 mb-6">
+              Bạn có chắc chắn muốn xóa tag{" "}
+              <span className="font-semibold text-mono-900">
+                "{selectedTag.name}"
+              </span>
+              ? Hành động này có thể được khôi phục sau.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setSelectedTag(null);
+                }}
+                disabled={submitting}
+                className="flex-1 px-4 py-2.5 bg-mono-100 hover:bg-mono-200 text-mono-700 font-medium rounded-lg transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmDeleteTag}
+                disabled={submitting}
+                className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+              >
+                {submitting ? "Đang xóa..." : "Xóa"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -661,42 +684,8 @@ const TagPage: React.FC = () => {
               </div>
             )}
 
-            {/* Actions */}
-            <div className="flex gap-3 pt-4">
-              {!selectedTag.deletedAt && (
-                <>
-                  {canUpdate() && (
-                    <button
-                      onClick={() => {
-                        setShowDetailModal(false);
-                        setShowEditModal(true);
-                      }}
-                      className="px-6 py-2 bg-mono-black hover:bg-mono-800 text-white rounded-lg transition-colors"
-                    >
-                      Chỉnh Sửa
-                    </button>
-                  )}
-                  {canToggleStatus() && (
-                    <button
-                      onClick={async () => {
-                        await handleToggleStatus(
-                          selectedTag._id,
-                          selectedTag.isActive
-                        );
-                        setShowDetailModal(false);
-                        setSelectedTag(null);
-                      }}
-                      className={`px-6 py-2 rounded-lg transition-colors ${
-                        selectedTag.isActive
-                          ? "bg-mono-1000 hover:bg-mono-700 text-white"
-                          : "bg-mono-700 hover:bg-mono-800 text-white"
-                      }`}
-                    >
-                      {selectedTag.isActive ? "Vô hiệu hóa" : "Kích hoạt"}
-                    </button>
-                  )}
-                </>
-              )}
+            {/* Actions - Chỉ nút Đóng */}
+            <div className="flex gap-3 pt-4 justify-end">
               <button
                 onClick={() => {
                   setShowDetailModal(false);
@@ -952,7 +941,7 @@ const TagPage: React.FC = () => {
                       )}
                     </td>
                     <td className="py-2 px-4 border-b text-center text-sm">
-                      <div className="flex flex-wrap gap-1.5 justify-center">
+                      <div className="flex flex-wrap gap-1.5 justify-center min-w-[140px]">
                         {!showDeleted ? (
                           <>
                             <button
@@ -960,8 +949,27 @@ const TagPage: React.FC = () => {
                                 setSelectedTag(tag);
                                 setShowDetailModal(true);
                               }}
-                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs rounded-lg border border-mono-200"
+                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                             >
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
                               Xem
                             </button>
                             {canUpdate() && (
@@ -970,16 +978,42 @@ const TagPage: React.FC = () => {
                                   setSelectedTag(tag);
                                   setShowEditModal(true);
                                 }}
-                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs rounded-lg border border-mono-200"
+                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                               >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                  />
+                                </svg>
                                 Sửa
                               </button>
                             )}
                             {canDelete() && (
                               <button
                                 onClick={() => handleDeleteTag(tag)}
-                                className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs rounded-lg border border-mono-300"
+                                className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                               >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                  />
+                                </svg>
                                 Xóa
                               </button>
                             )}
@@ -988,12 +1022,25 @@ const TagPage: React.FC = () => {
                                 onClick={() =>
                                   handleToggleStatus(tag._id, tag.isActive)
                                 }
-                                className={`px-3 py-1.5 text-xs rounded-lg border ${
+                                className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors flex items-center gap-1.5 ${
                                   tag.isActive
                                     ? "bg-mono-100 hover:bg-mono-100 text-mono-700 border-mono-200"
                                     : "bg-mono-50 hover:bg-mono-100 text-mono-700 border-mono-200"
                                 }`}
                               >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                                  />
+                                </svg>
                                 {tag.isActive ? "Tắt" : "Bật"}
                               </button>
                             )}
@@ -1005,15 +1052,47 @@ const TagPage: React.FC = () => {
                                 setSelectedTag(tag);
                                 setShowDetailModal(true);
                               }}
-                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs rounded-lg border border-mono-200"
+                              className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                             >
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                />
+                              </svg>
                               Xem
                             </button>
                             {canDelete() && (
                               <button
                                 onClick={() => handleRestoreTag(tag._id)}
-                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs rounded-lg border border-mono-200"
+                                className="px-3 py-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 text-xs font-medium rounded-lg border border-mono-200 transition-colors flex items-center gap-1.5"
                               >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                  />
+                                </svg>
                                 Khôi phục
                               </button>
                             )}
@@ -1027,7 +1106,7 @@ const TagPage: React.FC = () => {
             </table>
           </div>
 
-          {/* Pagination */}
+          {/* Pagination - Giống BrandPage */}
           <div className="flex items-center justify-between mt-6">
             <div className="text-sm text-mono-600">
               Trang {currentPage} / {totalPages} • Tổng: {totalCount} tags
@@ -1036,7 +1115,7 @@ const TagPage: React.FC = () => {
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className={`px-4 py-2 rounded-lg font-medium ${
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   currentPage === 1
                     ? "bg-mono-300 text-mono-500 cursor-not-allowed"
                     : "bg-mono-200 text-mono-700 hover:bg-mono-300"
@@ -1044,12 +1123,84 @@ const TagPage: React.FC = () => {
               >
                 Trước
               </button>
+
+              {/* Page Numbers */}
+              {(() => {
+                const pages = [];
+                const showPages = 5;
+                let startPage = Math.max(
+                  1,
+                  currentPage - Math.floor(showPages / 2)
+                );
+                const endPage = Math.min(totalPages, startPage + showPages - 1);
+
+                if (endPage - startPage < showPages - 1) {
+                  startPage = Math.max(1, endPage - showPages + 1);
+                }
+
+                if (startPage > 1) {
+                  pages.push(
+                    <button
+                      key={1}
+                      onClick={() => setCurrentPage(1)}
+                      className="px-3 py-2 rounded-lg font-medium bg-mono-200 text-mono-700 hover:bg-mono-300 transition-all"
+                    >
+                      1
+                    </button>
+                  );
+                  if (startPage > 2) {
+                    pages.push(
+                      <span key="ellipsis1" className="px-2 text-mono-500">
+                        ...
+                      </span>
+                    );
+                  }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i)}
+                      className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                        i === currentPage
+                          ? "bg-mono-black text-white"
+                          : "bg-mono-200 text-mono-700 hover:bg-mono-300"
+                      }`}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+
+                if (endPage < totalPages) {
+                  if (endPage < totalPages - 1) {
+                    pages.push(
+                      <span key="ellipsis2" className="px-2 text-mono-500">
+                        ...
+                      </span>
+                    );
+                  }
+                  pages.push(
+                    <button
+                      key={totalPages}
+                      onClick={() => setCurrentPage(totalPages)}
+                      className="px-3 py-2 rounded-lg font-medium bg-mono-200 text-mono-700 hover:bg-mono-300 transition-all"
+                    >
+                      {totalPages}
+                    </button>
+                  );
+                }
+
+                return pages;
+              })()}
+
               <button
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                 }
                 disabled={currentPage === totalPages}
-                className={`px-4 py-2 rounded-lg font-medium ${
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   currentPage === totalPages
                     ? "bg-mono-300 text-mono-500 cursor-not-allowed"
                     : "bg-mono-200 text-mono-700 hover:bg-mono-300"

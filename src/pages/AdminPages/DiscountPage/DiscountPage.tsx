@@ -1,6 +1,9 @@
 ﻿import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
-import { adminCouponService } from "../../../services/CouponService";
+import {
+  adminCouponService,
+  CreateCouponData,
+} from "../../../services/CouponService";
 import { productAdminService } from "../../../services/ProductService";
 import { adminCategoryService } from "../../../services/CategoryService";
 import { adminLoyaltyService } from "../../../services/LoyaltyService";
@@ -17,6 +20,22 @@ type Discount = Coupon & {
   id: string;
   currentUses: number;
   status: string;
+  users?: unknown[];
+  userUsage?: unknown[];
+  applicableProducts?: (
+    | string
+    | { _id: string; name: string; slug?: string }
+  )[];
+  applicableCategories?: (
+    | string
+    | { _id: string; name: string; slug?: string }
+  )[];
+  conditions?: CouponConditions & {
+    requiredTiers?: (
+      | string
+      | { _id: string; name: string; displayOrder?: number }
+    )[];
+  };
 };
 
 interface ProductOption {
@@ -52,7 +71,6 @@ const initialForm = {
   // Advanced fields
   scope: "ALL" as CouponScope,
   applicableProducts: [] as string[],
-  applicableVariants: [] as string[],
   applicableCategories: [] as string[],
   conditions: {
     minQuantity: 0,
@@ -72,7 +90,23 @@ const DiscountPage = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [scopeFilter, setScopeFilter] = useState("all");
+  const [redeemableFilter, setRedeemableFilter] = useState("all");
   const [submitting, setSubmitting] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [viewingDiscount, setViewingDiscount] = useState<Discount | null>(null);
+  const [loadingView, setLoadingView] = useState(false);
+  const [showArchiveModal, setShowArchiveModal] = useState(false);
+  const [archivingDiscount, setArchivingDiscount] = useState<Discount | null>(
+    null
+  );
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const limit = 10;
 
   // Options for advanced fields
   const [products, setProducts] = useState<ProductOption[]>([]);
@@ -83,14 +117,22 @@ const DiscountPage = () => {
   useEffect(() => {
     fetchDiscounts();
     fetchOptions();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    currentPage,
+    statusFilter,
+    typeFilter,
+    scopeFilter,
+    redeemableFilter,
+    searchQuery,
+  ]);
 
   const fetchOptions = async () => {
     try {
       const [productsRes, categoriesRes, tiersRes] = await Promise.all([
-        productAdminService.getAll({ limit: 500 }),
+        productAdminService.getProducts({ limit: 100 }),
         adminCategoryService.getAll(),
-        adminLoyaltyService.getTiers(),
+        adminLoyaltyService.getAllTiers({}),
       ]);
 
       if (productsRes.data?.data) {
@@ -102,9 +144,13 @@ const DiscountPage = () => {
         );
       }
       if (categoriesRes.data?.data) {
-        const cats = Array.isArray(categoriesRes.data.data)
-          ? categoriesRes.data.data
-          : categoriesRes.data.data?.categories || [];
+        const catsData = categoriesRes.data.data as
+          | { _id: string; name: string }[]
+          | { categories?: { _id: string; name: string }[] };
+        const cats = Array.isArray(catsData)
+          ? catsData
+          : (catsData as { categories?: { _id: string; name: string }[] })
+              ?.categories || [];
         setCategories(
           cats.map((c: { _id: string; name: string }) => ({
             _id: c._id,
@@ -113,9 +159,13 @@ const DiscountPage = () => {
         );
       }
       if (tiersRes.data?.data) {
-        const tierData = Array.isArray(tiersRes.data.data)
-          ? tiersRes.data.data
-          : tiersRes.data.data?.tiers || [];
+        const tiersData = tiersRes.data.data as
+          | { _id: string; name: string }[]
+          | { tiers?: { _id: string; name: string }[] };
+        const tierData = Array.isArray(tiersData)
+          ? tiersData
+          : (tiersData as { tiers?: { _id: string; name: string }[] })?.tiers ||
+            [];
         setTiers(
           tierData.map((t: { _id: string; name: string }) => ({
             _id: t._id,
@@ -131,10 +181,45 @@ const DiscountPage = () => {
   const fetchDiscounts = async () => {
     setLoading(true);
     try {
-      const res = await adminCouponService.getAllCoupons();
+      const params: Record<string, unknown> = {
+        page: currentPage,
+        limit,
+      };
+      if (searchQuery) {
+        params.search = searchQuery;
+      }
+      if (statusFilter !== "all") {
+        params.status = statusFilter;
+      }
+      if (typeFilter !== "all") {
+        params.type = typeFilter;
+      }
+      if (scopeFilter !== "all") {
+        params.scope = scopeFilter;
+      }
+      if (redeemableFilter !== "all") {
+        params.isRedeemable = redeemableFilter === "yes";
+      }
+      const res = await adminCouponService.getAllCoupons(params);
       const coupons = Array.isArray(res.data.data)
         ? res.data.data
         : res.data.data?.coupons || [];
+
+      // Extract pagination info if available
+      type PaginationInfo = { totalPages?: number; total?: number };
+      const resData = res.data as {
+        pagination?: PaginationInfo;
+        data?: { pagination?: PaginationInfo };
+      };
+      const pagination = resData.pagination || resData.data?.pagination;
+      if (pagination) {
+        setTotalPages(pagination.totalPages || 1);
+        setTotalCount(pagination.total || coupons.length);
+      } else {
+        setTotalPages(1);
+        setTotalCount(coupons.length);
+      }
+
       setDiscounts(
         coupons.map((c: Coupon) => ({
           _id: c._id,
@@ -159,13 +244,14 @@ const DiscountPage = () => {
           priority: c.priority || "MEDIUM",
           scope: c.scope || "ALL",
           applicableProducts: c.applicableProducts || [],
-          applicableVariants: c.applicableVariants || [],
           applicableCategories: c.applicableCategories || [],
           conditions: c.conditions || {},
         }))
       );
     } catch {
       setDiscounts([]);
+      setTotalCount(0);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -189,7 +275,7 @@ const DiscountPage = () => {
       minOrderValue: discount.minOrderValue,
       startDate: discount.startDate,
       endDate: discount.endDate,
-      maxUses: discount.maxUses,
+      maxUses: discount.maxUses ?? 0,
       isPublic: discount.isPublic,
       isRedeemable: discount.isRedeemable || false,
       pointCost: discount.pointCost || 0,
@@ -197,7 +283,6 @@ const DiscountPage = () => {
       priority: discount.priority || "MEDIUM",
       scope: discount.scope || "ALL",
       applicableProducts: discount.applicableProducts || [],
-      applicableVariants: discount.applicableVariants || [],
       applicableCategories: discount.applicableCategories || [],
       conditions: {
         minQuantity: discount.conditions?.minQuantity || 0,
@@ -217,10 +302,72 @@ const DiscountPage = () => {
     setShowModal(true);
   };
 
+  const openViewModal = async (discount: Discount) => {
+    setShowViewModal(true);
+    setViewingDiscount(discount);
+    setLoadingView(true);
+    try {
+      // Fetch full coupon detail including populated fields
+      const res = await adminCouponService.getCouponById(discount.id);
+      if (res.data?.data) {
+        const fullCoupon = res.data.data as Discount;
+        setViewingDiscount({
+          ...discount,
+          ...fullCoupon,
+          id: discount.id,
+        } as Discount);
+      }
+    } catch {
+      // Keep discount with basic info
+    } finally {
+      setLoadingView(false);
+    }
+  };
+
+  // Helper to get display name for products/categories/tiers
+  const getItemDisplayName = (
+    item: string | { _id: string; name: string; slug?: string },
+    fallbackList?: { _id: string; name: string }[]
+  ): string => {
+    if (typeof item === "object" && item.name) {
+      return item.name;
+    }
+    // If it's a string (ID), try to find name from fallback list
+    const id = typeof item === "string" ? item : item._id;
+    const found = fallbackList?.find((f) => f._id === id);
+    return found?.name || id;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    const data: Partial<Coupon> = {
+
+    // FE Validation - match BE logic
+    if (form.type === "percent" && (form.value < 0 || form.value > 100)) {
+      toast.error("Giá trị phần trăm phải từ 0 đến 100");
+      setSubmitting(false);
+      return;
+    }
+
+    if (form.isRedeemable && form.pointCost <= 0) {
+      toast.error("Coupon đổi bằng điểm phải có số điểm cần đổi > 0");
+      setSubmitting(false);
+      return;
+    }
+
+    if (form.scope === "PRODUCTS" && form.applicableProducts.length === 0) {
+      toast.error("Phạm vi 'Sản phẩm cụ thể' cần chọn ít nhất 1 sản phẩm");
+      setSubmitting(false);
+      return;
+    }
+
+    if (form.scope === "CATEGORIES" && form.applicableCategories.length === 0) {
+      toast.error("Phạm vi 'Danh mục cụ thể' cần chọn ít nhất 1 danh mục");
+      setSubmitting(false);
+      return;
+    }
+
+    const data = {
       code: form.code,
       description: form.description,
       type: form.type,
@@ -231,47 +378,42 @@ const DiscountPage = () => {
       maxUses: form.maxUses,
       isPublic: form.isPublic,
       isRedeemable: form.isRedeemable,
-      pointCost: form.pointCost,
+      pointCost: form.isRedeemable ? form.pointCost : 0,
       maxRedeemPerUser: form.maxRedeemPerUser,
       priority: form.priority,
       scope: form.scope,
+      maxDiscount: form.type === "percent" ? form.maxDiscount : undefined,
+      applicableProducts:
+        form.scope === "PRODUCTS" ? form.applicableProducts : undefined,
+      applicableCategories:
+        form.scope === "CATEGORIES" ? form.applicableCategories : undefined,
+      conditions: showAdvanced
+        ? {
+            minQuantity:
+              (form.conditions?.minQuantity ?? 0) > 0
+                ? form.conditions?.minQuantity
+                : undefined,
+            maxUsagePerUser:
+              (form.conditions?.maxUsagePerUser ?? 0) > 0
+                ? form.conditions?.maxUsagePerUser
+                : undefined,
+            requiredTiers:
+              (form.conditions?.requiredTiers?.length ?? 0) > 0
+                ? form.conditions?.requiredTiers
+                : undefined,
+            firstOrderOnly: form.conditions?.firstOrderOnly || undefined,
+          }
+        : undefined,
     };
-    if (form.type === "percent") {
-      data.maxDiscount = form.maxDiscount;
-    }
-
-    // Advanced scope fields
-    if (form.scope === "PRODUCTS") {
-      data.applicableProducts = form.applicableProducts;
-    } else if (form.scope === "CATEGORIES") {
-      data.applicableCategories = form.applicableCategories;
-    }
-
-    // Advanced conditions
-    if (showAdvanced) {
-      data.conditions = {
-        minQuantity:
-          form.conditions.minQuantity > 0
-            ? form.conditions.minQuantity
-            : undefined,
-        maxUsagePerUser:
-          form.conditions.maxUsagePerUser > 0
-            ? form.conditions.maxUsagePerUser
-            : undefined,
-        requiredTiers:
-          form.conditions.requiredTiers.length > 0
-            ? form.conditions.requiredTiers
-            : undefined,
-        firstOrderOnly: form.conditions.firstOrderOnly || undefined,
-      };
-    }
 
     try {
       if (editDiscount) {
         await adminCouponService.updateCoupon(editDiscount.id, data);
         toast.success("Cập nhật coupon thành công!");
       } else {
-        await adminCouponService.createCoupon(data);
+        await adminCouponService.createCoupon(
+          data as unknown as CreateCouponData
+        );
         toast.success("Thêm coupon thành công!");
       }
       setShowModal(false);
@@ -315,6 +457,27 @@ const DiscountPage = () => {
     }
   };
 
+  const handleArchive = async (discount: Discount) => {
+    setArchivingDiscount(discount);
+    setShowArchiveModal(true);
+  };
+
+  const confirmArchive = async () => {
+    if (!archivingDiscount) return;
+    try {
+      await adminCouponService.updateCouponStatus(archivingDiscount.id, {
+        status: "archived",
+      });
+      toast.success("Đã lưu trữ coupon!");
+      fetchDiscounts();
+    } catch {
+      toast.error("Lưu trữ coupon thất bại!");
+    } finally {
+      setShowArchiveModal(false);
+      setArchivingDiscount(null);
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -342,13 +505,8 @@ const DiscountPage = () => {
     }
   };
 
-  const filteredDiscounts = discounts.filter((d) => {
-    const matchSearch =
-      d.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      d.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchStatus = statusFilter === "all" || d.status === statusFilter;
-    return matchSearch && matchStatus;
-  });
+  // Client-side additional filtering (if server doesn't filter)
+  const displayedDiscounts = discounts;
 
   const getStatusBadge = (status: string) => {
     const styles: Record<string, string> = {
@@ -382,7 +540,7 @@ const DiscountPage = () => {
     };
     const labels: Record<string, string> = {
       HIGH: "Cao",
-      MEDIUM: "TB",
+      MEDIUM: "Trung bình",
       LOW: "Thấp",
     };
     return (
@@ -443,7 +601,10 @@ const DiscountPage = () => {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
                   placeholder="Tìm theo mã hoặc mô tả..."
                   className="w-full pl-10 pr-10 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm"
                   autoFocus
@@ -474,7 +635,10 @@ const DiscountPage = () => {
           </div>
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => {
+              setStatusFilter(e.target.value);
+              setCurrentPage(1);
+            }}
             className="px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 text-sm"
           >
             <option value="all">Tất cả trạng thái</option>
@@ -483,8 +647,45 @@ const DiscountPage = () => {
             <option value="expired">Hết hạn</option>
             <option value="archived">Lưu trữ</option>
           </select>
+          <select
+            value={typeFilter}
+            onChange={(e) => {
+              setTypeFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 text-sm"
+          >
+            <option value="all">Tất cả loại</option>
+            <option value="percent">Phần trăm (%)</option>
+            <option value="fixed">Số tiền cố định</option>
+          </select>
+          <select
+            value={scopeFilter}
+            onChange={(e) => {
+              setScopeFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 text-sm"
+          >
+            <option value="all">Tất cả phạm vi</option>
+            <option value="ALL">Toàn bộ SP</option>
+            <option value="PRODUCTS">Sản phẩm cụ thể</option>
+            <option value="CATEGORIES">Danh mục</option>
+          </select>
+          <select
+            value={redeemableFilter}
+            onChange={(e) => {
+              setRedeemableFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 text-sm"
+          >
+            <option value="all">Tất cả</option>
+            <option value="yes">Đổi điểm</option>
+            <option value="no">Không đổi điểm</option>
+          </select>
           <div className="flex items-center gap-2 text-sm text-mono-500">
-            <span className="font-medium">{filteredDiscounts.length}</span>
+            <span className="font-medium">{totalCount}</span>
             <span>coupon</span>
           </div>
         </div>
@@ -517,7 +718,7 @@ const DiscountPage = () => {
               <span className="text-mono-500 text-sm">Đang tải...</span>
             </div>
           </div>
-        ) : filteredDiscounts.length === 0 ? (
+        ) : displayedDiscounts.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-mono-400">
             <svg
               className="w-16 h-16 mb-4"
@@ -571,7 +772,7 @@ const DiscountPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-mono-100">
-                {filteredDiscounts.map((discount) => (
+                {displayedDiscounts.map((discount) => (
                   <tr
                     key={discount.id}
                     className="hover:bg-mono-50 transition-colors"
@@ -581,8 +782,8 @@ const DiscountPage = () => {
                         <span className="font-mono font-bold text-mono-900">
                           {discount.code}
                         </span>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          {getPriorityBadge(discount.priority)}
+                        <div className="flex flex-wrap items-center gap-1 mt-0.5">
+                          {getPriorityBadge(discount.priority || "MEDIUM")}
                           {discount.isPublic ? (
                             <span className="text-[10px] text-mono-500">
                               Công khai
@@ -593,8 +794,14 @@ const DiscountPage = () => {
                             </span>
                           )}
                           {discount.isRedeemable && (
-                            <span className="text-[10px] bg-mono-200 text-mono-700 px-1.5 py-0.5 rounded">
-                              Đổi điểm
+                            <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
+                              🎁 {discount.pointCost || 0}đ
+                            </span>
+                          )}
+                          {discount.scope && discount.scope !== "ALL" && (
+                            <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">
+                              {discount.scope === "PRODUCTS" && "📦 Sản phẩm"}
+                              {discount.scope === "CATEGORIES" && "📁 Danh mục"}
                             </span>
                           )}
                         </div>
@@ -616,10 +823,13 @@ const DiscountPage = () => {
                             : `${discount.value.toLocaleString("vi-VN")}đ`}
                         </span>
                         {discount.type === "percent" &&
-                          discount.maxDiscount > 0 && (
+                          (discount.maxDiscount ?? 0) > 0 && (
                             <span className="text-xs text-mono-500">
                               Tối đa{" "}
-                              {discount.maxDiscount.toLocaleString("vi-VN")}đ
+                              {(discount.maxDiscount ?? 0).toLocaleString(
+                                "vi-VN"
+                              )}
+                              đ
                             </span>
                           )}
                       </div>
@@ -666,6 +876,31 @@ const DiscountPage = () => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-1 justify-center">
+                        <button
+                          onClick={() => openViewModal(discount)}
+                          className="p-1.5 bg-mono-50 hover:bg-mono-100 text-mono-700 rounded-lg transition-colors"
+                          title="Xem chi tiết"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                        </button>
                         {canUpdate() && (
                           <button
                             onClick={() => openEditModal(discount)}
@@ -741,6 +976,28 @@ const DiscountPage = () => {
                             </svg>
                           </button>
                         )}
+                        {canToggleStatus() &&
+                          discount.status !== "archived" && (
+                            <button
+                              onClick={() => handleArchive(discount)}
+                              className="p-1.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg transition-colors"
+                              title="Lưu trữ"
+                            >
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                                />
+                              </svg>
+                            </button>
+                          )}
                       </div>
                     </td>
                   </tr>
@@ -750,6 +1007,115 @@ const DiscountPage = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination - Always show if totalCount > 0 */}
+      {totalCount > 0 && (
+        <div className="flex items-center justify-between mt-6">
+          <div className="text-sm text-mono-600">
+            Trang {currentPage} / {totalPages || 1} • Tổng: {totalCount} coupon
+          </div>
+          {totalPages > 1 && (
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  currentPage === 1
+                    ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                    : "bg-mono-200 text-mono-700 hover:bg-mono-300"
+                }`}
+              >
+                Trước
+              </button>
+
+              {/* Page Numbers */}
+              {(() => {
+                const pages = [];
+                const showPages = 5;
+                let startPage = Math.max(
+                  1,
+                  currentPage - Math.floor(showPages / 2)
+                );
+                const endPage = Math.min(totalPages, startPage + showPages - 1);
+
+                if (endPage - startPage < showPages - 1) {
+                  startPage = Math.max(1, endPage - showPages + 1);
+                }
+
+                if (startPage > 1) {
+                  pages.push(
+                    <button
+                      key={1}
+                      onClick={() => setCurrentPage(1)}
+                      className="px-3 py-2 rounded-lg font-medium bg-mono-200 text-mono-700 hover:bg-mono-300 transition-all"
+                    >
+                      1
+                    </button>
+                  );
+                  if (startPage > 2) {
+                    pages.push(
+                      <span key="ellipsis1" className="px-2 text-mono-500">
+                        ...
+                      </span>
+                    );
+                  }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i)}
+                      className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                        i === currentPage
+                          ? "bg-mono-black text-white"
+                          : "bg-mono-200 text-mono-700 hover:bg-mono-300"
+                      }`}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+
+                if (endPage < totalPages) {
+                  if (endPage < totalPages - 1) {
+                    pages.push(
+                      <span key="ellipsis2" className="px-2 text-mono-500">
+                        ...
+                      </span>
+                    );
+                  }
+                  pages.push(
+                    <button
+                      key={totalPages}
+                      onClick={() => setCurrentPage(totalPages)}
+                      className="px-3 py-2 rounded-lg font-medium bg-mono-200 text-mono-700 hover:bg-mono-300 transition-all"
+                    >
+                      {totalPages}
+                    </button>
+                  );
+                }
+
+                return pages;
+              })()}
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  currentPage === totalPages
+                    ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                    : "bg-mono-200 text-mono-700 hover:bg-mono-300"
+                }`}
+              >
+                Tiếp
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Modal Form */}
       {showModal && (
@@ -1043,29 +1409,37 @@ const DiscountPage = () => {
                         <label className="block text-sm font-medium text-mono-700 mb-1.5">
                           Chọn sản phẩm áp dụng
                         </label>
-                        <select
-                          multiple
-                          value={form.applicableProducts}
-                          onChange={(e) => {
-                            const selected = Array.from(
-                              e.target.selectedOptions,
-                              (opt) => opt.value
-                            );
-                            setForm((prev) => ({
-                              ...prev,
-                              applicableProducts: selected,
-                            }));
-                          }}
-                          className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm h-32"
-                        >
+                        <div className="border border-mono-300 rounded-lg max-h-48 overflow-y-auto p-2 space-y-1">
                           {products.map((p) => (
-                            <option key={p._id} value={p._id}>
-                              {p.name}
-                            </option>
+                            <label
+                              key={p._id}
+                              className="flex items-center gap-2 px-2 py-1.5 hover:bg-mono-50 rounded cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={form.applicableProducts.includes(
+                                  p._id
+                                )}
+                                onChange={(e) => {
+                                  setForm((prev) => ({
+                                    ...prev,
+                                    applicableProducts: e.target.checked
+                                      ? [...prev.applicableProducts, p._id]
+                                      : prev.applicableProducts.filter(
+                                          (id) => id !== p._id
+                                        ),
+                                  }));
+                                }}
+                                className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
+                              />
+                              <span className="text-sm text-mono-700 truncate">
+                                {p.name}
+                              </span>
+                            </label>
                           ))}
-                        </select>
+                        </div>
                         <p className="text-xs text-mono-500 mt-1">
-                          Giữ Ctrl để chọn nhiều sản phẩm
+                          Đã chọn: {form.applicableProducts.length} sản phẩm
                         </p>
                       </div>
                     )}
@@ -1076,29 +1450,37 @@ const DiscountPage = () => {
                         <label className="block text-sm font-medium text-mono-700 mb-1.5">
                           Chọn danh mục áp dụng
                         </label>
-                        <select
-                          multiple
-                          value={form.applicableCategories}
-                          onChange={(e) => {
-                            const selected = Array.from(
-                              e.target.selectedOptions,
-                              (opt) => opt.value
-                            );
-                            setForm((prev) => ({
-                              ...prev,
-                              applicableCategories: selected,
-                            }));
-                          }}
-                          className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm h-32"
-                        >
+                        <div className="border border-mono-300 rounded-lg max-h-48 overflow-y-auto p-2 space-y-1">
                           {categories.map((c) => (
-                            <option key={c._id} value={c._id}>
-                              {c.name}
-                            </option>
+                            <label
+                              key={c._id}
+                              className="flex items-center gap-2 px-2 py-1.5 hover:bg-mono-50 rounded cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={form.applicableCategories.includes(
+                                  c._id
+                                )}
+                                onChange={(e) => {
+                                  setForm((prev) => ({
+                                    ...prev,
+                                    applicableCategories: e.target.checked
+                                      ? [...prev.applicableCategories, c._id]
+                                      : prev.applicableCategories.filter(
+                                          (id) => id !== c._id
+                                        ),
+                                  }));
+                                }}
+                                className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
+                              />
+                              <span className="text-sm text-mono-700 truncate">
+                                {c.name}
+                              </span>
+                            </label>
                           ))}
-                        </select>
+                        </div>
                         <p className="text-xs text-mono-500 mt-1">
-                          Giữ Ctrl để chọn nhiều danh mục
+                          Đã chọn: {form.applicableCategories.length} danh mục
                         </p>
                       </div>
                     )}
@@ -1153,30 +1535,42 @@ const DiscountPage = () => {
                         <label className="block text-sm font-medium text-mono-700 mb-1.5">
                           Yêu cầu hạng thành viên
                         </label>
-                        <select
-                          multiple
-                          value={form.conditions.requiredTiers || []}
-                          onChange={(e) => {
-                            const selected = Array.from(
-                              e.target.selectedOptions,
-                              (opt) => opt.value
-                            );
-                            setForm((prev) => ({
-                              ...prev,
-                              conditions: {
-                                ...prev.conditions,
-                                requiredTiers: selected,
-                              },
-                            }));
-                          }}
-                          className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm"
-                        >
+                        <div className="border border-mono-300 rounded-lg max-h-36 overflow-y-auto p-2 space-y-1">
                           {tiers.map((t) => (
-                            <option key={t._id} value={t._id}>
-                              {t.name}
-                            </option>
+                            <label
+                              key={t._id}
+                              className="flex items-center gap-2 px-2 py-1.5 hover:bg-mono-50 rounded cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={(
+                                  form.conditions.requiredTiers || []
+                                ).includes(t._id)}
+                                onChange={(e) => {
+                                  setForm((prev) => ({
+                                    ...prev,
+                                    conditions: {
+                                      ...prev.conditions,
+                                      requiredTiers: e.target.checked
+                                        ? [
+                                            ...(prev.conditions.requiredTiers ||
+                                              []),
+                                            t._id,
+                                          ]
+                                        : (
+                                            prev.conditions.requiredTiers || []
+                                          ).filter((id) => id !== t._id),
+                                    },
+                                  }));
+                                }}
+                                className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
+                              />
+                              <span className="text-sm text-mono-700">
+                                {t.name}
+                              </span>
+                            </label>
                           ))}
-                        </select>
+                        </div>
                         <p className="text-xs text-mono-500 mt-1">
                           Để trống = tất cả hạng đều dùng được
                         </p>
@@ -1241,6 +1635,313 @@ const DiscountPage = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* View Detail Modal */}
+      {showViewModal && viewingDiscount && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden">
+            <div className="px-6 py-4 border-b border-mono-200 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-mono-900">
+                Chi tiết Coupon
+              </h3>
+              <button
+                onClick={() => {
+                  setShowViewModal(false);
+                  setViewingDiscount(null);
+                }}
+                className="p-1.5 hover:bg-mono-100 rounded-lg transition-colors"
+              >
+                <svg
+                  className="w-5 h-5 text-mono-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="overflow-y-auto max-h-[calc(90vh-100px)] p-6 space-y-4">
+              {/* Basic Info */}
+              <div className="flex items-center justify-between">
+                <span className="font-mono font-bold text-xl text-mono-900">
+                  {viewingDiscount.code}
+                </span>
+                {getStatusBadge(viewingDiscount.status)}
+              </div>
+
+              <p className="text-mono-700">{viewingDiscount.description}</p>
+
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <div className="bg-mono-50 rounded-lg p-3">
+                  <p className="text-xs text-mono-500 mb-1">Loại giảm giá</p>
+                  <p className="font-semibold text-mono-900">
+                    {viewingDiscount.type === "percent"
+                      ? `${viewingDiscount.value}%`
+                      : `${viewingDiscount.value.toLocaleString("vi-VN")}đ`}
+                  </p>
+                  {viewingDiscount.type === "percent" &&
+                    (viewingDiscount.maxDiscount ?? 0) > 0 && (
+                      <p className="text-xs text-mono-500 mt-1">
+                        Tối đa{" "}
+                        {(viewingDiscount.maxDiscount ?? 0).toLocaleString(
+                          "vi-VN"
+                        )}
+                        đ
+                      </p>
+                    )}
+                </div>
+                <div className="bg-mono-50 rounded-lg p-3">
+                  <p className="text-xs text-mono-500 mb-1">Đơn tối thiểu</p>
+                  <p className="font-semibold text-mono-900">
+                    {viewingDiscount.minOrderValue > 0
+                      ? `${viewingDiscount.minOrderValue.toLocaleString(
+                          "vi-VN"
+                        )}đ`
+                      : "Không yêu cầu"}
+                  </p>
+                </div>
+                <div className="bg-mono-50 rounded-lg p-3">
+                  <p className="text-xs text-mono-500 mb-1">Thời hạn</p>
+                  <p className="font-semibold text-mono-900 text-sm">
+                    {viewingDiscount.startDate} → {viewingDiscount.endDate}
+                  </p>
+                </div>
+                <div className="bg-mono-50 rounded-lg p-3">
+                  <p className="text-xs text-mono-500 mb-1">Lượt sử dụng</p>
+                  <p className="font-semibold text-mono-900">
+                    {viewingDiscount.currentUses} /{" "}
+                    {viewingDiscount.maxUses || "∞"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                {viewingDiscount.isPublic && (
+                  <span className="px-2 py-1 bg-mono-200 text-mono-700 text-xs rounded-full">
+                    Công khai
+                  </span>
+                )}
+                {viewingDiscount.isRedeemable && (
+                  <span className="px-2 py-1 bg-mono-200 text-mono-700 text-xs rounded-full">
+                    Đổi điểm: {viewingDiscount.pointCost} điểm
+                  </span>
+                )}
+                <span className="px-2 py-1 bg-mono-200 text-mono-700 text-xs rounded-full">
+                  Ưu tiên: {viewingDiscount.priority || "MEDIUM"}
+                </span>
+              </div>
+
+              {/* Advanced Info */}
+              <div className="border-t border-mono-200 pt-4 space-y-3">
+                <h4 className="font-semibold text-mono-900">
+                  Cài đặt nâng cao
+                </h4>
+
+                {loadingView ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-mono-900"></div>
+                    <span className="ml-2 text-sm text-mono-500">
+                      Đang tải chi tiết...
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="bg-mono-50 rounded-lg p-3">
+                      <p className="text-xs text-mono-500 mb-1">
+                        Phạm vi áp dụng
+                      </p>
+                      <p className="font-semibold text-mono-900">
+                        {viewingDiscount.scope === "ALL" && "Tất cả sản phẩm"}
+                        {viewingDiscount.scope === "PRODUCTS" &&
+                          "Sản phẩm cụ thể"}
+                        {viewingDiscount.scope === "CATEGORIES" &&
+                          "Danh mục cụ thể"}
+                      </p>
+                      {viewingDiscount.scope === "PRODUCTS" &&
+                        (viewingDiscount.applicableProducts?.length ?? 0) >
+                          0 && (
+                          <div className="mt-2 space-y-1">
+                            <p className="text-xs text-mono-500">
+                              Sản phẩm áp dụng (
+                              {viewingDiscount.applicableProducts?.length}):
+                            </p>
+                            <div className="max-h-32 overflow-y-auto">
+                              {(viewingDiscount.applicableProducts || []).map(
+                                (p, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="block text-sm text-mono-700 py-0.5"
+                                  >
+                                    • {getItemDisplayName(p, products)}
+                                  </span>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      {viewingDiscount.scope === "CATEGORIES" &&
+                        (viewingDiscount.applicableCategories?.length ?? 0) >
+                          0 && (
+                          <div className="mt-2 space-y-1">
+                            <p className="text-xs text-mono-500">
+                              Danh mục áp dụng (
+                              {viewingDiscount.applicableCategories?.length}):
+                            </p>
+                            <div className="max-h-32 overflow-y-auto">
+                              {(viewingDiscount.applicableCategories || []).map(
+                                (c, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="block text-sm text-mono-700 py-0.5"
+                                  >
+                                    • {getItemDisplayName(c, categories)}
+                                  </span>
+                                )
+                              )}
+                            </div>
+                          </div>
+                        )}
+                    </div>
+
+                    {viewingDiscount.conditions && (
+                      <div className="bg-mono-50 rounded-lg p-3">
+                        <p className="text-xs text-mono-500 mb-2">Điều kiện</p>
+                        <div className="space-y-1 text-sm">
+                          {(viewingDiscount.conditions.minQuantity ?? 0) >
+                            0 && (
+                            <p className="text-mono-700">
+                              • SL sản phẩm tối thiểu:{" "}
+                              {viewingDiscount.conditions.minQuantity}
+                            </p>
+                          )}
+                          {(viewingDiscount.conditions.maxUsagePerUser ?? 0) >
+                            0 && (
+                            <p className="text-mono-700">
+                              • Số lần dùng/người:{" "}
+                              {viewingDiscount.conditions.maxUsagePerUser}
+                            </p>
+                          )}
+                          {viewingDiscount.conditions.firstOrderOnly && (
+                            <p className="text-mono-700">
+                              • Chỉ áp dụng đơn hàng đầu tiên
+                            </p>
+                          )}
+                          {(viewingDiscount.conditions.requiredTiers?.length ??
+                            0) > 0 && (
+                            <p className="text-mono-700">
+                              • Yêu cầu hạng:{" "}
+                              {viewingDiscount.conditions.requiredTiers
+                                ?.map((t) => getItemDisplayName(t, tiers))
+                                .join(", ")}
+                            </p>
+                          )}
+                          {!(viewingDiscount.conditions.minQuantity ?? 0) &&
+                            !(
+                              viewingDiscount.conditions.maxUsagePerUser ?? 0
+                            ) &&
+                            !viewingDiscount.conditions.firstOrderOnly &&
+                            !(
+                              viewingDiscount.conditions.requiredTiers
+                                ?.length ?? 0
+                            ) && (
+                              <p className="text-mono-500">
+                                Không có điều kiện đặc biệt
+                              </p>
+                            )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Users collected */}
+                    {(viewingDiscount.users?.length ?? 0) > 0 && (
+                      <div className="bg-mono-50 rounded-lg p-3">
+                        <p className="text-xs text-mono-500 mb-1">
+                          Số người đã thu thập
+                        </p>
+                        <p className="font-semibold text-mono-900">
+                          {viewingDiscount.users?.length} người
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Archive Modal */}
+      {showArchiveModal && archivingDiscount && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-mono-200">
+              <h3 className="text-lg font-bold text-mono-900">
+                Xác nhận lưu trữ Coupon
+              </h3>
+            </div>
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-amber-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p className="font-mono font-bold text-lg text-mono-900">
+                    {archivingDiscount.code}
+                  </p>
+                  <p className="text-sm text-mono-600">
+                    {archivingDiscount.description}
+                  </p>
+                </div>
+              </div>
+              <p className="text-mono-700 mb-2">
+                Bạn có chắc chắn muốn lưu trữ coupon này?
+              </p>
+              <p className="text-sm text-mono-500">
+                • Coupon sẽ không còn hoạt động và không thể được sử dụng
+                <br />• Bạn có thể xem lại trong danh sách với trạng thái "Lưu
+                trữ"
+              </p>
+            </div>
+            <div className="px-6 py-4 border-t border-mono-200 flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowArchiveModal(false);
+                  setArchivingDiscount(null);
+                }}
+                className="px-4 py-2 text-sm font-medium text-mono-700 bg-mono-100 hover:bg-mono-200 rounded-lg transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmArchive}
+                className="px-4 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors"
+              >
+                Xác nhận lưu trữ
+              </button>
+            </div>
           </div>
         </div>
       )}
