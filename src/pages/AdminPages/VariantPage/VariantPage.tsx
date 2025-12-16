@@ -365,22 +365,22 @@ const VariantPage: React.FC = () => {
       {/* Modal hiển thị form */}
       {isFormOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">
-            {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-mono-800 to-mono-900 text-white p-6 rounded-t-xl">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] flex flex-col">
+            {/* Header - Fixed white background with proper z-index */}
+            <div className="sticky top-0 bg-white border-b border-mono-200 p-6 rounded-t-xl z-10">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold">
+                  <h2 className="text-xl font-bold text-mono-900">
                     {editingVariant ? "Cập nhật biến thể" : "Thêm biến thể mới"}
                   </h2>
-                  <p className="text-sm text-mono-300 mt-1">
+                  <p className="text-sm text-mono-500 mt-1">
                     {editingVariant
                       ? "Chỉnh sửa thông tin biến thể sản phẩm"
                       : "Tạo biến thể mới cho sản phẩm"}
                   </p>
                 </div>
                 <button
-                  className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 text-white transition-all"
+                  className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-mono-100 text-mono-600 transition-all"
                   onClick={handleCloseForm}
                   title="Đóng"
                 >
@@ -400,7 +400,8 @@ const VariantPage: React.FC = () => {
                 </button>
               </div>
             </div>
-            <div className="p-6">
+            {/* Content - Scrollable */}
+            <div className="p-6 overflow-y-auto flex-1">
               <VariantForm
                 onSuccess={handleSuccess}
                 editingVariant={editingVariant}
@@ -508,7 +509,8 @@ const VariantPage: React.FC = () => {
                                 : defaultImage
                             }
                             alt={`${
-                              typeof v.product === "object"
+                              typeof v.product === "object" &&
+                              v.product !== null
                                 ? v.product.name
                                 : "Variant"
                             }`}
@@ -522,9 +524,9 @@ const VariantPage: React.FC = () => {
                       <td className="px-6 py-4">
                         <div className="flex flex-col space-y-1">
                           <p className="text-sm font-semibold text-mono-900">
-                            {typeof v.product === "object"
+                            {typeof v.product === "object" && v.product !== null
                               ? v.product.name
-                              : v.product}
+                              : v.product || "N/A"}
                           </p>
                           <p
                             className="text-xs text-mono-500 font-mono"
@@ -536,13 +538,13 @@ const VariantPage: React.FC = () => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          {typeof v.color === "object" && (
+                          {typeof v.color === "object" && v.color !== null && (
                             <ColorSwatch color={v.color} size="lg" />
                           )}
                           <span className="text-sm font-medium text-mono-700">
-                            {typeof v.color === "object"
+                            {typeof v.color === "object" && v.color !== null
                               ? v.color.name
-                              : v.color}
+                              : v.color || "N/A"}
                           </span>
                         </div>
                       </td>
@@ -1074,11 +1076,13 @@ const VariantPage: React.FC = () => {
               <p className="text-mono-700">
                 Bạn có chắc chắn muốn xóa biến thể{" "}
                 <strong className="text-mono-900">
-                  {typeof variantToDelete.product === "object"
+                  {typeof variantToDelete.product === "object" &&
+                  variantToDelete.product !== null
                     ? variantToDelete.product.name
                     : "Sản phẩm"}{" "}
                   -{" "}
-                  {typeof variantToDelete.color === "object"
+                  {typeof variantToDelete.color === "object" &&
+                  variantToDelete.color !== null
                     ? variantToDelete.color.name
                     : "Màu"}
                 </strong>

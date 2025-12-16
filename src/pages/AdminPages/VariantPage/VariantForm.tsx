@@ -285,6 +285,8 @@ const VariantForm: React.FC<VariantFormProps> = ({
             {form.sizes.map((s: any, idx: number) => {
               const constraint = getSizeConstraint(s.size);
               const isConstrained = constraint && !constraint.canRemove;
+              // Get size name from sizesList
+              const selectedSize = sizesList.find((sz) => sz._id === s.size);
 
               return (
                 <div key={idx} className="flex gap-3 items-start">
@@ -304,14 +306,37 @@ const VariantForm: React.FC<VariantFormProps> = ({
                       <option value="">Chọn size</option>
                       {sizesList.map((sz) => (
                         <option key={sz._id} value={sz._id}>
-                          {sz.value}
+                          {sz.value} {sz.name ? `(${sz.name})` : ""}{" "}
+                          {sz.description ? `- ${sz.description}` : ""}
                         </option>
                       ))}
                     </select>
 
+                    {/* Hiển thị thông tin size đã chọn khi không có constraint */}
+                    {selectedSize && !constraint && (
+                      <div className="mt-1 flex flex-wrap gap-2 text-xs">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-mono-100 text-mono-600 rounded">
+                          Size: {selectedSize.value}
+                        </span>
+                        {selectedSize.name && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-mono-100 text-mono-600 rounded">
+                            Tên: {selectedSize.name}
+                          </span>
+                        )}
+                        {selectedSize.description && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-mono-100 text-mono-600 rounded">
+                            {selectedSize.description}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     {/* Hiển thị thông tin ràng buộc */}
                     {constraint && (
                       <div className="mt-1 flex flex-wrap gap-2 text-xs">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-mono-100 text-mono-600 rounded font-medium">
+                          Size: {constraint.sizeName}
+                        </span>
                         {constraint.orderCount > 0 && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 text-red-700 rounded">
                             <FiShoppingCart className="w-3 h-3" />
@@ -324,6 +349,12 @@ const VariantForm: React.FC<VariantFormProps> = ({
                             {constraint.inventoryQuantity} trong kho
                           </span>
                         )}
+                        {constraint.inventoryQuantity === 0 &&
+                          constraint.orderCount === 0 && (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 rounded">
+                              Có thể xóa
+                            </span>
+                          )}
                         {constraint.sku && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-mono-100 text-mono-600 rounded font-mono">
                             SKU: {constraint.sku}
