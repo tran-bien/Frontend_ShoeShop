@@ -21,7 +21,8 @@ export const adminSizeService = {
   // Tạo mới kích cỡ
   create: (data: {
     value: string;
-    region: string;
+    type: string;
+    description?: string;
   }): Promise<{ data: ApiResponse<Size> }> =>
     axiosInstanceAuth.post("/api/v1/admin/sizes", data),
 
@@ -30,7 +31,8 @@ export const adminSizeService = {
     id: string,
     data: {
       value?: string;
-      region?: string;
+      type?: string;
+      description?: string;
     }
   ): Promise<{ data: ApiResponse<Size> }> =>
     axiosInstanceAuth.put(`/api/v1/admin/sizes/${id}`, data),

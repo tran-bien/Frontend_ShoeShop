@@ -4,6 +4,7 @@ import { Category } from "../../../types/category";
 import { adminCategoryService } from "../../../services/CategoryService";
 import AddCategoryPage from "./AddCategories";
 import { useAuth } from "../../../hooks/useAuth";
+import { toast } from "react-hot-toast";
 
 interface CategoryPageCategory extends Category {
   deletedAt?: string | null;
@@ -223,6 +224,11 @@ const ListCategoriesPage: React.FC = () => {
   const [viewDetailCategory, setViewDetailCategory] =
     useState<CategoryPageCategory | null>(null);
 
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] =
+    useState<CategoryPageCategory | null>(null);
+
   const fetchCategories = async (page: number = 1) => {
     try {
       const params = {
@@ -268,7 +274,10 @@ const ListCategoriesPage: React.FC = () => {
   // Fetch stats with limit=100 for estimation
   const fetchStats = async () => {
     try {
-      const statsResponse = await adminCategoryService.getAll({ page: 1, limit: 100 });
+      const statsResponse = await adminCategoryService.getAll({
+        page: 1,
+        limit: 100,
+      });
       const statsData = statsResponse.data.data || [];
       const totalFromAPI = statsResponse.data.total || 0;
 
@@ -319,9 +328,16 @@ const ListCategoriesPage: React.FC = () => {
     setIsSearchVisible(true);
   };
 
-  const handleDeleteCategory = async (id: string) => {
+  const handleDeleteCategory = (category: CategoryPageCategory) => {
+    setCategoryToDelete(category);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteCategory = async () => {
+    if (!categoryToDelete) return;
     try {
-      await adminCategoryService.delete(id);
+      await adminCategoryService.delete(categoryToDelete._id);
+      toast.success(`Đã xóa danh mục "${categoryToDelete.name}"`);
       if (showDeleted) {
         fetchDeletedCategories(currentPage);
       } else {
@@ -329,28 +345,33 @@ const ListCategoriesPage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      toast.error("Xóa danh mục thất bại!");
+    } finally {
+      setShowDeleteModal(false);
+      setCategoryToDelete(null);
     }
   };
 
   const handleRestoreCategory = async (id: string) => {
     try {
       await adminCategoryService.restore(id);
+      toast.success("Khôi phục danh mục thành công!");
       fetchDeletedCategories(currentPage);
       fetchCategories(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      toast.error("Khôi phục danh mục thất bại!");
     }
   };
 
   const handleUpdateStatus = async (id: string, isActive: boolean) => {
     try {
       await adminCategoryService.updateStatus(id, { isActive });
+      toast.success(isActive ? "Đã kích hoạt danh mục" : "Đã ẩn danh mục");
       fetchCategories(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      toast.error("Cập nhật trạng thái thất bại!");
     }
   };
 
@@ -406,9 +427,7 @@ const ListCategoriesPage: React.FC = () => {
             <h3 className="text-sm font-medium text-mono-700 mb-1">
               Không hoạt động
             </h3>
-            <p className="text-3xl font-bold text-mono-900">
-              {inactiveCount}
-            </p>
+            <p className="text-3xl font-bold text-mono-900">{inactiveCount}</p>
           </div>
         </div>
       )}
@@ -582,7 +601,7 @@ const ListCategoriesPage: React.FC = () => {
                         )}
                         {canDelete() && (
                           <button
-                            onClick={() => handleDeleteCategory(item._id)}
+                            onClick={() => handleDeleteCategory(item)}
                             className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                           >
                             <svg
@@ -776,14 +795,60 @@ const ListCategoriesPage: React.FC = () => {
           onClose={() => setViewDetailCategory(null)}
         />
       )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && categoryToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-center text-mono-900 mb-2">
+                Xác nhận xóa danh mục
+              </h3>
+              <p className="text-center text-mono-600 mb-6">
+                Bạn có chắc chắn muốn xóa danh mục{" "}
+                <span className="font-semibold text-mono-900">
+                  "{categoryToDelete.name}"
+                </span>
+                ? Hành động này có thể được khôi phục sau.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setCategoryToDelete(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-mono-100 hover:bg-mono-200 text-mono-700 font-medium rounded-lg transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={confirmDeleteCategory}
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Xóa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ListCategoriesPage;
-
-
-
-
-
-

@@ -5,6 +5,8 @@ import VariantForm from "./VariantForm";
 import VariantImagesManager from "./VariantImagesManager";
 import ColorSwatch from "../../../components/Custom/ColorSwatch";
 import { useAuth } from "../../../hooks/useAuth";
+import { toast } from "react-hot-toast";
+import defaultImage from "../../../assets/image_df.png";
 
 const VariantPage: React.FC = () => {
   const [variants, setVariants] = useState<Variant[]>([]);
@@ -13,6 +15,10 @@ const VariantPage: React.FC = () => {
   const [editingVariant, setEditingVariant] = useState<Variant | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [showDeleted, setShowDeleted] = useState(false);
+
+  // State cho modal xác nhận xóa
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [variantToDelete, setVariantToDelete] = useState<Variant | null>(null);
 
   // State cho expanded sizes dropdown
   const [expandedSizes, setExpandedSizes] = useState<Record<string, boolean>>(
@@ -144,18 +150,39 @@ const VariantPage: React.FC = () => {
   ]);
 
   // Xóa mềm
-  const handleDelete = async (id: string) => {
-    await adminVariantService.deleteVariant(id);
-    fetchVariants();
+  const handleDelete = async (variant: Variant) => {
+    setVariantToDelete(variant);
+    setShowDeleteModal(true);
+  };
+
+  // Xác nhận xóa
+  const confirmDelete = async () => {
+    if (!variantToDelete) return;
+    try {
+      await adminVariantService.deleteVariant(variantToDelete._id);
+      toast.success("Đã xóa biến thể thành công");
+      setShowDeleteModal(false);
+      setVariantToDelete(null);
+      fetchVariants();
+    } catch (error) {
+      console.error("Error deleting variant:", error);
+      toast.error("Không thể xóa biến thể");
+    }
   };
 
   // Khôi phục
   const handleRestore = async (id: string) => {
-    await adminVariantService.restoreVariant(id);
-    if (showDeleted) {
-      fetchDeletedVariants();
+    try {
+      await adminVariantService.restoreVariant(id);
+      toast.success("Đã khôi phục biến thể thành công");
+      if (showDeleted) {
+        fetchDeletedVariants();
+      }
+      fetchVariants();
+    } catch (error) {
+      console.error("Error restoring variant:", error);
+      toast.error("Không thể khôi phục biến thể");
     }
-    fetchVariants();
   };
   // Bắt đầu cập nhật
   const handleEdit = (variant: Variant) => {
@@ -337,19 +364,48 @@ const VariantPage: React.FC = () => {
       )}
       {/* Modal hiển thị form */}
       {isFormOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-2xl relative">
-            <button
-              className="absolute top-2 right-2 text-mono-500 hover:text-mono-800 text-xl"
-              onClick={handleCloseForm}
-              title="Đóng"
-            >
-              ×
-            </button>
-            <VariantForm
-              onSuccess={handleSuccess}
-              editingVariant={editingVariant}
-            />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-mono-800 to-mono-900 text-white p-6 rounded-t-xl">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="text-xl font-bold">
+                    {editingVariant ? "Cập nhật biến thể" : "Thêm biến thể mới"}
+                  </h2>
+                  <p className="text-sm text-mono-300 mt-1">
+                    {editingVariant
+                      ? "Chỉnh sửa thông tin biến thể sản phẩm"
+                      : "Tạo biến thể mới cho sản phẩm"}
+                  </p>
+                </div>
+                <button
+                  className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 text-white transition-all"
+                  onClick={handleCloseForm}
+                  title="Đóng"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-6">
+              <VariantForm
+                onSuccess={handleSuccess}
+                editingVariant={editingVariant}
+              />
+            </div>
           </div>
         </div>
       )}
@@ -392,6 +448,9 @@ const VariantPage: React.FC = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gradient-to-r from-mono-50 to-mono-100">
                 <tr>
+                  <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
+                    Hình ảnh
+                  </th>
                   <th className="py-4 px-6 text-left text-xs font-bold text-mono-700 uppercase tracking-wider">
                     Biến thể
                   </th>
@@ -437,6 +496,24 @@ const VariantPage: React.FC = () => {
                       key={v._id}
                       className="hover:bg-mono-50 transition-colors"
                     >
+                      {/* Main Image */}
+                      <td className="px-6 py-4">
+                        <div className="w-16 h-16 rounded-lg overflow-hidden border border-mono-200 bg-mono-50">
+                          <img
+                            src={
+                              v.imagesvariant && v.imagesvariant.length > 0
+                                ? v.imagesvariant[0].url
+                                : defaultImage
+                            }
+                            alt={`${
+                              typeof v.product === "object"
+                                ? v.product.name
+                                : "Variant"
+                            }`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </td>
                       <td className="px-6 py-4">
                         <div className="flex flex-col space-y-1">
                           <p className="text-sm font-semibold text-mono-900">
@@ -484,19 +561,46 @@ const VariantPage: React.FC = () => {
                       {/* Cell giá bán */}
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          {(v as any).priceFinal ? (
+                          {/* BE đã tính toán giá cho cả biến thể đã xóa từ inventory */}
+                          {v.inventorySummary?.sizeInventory &&
+                          v.inventorySummary.sizeInventory.length > 0 ? (
+                            (() => {
+                              const prices = v.inventorySummary.sizeInventory
+                                .map((s) => s.sellingPrice)
+                                .filter((p) => p > 0);
+                              if (prices.length === 0) {
+                                return (
+                                  <span className="text-sm text-mono-400 italic">
+                                    Chưa có giá
+                                  </span>
+                                );
+                              }
+                              const minPrice = Math.min(...prices);
+                              const maxPrice = Math.max(...prices);
+                              return (
+                                <span className="text-sm font-semibold text-mono-900">
+                                  {minPrice === maxPrice
+                                    ? `${minPrice.toLocaleString("vi-VN")}₫`
+                                    : `${minPrice.toLocaleString(
+                                        "vi-VN"
+                                      )}₫ - ${maxPrice.toLocaleString(
+                                        "vi-VN"
+                                      )}₫`}
+                                </span>
+                              );
+                            })()
+                          ) : v.priceFinal ? (
                             <>
                               <span className="text-sm font-semibold text-mono-900">
-                                {(v as any).priceFinal?.toLocaleString("vi-VN")}
-                                ₫
+                                {v.priceFinal?.toLocaleString("vi-VN")}₫
                               </span>
-                              {(v as any).percentDiscount > 0 && (
+                              {(v.percentDiscount ?? 0) > 0 && (
                                 <div className="flex items-center gap-1.5">
                                   <span className="text-xs text-mono-500 line-through">
-                                    {(v as any).price?.toLocaleString("vi-VN")}₫
+                                    {v.price?.toLocaleString("vi-VN")}₫
                                   </span>
                                   <span className="text-xs font-semibold text-red-600 bg-red-50 px-1.5 py-0.5 rounded">
-                                    -{(v as any).percentDiscount}%
+                                    -{v.percentDiscount}%
                                   </span>
                                 </div>
                               )}
@@ -688,11 +792,26 @@ const VariantPage: React.FC = () => {
                                       : "bg-mono-50 hover:bg-mono-100 text-mono-600 border-mono-200"
                                   }`}
                                   onClick={async () => {
-                                    await adminVariantService.updateStatus(
-                                      v._id,
-                                      !v.isActive
-                                    );
-                                    fetchVariants(currentPage);
+                                    try {
+                                      await adminVariantService.updateStatus(
+                                        v._id,
+                                        !v.isActive
+                                      );
+                                      toast.success(
+                                        `Đã ${
+                                          !v.isActive ? "kích hoạt" : "tắt"
+                                        } biến thể`
+                                      );
+                                      fetchVariants(currentPage);
+                                    } catch (error) {
+                                      console.error(
+                                        "Error toggling status:",
+                                        error
+                                      );
+                                      toast.error(
+                                        "Không thể cập nhật trạng thái"
+                                      );
+                                    }
                                   }}
                                   title={
                                     v.isActive ? "Tắt hoạt động" : "Kích hoạt"
@@ -720,7 +839,7 @@ const VariantPage: React.FC = () => {
                               {canDelete() && !v.deletedAt && (
                                 <button
                                   className="p-1.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg border border-mono-200 transition-colors"
-                                  onClick={() => handleDelete(v._id)}
+                                  onClick={() => handleDelete(v)}
                                   title="Xóa biến thể"
                                 >
                                   <svg
@@ -908,6 +1027,81 @@ const VariantPage: React.FC = () => {
                 setVariantImages(variantData?.imagesvariant || []);
               }}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Modal xác nhận xóa biến thể */}
+      {showDeleteModal && variantToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md relative">
+            {/* Header */}
+            <div className="p-6 border-b border-mono-200">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-red-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-mono-900">
+                    Xác nhận xóa biến thể
+                  </h2>
+                  <p className="text-sm text-mono-500">
+                    Hành động này có thể được hoàn tác
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              <p className="text-mono-700">
+                Bạn có chắc chắn muốn xóa biến thể{" "}
+                <strong className="text-mono-900">
+                  {typeof variantToDelete.product === "object"
+                    ? variantToDelete.product.name
+                    : "Sản phẩm"}{" "}
+                  -{" "}
+                  {typeof variantToDelete.color === "object"
+                    ? variantToDelete.color.name
+                    : "Màu"}
+                </strong>
+                ?
+              </p>
+              <p className="text-sm text-mono-500 mt-2">
+                Biến thể sẽ được chuyển vào mục đã xóa và có thể khôi phục sau.
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 bg-mono-50 rounded-b-xl flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setVariantToDelete(null);
+                }}
+                className="px-5 py-2.5 text-mono-700 bg-white border border-mono-300 hover:bg-mono-50 rounded-lg font-medium transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="px-5 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+              >
+                Xóa biến thể
+              </button>
+            </div>
           </div>
         </div>
       )}

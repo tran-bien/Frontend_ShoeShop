@@ -4,6 +4,7 @@ import { adminSizeService } from "../../../services/SizeService";
 import AddSize from "./AddSixe";
 import { useAuth } from "../../../hooks/useAuth";
 import type { Size } from "../../../types/size";
+import { toast } from "react-hot-toast";
 
 // ViewDetailModal component
 const ViewDetailModal: React.FC<{
@@ -113,11 +114,14 @@ const EditSizeModal: React.FC<{
     try {
       await adminSizeService.update(size._id, {
         value: String(value),
-        region: type,
+        type,
+        description,
       });
+      toast.success("Cập nhật kích thước thành công!");
       onSuccess();
       onClose();
     } catch {
+      toast.error("Cập nhật kích thước thất bại!");
       setError("Cập nhật size thất bại!");
     } finally {
       setLoading(false);
@@ -232,6 +236,10 @@ const SizePage: React.FC = () => {
   // Detail modal state
   const [viewDetailSize, setViewDetailSize] = useState<Size | null>(null);
 
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [sizeToDelete, setSizeToDelete] = useState<Size | null>(null);
+
   const fetchSizes = async (page: number = 1) => {
     try {
       const params = {
@@ -335,9 +343,16 @@ const SizePage: React.FC = () => {
     setIsSearchVisible(true);
   };
 
-  const handleDeleteSize = async (_id: string) => {
+  const handleDeleteSize = (size: Size) => {
+    setSizeToDelete(size);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteSize = async () => {
+    if (!sizeToDelete) return;
     try {
-      await adminSizeService.delete(_id);
+      await adminSizeService.delete(sizeToDelete._id);
+      toast.success(`Đã xóa kích thước "${sizeToDelete.value}" thành công!`);
       if (showDeleted) {
         fetchDeletedSizes(currentPage);
       } else {
@@ -345,18 +360,22 @@ const SizePage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      toast.error("Xóa kích thước thất bại!");
+    } finally {
+      setShowDeleteModal(false);
+      setSizeToDelete(null);
     }
   };
 
   const handleRestoreSize = async (_id: string) => {
     try {
       await adminSizeService.restore(_id);
+      toast.success("Khôi phục kích thước thành công!");
       fetchDeletedSizes(currentPage);
       fetchSizes(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      toast.error("Khôi phục kích thước thất bại!");
     }
   };
 
@@ -614,7 +633,7 @@ const SizePage: React.FC = () => {
                         )}
                         {canDelete() && (
                           <button
-                            onClick={() => handleDeleteSize(item._id)}
+                            onClick={() => handleDeleteSize(item)}
                             className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                           >
                             <svg
@@ -780,6 +799,58 @@ const SizePage: React.FC = () => {
           size={viewDetailSize}
           onClose={() => setViewDetailSize(null)}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && sizeToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-center text-mono-900 mb-2">
+                Xác nhận xóa kích thước
+              </h3>
+              <p className="text-center text-mono-600 mb-6">
+                Bạn có chắc chắn muốn xóa kích thước{" "}
+                <span className="font-semibold text-mono-900">
+                  "{sizeToDelete.value} ({sizeToDelete.type})"
+                </span>
+                ? Hành động này có thể được khôi phục sau.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setSizeToDelete(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-mono-100 hover:bg-mono-200 text-mono-700 font-medium rounded-lg transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={confirmDeleteSize}
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Xóa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

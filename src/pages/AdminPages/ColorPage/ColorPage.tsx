@@ -3,6 +3,7 @@ import { IoIosSearch } from "react-icons/io";
 import { adminColorService } from "../../../services/ColorService";
 import AddColor from "./AddColor";
 import { useAuth } from "../../../hooks/useAuth";
+import { toast } from "react-hot-toast";
 import type { Color } from "../../../types/color";
 
 // ViewDetailModal component
@@ -288,6 +289,10 @@ const ColorPage: React.FC = () => {
   // Detail modal state
   const [viewDetailColor, setViewDetailColor] = useState<Color | null>(null);
 
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [colorToDelete, setColorToDelete] = useState<Color | null>(null);
+
   const fetchColors = async (page: number = 1) => {
     try {
       const params = {
@@ -390,9 +395,16 @@ const ColorPage: React.FC = () => {
     setIsSearchVisible(true);
   };
 
-  const handleDeleteColor = async (_id: string) => {
+  const handleDeleteColor = (color: Color) => {
+    setColorToDelete(color);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteColor = async () => {
+    if (!colorToDelete) return;
     try {
-      await adminColorService.delete(_id);
+      await adminColorService.delete(colorToDelete._id);
+      toast.success(`Đã xóa màu sắc "${colorToDelete.name}"`);
       if (showDeleted) {
         fetchDeletedColors(currentPage);
       } else {
@@ -400,18 +412,22 @@ const ColorPage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      toast.error("Xóa màu sắc thất bại!");
+    } finally {
+      setShowDeleteModal(false);
+      setColorToDelete(null);
     }
   };
 
   const handleRestoreColor = async (_id: string) => {
     try {
       await adminColorService.restore(_id);
+      toast.success("Khôi phục màu sắc thành công!");
       fetchDeletedColors(currentPage);
       fetchColors(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi n?u cẩn
+      toast.error("Khôi phục màu sắc thất bại!");
     }
   };
 
@@ -669,7 +685,7 @@ const ColorPage: React.FC = () => {
                         )}
                         {canDelete() && (
                           <button
-                            onClick={() => handleDeleteColor(item._id)}
+                            onClick={() => handleDeleteColor(item)}
                             className="px-3 py-1.5 bg-mono-200 hover:bg-mono-300 text-mono-900 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                           >
                             <svg
@@ -835,6 +851,58 @@ const ColorPage: React.FC = () => {
           color={viewDetailColor}
           onClose={() => setViewDetailColor(null)}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && colorToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-center text-mono-900 mb-2">
+                Xác nhận xóa màu sắc
+              </h3>
+              <p className="text-center text-mono-600 mb-6">
+                Bạn có chắc chắn muốn xóa màu sắc{" "}
+                <span className="font-semibold text-mono-900">
+                  "{colorToDelete.name}"
+                </span>
+                ? Hành động này có thể được khôi phục sau.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setColorToDelete(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-mono-100 hover:bg-mono-200 text-mono-700 font-medium rounded-lg transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={confirmDeleteColor}
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Xóa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

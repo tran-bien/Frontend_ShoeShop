@@ -1,8 +1,16 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import AdminSidebar from "../../components/Sidebar/AdminSidebar";
 import AdminNavbar from "../../components/Navbar/AdminNavbar";
 
 const AdminLayout = () => {
+  const location = useLocation();
+
+  // Scroll to top when navigating to a new admin page
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   return (
     <>
       <div className="flex flex-row bg-mono-50">
@@ -21,4 +29,3 @@ const AdminLayout = () => {
 };
 
 export default AdminLayout;
-

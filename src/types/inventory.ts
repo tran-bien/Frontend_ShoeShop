@@ -175,7 +175,8 @@ export interface StockOutData {
   variantId: string;
   sizeId: string;
   quantity: number;
-  note?: string;
+  reason?: string; // "sale" | "damage" | "lost" | "return_supplier" | "gift" | "other"
+  notes?: string;
   orderId?: string;
 }
 
@@ -184,7 +185,8 @@ export interface AdjustStockData {
   variantId: string;
   sizeId: string;
   newQuantity: number;
-  reason: string;
+  reason: string; // "adjustment" | "damage" | "inventory_count" | "correction"
+  notes?: string;
 }
 
 export interface CalculatePriceData {

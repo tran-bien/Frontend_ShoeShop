@@ -37,8 +37,10 @@ export interface Variant {
   updatedAt?: string;
   imagesvariant?: ProductImage[];
 
-  // REMOVED từ BE schema: price, costPrice, percentDiscount, priceFinal, profit, profitPercentage
-  // Giá và lợi nhuận giờ được quản lý qua InventoryItem và InventoryTransaction
+  // Pricing từ inventory (BE tính toán cho cả active và deleted variants)
+  price?: number;
+  priceFinal?: number;
+  percentDiscount?: number;
 
   // Inventory summary từ BE (cho admin view)
   inventorySummary?: {

@@ -496,25 +496,105 @@ const ReviewPage = () => {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-            <p className="text-mono-500 text-sm">
-              Trang {currentPage} / {totalPages}
-            </p>
+            <div className="text-sm text-mono-600">
+              Trang {currentPage} / {totalPages} • Tổng: {totalReviews} đánh giá
+            </div>
             <div className="flex gap-2">
               <button
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 border rounded-lg disabled:opacity-50 hover:bg-mono-50"
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  currentPage === 1
+                    ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                    : "bg-mono-200 text-mono-700 hover:bg-mono-300"
+                }`}
               >
                 Trước
               </button>
+
+              {/* Page Numbers */}
+              {(() => {
+                const pages = [];
+                const showPages = 5;
+                let startPage = Math.max(
+                  1,
+                  currentPage - Math.floor(showPages / 2)
+                );
+                const endPage = Math.min(totalPages, startPage + showPages - 1);
+
+                if (endPage - startPage < showPages - 1) {
+                  startPage = Math.max(1, endPage - showPages + 1);
+                }
+
+                if (startPage > 1) {
+                  pages.push(
+                    <button
+                      key={1}
+                      onClick={() => setCurrentPage(1)}
+                      className="px-3 py-2 rounded-lg font-medium bg-mono-200 text-mono-700 hover:bg-mono-300 transition-all"
+                    >
+                      1
+                    </button>
+                  );
+                  if (startPage > 2) {
+                    pages.push(
+                      <span key="ellipsis1" className="px-2 text-mono-500">
+                        ...
+                      </span>
+                    );
+                  }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                  pages.push(
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i)}
+                      className={`px-3 py-2 rounded-lg font-medium transition-all ${
+                        i === currentPage
+                          ? "bg-mono-black text-white"
+                          : "bg-mono-200 text-mono-700 hover:bg-mono-300"
+                      }`}
+                    >
+                      {i}
+                    </button>
+                  );
+                }
+
+                if (endPage < totalPages) {
+                  if (endPage < totalPages - 1) {
+                    pages.push(
+                      <span key="ellipsis2" className="px-2 text-mono-500">
+                        ...
+                      </span>
+                    );
+                  }
+                  pages.push(
+                    <button
+                      key={totalPages}
+                      onClick={() => setCurrentPage(totalPages)}
+                      className="px-3 py-2 rounded-lg font-medium bg-mono-200 text-mono-700 hover:bg-mono-300 transition-all"
+                    >
+                      {totalPages}
+                    </button>
+                  );
+                }
+
+                return pages;
+              })()}
+
               <button
                 onClick={() =>
-                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 border rounded-lg disabled:opacity-50 hover:bg-mono-50"
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  currentPage === totalPages
+                    ? "bg-mono-300 text-mono-500 cursor-not-allowed"
+                    : "bg-mono-200 text-mono-700 hover:bg-mono-300"
+                }`}
               >
-                Sau
+                Tiếp
               </button>
             </div>
           </div>

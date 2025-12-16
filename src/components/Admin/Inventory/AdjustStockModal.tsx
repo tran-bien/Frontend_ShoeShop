@@ -8,10 +8,19 @@ interface Props {
   onSuccess: () => void;
 }
 
+// Các lý do điều chỉnh tồn kho (theo logic BE)
+const ADJUST_REASONS = [
+  { value: "adjustment", label: "Kiểm kê điều chỉnh" },
+  { value: "damage", label: "Hàng hư hỏng/mất mát" },
+  { value: "inventory_count", label: "Kiểm kê định kỳ" },
+  { value: "correction", label: "Sửa sai số liệu" },
+];
+
 const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
   const [formData, setFormData] = useState({
     newQuantity: item.quantity,
-    reason: "",
+    reason: "adjustment", // Default reason
+    notes: "", // Ghi chú bổ sung
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -25,13 +34,8 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
       return;
     }
 
-    if (!formData.reason.trim()) {
-      setError("Vui lòng nhập lý do điều chỉnh");
-      return;
-    }
-
-    if (formData.reason.trim().length < 10) {
-      setError("Lý do phải có ít nhất 10 ký tự");
+    if (!formData.reason) {
+      setError("Vui lòng chọn lý do điều chỉnh");
       return;
     }
 
@@ -44,6 +48,7 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
         sizeId: item.size?._id || "",
         newQuantity: formData.newQuantity,
         reason: formData.reason,
+        notes: formData.notes || undefined,
       });
       alert("Điều chỉnh tồn kho thành công!");
       onSuccess();
@@ -144,19 +149,36 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
             <label className="block text-sm font-medium mb-2 text-mono-700">
               Lý do điều chỉnh <span className="text-mono-800">*</span>
             </label>
-            <textarea
+            <select
               value={formData.reason}
               onChange={(e) =>
                 setFormData({ ...formData, reason: e.target.value })
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
-              rows={3}
-              placeholder="Ví dụ: Kiểm kê phát hiện sai lệch, hàng hỏng, mất mát..."
               required
+            >
+              {ADJUST_REASONS.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Notes */}
+          <div>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Ghi chú bổ sung
+            </label>
+            <textarea
+              value={formData.notes}
+              onChange={(e) =>
+                setFormData({ ...formData, notes: e.target.value })
+              }
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
+              rows={2}
+              placeholder="Thông tin chi tiết (tùy chọn)"
             />
-            <p className="mt-1 text-xs text-mono-500">
-              Tối thiểu 10 ký tự ({formData.reason.length}/10)
-            </p>
           </div>
 
           {/* Error Message */}

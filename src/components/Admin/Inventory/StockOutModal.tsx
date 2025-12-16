@@ -8,9 +8,20 @@ interface Props {
   onSuccess: () => void;
 }
 
+// Các lý do xuất kho (theo logic BE)
+const STOCKOUT_REASONS = [
+  { value: "sale", label: "Bán hàng" },
+  { value: "damage", label: "Hàng hư hỏng" },
+  { value: "lost", label: "Hàng mất mát" },
+  { value: "return_supplier", label: "Trả hàng nhà cung cấp" },
+  { value: "gift", label: "Hàng tặng/khuyến mãi" },
+  { value: "other", label: "Lý do khác" },
+];
+
 const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
   const [formData, setFormData] = useState({
     quantity: 0,
+    reason: "sale", // Default reason
     note: "",
     orderId: "",
   });
@@ -39,7 +50,8 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
         variantId: item.variant?._id || "",
         sizeId: item.size?._id || "",
         quantity: formData.quantity,
-        note: formData.note,
+        reason: formData.reason,
+        notes: formData.note || undefined,
         orderId: formData.orderId || undefined,
       });
       alert("Xuất kho thành công!");
@@ -103,6 +115,27 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
             )}
           </div>
 
+          {/* Reason */}
+          <div>
+            <label className="block text-sm font-medium mb-2 text-mono-700">
+              Lý do xuất kho <span className="text-mono-800">*</span>
+            </label>
+            <select
+              value={formData.reason}
+              onChange={(e) =>
+                setFormData({ ...formData, reason: e.target.value })
+              }
+              className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
+              required
+            >
+              {STOCKOUT_REASONS.map((r) => (
+                <option key={r.value} value={r.value}>
+                  {r.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Order ID (optional) */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
@@ -122,7 +155,7 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
           {/* Note */}
           <div>
             <label className="block text-sm font-medium mb-2 text-mono-700">
-              Ghi chú
+              Ghi chú bổ sung
             </label>
             <textarea
               value={formData.note}
@@ -130,8 +163,8 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
                 setFormData({ ...formData, note: e.target.value })
               }
               className="w-full border border-mono-300 px-3 py-2 rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent"
-              rows={3}
-              placeholder="Lý đo xuất kho (tùy chơn)"
+              rows={2}
+              placeholder="Thông tin chi tiết (tùy chọn)"
             />
           </div>
 

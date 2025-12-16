@@ -18,7 +18,11 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
     setLoading(true);
     setError(null);
     try {
-      await adminSizeService.create({ value: String(value), region: type });
+      await adminSizeService.create({
+        value: String(value),
+        type,
+        description,
+      });
       if (onSuccess) onSuccess();
       handleClose();
     } catch {

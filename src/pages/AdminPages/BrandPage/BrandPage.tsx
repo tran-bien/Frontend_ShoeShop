@@ -5,6 +5,7 @@ import { adminBrandService } from "../../../services/BrandService";
 import AddBrand from "./AddBrand";
 import BrandLogoManager from "./BrandLogoManager";
 import { useAuth } from "../../../hooks/useAuth";
+import { toast } from "react-hot-toast";
 import defaultImage from "../../../assets/image_df.png";
 
 interface BrandPageBrand extends Brand {
@@ -236,6 +237,12 @@ const ListBrandsPage: React.FC = () => {
     null
   );
 
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [brandToDelete, setBrandToDelete] = useState<BrandPageBrand | null>(
+    null
+  );
+
   const fetchBrands = async (page: number = 1) => {
     try {
       const params = {
@@ -348,9 +355,16 @@ const ListBrandsPage: React.FC = () => {
     setIsSearchVisible(true);
   };
 
-  const handleDeleteBrand = async (_id: string) => {
+  const handleDeleteBrand = (brand: BrandPageBrand) => {
+    setBrandToDelete(brand);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteBrand = async () => {
+    if (!brandToDelete) return;
     try {
-      await adminBrandService.delete(_id);
+      await adminBrandService.delete(brandToDelete._id);
+      toast.success(`Đã xóa thương hiệu "${brandToDelete.name}"`);
       if (showDeleted) {
         fetchDeletedBrands(currentPage);
       } else {
@@ -358,28 +372,35 @@ const ListBrandsPage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      toast.error("Xóa thương hiệu thất bại!");
+    } finally {
+      setShowDeleteModal(false);
+      setBrandToDelete(null);
     }
   };
 
   const handleRestoreBrand = async (_id: string) => {
     try {
       await adminBrandService.restore(_id);
+      toast.success("Khôi phục thương hiệu thành công!");
       fetchDeletedBrands(currentPage);
       fetchBrands(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      toast.error("Khôi phục thương hiệu thất bại!");
     }
   };
 
   const handleUpdateStatus = async (_id: string, isActive: boolean) => {
     try {
       await adminBrandService.updateStatus(_id, { isActive });
+      toast.success(
+        isActive ? "Đã kích hoạt thương hiệu" : "Đã ẩn thương hiệu"
+      );
       fetchBrands(currentPage);
       fetchStats();
     } catch {
-      // Xử lý lỗi nếu cần
+      toast.error("Cập nhật trạng thái thất bại!");
     }
   };
 
@@ -624,7 +645,7 @@ const ListBrandsPage: React.FC = () => {
                         )}
                         {canDelete() && (
                           <button
-                            onClick={() => handleDeleteBrand(item._id)}
+                            onClick={() => handleDeleteBrand(item)}
                             className="px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-800 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                           >
                             <svg
@@ -857,6 +878,58 @@ const ListBrandsPage: React.FC = () => {
           brand={viewDetailBrand}
           onClose={() => setViewDetailBrand(null)}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && brandToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-center text-mono-900 mb-2">
+                Xác nhận xóa thương hiệu
+              </h3>
+              <p className="text-center text-mono-600 mb-6">
+                Bạn có chắc chắn muốn xóa thương hiệu{" "}
+                <span className="font-semibold text-mono-900">
+                  "{brandToDelete.name}"
+                </span>
+                ? Hành động này có thể được khôi phục sau.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setBrandToDelete(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-mono-100 hover:bg-mono-200 text-mono-700 font-medium rounded-lg transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={confirmDeleteBrand}
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Xóa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
