@@ -170,7 +170,7 @@ const MainNavbar = () => {
 
       {/* search bar */}
       <div
-        className="flex items-center w-full lg:w-1/4 xl:w-1/4 mx-3 lg:mx-4 relative"
+        className="flex items-center w-full lg:w-1/3 xl:w-1/4 min-w-[200px] mx-3 lg:mx-4 relative"
         ref={searchRef}
       >
         <form onSubmit={handleSearch} className="w-full relative">

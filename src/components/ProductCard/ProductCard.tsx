@@ -16,6 +16,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   // State cho hiệu ứng slide ảnh
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // State cho hover để chỉ chạy slider khi hover
+  const [isHovering, setIsHovering] = useState(false);
+
   // Compare context
   const { addToCompareById, removeFromCompare, isInCompare, isLoading } =
     useCompare();
@@ -24,9 +27,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   const hasMultipleImages =
     product && Array.isArray(product.images) && product.images.length > 1;
 
-  // Hiệu ứng slide ảnh với tốc độ vừa phải (3 giây cho mỗi ảnh)
+  // Hiệu ứng slide ảnh với tốc độ vừa phải (3 giây cho mỗi ảnh) - chỉ chạy khi hover
   useEffect(() => {
-    if (!hasMultipleImages || !product) return;
+    if (!hasMultipleImages || !product || !isHovering) return;
 
     const interval = setInterval(() => {
       // Kiểm tra images tồn tại trước khi truy cập length
@@ -38,7 +41,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     }, 3000); // Tốc độ chuyển ảnh vừa phải: 3 giây
 
     return () => clearInterval(interval);
-  }, [product, product?.images, hasMultipleImages]);
+  }, [product, product?.images, hasMultipleImages, isHovering]);
+
+  // Reset về ảnh đầu khi không hover
+  useEffect(() => {
+    if (!isHovering) {
+      setCurrentImageIndex(0);
+    }
+  }, [isHovering]);
 
   // Guard clause - return null if product is undefined
   // MUST be after all hooks
@@ -158,6 +168,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
     <div
       className="group cursor-pointer bg-white rounded-lg shadow-soft hover:shadow-luxury transition-all duration-300 overflow-hidden h-full flex flex-col transform hover:translate-y-[-4px] border border-mono-100"
       onClick={onClick}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
     >
       {/* Phần ẩnh sản phẩm với hi?u ẩng chuyện đổi m?m mới */}
       <div className="aspect-square w-full overflow-hidden bg-mono-50 relative">
@@ -236,15 +248,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
             </div>
           )}
 
-        {/* Stock status */}
+        {/* Stock status - chỉ hiện khi hết hàng */}
         {product.stockStatus === "out_of_stock" && (
           <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-center py-1.5 text-sm font-medium">
             Hết hàng
-          </div>
-        )}
-        {product.stockStatus === "low_stock" && (
-          <div className="absolute bottom-0 left-0 right-0 bg-mono-600 bg-opacity-70 text-white text-center py-1.5 text-sm font-medium">
-            Sắp hết hàng
           </div>
         )}
       </div>

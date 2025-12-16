@@ -300,7 +300,7 @@ const SupportChat: React.FC = () => {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-24 right-6 z-40 p-4 rounded-full shadow-lg transition-all duration-300 ${
+        className={`fixed bottom-8 right-8 z-40 p-4 rounded-full shadow-lg transition-all duration-300 ${
           isOpen
             ? "bg-mono-600 text-white"
             : "bg-white text-mono-black border border-mono-200 hover:bg-mono-50"
@@ -316,7 +316,7 @@ const SupportChat: React.FC = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-44 right-6 z-40 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-mono-200 overflow-hidden">
+        <div className="fixed bottom-24 right-8 z-40 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-mono-200 overflow-hidden">
           {/* Header */}
           <div className="bg-mono-900 text-white p-4">
             <div className="flex items-center gap-3">

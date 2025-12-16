@@ -61,7 +61,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
     const reasons: Record<string, string> = {
       initial_stock: "Nhập kho ban đầu",
       restock: "Nhập hàng bổ sung",
-      sale: "Xuất bán (Giao shipper)",
+      sale: "Xuất bán",
       return: "Trả hàng",
       exchange: "Đổi hàng",
       damage: "Hàng hỏng",
@@ -126,73 +126,65 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-mono-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Thời gian
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Loại
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Lý do
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Số lượng
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Giá vốn
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Người thực hiện
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-                    Ghi chú
-                  </th>
-                </tr>
+          <tr>
+            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+              Thời gian
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+              Loại
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+              Lý do
+            </th>
+            <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
+              Số lượng
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+              Người thực hiện
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+              Ghi chú
+            </th>
+          </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {transactions.map((transaction) => {
-                  const typeInfo = getTypeLabel(transaction.type);
-                  return (
-                    <tr key={transaction._id} className="hover:bg-mono-50">
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
-                        {formatDate(transaction.createdAt)}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs font-semibold rounded ${typeInfo.color}`}
-                        >
-                          {typeInfo.text}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-700">
-                        {getReasonLabel(transaction.reason)}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-right">
-                        <div className="font-medium">
-                          {transaction.type === "IN" && "+"}
-                          {transaction.type === "OUT" && "-"}
-                          {transaction.quantityChange}
-                        </div>
-                        <div className="text-xs text-mono-500">
-                          {transaction.quantityBefore} →{" "}
-                          {transaction.quantityAfter}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-right">
-                        {transaction.costPrice
-                          ? `${transaction.costPrice.toLocaleString("vi-VN")}đ`
-                          : "-"}
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
-                        {transaction.performedBy?.name || "N/A"}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-mono-600 max-w-xs truncate">
-                        {transaction.notes || "-"}
-                      </td>
-                    </tr>
-                  );
-                })}
+          {transactions.map((transaction) => {
+            const typeInfo = getTypeLabel(transaction.type);
+            return (
+              <tr key={transaction._id} className="hover:bg-mono-50">
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
+            {formatDate(transaction.createdAt)}
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap">
+            <span
+              className={`px-2 py-1 text-xs font-semibold rounded ${typeInfo.color}`}
+            >
+              {typeInfo.text}
+            </span>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-700">
+            {getReasonLabel(transaction.reason)}
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-right">
+            <div className="font-medium">
+              {transaction.type === "IN" && "+"}
+              {transaction.type === "OUT" && "-"}
+              {transaction.quantityChange}
+            </div>
+            <div className="text-xs text-mono-500">
+              {transaction.quantityBefore} →{" "}
+              {transaction.quantityAfter}
+            </div>
+                </td>
+                <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
+            {transaction.performedBy?.name || "N/A"}
+                </td>
+                <td className="px-4 py-3 text-sm text-mono-600 max-w-xs truncate">
+            {transaction.notes || "-"}
+                </td>
+              </tr>
+            );
+          })}
               </tbody>
             </table>
           </div>
