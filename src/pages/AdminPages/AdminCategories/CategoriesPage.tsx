@@ -124,10 +124,13 @@ const EditCategoryModal: React.FC<{
     setError(null);
     try {
       await adminCategoryService.update(category._id, formData);
+      toast.success("Cập nhật danh mục thành công!");
       onSuccess();
       onClose();
     } catch {
-      setError("Cập nhật danh mục thất bại!");
+      const errMsg = "Cập nhật danh mục thất bại!";
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
@@ -336,16 +339,20 @@ const ListCategoriesPage: React.FC = () => {
   const confirmDeleteCategory = async () => {
     if (!categoryToDelete) return;
     try {
-      await adminCategoryService.delete(categoryToDelete._id);
-      toast.success(`Đã xóa danh mục "${categoryToDelete.name}"`);
+      const res = await adminCategoryService.delete(categoryToDelete._id);
+      const message =
+        res?.data?.message || `Đã xóa danh mục "${categoryToDelete.name}"`;
+      toast.success(message);
+      // Refresh lists/stats regardless of whether backend deactivated instead of deleted
       if (showDeleted) {
         fetchDeletedCategories(currentPage);
       } else {
         fetchCategories(currentPage);
       }
       fetchStats();
-    } catch {
-      toast.error("Xóa danh mục thất bại!");
+    } catch (err: any) {
+      const errMsg = err?.response?.data?.message || "Xóa danh mục thất bại!";
+      toast.error(errMsg);
     } finally {
       setShowDeleteModal(false);
       setCategoryToDelete(null);

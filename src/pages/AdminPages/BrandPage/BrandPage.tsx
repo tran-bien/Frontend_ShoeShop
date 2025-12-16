@@ -363,16 +363,20 @@ const ListBrandsPage: React.FC = () => {
   const confirmDeleteBrand = async () => {
     if (!brandToDelete) return;
     try {
-      await adminBrandService.delete(brandToDelete._id);
-      toast.success(`Đã xóa thương hiệu "${brandToDelete.name}"`);
+      const res = await adminBrandService.delete(brandToDelete._id);
+      const message =
+        res?.data?.message || `Đã xóa thương hiệu "${brandToDelete.name}"`;
+      toast.success(message);
       if (showDeleted) {
         fetchDeletedBrands(currentPage);
       } else {
         fetchBrands(currentPage);
       }
       fetchStats();
-    } catch {
-      toast.error("Xóa thương hiệu thất bại!");
+    } catch (err: any) {
+      const errMsg =
+        err?.response?.data?.message || "Xóa thương hiệu thất bại!";
+      toast.error(errMsg);
     } finally {
       setShowDeleteModal(false);
       setBrandToDelete(null);
