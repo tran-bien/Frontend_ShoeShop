@@ -28,6 +28,7 @@ import {
 } from "react-icons/fi";
 import { debounce } from "lodash";
 import type { Cart as CartType, CartItem } from "../../types/cart";
+import ColorSwatch from "../Custom/ColorSwatch";
 import type { Coupon } from "../../types/coupon";
 
 const Cart: React.FC = () => {
@@ -743,10 +744,36 @@ const Cart: React.FC = () => {
                                 {item.productName || "Tên sản phẩm"}
                               </h3>
                               <div className="mt-1 flex items-center space-x-4 text-sm text-mono-500">
+                                <div className="flex items-center space-x-1.5">
+                                  {item.variant?.color?.code && (
+                                    <ColorSwatch
+                                      color={{
+                                        _id:
+                                          item.variant?.color?._id || "unknown",
+                                        name:
+                                          item.variant?.color?.name || "N/A",
+                                        code:
+                                          item.variant?.color?.code ||
+                                          "#000000",
+                                        type:
+                                          (item.variant?.color?.type as
+                                            | "solid"
+                                            | "half") || "solid",
+                                      }}
+                                      size="sm"
+                                    />
+                                  )}
+                                  <span>
+                                    Màu: {item.variant?.color?.name || "N/A"}
+                                  </span>
+                                </div>
+                                <span className="text-mono-300">|</span>
                                 <span>
-                                  Màu: {item.variant?.color?.name || "N/A"}
+                                  Size:{" "}
+                                  <span className="font-medium text-mono-700">
+                                    {item.size?.value || "N/A"}
+                                  </span>
                                 </span>
-                                <span>Size: {item.size?.value || "N/A"}</span>
                               </div>
                               {!item.isAvailable && (
                                 <p className="mt-1 text-sm text-mono-900">

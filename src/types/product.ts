@@ -189,6 +189,7 @@ export interface Product {
     active: number;
     colors: Color[];
     colorCount: number;
+    sizes?: string[]; // Added for compare page - list of available size values
     sizeCount: number;
     priceRange: PriceRange;
     discount: {

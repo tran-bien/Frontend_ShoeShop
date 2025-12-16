@@ -1,14 +1,27 @@
 ﻿import { useState, useEffect, useRef } from "react";
+import { toast } from "react-hot-toast";
 import { productImageService } from "../../../services/ImageService";
 import { useAuth } from "../../../hooks/useAuth";
+import type { Image } from "../../../types/image";
 
-const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
+const ProductImagesManager = ({
+  productId,
+  images,
+}: {
+  productId: string;
+  images: Image[];
+}) => {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [localImages, setLocalImages] = useState(images);
+  const [localImages, setLocalImages] = useState<Image[]>(images);
   const [uploading, setUploading] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    show: boolean;
+    imageId: string | null;
+  }>({ show: false, imageId: null });
+  const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { canManageImages } = useAuth();
 
@@ -40,37 +53,73 @@ const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
       Array.from(selectedFiles).forEach((file) => {
         formData.append("images", file);
       });
-      await productImageService.uploadImages(productId, formData);
+      const res = await productImageService.uploadImages(productId, formData);
       setSelectedFiles(null);
       setPreviewUrls([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
-      reloadImages();
+      // Update local images from response to avoid forcing a full page reload
+      const added =
+        res?.data?.data?.images ||
+        (res?.data?.data?.image ? [res.data.data.image] : []);
+      if (added && added.length > 0) {
+        setLocalImages((prev: Image[]) => [...(added as Image[]), ...prev]);
+      }
+      toast.success("Tải ảnh thành công");
     } catch (error) {
       console.error("Upload failed:", error);
-      alert("Tải ảnh thất bại!");
+      toast.error("Tải ảnh thất bại!");
     } finally {
       setUploading(false);
     }
   };
 
   const handleRemove = async (imageId: string) => {
-    if (!confirm("Bạn có chắc muốn xóa ảnh này?")) return;
+    setDeleteModal({ show: true, imageId });
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteModal.imageId) return;
+    setIsProcessing(true);
     try {
-      await productImageService.removeImages(productId, [imageId]);
-      reloadImages();
+      await productImageService.removeImages(productId, [deleteModal.imageId]);
+      // Cập nhật localImages ngay lập tức để UI phản ánh (không reload toàn bộ trang)
+      setLocalImages((prev: Image[]) =>
+        prev.filter((img: Image) => img._id !== deleteModal.imageId)
+      );
+      toast.success("Xóa ảnh thành công");
     } catch (error) {
       console.error("Remove failed:", error);
-      alert("Xóa ảnh thất bại!");
+      toast.error("Xóa ảnh thất bại!");
+    } finally {
+      setIsProcessing(false);
+      setDeleteModal({ show: false, imageId: null });
     }
   };
 
   const handleSetMain = async (imageId: string) => {
+    setIsProcessing(true);
     try {
-      await productImageService.setMainImage(productId, imageId);
-      reloadImages();
+      const res = await productImageService.setMainImage(productId, imageId);
+      // Update localImages using returned main image if available, otherwise fall back
+      const mainImage = res?.data?.data?.mainImage;
+      if (mainImage) {
+        setLocalImages((prev: Image[]) =>
+          prev.map((img: Image) => ({
+            ...img,
+            isMain: img._id === mainImage._id,
+          }))
+        );
+      } else {
+        setLocalImages((prev: Image[]) =>
+          prev.map((img: Image) => ({ ...img, isMain: img._id === imageId }))
+        );
+      }
+      toast.success("Đặt ảnh chính thành công");
     } catch (error) {
       console.error("Set main failed:", error);
-      alert("Đặt ảnh chính thất bại!");
+      toast.error("Đặt ảnh chính thất bại!");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -103,16 +152,27 @@ const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
   };
 
   const handleReorder = async () => {
+    setIsProcessing(true);
     try {
-      const imageOrders = localImages.map((img: any, idx: number) => ({
+      const imageOrders = localImages.map((img: Image, idx: number) => ({
         _id: img._id,
         displayOrder: idx,
       }));
-      await productImageService.reorderImages(productId, imageOrders);
-      reloadImages();
+      const res = await productImageService.reorderImages(
+        productId,
+        imageOrders
+      );
+      // Use returned ordered images if provided
+      const updated = res?.data?.data?.images as Image[] | undefined;
+      if (updated && Array.isArray(updated)) {
+        setLocalImages(updated);
+      }
+      toast.success("Lưu thứ tự ảnh thành công");
     } catch (error) {
       console.error("Reorder failed:", error);
-      alert("Lưu thứ tự thất bại!");
+      toast.error("Lưu thứ tự thất bại!");
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -266,7 +326,7 @@ const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
       {localImages.length > 0 ? (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {localImages.map((img: any, idx: number) => (
+            {localImages.map((img: Image, idx: number) => (
               <div
                 key={img._id}
                 draggable={canManageImages()}
@@ -521,6 +581,108 @@ const ProductImagesManager = ({ productId, images, reloadImages }: any) => {
             className="max-w-full max-h-full object-contain rounded-lg"
             onClick={(e) => e.stopPropagation()}
           />
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModal.show && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-mono-900">
+                  Xác nhận xóa ảnh
+                </h3>
+                <p className="text-sm text-mono-500">
+                  Bạn có chắc chắn muốn xóa ảnh này không?
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setDeleteModal({ show: false, imageId: null })}
+                className="px-4 py-2 text-mono-600 bg-mono-100 rounded-lg hover:bg-mono-200 transition-colors font-medium"
+                disabled={isProcessing}
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmDelete}
+                disabled={isProcessing}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium flex items-center gap-2"
+              >
+                {isProcessing ? (
+                  <>
+                    <svg
+                      className="animate-spin w-4 h-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
+                    </svg>
+                    Đang xóa...
+                  </>
+                ) : (
+                  "Xóa ảnh"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Processing Overlay */}
+      {isProcessing && !deleteModal.show && (
+        <div className="fixed inset-0 z-40 bg-black/30 flex items-center justify-center">
+          <div className="bg-white rounded-lg px-6 py-4 flex items-center gap-3 shadow-lg">
+            <svg
+              className="animate-spin w-5 h-5 text-mono-600"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+            <span className="text-mono-700 font-medium">Đang xử lý...</span>
+          </div>
         </div>
       )}
     </div>
