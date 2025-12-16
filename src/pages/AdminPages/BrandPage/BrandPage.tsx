@@ -141,11 +141,18 @@ const EditBrand: React.FC<{
     setLoading(true);
     setError(null);
     try {
-      await adminBrandService.update(brand._id, formData);
+      const res = await adminBrandService.update(brand._id, formData);
+      const successMsg =
+        res?.data?.message || "Cập nhật thương hiệu thành công!";
+      toast.success(successMsg);
       onSuccess();
       onClose();
     } catch {
-      setError("Cập nhật thương hiệu thất bại!");
+      // capture error message from backend when available
+      const errMsg =
+        err?.response?.data?.message || "Cập nhật thương hiệu thất bại!";
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
@@ -180,7 +187,7 @@ const EditBrand: React.FC<{
           </div>
           <div>
             <label className="block text-sm font-medium text-black">
-              Mô T?
+              Mô Tả
             </label>
             <textarea
               name="description"
@@ -570,7 +577,7 @@ const ListBrandsPage: React.FC = () => {
                 <td className="px-4 py-3 text-sm">
                   {item.description && item.description.length > 50
                     ? `${item.description.substring(0, 50)}...`
-                    : item.description || "Không có mô t?"}
+                    : item.description || "Không có mô tả"}
                 </td>
                 <td className="px-4 py-3 text-center">
                   <img

@@ -32,11 +32,11 @@ const ViewDetailModal: React.FC<{
               <p className="text-mono-800 font-mono text-sm">{size._id}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Giá trở size</p>
+              <p className="text-sm text-mono-500 font-medium">Giá trị size</p>
               <p className="text-mono-800 font-bold text-2xl">{size.value}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Lo?i size</p>
+              <p className="text-sm text-mono-500 font-medium">Loại size</p>
               <span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
                   size.type === "EU"
@@ -57,14 +57,14 @@ const ViewDetailModal: React.FC<{
             </div>
           </div>
           <div>
-            <p className="text-sm text-mono-500 font-medium">Mô t?</p>
+            <p className="text-sm text-mono-500 font-medium">Mô tả</p>
             <p className="text-mono-800 mt-1">
-              {size.description || "Không có mô t?"}
+              {size.description || "Không có mô tả"}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-mono-500 font-medium">Ngày t?o</p>
+              <p className="text-sm text-mono-500 font-medium">Ngày tạo</p>
               <p className="text-mono-800 text-sm">
                 {size.createdAt
                   ? new Date(size.createdAt).toLocaleString("vi-VN")
