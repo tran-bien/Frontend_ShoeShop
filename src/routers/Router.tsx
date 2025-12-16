@@ -46,7 +46,6 @@ import OrderDetailPage from "../pages/ShipperPages/OrderDetailPage";
 import ShipperProfilePage from "../pages/ShipperPages/ShipperProfilePage";
 import ShipperReturnsPage from "../pages/ShipperPages/ShipperReturnsPage";
 import NotificationsPage from "../pages/NotificationsPage";
-import LoyaltyPage from "../pages/LoyaltyPage";
 import BlogListPage from "../pages/BlogListPage";
 import BlogDetailPage from "../pages/BlogDetailPage";
 import AdminBlogPage from "../pages/AdminPages/BlogPage/AdminBlogPage";
@@ -54,6 +53,7 @@ import AdminSizeGuidePage from "../pages/AdminPages/SizeGuidePage/AdminSizeGuide
 import ProductComparePage from "../pages/ProductComparePage/ProductComparePage";
 import AdminLoyaltyTierPage from "../pages/AdminPages/LoyaltyTierPage/AdminLoyaltyTierPage";
 import LoyaltyDashboardPage from "../pages/LoyaltyDashboardPage";
+import MyCouponsPage from "../pages/MyCouponsPage";
 import CreateReturnPage from "../pages/CreateReturnPage";
 import ReturnDetailPage from "../pages/ReturnDetailPage";
 import RecommendationsPage from "../pages/RecommendationsPage";
@@ -178,18 +178,18 @@ const AppRouter = () => {
           }
         />
         <Route
-          path="loyalty"
-          element={
-            <AuthGuard>
-              <LoyaltyPage />
-            </AuthGuard>
-          }
-        />
-        <Route
           path="loyalty/dashboard"
           element={
             <AuthGuard>
               <LoyaltyDashboardPage />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="my-coupons"
+          element={
+            <AuthGuard>
+              <MyCouponsPage />
             </AuthGuard>
           }
         />

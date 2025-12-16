@@ -7,6 +7,7 @@
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { cartService } from "../../services/CartService";
+import { userCouponService } from "../../services/CouponService";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../../hooks/useAuth";
 import {
@@ -19,9 +20,15 @@ import {
   FiLoader,
   FiShoppingCart,
   FiArrowLeft,
+  FiX,
+  FiCheck,
+  FiCopy,
+  FiChevronRight,
+  FiGift,
 } from "react-icons/fi";
 import { debounce } from "lodash";
 import type { Cart as CartType, CartItem } from "../../types/cart";
+import type { Coupon } from "../../types/coupon";
 
 const Cart: React.FC = () => {
   const [cart, setCart] = useState<CartType | null>(null);
@@ -30,6 +37,15 @@ const Cart: React.FC = () => {
   const [appliedCoupon, setAppliedCoupon] = useState<any>(null); // TODO: Add Coupon type
   const [couponLoading, setCouponLoading] = useState(false);
   const [previewData, setPreviewData] = useState<any>(null); // TODO: Add OrderPreview type
+
+  // Coupon selection modal state
+  const [showCouponModal, setShowCouponModal] = useState(false);
+  const [collectedCoupons, setCollectedCoupons] = useState<Coupon[]>([]);
+  const [applicableCoupons, setApplicableCoupons] = useState<Coupon[]>([]);
+  const [couponsLoading, setCouponsLoading] = useState(false);
+  const [couponTab, setCouponTab] = useState<"applicable" | "collected">(
+    "applicable"
+  );
 
   // Thay đổi: Sử dụng Map để track quantity chính xác hơn
   const [optimisticQuantities, setOptimisticQuantities] = useState<
@@ -110,6 +126,73 @@ const Cart: React.FC = () => {
       toast.error(errorMessage);
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  // Fetch coupons for modal
+  const fetchCoupons = useCallback(async () => {
+    setCouponsLoading(true);
+    try {
+      // Fetch collected coupons
+      const collectedRes = await userCouponService.getCollectedCoupons({
+        status: "active",
+      });
+      if (collectedRes.data.success) {
+        setCollectedCoupons(collectedRes.data.coupons || []);
+      }
+
+      // Fetch applicable coupons if there are selected items
+      if (selectedItems.length > 0) {
+        const cartItemIds = selectedItems.map((item: CartItem) => item._id);
+        const applicableRes = await userCouponService.getApplicableCoupons(
+          cartItemIds,
+          optimisticTotals.subTotal
+        );
+        if (applicableRes.data.success) {
+          setApplicableCoupons(applicableRes.data.coupons || []);
+        }
+      } else {
+        setApplicableCoupons([]);
+      }
+    } catch (error: any) {
+      console.error("Error fetching coupons:", error);
+    } finally {
+      setCouponsLoading(false);
+    }
+  }, [selectedItems, optimisticTotals.subTotal]);
+
+  // Open coupon modal
+  const openCouponModal = useCallback(() => {
+    setShowCouponModal(true);
+    fetchCoupons();
+  }, [fetchCoupons]);
+
+  // Select coupon from modal
+  const selectCoupon = useCallback(async (coupon: Coupon) => {
+    setCouponLoading(true);
+    setShowCouponModal(false);
+
+    try {
+      const response = await cartService.previewBeforeOrder({
+        couponCode: coupon.code,
+      });
+
+      if (response.data.success) {
+        if (response.data.preview?.couponApplied) {
+          setPreviewData(response.data.preview);
+          setAppliedCoupon(response.data.preview.couponDetail);
+          setCouponCode(coupon.code);
+          toast.success("Đã áp dụng mã giảm giá thành công");
+        } else {
+          toast.error("Mã giảm giá không áp dụng được cho giỏ hàng này");
+        }
+      } else {
+        toast.error(response.data.message || "Mã giảm giá không hợp lệ");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Mã giảm giá không hợp lệ");
+    } finally {
+      setCouponLoading(false);
     }
   }, []);
 
@@ -765,11 +848,21 @@ const Cart: React.FC = () => {
 
                   {/* Coupon Section */}
                   <div className="mb-6 p-4 bg-mono-50 rounded-lg">
-                    <div className="flex items-center space-x-2 mb-3">
-                      <FiTag className="text-mono-800" />
-                      <span className="font-medium text-mono-900">
-                        Mã giảm giá
-                      </span>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-2">
+                        <FiTag className="text-mono-800" />
+                        <span className="font-medium text-mono-900">
+                          Mã giảm giá
+                        </span>
+                      </div>
+                      <button
+                        onClick={openCouponModal}
+                        className="text-sm text-mono-700 hover:text-mono-900 flex items-center space-x-1"
+                      >
+                        <FiGift className="w-4 h-4" />
+                        <span>Chọn mã</span>
+                        <FiChevronRight className="w-4 h-4" />
+                      </button>
                     </div>
 
                     {appliedCoupon ? (
@@ -780,9 +873,10 @@ const Cart: React.FC = () => {
                           </div>
                           <div className="text-sm text-mono-800">
                             Giảm{" "}
-                            {appliedCoupon.type === "percentage"
+                            {appliedCoupon.type === "percentage" ||
+                            appliedCoupon.type === "percent"
                               ? `${appliedCoupon.value}%`
-                              : `${appliedCoupon.value.toLocaleString()}d`}
+                              : `${appliedCoupon.value.toLocaleString()}đ`}
                           </div>
                         </div>
                         <button
@@ -876,7 +970,7 @@ const Cart: React.FC = () => {
                   </button>
 
                   <div className="mt-4 text-center text-sm text-mono-500">
-                    <div className="flex items-center justify-center space-x-1">      
+                    <div className="flex items-center justify-center space-x-1">
                       <span>Thanh toán an toàn và bảo mật</span>
                     </div>
                   </div>
@@ -885,6 +979,274 @@ const Cart: React.FC = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Coupon Selection Modal */}
+      {showCouponModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-lg w-full max-h-[80vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-mono-200 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-mono-900">
+                Chọn mã giảm giá
+              </h3>
+              <button
+                onClick={() => setShowCouponModal(false)}
+                className="p-2 hover:bg-mono-100 rounded-full transition-colors"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex border-b border-mono-200">
+              <button
+                onClick={() => setCouponTab("applicable")}
+                className={`flex-1 py-3 text-sm font-medium transition-colors ${
+                  couponTab === "applicable"
+                    ? "text-mono-900 border-b-2 border-mono-900"
+                    : "text-mono-500 hover:text-mono-700"
+                }`}
+              >
+                Có thể áp dụng ({applicableCoupons.length})
+              </button>
+              <button
+                onClick={() => setCouponTab("collected")}
+                className={`flex-1 py-3 text-sm font-medium transition-colors ${
+                  couponTab === "collected"
+                    ? "text-mono-900 border-b-2 border-mono-900"
+                    : "text-mono-500 hover:text-mono-700"
+                }`}
+              >
+                Đã thu thập ({collectedCoupons.length})
+              </button>
+            </div>
+
+            {/* Coupon List */}
+            <div className="p-4 overflow-y-auto max-h-[50vh]">
+              {couponsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <FiLoader className="animate-spin text-2xl text-mono-500" />
+                </div>
+              ) : (
+                <>
+                  {couponTab === "applicable" && (
+                    <>
+                      {applicableCoupons.length === 0 ? (
+                        <div className="text-center py-8 text-mono-500">
+                          <FiTag className="mx-auto text-4xl mb-2" />
+                          <p>Không có mã giảm giá phù hợp</p>
+                          <p className="text-sm mt-1">
+                            Thêm sản phẩm vào giỏ hàng để xem mã có thể áp dụng
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {applicableCoupons.map((coupon) => (
+                            <CouponCard
+                              key={coupon._id}
+                              coupon={coupon}
+                              isApplied={appliedCoupon?.code === coupon.code}
+                              onSelect={() => selectCoupon(coupon)}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {couponTab === "collected" && (
+                    <>
+                      {collectedCoupons.length === 0 ? (
+                        <div className="text-center py-8 text-mono-500">
+                          <FiGift className="mx-auto text-4xl mb-2" />
+                          <p>Chưa có mã giảm giá nào</p>
+                          <button
+                            onClick={() => {
+                              setShowCouponModal(false);
+                              navigate("/coupons");
+                            }}
+                            className="mt-2 text-mono-900 underline hover:no-underline"
+                          >
+                            Thu thập ngay
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          {collectedCoupons.map((coupon) => {
+                            const isExpired =
+                              new Date(coupon.endDate) < new Date();
+                            const meetsMinOrder =
+                              optimisticTotals.subTotal >= coupon.minOrderValue;
+                            const canApply = !isExpired && meetsMinOrder;
+
+                            return (
+                              <CouponCard
+                                key={coupon._id}
+                                coupon={coupon}
+                                isApplied={appliedCoupon?.code === coupon.code}
+                                disabled={!canApply}
+                                disabledReason={
+                                  isExpired
+                                    ? "Mã đã hết hạn"
+                                    : !meetsMinOrder
+                                    ? `Đơn tối thiểu ${coupon.minOrderValue.toLocaleString()}đ`
+                                    : undefined
+                                }
+                                onSelect={() =>
+                                  canApply && selectCoupon(coupon)
+                                }
+                              />
+                            );
+                          })}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-4 border-t border-mono-200 flex justify-between items-center">
+              <button
+                onClick={() => {
+                  setShowCouponModal(false);
+                  navigate("/my-coupons");
+                }}
+                className="text-mono-600 hover:text-mono-900 text-sm flex items-center space-x-1"
+              >
+                <FiGift className="w-4 h-4" />
+                <span>Xem kho voucher</span>
+              </button>
+              <button
+                onClick={() => setShowCouponModal(false)}
+                className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Coupon Card Component for Modal
+interface CouponCardProps {
+  coupon: Coupon;
+  isApplied: boolean;
+  disabled?: boolean;
+  disabledReason?: string;
+  onSelect: () => void;
+}
+
+const CouponCard: React.FC<CouponCardProps> = ({
+  coupon,
+  isApplied,
+  disabled = false,
+  disabledReason,
+  onSelect,
+}) => {
+  const [copied, setCopied] = useState(false);
+
+  const copyCode = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(coupon.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const formatDiscount = () => {
+    if (coupon.type === "percent") {
+      return `${coupon.value}%`;
+    }
+    return `${coupon.value.toLocaleString()}đ`;
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("vi-VN");
+  };
+
+  return (
+    <div
+      onClick={disabled ? undefined : onSelect}
+      className={`relative p-4 border rounded-lg transition-all ${
+        isApplied
+          ? "border-green-500 bg-green-50"
+          : disabled
+          ? "border-mono-200 bg-mono-50 opacity-60"
+          : "border-mono-200 hover:border-mono-400 cursor-pointer"
+      }`}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center space-x-2 mb-1">
+            <span className="font-bold text-mono-900 text-lg">
+              {formatDiscount()}
+            </span>
+            {coupon.maxDiscount && coupon.type === "percent" && (
+              <span className="text-xs text-mono-500">
+                (Tối đa {coupon.maxDiscount.toLocaleString()}đ)
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-mono-600 mb-2">{coupon.description}</p>
+
+          <div className="flex items-center space-x-3 text-xs text-mono-500">
+            <span>
+              Mã: <span className="font-mono font-semibold">{coupon.code}</span>
+            </span>
+            <span>•</span>
+            <span>HSD: {formatDate(coupon.endDate)}</span>
+          </div>
+
+          {coupon.minOrderValue > 0 && (
+            <div className="mt-1 text-xs text-mono-500">
+              Đơn tối thiểu: {coupon.minOrderValue.toLocaleString()}đ
+            </div>
+          )}
+
+          {coupon.scope && coupon.scope !== "ALL" && (
+            <div className="mt-1 text-xs text-blue-600">
+              Áp dụng cho{" "}
+              {coupon.scope === "PRODUCTS"
+                ? "sản phẩm"
+                : coupon.scope === "CATEGORIES"
+                ? "danh mục"
+                : "biến thể"}{" "}
+              cụ thể
+            </div>
+          )}
+
+          {disabledReason && (
+            <div className="mt-1 text-xs text-red-500 font-medium">
+              {disabledReason}
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col items-end space-y-2">
+          <button
+            onClick={copyCode}
+            className="p-2 hover:bg-mono-100 rounded transition-colors"
+            title="Sao chép mã"
+          >
+            {copied ? (
+              <FiCheck className="w-4 h-4 text-green-500" />
+            ) : (
+              <FiCopy className="w-4 h-4 text-mono-500" />
+            )}
+          </button>
+
+          {isApplied && (
+            <span className="text-xs font-medium text-green-600 flex items-center space-x-1">
+              <FiCheck className="w-3 h-3" />
+              <span>Đang dùng</span>
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

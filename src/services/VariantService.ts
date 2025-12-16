@@ -62,6 +62,35 @@ export const adminVariantService = {
     axiosInstanceAuth.patch(`/api/v1/admin/variants/${variantId}/status`, {
       isActive,
     }),
+
+  // Kiểm tra ràng buộc size (order, inventory) trước khi xóa
+  checkSizeConstraints: (
+    variantId: string
+  ): Promise<{
+    data: {
+      success: boolean;
+      variantId: string;
+      sizes: Array<{
+        sizeId: string;
+        sizeName: string;
+        sku: string | null;
+        orderCount: number;
+        inventoryQuantity: number;
+        hasPendingOrders: boolean;
+        hasStock: boolean;
+        canRemove: boolean;
+        removeWarning: string | null;
+      }>;
+      summary: {
+        totalSizes: number;
+        removableSizes: number;
+        constrainedSizes: number;
+      };
+    };
+  }> =>
+    axiosInstanceAuth.get(
+      `/api/v1/admin/variants/${variantId}/size-constraints`
+    ),
 };
 
 export default adminVariantService;

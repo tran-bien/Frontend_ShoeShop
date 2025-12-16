@@ -49,12 +49,31 @@ export const userCouponService = {
   // Lấy danh sách coupon đã thu thập của người dùng
   getCollectedCoupons: (
     params: CouponQuery = {}
-  ): Promise<{ data: ApiResponse<Coupon[]> }> =>
-    axiosInstanceAuth.get("/api/v1/users/coupons/collected", { params }),
+  ): Promise<{
+    data: {
+      success: boolean;
+      message: string;
+      coupons: Coupon[];
+      pagination?: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
+    };
+  }> => axiosInstanceAuth.get("/api/v1/users/coupons/collected", { params }),
 
-  // Thu thập coupon
-  collectCoupon: (couponId: string): Promise<{ data: ApiResponse<Coupon> }> =>
-    axiosInstanceAuth.post(`/api/v1/users/coupons/${couponId}/collect`),
+  // Thu thập coupon (bao gồm cả đổi điểm)
+  collectCoupon: (
+    couponId: string
+  ): Promise<{
+    data: {
+      success: boolean;
+      message: string;
+      pointsUsed?: number;
+      coupon: Coupon;
+    };
+  }> => axiosInstanceAuth.post(`/api/v1/users/coupons/${couponId}/collect`),
 
   // Xác thực mã giảm giá cho giỏ hàng
   verifyCoupon: (
@@ -69,6 +88,21 @@ export const userCouponService = {
     }>;
   }> =>
     axiosInstanceAuth.post("/api/v1/users/coupons/verify", { code, subTotal }),
+
+  // Lấy coupon phù hợp với giỏ hàng (filter theo sản phẩm được chọn)
+  getApplicableCoupons: (
+    cartItemIds: string[],
+    subTotal: number
+  ): Promise<{
+    data: {
+      success: boolean;
+      coupons: Coupon[];
+    };
+  }> =>
+    axiosInstanceAuth.post("/api/v1/users/coupons/applicable", {
+      cartItemIds,
+      subTotal,
+    }),
 };
 
 // =======================

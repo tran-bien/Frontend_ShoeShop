@@ -1,14 +1,38 @@
 ﻿import { useState, useEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { adminCouponService } from "../../../services/CouponService";
+import { productAdminService } from "../../../services/ProductService";
+import { adminCategoryService } from "../../../services/CategoryService";
+import { adminLoyaltyService } from "../../../services/LoyaltyService";
 import { useAuth } from "../../../hooks/useAuth";
-import type { Coupon, CouponPriority } from "../../../types/coupon";
+import toast from "react-hot-toast";
+import type {
+  Coupon,
+  CouponPriority,
+  CouponScope,
+  CouponConditions,
+} from "../../../types/coupon";
 
 type Discount = Coupon & {
   id: string;
   currentUses: number;
   status: string;
 };
+
+interface ProductOption {
+  _id: string;
+  name: string;
+}
+
+interface CategoryOption {
+  _id: string;
+  name: string;
+}
+
+interface TierOption {
+  _id: string;
+  name: string;
+}
 
 const initialForm = {
   code: "",
@@ -25,6 +49,17 @@ const initialForm = {
   pointCost: 0,
   maxRedeemPerUser: 0,
   priority: "MEDIUM" as CouponPriority,
+  // Advanced fields
+  scope: "ALL" as CouponScope,
+  applicableProducts: [] as string[],
+  applicableVariants: [] as string[],
+  applicableCategories: [] as string[],
+  conditions: {
+    minQuantity: 0,
+    maxUsagePerUser: 0,
+    requiredTiers: [] as string[],
+    firstOrderOnly: false,
+  } as CouponConditions,
 };
 
 const DiscountPage = () => {
@@ -39,9 +74,59 @@ const DiscountPage = () => {
   const [statusFilter, setStatusFilter] = useState("all");
   const [submitting, setSubmitting] = useState(false);
 
+  // Options for advanced fields
+  const [products, setProducts] = useState<ProductOption[]>([]);
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [tiers, setTiers] = useState<TierOption[]>([]);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   useEffect(() => {
     fetchDiscounts();
+    fetchOptions();
   }, []);
+
+  const fetchOptions = async () => {
+    try {
+      const [productsRes, categoriesRes, tiersRes] = await Promise.all([
+        productAdminService.getAll({ limit: 500 }),
+        adminCategoryService.getAll(),
+        adminLoyaltyService.getTiers(),
+      ]);
+
+      if (productsRes.data?.data) {
+        setProducts(
+          productsRes.data.data.map((p: { _id: string; name: string }) => ({
+            _id: p._id,
+            name: p.name,
+          }))
+        );
+      }
+      if (categoriesRes.data?.data) {
+        const cats = Array.isArray(categoriesRes.data.data)
+          ? categoriesRes.data.data
+          : categoriesRes.data.data?.categories || [];
+        setCategories(
+          cats.map((c: { _id: string; name: string }) => ({
+            _id: c._id,
+            name: c.name,
+          }))
+        );
+      }
+      if (tiersRes.data?.data) {
+        const tierData = Array.isArray(tiersRes.data.data)
+          ? tiersRes.data.data
+          : tiersRes.data.data?.tiers || [];
+        setTiers(
+          tierData.map((t: { _id: string; name: string }) => ({
+            _id: t._id,
+            name: t.name,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching options:", error);
+    }
+  };
 
   const fetchDiscounts = async () => {
     setLoading(true);
@@ -72,6 +157,11 @@ const DiscountPage = () => {
           pointCost: c.pointCost || 0,
           maxRedeemPerUser: c.maxRedeemPerUser || 0,
           priority: c.priority || "MEDIUM",
+          scope: c.scope || "ALL",
+          applicableProducts: c.applicableProducts || [],
+          applicableVariants: c.applicableVariants || [],
+          applicableCategories: c.applicableCategories || [],
+          conditions: c.conditions || {},
         }))
       );
     } catch {
@@ -84,6 +174,7 @@ const DiscountPage = () => {
   const openAddModal = () => {
     setEditDiscount(null);
     setForm(initialForm);
+    setShowAdvanced(false);
     setShowModal(true);
   };
 
@@ -104,7 +195,25 @@ const DiscountPage = () => {
       pointCost: discount.pointCost || 0,
       maxRedeemPerUser: discount.maxRedeemPerUser || 0,
       priority: discount.priority || "MEDIUM",
+      scope: discount.scope || "ALL",
+      applicableProducts: discount.applicableProducts || [],
+      applicableVariants: discount.applicableVariants || [],
+      applicableCategories: discount.applicableCategories || [],
+      conditions: {
+        minQuantity: discount.conditions?.minQuantity || 0,
+        maxUsagePerUser: discount.conditions?.maxUsagePerUser || 0,
+        requiredTiers: discount.conditions?.requiredTiers || [],
+        firstOrderOnly: discount.conditions?.firstOrderOnly || false,
+      },
     });
+    // Show advanced section if any advanced field is set
+    const hasAdvanced =
+      discount.scope !== "ALL" ||
+      (discount.conditions?.minQuantity ?? 0) > 0 ||
+      (discount.conditions?.maxUsagePerUser ?? 0) > 0 ||
+      (discount.conditions?.requiredTiers?.length ?? 0) > 0 ||
+      discount.conditions?.firstOrderOnly;
+    setShowAdvanced(!!hasAdvanced);
     setShowModal(true);
   };
 
@@ -125,23 +234,55 @@ const DiscountPage = () => {
       pointCost: form.pointCost,
       maxRedeemPerUser: form.maxRedeemPerUser,
       priority: form.priority,
+      scope: form.scope,
     };
     if (form.type === "percent") {
       data.maxDiscount = form.maxDiscount;
     }
+
+    // Advanced scope fields
+    if (form.scope === "PRODUCTS") {
+      data.applicableProducts = form.applicableProducts;
+    } else if (form.scope === "CATEGORIES") {
+      data.applicableCategories = form.applicableCategories;
+    }
+
+    // Advanced conditions
+    if (showAdvanced) {
+      data.conditions = {
+        minQuantity:
+          form.conditions.minQuantity > 0
+            ? form.conditions.minQuantity
+            : undefined,
+        maxUsagePerUser:
+          form.conditions.maxUsagePerUser > 0
+            ? form.conditions.maxUsagePerUser
+            : undefined,
+        requiredTiers:
+          form.conditions.requiredTiers.length > 0
+            ? form.conditions.requiredTiers
+            : undefined,
+        firstOrderOnly: form.conditions.firstOrderOnly || undefined,
+      };
+    }
+
     try {
       if (editDiscount) {
         await adminCouponService.updateCoupon(editDiscount.id, data);
+        toast.success("Cập nhật coupon thành công!");
       } else {
         await adminCouponService.createCoupon(data);
+        toast.success("Thêm coupon thành công!");
       }
       setShowModal(false);
       setEditDiscount(null);
       setForm(initialForm);
       fetchDiscounts();
-    } catch {
-      alert(
-        editDiscount ? "Cập nhật coupon thất bại!" : "Thêm coupon thất bại!"
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(
+        err?.response?.data?.message ||
+          (editDiscount ? "Cập nhật coupon thất bại!" : "Thêm coupon thất bại!")
       );
     } finally {
       setSubmitting(false);
@@ -152,9 +293,10 @@ const DiscountPage = () => {
     if (!window.confirm("Bạn chắc chắn muốn xóa coupon này?")) return;
     try {
       await adminCouponService.deleteCoupon(discount.id);
+      toast.success("Xóa coupon thành công!");
       fetchDiscounts();
     } catch {
-      alert("Xóa coupon thất bại!");
+      toast.error("Xóa coupon thất bại!");
     }
   };
 
@@ -164,9 +306,12 @@ const DiscountPage = () => {
       await adminCouponService.updateCouponStatus(discount.id, {
         status: newStatus,
       });
+      toast.success(
+        `Đã ${newStatus === "active" ? "kích hoạt" : "tạm ngừng"} coupon!`
+      );
       fetchDiscounts();
     } catch {
-      alert("Cập nhật trạng thái thất bại!");
+      toast.error("Cập nhật trạng thái thất bại!");
     }
   };
 
@@ -844,6 +989,220 @@ const DiscountPage = () => {
                         min={0}
                       />
                     </div>
+                  </div>
+                )}
+
+                {/* Advanced Settings Toggle */}
+                <div className="border-t border-mono-200 pt-4 mt-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowAdvanced(!showAdvanced)}
+                    className="flex items-center gap-2 text-sm font-medium text-mono-700 hover:text-mono-900"
+                  >
+                    <svg
+                      className={`w-4 h-4 transition-transform ${
+                        showAdvanced ? "rotate-90" : ""
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                    Cài đặt nâng cao
+                  </button>
+                </div>
+
+                {showAdvanced && (
+                  <div className="space-y-4 p-4 bg-mono-50 rounded-lg">
+                    {/* Scope */}
+                    <div>
+                      <label className="block text-sm font-medium text-mono-700 mb-1.5">
+                        Phạm vi áp dụng
+                      </label>
+                      <select
+                        name="scope"
+                        value={form.scope}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm"
+                      >
+                        <option value="ALL">Tất cả sản phẩm</option>
+                        <option value="PRODUCTS">Sản phẩm cụ thể</option>
+                        <option value="CATEGORIES">Danh mục cụ thể</option>
+                      </select>
+                    </div>
+
+                    {/* Applicable Products */}
+                    {form.scope === "PRODUCTS" && (
+                      <div>
+                        <label className="block text-sm font-medium text-mono-700 mb-1.5">
+                          Chọn sản phẩm áp dụng
+                        </label>
+                        <select
+                          multiple
+                          value={form.applicableProducts}
+                          onChange={(e) => {
+                            const selected = Array.from(
+                              e.target.selectedOptions,
+                              (opt) => opt.value
+                            );
+                            setForm((prev) => ({
+                              ...prev,
+                              applicableProducts: selected,
+                            }));
+                          }}
+                          className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm h-32"
+                        >
+                          {products.map((p) => (
+                            <option key={p._id} value={p._id}>
+                              {p.name}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-mono-500 mt-1">
+                          Giữ Ctrl để chọn nhiều sản phẩm
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Applicable Categories */}
+                    {form.scope === "CATEGORIES" && (
+                      <div>
+                        <label className="block text-sm font-medium text-mono-700 mb-1.5">
+                          Chọn danh mục áp dụng
+                        </label>
+                        <select
+                          multiple
+                          value={form.applicableCategories}
+                          onChange={(e) => {
+                            const selected = Array.from(
+                              e.target.selectedOptions,
+                              (opt) => opt.value
+                            );
+                            setForm((prev) => ({
+                              ...prev,
+                              applicableCategories: selected,
+                            }));
+                          }}
+                          className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm h-32"
+                        >
+                          {categories.map((c) => (
+                            <option key={c._id} value={c._id}>
+                              {c.name}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-mono-500 mt-1">
+                          Giữ Ctrl để chọn nhiều danh mục
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Conditions */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-mono-700 mb-1.5">
+                          SL sản phẩm tối thiểu
+                        </label>
+                        <input
+                          type="number"
+                          value={form.conditions.minQuantity || 0}
+                          onChange={(e) =>
+                            setForm((prev) => ({
+                              ...prev,
+                              conditions: {
+                                ...prev.conditions,
+                                minQuantity: Number(e.target.value),
+                              },
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm"
+                          min={0}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-mono-700 mb-1.5">
+                          Số lần dùng/người
+                        </label>
+                        <input
+                          type="number"
+                          value={form.conditions.maxUsagePerUser || 0}
+                          onChange={(e) =>
+                            setForm((prev) => ({
+                              ...prev,
+                              conditions: {
+                                ...prev.conditions,
+                                maxUsagePerUser: Number(e.target.value),
+                              },
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm"
+                          min={0}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Required Tiers */}
+                    {tiers.length > 0 && (
+                      <div>
+                        <label className="block text-sm font-medium text-mono-700 mb-1.5">
+                          Yêu cầu hạng thành viên
+                        </label>
+                        <select
+                          multiple
+                          value={form.conditions.requiredTiers || []}
+                          onChange={(e) => {
+                            const selected = Array.from(
+                              e.target.selectedOptions,
+                              (opt) => opt.value
+                            );
+                            setForm((prev) => ({
+                              ...prev,
+                              conditions: {
+                                ...prev.conditions,
+                                requiredTiers: selected,
+                              },
+                            }));
+                          }}
+                          className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500 focus:border-transparent text-sm"
+                        >
+                          {tiers.map((t) => (
+                            <option key={t._id} value={t._id}>
+                              {t.name}
+                            </option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-mono-500 mt-1">
+                          Để trống = tất cả hạng đều dùng được
+                        </p>
+                      </div>
+                    )}
+
+                    {/* First Order Only */}
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={form.conditions.firstOrderOnly || false}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            conditions: {
+                              ...prev.conditions,
+                              firstOrderOnly: e.target.checked,
+                            },
+                          }))
+                        }
+                        className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
+                      />
+                      <span className="text-sm text-mono-700">
+                        Chỉ áp dụng cho đơn hàng đầu tiên
+                      </span>
+                    </label>
                   </div>
                 )}
               </div>

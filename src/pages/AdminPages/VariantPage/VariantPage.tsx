@@ -501,7 +501,9 @@ const VariantPage: React.FC = () => {
                         <div className="w-16 h-16 rounded-lg overflow-hidden border border-mono-200 bg-mono-50">
                           <img
                             src={
-                              v.imagesvariant && v.imagesvariant.length > 0
+                              v.imagesvariant &&
+                              v.imagesvariant.length > 0 &&
+                              v.imagesvariant[0]?.url
                                 ? v.imagesvariant[0].url
                                 : defaultImage
                             }
@@ -511,6 +513,9 @@ const VariantPage: React.FC = () => {
                                 : "Variant"
                             }`}
                             className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = defaultImage;
+                            }}
                           />
                         </div>
                       </td>

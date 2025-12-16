@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   Award,
   TrendingUp,
@@ -14,6 +15,7 @@ import {
   ArrowDown,
   Crown,
   Ticket,
+  Wallet,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { userLoyaltyService } from "../services/LoyaltyService";
@@ -27,6 +29,7 @@ import type {
 import type { Coupon } from "../types/coupon";
 
 const LoyaltyDashboardContent: React.FC = () => {
+  const navigate = useNavigate();
   const [stats, setStats] = useState<UserLoyaltyInfo | null>(null);
   const [transactions, setTransactions] = useState<LoyaltyTransaction[]>([]);
   const [tiers, setTiers] = useState<LoyaltyTier[]>([]);
@@ -357,6 +360,34 @@ const LoyaltyDashboardContent: React.FC = () => {
         </motion.div>
       </div>
 
+      {/* Quick Actions - Kho Voucher */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+        className="mb-8"
+      >
+        <div
+          onClick={() => navigate("/my-coupons")}
+          className="bg-gradient-to-r from-gray-800 to-black text-white p-6 rounded-xl cursor-pointer hover:shadow-lg transition-all group"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                <Wallet className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Kho Voucher Của Bạn</h3>
+                <p className="text-sm text-gray-300">
+                  Xem và quản lý các mã giảm giá đã thu thập
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-6 h-6 text-gray-400 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </div>
+      </motion.div>
+
       {/* Progress to Next Tier */}
       {nextTierInfo && (
         <motion.div
@@ -529,9 +560,20 @@ const LoyaltyDashboardContent: React.FC = () => {
           transition={{ delay: 0.58 }}
           className="bg-white border border-gray-200 rounded-xl p-6 mb-8"
         >
-          <div className="flex items-center gap-3 mb-4">
-            <Ticket className="w-6 h-6 text-green-600" />
-            <h3 className="font-semibold text-gray-900">Đổi điểm lấy Coupon</h3>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Ticket className="w-6 h-6 text-green-600" />
+              <h3 className="font-semibold text-gray-900">
+                Đổi điểm lấy Coupon
+              </h3>
+            </div>
+            <button
+              onClick={() => navigate("/my-coupons")}
+              className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1"
+            >
+              <Wallet className="w-4 h-4" />
+              <span>Xem kho voucher</span>
+            </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {redeemableCoupons.map((coupon) => {

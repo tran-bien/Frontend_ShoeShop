@@ -80,6 +80,11 @@ const Sidebar: React.FC = () => {
       label: "Điểm thưởng",
     },
     {
+      path: "/my-coupons",
+      icon: <FaClipboardList className="text-lg" />,
+      label: "Mã giảm giá của tôi",
+    },
+    {
       path: "/view-history",
       icon: <FaHistory className="text-lg" />,
       label: "Lịch sử xem",
