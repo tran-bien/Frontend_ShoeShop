@@ -101,6 +101,11 @@ const DiscountPage = () => {
   const [archivingDiscount, setArchivingDiscount] = useState<Discount | null>(
     null
   );
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingDiscount, setDeletingDiscount] = useState<Discount | null>(
+    null
+  );
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -432,13 +437,22 @@ const DiscountPage = () => {
   };
 
   const handleDelete = async (discount: Discount) => {
-    if (!window.confirm("Bạn chắc chắn muốn xóa coupon này?")) return;
+    // Open confirmation modal instead of immediate delete
+    setShowDeleteModal(true);
+    setDeletingDiscount(discount);
+  };
+
+  const confirmDeleteCoupon = async () => {
+    if (!deletingDiscount) return;
     try {
-      await adminCouponService.deleteCoupon(discount.id);
+      await adminCouponService.deleteCoupon(deletingDiscount.id);
       toast.success("Xóa coupon thành công!");
       fetchDiscounts();
     } catch {
       toast.error("Xóa coupon thất bại!");
+    } finally {
+      setShowDeleteModal(false);
+      setDeletingDiscount(null);
     }
   };
 
@@ -1875,6 +1889,59 @@ const DiscountPage = () => {
                     )}
                   </>
                 )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && deletingDiscount && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-center text-mono-900 mb-2">
+                Xác nhận xóa coupon
+              </h3>
+              <p className="text-center text-mono-600 mb-6">
+                Bạn có chắc chắn muốn xóa coupon
+                <span className="font-semibold text-mono-900">
+                  {" "}
+                  "{deletingDiscount.code || deletingDiscount.description}"
+                </span>
+                ? Hành động này có thể được khôi phục sau.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setDeletingDiscount(null);
+                  }}
+                  className="flex-1 px-4 py-2.5 bg-mono-100 hover:bg-mono-200 text-mono-700 font-medium rounded-lg transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={confirmDeleteCoupon}
+                  className="flex-1 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  Xóa
+                </button>
               </div>
             </div>
           </div>
