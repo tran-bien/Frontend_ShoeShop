@@ -74,6 +74,7 @@ export interface OrderShippingAddress {
 /**
  * Trạng thái đơn hàng
  * SYNCED WITH BE: Backend_ShoeShop_KLTN/src/models/order/schema.js
+ * NOTE: 'refunded' đã được xóa khỏi status enum, chỉ còn ở payment.paymentStatus
  */
 export type OrderStatus =
   | "pending"
@@ -84,11 +85,10 @@ export type OrderStatus =
   | "delivery_failed"
   | "returning_to_warehouse"
   | "cancelled"
-  | "returned"
-  | "refunded";
+  | "returned";
 
 export type PaymentMethod = "COD" | "VNPAY";
-export type PaymentStatus = "pending" | "paid" | "failed";
+export type PaymentStatus = "pending" | "paid" | "failed" | "refunded";
 
 export interface OrderStatusHistory {
   status: OrderStatus;
@@ -185,6 +185,22 @@ export interface Order {
   returnConfirmed?: boolean;
   returnConfirmedAt?: string;
   returnConfirmedBy?: string;
+
+  // Refund info - SYNCED WITH BE: Order.refund
+  refund?: {
+    amount?: number;
+    method?: "cash" | "bank_transfer";
+    status?: "pending" | "processing" | "completed" | "failed";
+    bankInfo?: {
+      bankName: string;
+      accountNumber: string;
+      accountName: string;
+    };
+    processedBy?: string;
+    requestedAt?: string;
+    completedAt?: string;
+    notes?: string;
+  };
 
   // Return request tracking - populated from ReturnRequest collection
   hasReturnRequest?: boolean;
@@ -364,16 +380,15 @@ export interface ProcessCancelRequestData {
 export interface CancelRequestsResponse {
   success: boolean;
   message: string;
-  data: {
-    cancelRequests: CancelRequest[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-      hasNext: boolean;
-      hasPrev: boolean;
-    };
+  // BE trả về cancelRequests và pagination trực tiếp, không wrap trong data
+  cancelRequests: CancelRequest[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
   };
 }
 

@@ -32,6 +32,10 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
       refunded: { color: "bg-teal-100 text-teal-800", label: "Đã hoàn tiền" },
       completed: { color: "bg-green-100 text-green-800", label: "Hoàn thành" },
       rejected: { color: "bg-red-100 text-red-800", label: "Từ chối" },
+      cancel_pending: {
+        color: "bg-orange-100 text-orange-800",
+        label: "Chờ duyệt hủy",
+      },
       canceled: { color: "bg-gray-100 text-gray-800", label: "Đã hủy" },
     };
     const badge = badges[status] || badges.pending;

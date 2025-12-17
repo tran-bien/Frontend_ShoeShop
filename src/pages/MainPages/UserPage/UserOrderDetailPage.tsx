@@ -4,6 +4,7 @@ import Sidebar from "../../../components/User/Sidebar";
 import OrderCard from "../../../components/User/OrderCard";
 import CancelOrderModal from "../../../components/Modal/CancelOrderModal";
 import RepayOrderModal from "../../../components/Modal/RepayOrderModal";
+import RefundBankInfoModal from "../../../components/Modal/RefundBankInfoModal";
 import { userOrderService, Order } from "../../../services/OrderService";
 // Thay đổi từ react-toastify sang react-hot-toast
 import toast from "react-hot-toast";
@@ -14,6 +15,7 @@ import {
   FaCreditCard,
   FaTag,
   FaExchangeAlt,
+  FaUniversity,
 } from "react-icons/fa";
 
 const UserOrderDetailPage: React.FC = () => {
@@ -23,10 +25,12 @@ const UserOrderDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [repayLoading, setRepayLoading] = useState(false);
+  const [refundLoading, setRefundLoading] = useState(false);
 
   // Modal states
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showRepayModal, setShowRepayModal] = useState(false);
+  const [showRefundModal, setShowRefundModal] = useState(false);
 
   const fetchOrderDetail = async () => {
     if (!orderId) return;
@@ -126,15 +130,26 @@ const UserOrderDetailPage: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "text-mono-700 bg-mono-100";
+        return "text-amber-700 bg-amber-50";
       case "confirmed":
-        return "text-mono-black bg-mono-100";
+        return "text-blue-700 bg-blue-50";
+      case "assigned_to_shipper":
+        return "text-indigo-700 bg-indigo-50";
+      case "out_for_delivery":
       case "shipping":
-        return "text-mono-700 bg-mono-200";
+        return "text-violet-700 bg-violet-50";
       case "delivered":
-        return "text-mono-800 bg-mono-100";
+        return "text-emerald-700 bg-emerald-50";
+      case "delivery_failed":
+        return "text-rose-700 bg-rose-50";
+      case "returning_to_warehouse":
+        return "text-orange-700 bg-orange-50";
       case "cancelled":
-        return "text-mono-900 bg-mono-200";
+        return "text-mono-600 bg-mono-100";
+      case "returned":
+        return "text-pink-700 bg-pink-50";
+      case "refunded":
+        return "text-teal-700 bg-teal-50";
       default:
         return "text-mono-600 bg-mono-100";
     }
@@ -146,12 +161,24 @@ const UserOrderDetailPage: React.FC = () => {
         return "Chờ xác nhận";
       case "confirmed":
         return "Đã xác nhận";
+      case "assigned_to_shipper":
+        return "Đã gán shipper";
+      case "out_for_delivery":
+        return "Đang giao hàng";
       case "shipping":
         return "Đang giao";
       case "delivered":
-        return "Đã giao";
+        return "Giao thành công";
+      case "delivery_failed":
+        return "Giao hàng thất bại";
+      case "returning_to_warehouse":
+        return "Đang trả về kho";
       case "cancelled":
         return "Đã hủy";
+      case "returned":
+        return "Đã hoàn trả";
+      case "refunded":
+        return "Đã hoàn tiền";
       default:
         return status;
     }
@@ -189,6 +216,80 @@ const UserOrderDetailPage: React.FC = () => {
   const handleRequestReturn = () => {
     if (!order) return;
     navigate(`/returns/create?orderId=${order._id}`);
+  };
+
+  // Check if user can submit bank info for refund
+  // - Order is returning_to_warehouse or cancelled (giao thất bại 3 lần)
+  // - Payment was made (VNPAY paid)
+  // - No bank info submitted yet
+  const canSubmitRefundBankInfo = (order: Order) => {
+    const eligibleStatuses = ["returning_to_warehouse", "cancelled"];
+    const isPaid = order.payment?.paymentStatus === "paid";
+    const noBankInfo = !order.refund?.bankInfo?.accountNumber;
+    const notRefunded = order.refund?.status !== "completed";
+
+    return (
+      eligibleStatuses.includes(order.status) &&
+      isPaid &&
+      noBankInfo &&
+      notRefunded
+    );
+  };
+
+  // Check if refund is pending (bank info submitted, waiting for admin)
+  const isRefundPending = (order: Order) => {
+    return (
+      order.refund?.status === "pending" &&
+      order.refund?.bankInfo?.accountNumber
+    );
+  };
+
+  // Check if refund is completed
+  const isRefundCompleted = (order: Order) => {
+    return order.refund?.status === "completed";
+  };
+
+  const handleOpenRefundModal = () => {
+    if (!order) return;
+    setShowRefundModal(true);
+  };
+
+  const handleCloseRefundModal = () => {
+    if (refundLoading) return;
+    setShowRefundModal(false);
+  };
+
+  const handleConfirmRefundBankInfo = async (bankInfo: {
+    bankName: string;
+    accountNumber: string;
+    accountName: string;
+  }) => {
+    if (!order) return;
+
+    setRefundLoading(true);
+    try {
+      const response = await userOrderService.submitRefundBankInfo(
+        order._id,
+        bankInfo
+      );
+      if (response.data.success) {
+        toast.success(
+          "Đã gửi thông tin ngân hàng thành công. Chúng tôi sẽ xử lý hoàn tiền sớm nhất!"
+        );
+        fetchOrderDetail();
+        setShowRefundModal(false);
+      }
+    } catch (error: unknown) {
+      const err = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      const errorMessage =
+        err?.response?.data?.message || "Không thể gửi thông tin ngân hàng";
+      toast.error(errorMessage);
+    } finally {
+      setRefundLoading(false);
+    }
   };
 
   if (loading) {
@@ -298,8 +399,62 @@ const UserOrderDetailPage: React.FC = () => {
                       Trả hàng/Hoàn tiền
                     </button>
                   )}
+
+                  {/* Nút điền thông tin hoàn tiền */}
+                  {canSubmitRefundBankInfo(order) && (
+                    <button
+                      onClick={handleOpenRefundModal}
+                      disabled={refundLoading}
+                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      <FaUniversity />
+                      {refundLoading ? "Đang xử lý..." : "Điền TT hoàn tiền"}
+                    </button>
+                  )}
                 </div>
               </div>
+
+              {/* Thông báo trạng thái hoàn tiền */}
+              {isRefundPending(order) && (
+                <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <FaUniversity className="text-yellow-600" />
+                    <span className="font-semibold text-yellow-800">
+                      Đang chờ hoàn tiền
+                    </span>
+                  </div>
+                  <p className="text-sm text-yellow-700 mt-1">
+                    Chúng tôi đã nhận được thông tin ngân hàng của bạn. Tiền sẽ
+                    được hoàn trong 3-5 ngày làm việc.
+                  </p>
+                  <div className="mt-2 text-sm text-yellow-600">
+                    <p>• Ngân hàng: {order.refund?.bankInfo?.bankName}</p>
+                    <p>• Số TK: {order.refund?.bankInfo?.accountNumber}</p>
+                    <p>• Chủ TK: {order.refund?.bankInfo?.accountName}</p>
+                  </div>
+                </div>
+              )}
+
+              {isRefundCompleted(order) && (
+                <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <FaUniversity className="text-green-600" />
+                    <span className="font-semibold text-green-800">
+                      Đã hoàn tiền thành công
+                    </span>
+                  </div>
+                  <p className="text-sm text-green-700 mt-1">
+                    Số tiền {order.refund?.amount?.toLocaleString()}đ đã được
+                    chuyển vào tài khoản của bạn.
+                  </p>
+                  {order.refund?.completedAt && (
+                    <p className="text-sm text-green-600 mt-1">
+                      Ngày hoàn tiền:{" "}
+                      {new Date(order.refund.completedAt).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="p-6">
@@ -570,6 +725,15 @@ const UserOrderDetailPage: React.FC = () => {
         orderCode={order?.code || ""}
         orderAmount={order?.totalAfterDiscountAndShipping || 0}
         loading={repayLoading}
+      />
+
+      <RefundBankInfoModal
+        isOpen={showRefundModal}
+        onClose={handleCloseRefundModal}
+        onConfirm={handleConfirmRefundBankInfo}
+        orderCode={order?.code || ""}
+        refundAmount={order?.totalAfterDiscountAndShipping || 0}
+        loading={refundLoading}
       />
     </div>
   );

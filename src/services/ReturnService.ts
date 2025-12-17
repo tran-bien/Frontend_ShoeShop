@@ -54,9 +54,12 @@ export const customerReturnService = {
   ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
     axiosInstanceAuth.get(`/api/v1/users/returns/${id}`),
 
-  // Hủy yêu cầu trả hàng (chỉ khi còn pending)
-  cancelReturnRequest: (id: string): Promise<{ data: ApiResponse }> =>
-    axiosInstanceAuth.delete(`/api/v1/users/returns/${id}`),
+  // Yêu cầu hủy trả hàng (đổi ý) - chờ admin duyệt
+  cancelReturnRequest: (
+    id: string,
+    data?: { reason?: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.patch(`/api/v1/users/returns/${id}/cancel`, data),
 };
 
 // Admin Return Service
@@ -107,6 +110,13 @@ export const adminReturnService = {
       `/api/v1/admin/returns/${id}/confirm-transfer`,
       data
     ),
+
+  // Duyệt/từ chối yêu cầu hủy trả hàng từ khách
+  approveCancelReturn: (
+    id: string,
+    data: { approved: boolean; note?: string }
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
+    axiosInstanceAuth.patch(`/api/v1/admin/returns/${id}/approve-cancel`, data),
 };
 
 // Shipper Return Service

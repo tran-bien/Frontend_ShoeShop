@@ -23,6 +23,9 @@ const ReturnDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [request, setRequest] = useState<ReturnRequest | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -48,17 +51,32 @@ const ReturnDetailPage: React.FC = () => {
   };
 
   const handleCancel = async () => {
-    if (!window.confirm("Bạn có chắc muốn hủy yêu cầu này?")) return;
+    if (!cancelReason.trim()) {
+      toast.error("Vui lòng nhập lý do hủy yêu cầu");
+      return;
+    }
 
     try {
-      await customerReturnService.cancelReturnRequest(id!);
-      toast.success("Đã hủy yêu cầu");
-      navigate("/user-manage-order?tab=returns");
+      setCancelling(true);
+      await customerReturnService.cancelReturnRequest(id!, {
+        reason: cancelReason.trim(),
+      });
+      toast.success("Đã gửi yêu cầu hủy, chờ admin duyệt");
+      setShowCancelModal(false);
+      setCancelReason("");
+      fetchRequest(); // Refresh to get new status
     } catch (error) {
       console.error("Error canceling request:", error);
       toast.error("Không thể hủy yêu cầu");
+    } finally {
+      setCancelling(false);
     }
   };
+
+  // Có thể hủy khi ở trạng thái pending, approved, shipping
+  const canCancel =
+    request?.status &&
+    ["pending", "approved", "shipping"].includes(request.status);
 
   const getStatusConfig = (status: ReturnRequestStatus) => {
     const configs: Record<
@@ -119,6 +137,13 @@ const ReturnDetailPage: React.FC = () => {
         label: "Từ chối",
         icon: FiXCircle,
         description: "Yêu cầu đã bị từ chối",
+      },
+      cancel_pending: {
+        bg: "bg-yellow-100",
+        text: "text-yellow-700",
+        label: "Chờ duyệt hủy",
+        icon: FiClock,
+        description: "Yêu cầu hủy đang chờ admin xem xét",
       },
       canceled: {
         bg: "bg-mono-100",
@@ -242,9 +267,9 @@ const ReturnDetailPage: React.FC = () => {
 
                 {/* Action buttons */}
                 <div className="flex gap-2">
-                  {request.status === "pending" && (
+                  {canCancel && (
                     <button
-                      onClick={handleCancel}
+                      onClick={() => setShowCancelModal(true)}
                       className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900"
                     >
                       Hủy yêu cầu
@@ -258,6 +283,21 @@ const ReturnDetailPage: React.FC = () => {
               {/* Status Description */}
               <div className="mb-6 p-4 bg-mono-50 border border-mono-200 rounded-lg">
                 <p className="text-mono-700">{statusConfig.description}</p>
+                {/* Hiển thị thông tin cancel_pending */}
+                {request.status === "cancel_pending" &&
+                  request.cancelReason && (
+                    <div className="mt-3 pt-3 border-t border-mono-200">
+                      <p className="text-sm text-mono-600">
+                        <strong>Lý do hủy:</strong> {request.cancelReason}
+                      </p>
+                      {request.cancelRequestedAt && (
+                        <p className="text-sm text-mono-500 mt-1">
+                          Yêu cầu hủy lúc:{" "}
+                          {formatDate(request.cancelRequestedAt)}
+                        </p>
+                      )}
+                    </div>
+                  )}
               </div>
 
               {/* Thông tin chung */}
@@ -674,6 +714,50 @@ const ReturnDetailPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Cancel Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-semibold mb-4">Hủy yêu cầu trả hàng</h3>
+            <p className="text-sm text-mono-600 mb-4">
+              Bạn có chắc muốn hủy yêu cầu này? Yêu cầu hủy sẽ được gửi đến
+              admin để xem xét. Sau khi admin duyệt hủy, bạn sẽ không thể yêu
+              cầu trả hàng cho đơn này nữa.
+            </p>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-mono-700 mb-2">
+                Lý do hủy <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                placeholder="Nhập lý do bạn muốn hủy yêu cầu trả hàng..."
+                className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-400"
+                rows={3}
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowCancelModal(false);
+                  setCancelReason("");
+                }}
+                className="px-4 py-2 text-mono-600 border border-mono-300 rounded-lg hover:bg-mono-50"
+              >
+                Đóng
+              </button>
+              <button
+                onClick={handleCancel}
+                disabled={cancelling || !cancelReason.trim()}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {cancelling ? "Đang xử lý..." : "Gửi yêu cầu hủy"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -68,6 +68,12 @@ const STATUS_CONFIG: Record<
     bgColor: "bg-red-50",
     icon: <FiX size={14} />,
   },
+  cancel_pending: {
+    label: "Chờ duyệt hủy",
+    color: "text-orange-700",
+    bgColor: "bg-orange-50",
+    icon: <FiClock size={14} />,
+  },
   canceled: {
     label: "Đã hủy",
     color: "text-gray-500",
@@ -118,6 +124,7 @@ const ReturnPage = () => {
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [showConfirmTransferModal, setShowConfirmTransferModal] =
     useState(false);
+  const [showApproveCancelModal, setShowApproveCancelModal] = useState(false);
 
   // Form states
   const [note, setNote] = useState("");
@@ -260,6 +267,32 @@ const ReturnPage = () => {
     }
   };
 
+  // Handle approve cancel request (admin duyệt yêu cầu hủy từ khách)
+  const handleApproveCancel = async (approved: boolean) => {
+    if (!selectedReturn) return;
+    try {
+      setActionLoading(true);
+      await adminReturnService.approveCancelReturn(selectedReturn._id, {
+        approved,
+        note,
+      });
+      toast.success(
+        approved
+          ? "Đã duyệt hủy yêu cầu trả hàng"
+          : "Đã từ chối hủy, tiếp tục xử lý trả hàng"
+      );
+      setShowApproveCancelModal(false);
+      resetModal();
+      fetchReturns();
+      fetchStats();
+    } catch (error) {
+      console.error("Error handling cancel approval:", error);
+      toast.error("Không thể xử lý");
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const resetModal = () => {
     setSelectedReturn(null);
     setNote("");
@@ -375,6 +408,8 @@ const ReturnPage = () => {
             <option value="refunded">Đã hoàn tiền</option>
             <option value="completed">Hoàn tất</option>
             <option value="rejected">Từ chối</option>
+            <option value="cancel_pending">Chờ duyệt hủy</option>
+            <option value="canceled">Đã hủy</option>
           </select>
         </div>
       </div>
@@ -540,6 +575,19 @@ const ReturnPage = () => {
                             <FiDollarSign size={16} />
                           </button>
                         )}
+
+                      {returnReq.status === "cancel_pending" && (
+                        <button
+                          onClick={() => {
+                            setSelectedReturn(returnReq);
+                            setShowApproveCancelModal(true);
+                          }}
+                          className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg"
+                          title="Duyệt hủy yêu cầu"
+                        >
+                          <FiCheck size={16} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -795,6 +843,82 @@ const ReturnPage = () => {
                 className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50"
               >
                 {actionLoading ? "Đang xử lý..." : "Xác nhận"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Approve Cancel Modal - Duyệt yêu cầu hủy từ khách */}
+      {showApproveCancelModal && selectedReturn && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold mb-4">
+              Duyệt yêu cầu hủy trả hàng
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Khách hàng muốn hủy yêu cầu trả hàng này.
+            </p>
+            {selectedReturn.cancelReason && (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-sm">
+                  <span className="font-medium text-orange-800">
+                    Lý do hủy:
+                  </span>{" "}
+                  <span className="text-orange-700">
+                    {selectedReturn.cancelReason}
+                  </span>
+                </p>
+                {selectedReturn.cancelRequestedAt && (
+                  <p className="text-xs text-orange-600 mt-1">
+                    Yêu cầu lúc:{" "}
+                    {new Date(selectedReturn.cancelRequestedAt).toLocaleString(
+                      "vi-VN"
+                    )}
+                  </p>
+                )}
+              </div>
+            )}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Ghi chú (tùy chọn)
+              </label>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                placeholder="Ghi chú..."
+                rows={2}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+            </div>
+            <p className="text-xs text-gray-500 mb-4">
+              <strong>Lưu ý:</strong> Nếu duyệt hủy, đơn hàng sẽ chuyển về trạng
+              thái "Đã giao" và khách không thể yêu cầu trả hàng nữa.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowApproveCancelModal(false);
+                  resetModal();
+                }}
+                className="flex-1 px-4 py-2 border rounded-lg hover:bg-gray-50"
+                disabled={actionLoading}
+              >
+                Đóng
+              </button>
+              <button
+                onClick={() => handleApproveCancel(false)}
+                disabled={actionLoading}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                {actionLoading ? "..." : "Từ chối hủy"}
+              </button>
+              <button
+                onClick={() => handleApproveCancel(true)}
+                disabled={actionLoading}
+                className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
+              >
+                {actionLoading ? "..." : "Duyệt hủy"}
               </button>
             </div>
           </div>

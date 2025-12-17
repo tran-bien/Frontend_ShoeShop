@@ -13,7 +13,9 @@ import {
   FiTruck,
   FiRefreshCw,
   FiArrowRight,
+  FiDollarSign,
 } from "react-icons/fi";
+import { FaUniversity } from "react-icons/fa";
 
 // ===== STATUS MAPPING - ĐÚNG THEO BE =====
 const ORDER_STATUS_MAP: Record<string, string> = {
@@ -44,22 +46,24 @@ const STATUS_COLORS: Record<string, string> = {
   refunded: "bg-teal-50 text-teal-700 border border-teal-200",
 };
 
-// Tab filters
+// Tab filters - Phân loại rõ ràng theo trạng thái
 type OrderTab =
   | "all"
   | "pending"
-  | "processing"
   | "delivering"
-  | "completed"
-  | "issues";
+  | "delivered"
+  | "delivery_failed"
+  | "cancelled"
+  | "refunded";
 
 const TAB_FILTERS: Record<OrderTab, string[]> = {
   all: [],
-  pending: ["pending", "confirmed"],
-  processing: ["assigned_to_shipper"],
-  delivering: ["out_for_delivery"],
-  completed: ["delivered", "cancelled", "refunded"],
-  issues: ["delivery_failed", "returning_to_warehouse", "returned"],
+  pending: ["pending", "confirmed"], // Đơn mới cần xử lý
+  delivering: ["assigned_to_shipper", "out_for_delivery"], // Đang vận chuyển
+  delivered: ["delivered"], // Đã giao thành công (chỉ delivered)
+  delivery_failed: ["delivery_failed", "returning_to_warehouse"], // Giao thất bại, đang trả về kho
+  cancelled: ["cancelled"], // Đã hủy
+  refunded: ["refunded", "returned"], // Đã hoàn tiền / đã trả hàng (kết quả cuối)
 };
 
 // Simplified order interface for list display
@@ -77,7 +81,64 @@ interface OrderListItem {
   orderStatusRaw?: string;
   shipperName?: string;
   shipperId?: string;
+  shipperPhone?: string;
+  shipperEmail?: string;
   createdAt?: string;
+  // Refund info
+  refund?: {
+    status?: string;
+    amount?: number;
+    bankInfo?: {
+      bankName?: string;
+      accountNumber?: string;
+      accountName?: string;
+    };
+  };
+  returnConfirmed?: boolean;
+}
+
+// Order detail interface with orderItems
+interface OrderDetail extends OrderListItem {
+  orderItems: {
+    _id: string;
+    productName: string;
+    quantity: number;
+    price: number;
+    image: string;
+    variant?: {
+      _id: string;
+      color?: { name: string; code: string };
+      imagesvariant?: string[];
+      product?: {
+        name: string;
+        images?: string[];
+      };
+    };
+    size?: {
+      _id: string;
+      value: string;
+    };
+  }[];
+  subTotal: number;
+  discount: number;
+  shippingFee: number;
+  couponDetail?: {
+    code: string;
+    type: string;
+    value: number;
+  };
+  refund?: {
+    status?: string;
+    amount?: number;
+    method?: string;
+    bankInfo?: {
+      bankName?: string;
+      accountNumber?: string;
+      accountName?: string;
+    };
+    requestedAt?: string;
+  };
+  returnConfirmed?: boolean;
 }
 
 const ListOrderPage: React.FC = () => {
@@ -87,18 +148,34 @@ const ListOrderPage: React.FC = () => {
   const [paymentFilter, setPaymentFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [orders, setOrders] = useState<OrderListItem[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<OrderListItem | null>(
-    null
-  );
+  const [selectedOrder, setSelectedOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<"orders" | "cancel">("orders");
   const [orderTab, setOrderTab] = useState<OrderTab>("all");
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const ITEMS_PER_PAGE = 20;
+
+  // Refund modal state
+  const [showRefundModal, setShowRefundModal] = useState(false);
+  const [refundOrderInfo, setRefundOrderInfo] = useState<OrderListItem | null>(
+    null
+  );
+  const [refundNotes, setRefundNotes] = useState("");
+  const [refundLoading, setRefundLoading] = useState(false);
+
   // Lấy danh sách đơn hàng từ API
-  const fetchOrders = async () => {
+  const fetchOrders = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await adminOrderService.getAllOrders();
+      const res = await adminOrderService.getAllOrders({
+        page,
+        limit: ITEMS_PER_PAGE,
+      });
+      const { pagination } = res.data;
       /* eslint-disable @typescript-eslint/no-explicit-any */
       setOrders(
         (res.data.orders || []).map((o: any) => ({
@@ -130,12 +207,24 @@ const ListOrderPage: React.FC = () => {
               : o.payment?.method || "",
           orderStatus: ORDER_STATUS_MAP[o.status] || o.status || "",
           orderStatusRaw: o.status,
-          shipperName: o.shipper?.name || "",
-          shipperId: o.shipper?._id || "",
+          shipperName: o.assignedShipper?.name || "",
+          shipperId: o.assignedShipper?._id || "",
+          shipperPhone: o.assignedShipper?.phone || "",
+          shipperEmail: o.assignedShipper?.email || "",
           createdAt: o.createdAt,
+          // Refund info
+          refund: o.refund || null,
+          returnConfirmed: o.returnConfirmed || false,
         }))
       );
       /* eslint-enable @typescript-eslint/no-explicit-any */
+
+      // Update pagination state
+      if (pagination) {
+        setCurrentPage(pagination.page);
+        setTotalPages(pagination.totalPages);
+        setTotalOrders(pagination.total);
+      }
     } catch {
       setOrders([]);
     } finally {
@@ -145,9 +234,9 @@ const ListOrderPage: React.FC = () => {
 
   useEffect(() => {
     if (tab === "orders") {
-      fetchOrders();
+      fetchOrders(currentPage);
     }
-  }, [tab]);
+  }, [tab, currentPage]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -187,8 +276,19 @@ const ListOrderPage: React.FC = () => {
             : o.payment?.method || "",
         orderStatus: ORDER_STATUS_MAP[o.status] || o.status || "",
         orderStatusRaw: o.status,
-        shipperName: o.shipper?.name || "",
-        shipperId: o.shipper?._id || "",
+        shipperName: o.assignedShipper?.name || "",
+        shipperId: o.assignedShipper?._id || "",
+        shipperPhone: o.assignedShipper?.phone || "",
+        shipperEmail: o.assignedShipper?.email || "",
+        // Order items detail
+        orderItems: o.orderItems || [],
+        subTotal: o.subTotal || 0,
+        discount: o.discount || 0,
+        shippingFee: o.shippingFee || 0,
+        couponDetail: o.couponDetail || null,
+        // Refund info
+        refund: o.refund || null,
+        returnConfirmed: o.returnConfirmed || false,
       });
     } catch {
       setSelectedOrder(null);
@@ -268,36 +368,36 @@ const ListOrderPage: React.FC = () => {
     }
   };
 
-  // Hoàn tiền cho đơn đã hủy/trả hàng (Admin Only)
-  const handleRefundOrder = async (orderId: string) => {
-    if (!confirm("Bạn có chắc chắn muốn hoàn tiền cho đơn hàng này?")) return;
-
-    try {
-      /* eslint-disable @typescript-eslint/no-explicit-any */
-      await adminOrderService.updateOrderStatus(orderId, {
-        status: "refunded" as any,
-      });
-      /* eslint-enable @typescript-eslint/no-explicit-any */
-      toast.success("Đã cập nhật trạng thái hoàn tiền");
-      fetchOrders();
-    } catch (error) {
-      console.error("Error refunding order:", error);
-      toast.error("Không thể hoàn tiền");
-    }
+  // Xác nhận đã hoàn tiền (khi user đã gửi bank info)
+  const handleOpenRefundModal = (order: OrderListItem) => {
+    setRefundOrderInfo(order);
+    setRefundNotes("");
+    setShowRefundModal(true);
   };
 
-  // Force xác nhận thanh toán cho VNPAY failed callbacks (Admin Only)
-  const handleForceConfirmPayment = async (orderId: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xác nhận thanh toán cho đơn hàng này?"))
-      return;
+  const handleCloseRefundModal = () => {
+    setShowRefundModal(false);
+    setRefundOrderInfo(null);
+    setRefundNotes("");
+  };
 
+  const handleConfirmRefund = async () => {
+    if (!refundOrderInfo) return;
+
+    setRefundLoading(true);
     try {
-      await adminOrderService.forceConfirmPayment(orderId);
-      toast.success("Đã xác nhận thanh toán thành công");
+      await adminOrderService.confirmRefund(refundOrderInfo._id, refundNotes);
+      toast.success("Đã xác nhận hoàn tiền thành công");
+      handleCloseRefundModal();
       fetchOrders();
     } catch (error) {
-      console.error("Error forcing payment confirmation:", error);
-      toast.error("Không thể xác nhận thanh toán");
+      console.error("Error confirming refund:", error);
+      const err = error as { response?: { data?: { message?: string } } };
+      toast.error(
+        err?.response?.data?.message || "Không thể xác nhận hoàn tiền"
+      );
+    } finally {
+      setRefundLoading(false);
     }
   };
 
@@ -306,19 +406,22 @@ const ListOrderPage: React.FC = () => {
     const counts: Record<OrderTab, number> = {
       all: orders.length,
       pending: 0,
-      processing: 0,
       delivering: 0,
-      completed: 0,
-      issues: 0,
+      delivered: 0,
+      delivery_failed: 0,
+      cancelled: 0,
+      refunded: 0,
     };
 
     orders.forEach((order) => {
       const status = order.orderStatusRaw || "";
       if (TAB_FILTERS.pending.includes(status)) counts.pending++;
-      if (TAB_FILTERS.processing.includes(status)) counts.processing++;
       if (TAB_FILTERS.delivering.includes(status)) counts.delivering++;
-      if (TAB_FILTERS.completed.includes(status)) counts.completed++;
-      if (TAB_FILTERS.issues.includes(status)) counts.issues++;
+      if (TAB_FILTERS.delivered.includes(status)) counts.delivered++;
+      if (TAB_FILTERS.delivery_failed.includes(status))
+        counts.delivery_failed++;
+      if (TAB_FILTERS.cancelled.includes(status)) counts.cancelled++;
+      if (TAB_FILTERS.refunded.includes(status)) counts.refunded++;
     });
 
     return counts;
@@ -375,24 +478,12 @@ const ListOrderPage: React.FC = () => {
               </button>
             )}
 
-            {/* Assigned → Show shipper name + can start delivery */}
+            {/* Assigned → Show shipper name (shipper sẽ tự ấn "Bắt đầu giao" trên app) */}
             {status === "assigned_to_shipper" && (
-              <>
-                <div className="text-xs text-mono-600 bg-mono-100 px-2 py-1.5 rounded text-center">
-                  <span className="font-medium">
-                    {order.shipperName || "Đã gán"}
-                  </span>
-                </div>
-                <button
-                  className="inline-flex items-center justify-center gap-1.5 bg-violet-600 hover:bg-violet-700 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
-                  onClick={() =>
-                    handleUpdateOrderStatus(order._id, "out_for_delivery")
-                  }
-                >
-                  <FiTruck size={12} />
-                  Bắt đầu giao
-                </button>
-              </>
+              <div className="text-xs text-indigo-600 bg-indigo-50 px-2 py-1.5 rounded text-center font-medium border border-indigo-200">
+                👤 {order.shipperName || "Đã gán shipper"} - Chờ shipper bắt đầu
+                giao
+              </div>
             )}
 
             {/* Out for delivery → Show shipper */}
@@ -425,50 +516,61 @@ const ListOrderPage: React.FC = () => {
               </>
             )}
 
-            {/* Returning to warehouse → Cancel */}
+            {/* Returning to warehouse → Confirm received */}
             {status === "returning_to_warehouse" && (
-              <button
-                className="inline-flex items-center justify-center gap-1.5 bg-mono-600 hover:bg-mono-700 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
-                onClick={() => handleUpdateOrderStatus(order._id, "cancelled")}
-              >
-                Xác nhận hủy
-              </button>
+              <>
+                <button
+                  className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
+                  onClick={() => handleConfirmReturn(order._id)}
+                >
+                  <FiCheck size={12} />
+                  Nhận về kho
+                </button>
+                {order.paymentStatusRaw === "paid" && (
+                  <div className="text-xs text-amber-600 bg-amber-50 px-2 py-1.5 rounded text-center font-medium border border-amber-200">
+                    💰 Chờ user điền bank info
+                  </div>
+                )}
+              </>
             )}
 
-            {/* Returned → Confirm return received */}
+            {/* Returned → Đơn đã trả hàng (đang được xử lý ở trang Quản lý Trả hàng) */}
             {status === "returned" && (
-              <button
-                className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
-                onClick={() => handleConfirmReturn(order._id)}
-              >
-                Xác nhận trả hàng
-              </button>
+              <div className="text-xs text-pink-600 bg-pink-50 px-2 py-1.5 rounded text-center font-medium border border-pink-200">
+                📦 Đã nhận hàng trả về - Xử lý hoàn tiền tại trang Quản lý Trả
+                hàng
+              </div>
             )}
 
-            {/* Cancelled/Returned + paid → Refund (Admin only) */}
+            {/* Cancelled + paid + có bank info pending → Xác nhận hoàn tiền */}
             {hasAdminOnlyAccess() &&
-              (status === "cancelled" || status === "returned") &&
-              order.paymentStatusRaw === "paid" && (
+              status === "cancelled" &&
+              order.paymentStatusRaw === "paid" &&
+              order.refund?.status === "pending" &&
+              order.refund?.bankInfo?.accountNumber && (
                 <button
                   className="inline-flex items-center justify-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
-                  onClick={() => handleRefundOrder(order._id)}
+                  onClick={() => handleOpenRefundModal(order)}
                 >
-                  Hoàn tiền
+                  💳 Xác nhận đã hoàn tiền
                 </button>
               )}
 
-            {/* Force confirm payment - Admin Only, VNPAY unpaid */}
-            {hasAdminOnlyAccess() &&
-              order.paymentMethod === "VNPAY" &&
-              order.paymentStatusRaw !== "paid" && (
-                <button
-                  className="inline-flex items-center justify-center gap-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
-                  onClick={() => handleForceConfirmPayment(order._id)}
-                  title="Force xác nhận thanh toán khi VNPAY callback failed"
-                >
-                  Xác nhận TT
-                </button>
+            {/* Cancelled + paid + chưa có bank info → Chờ user điền */}
+            {status === "cancelled" &&
+              order.paymentStatusRaw === "paid" &&
+              !order.refund?.bankInfo?.accountNumber && (
+                <div className="text-xs text-amber-600 bg-amber-50 px-2 py-1.5 rounded text-center font-medium border border-amber-200">
+                  ⏳ Chờ KH gửi thông tin ngân hàng
+                </div>
               )}
+
+            {/* Refunded → Đã hoàn tiền */}
+            {status === "refunded" && (
+              <div className="text-xs text-teal-600 bg-teal-50 px-2 py-1.5 rounded text-center font-medium border border-teal-200">
+                ✅ Đã hoàn tiền
+              </div>
+            )}
           </>
         )}
       </div>
@@ -533,21 +635,30 @@ const ListOrderPage: React.FC = () => {
                 { key: "all" as OrderTab, label: "Tất cả", icon: "📋" },
                 { key: "pending" as OrderTab, label: "Cần xử lý", icon: "⏳" },
                 {
-                  key: "processing" as OrderTab,
-                  label: "Đã gán shipper",
-                  icon: "👤",
-                },
-                {
                   key: "delivering" as OrderTab,
                   label: "Đang giao",
                   icon: "🚚",
                 },
                 {
-                  key: "completed" as OrderTab,
-                  label: "Hoàn thành",
+                  key: "delivered" as OrderTab,
+                  label: "Đã giao",
                   icon: "✅",
                 },
-                { key: "issues" as OrderTab, label: "Có vấn đề", icon: "⚠️" },
+                {
+                  key: "delivery_failed" as OrderTab,
+                  label: "Giao thất bại",
+                  icon: "⚠️",
+                },
+                {
+                  key: "cancelled" as OrderTab,
+                  label: "Đã hủy",
+                  icon: "❌",
+                },
+                {
+                  key: "refunded" as OrderTab,
+                  label: "Hoàn tiền/Trả hàng",
+                  icon: "💰",
+                },
               ].map((t) => (
                 <button
                   key={t.key}
@@ -758,19 +869,76 @@ const ListOrderPage: React.FC = () => {
               </table>
             </div>
 
-            {/* Summary */}
-            <div className="mt-4 flex items-center justify-between text-sm text-mono-500">
-              <span>
-                Hiển thị {filteredOrders.length} / {orders.length} đơn hàng
-              </span>
-              <button
-                onClick={fetchOrders}
-                className="inline-flex items-center gap-1 text-mono-600 hover:text-mono-900"
-              >
-                <FiRefreshCw size={14} />
-                Làm mới
-              </button>
-            </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex items-center justify-between">
+                <div className="text-sm text-mono-500">
+                  Hiển thị {filteredOrders.length} / {totalOrders} đơn hàng
+                  (Trang {currentPage} / {totalPages})
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="px-3 py-2 text-sm border border-mono-200 rounded-lg hover:bg-mono-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Trước
+                  </button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum: number;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`px-3 py-2 text-sm rounded-lg ${
+                            currentPage === pageNum
+                              ? "bg-mono-900 text-white"
+                              : "border border-mono-200 hover:bg-mono-100"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(totalPages, p + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-2 text-sm border border-mono-200 rounded-lg hover:bg-mono-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Sau
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Summary when single page */}
+            {totalPages <= 1 && (
+              <div className="mt-4 flex items-center justify-between text-sm text-mono-500">
+                <span>
+                  Hiển thị {filteredOrders.length} / {totalOrders} đơn hàng
+                </span>
+                <button
+                  onClick={() => fetchOrders(currentPage)}
+                  className="inline-flex items-center gap-1 text-mono-600 hover:text-mono-900"
+                >
+                  <FiRefreshCw size={14} />
+                  Làm mới
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -785,10 +953,15 @@ const ListOrderPage: React.FC = () => {
       {/* Order Detail Modal */}
       {selectedOrder && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg relative max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
             <div className="bg-mono-900 text-white px-6 py-4 flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Chi tiết đơn hàng</h3>
+              <div>
+                <h3 className="text-lg font-semibold">Chi tiết đơn hàng</h3>
+                <p className="text-mono-300 text-sm font-mono">
+                  #{selectedOrder.orderCode.slice(-8).toUpperCase()}
+                </p>
+              </div>
               <button
                 onClick={handleCloseModal}
                 className="text-white/80 hover:text-white transition-colors"
@@ -798,82 +971,266 @@ const ListOrderPage: React.FC = () => {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center pb-4 border-b border-mono-100">
-                  <span className="text-mono-500">Mã đơn hàng</span>
-                  <span className="font-mono font-semibold text-mono-900">
-                    {selectedOrder.orderCode.slice(-8).toUpperCase()}
-                  </span>
-                </div>
+            <div className="overflow-y-auto max-h-[calc(90vh-180px)]">
+              {/* Order Items Section */}
+              <div className="p-6 border-b border-mono-100">
+                <h4 className="font-semibold text-mono-900 mb-4">
+                  Sản phẩm đặt hàng ({selectedOrder.orderItems?.length || 0})
+                </h4>
+                <div className="space-y-3">
+                  {selectedOrder.orderItems?.map((item, index) => {
+                    const itemImage =
+                      item.image ||
+                      item.variant?.imagesvariant?.[0] ||
+                      item.variant?.product?.images?.[0] ||
+                      "";
+                    const colorName = item.variant?.color?.name || "—";
+                    const colorCode = item.variant?.color?.code || "#ccc";
+                    const sizeValue = item.size?.value || "—";
 
-                <div className="flex justify-between items-center">
-                  <span className="text-mono-500">Khách hàng</span>
-                  <span className="font-medium text-mono-900">
-                    {selectedOrder.customerName}
-                  </span>
-                </div>
+                    return (
+                      <div
+                        key={item._id || index}
+                        className="flex gap-4 p-3 bg-mono-50 rounded-lg"
+                      >
+                        {/* Product Image */}
+                        <div className="w-20 h-20 flex-shrink-0 bg-white rounded-lg overflow-hidden border border-mono-200">
+                          {itemImage ? (
+                            <img
+                              src={itemImage}
+                              alt={item.productName}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-mono-400 text-2xl">
+                              📦
+                            </div>
+                          )}
+                        </div>
 
-                <div className="flex justify-between items-start">
-                  <span className="text-mono-500">Địa chỉ</span>
-                  <span className="text-mono-900 text-right max-w-[60%]">
-                    {selectedOrder.address}
-                  </span>
+                        {/* Product Info */}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-mono-900 text-sm truncate">
+                            {item.productName}
+                          </p>
+                          <div className="flex items-center gap-3 mt-1.5 text-xs text-mono-500">
+                            {/* Color */}
+                            <span className="flex items-center gap-1">
+                              <span
+                                className="w-3 h-3 rounded-full border border-mono-300"
+                                style={{ backgroundColor: colorCode }}
+                              ></span>
+                              {colorName}
+                            </span>
+                            {/* Size */}
+                            <span className="px-1.5 py-0.5 bg-mono-200 rounded text-mono-700 font-medium">
+                              Size {sizeValue}
+                            </span>
+                            {/* Quantity */}
+                            <span>x{item.quantity}</span>
+                          </div>
+                          <div className="mt-2 flex items-center justify-between">
+                            <span className="text-sm font-semibold text-mono-900">
+                              {item.price.toLocaleString("vi-VN")}₫
+                            </span>
+                            <span className="text-xs text-mono-500">
+                              ={" "}
+                              {(item.price * item.quantity).toLocaleString(
+                                "vi-VN"
+                              )}
+                              ₫
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
+              </div>
 
-                <div className="flex justify-between items-center">
-                  <span className="text-mono-500">Số điện thoại</span>
-                  <span className="text-mono-900">{selectedOrder.phone}</span>
-                </div>
-
-                <div className="flex justify-between items-center pt-4 border-t border-mono-100">
-                  <span className="text-mono-500">Tổng tiền</span>
-                  <span className="text-xl font-bold text-mono-900">
-                    {selectedOrder.price}
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-mono-500">Thanh toán</span>
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-medium ${
-                      selectedOrder.paymentStatusRaw === "paid"
-                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                        : "bg-amber-50 text-amber-700 border border-amber-200"
-                    }`}
-                  >
-                    {selectedOrder.paymentStatus}
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-mono-500">Phương thức</span>
-                  <span className="text-mono-900">
-                    {selectedOrder.paymentMethod}
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-mono-500">Trạng thái</span>
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-medium ${
-                      STATUS_COLORS[selectedOrder.orderStatusRaw || ""] ||
-                      "bg-mono-100 text-mono-600"
-                    }`}
-                  >
-                    {selectedOrder.orderStatus}
-                  </span>
-                </div>
-
-                {selectedOrder.shipperName && (
-                  <div className="flex justify-between items-center pt-4 border-t border-mono-100">
-                    <span className="text-mono-500">Shipper</span>
+              {/* Customer & Shipping Info */}
+              <div className="p-6 border-b border-mono-100">
+                <h4 className="font-semibold text-mono-900 mb-3">
+                  Thông tin giao hàng
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-mono-500">Khách hàng</span>
                     <span className="font-medium text-mono-900">
-                      {selectedOrder.shipperName}
+                      {selectedOrder.customerName}
                     </span>
                   </div>
-                )}
+                  <div className="flex justify-between">
+                    <span className="text-mono-500">Số điện thoại</span>
+                    <span className="text-mono-900">{selectedOrder.phone}</span>
+                  </div>
+                  <div className="flex justify-between items-start">
+                    <span className="text-mono-500">Địa chỉ</span>
+                    <span className="text-mono-900 text-right max-w-[60%]">
+                      {selectedOrder.address}
+                    </span>
+                  </div>
+                </div>
               </div>
+
+              {/* Shipper Info (if assigned) */}
+              {selectedOrder.shipperName && (
+                <div className="p-6 border-b border-mono-100 bg-indigo-50/50">
+                  <h4 className="font-semibold text-mono-900 mb-3 flex items-center gap-2">
+                    <FiTruck className="text-indigo-600" /> Thông tin shipper
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-mono-500">Tên</span>
+                      <span className="font-medium text-mono-900">
+                        {selectedOrder.shipperName}
+                      </span>
+                    </div>
+                    {selectedOrder.shipperPhone && (
+                      <div className="flex justify-between">
+                        <span className="text-mono-500">SĐT</span>
+                        <span className="text-mono-900">
+                          {selectedOrder.shipperPhone}
+                        </span>
+                      </div>
+                    )}
+                    {selectedOrder.shipperEmail && (
+                      <div className="flex justify-between">
+                        <span className="text-mono-500">Email</span>
+                        <span className="text-mono-900">
+                          {selectedOrder.shipperEmail}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Payment & Totals */}
+              <div className="p-6">
+                <h4 className="font-semibold text-mono-900 mb-3">
+                  Thanh toán & Tổng tiền
+                </h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-mono-500">Tạm tính</span>
+                    <span className="text-mono-900">
+                      {selectedOrder.subTotal?.toLocaleString("vi-VN") || 0}₫
+                    </span>
+                  </div>
+                  {selectedOrder.discount > 0 && (
+                    <div className="flex justify-between text-emerald-600">
+                      <span>
+                        Giảm giá{" "}
+                        {selectedOrder.couponDetail?.code && (
+                          <span className="text-xs bg-emerald-100 px-1 rounded">
+                            {selectedOrder.couponDetail.code}
+                          </span>
+                        )}
+                      </span>
+                      <span>
+                        -{selectedOrder.discount.toLocaleString("vi-VN")}₫
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-mono-500">Phí vận chuyển</span>
+                    <span className="text-mono-900">
+                      {selectedOrder.shippingFee === 0
+                        ? "Miễn phí"
+                        : `${selectedOrder.shippingFee?.toLocaleString(
+                            "vi-VN"
+                          )}₫`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between pt-2 mt-2 border-t border-mono-200">
+                    <span className="font-semibold text-mono-900">
+                      Tổng cộng
+                    </span>
+                    <span className="text-lg font-bold text-mono-900">
+                      {selectedOrder.price}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center mt-3">
+                    <span className="text-mono-500">Phương thức</span>
+                    <span className="text-mono-900 font-medium">
+                      {selectedOrder.paymentMethod}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-mono-500">Trạng thái TT</span>
+                    <span
+                      className={`px-2 py-0.5 rounded text-xs font-medium ${
+                        selectedOrder.paymentStatusRaw === "paid"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-amber-50 text-amber-700 border border-amber-200"
+                      }`}
+                    >
+                      {selectedOrder.paymentStatus}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-mono-500">Trạng thái đơn</span>
+                    <span
+                      className={`px-2 py-0.5 rounded text-xs font-medium ${
+                        STATUS_COLORS[selectedOrder.orderStatusRaw || ""] ||
+                        "bg-mono-100 text-mono-600"
+                      }`}
+                    >
+                      {selectedOrder.orderStatus}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Refund Info - Hiển thị khi có yêu cầu hoàn tiền */}
+              {selectedOrder.refund?.bankInfo?.accountNumber && (
+                <div className="p-6 border-t border-mono-100 bg-teal-50/50">
+                  <h4 className="font-semibold text-mono-900 mb-3 flex items-center gap-2">
+                    💳 Thông tin hoàn tiền
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-mono-500">Số tiền hoàn</span>
+                      <span className="font-semibold text-teal-600">
+                        {selectedOrder.refund.amount?.toLocaleString("vi-VN")}₫
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-mono-500">Ngân hàng</span>
+                      <span className="text-mono-900">
+                        {selectedOrder.refund.bankInfo.bankName}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-mono-500">Số tài khoản</span>
+                      <span className="font-mono text-mono-900">
+                        {selectedOrder.refund.bankInfo.accountNumber}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-mono-500">Chủ tài khoản</span>
+                      <span className="font-medium text-mono-900">
+                        {selectedOrder.refund.bankInfo.accountName}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center pt-2 mt-2 border-t border-teal-200">
+                      <span className="text-mono-500">Trạng thái</span>
+                      <span
+                        className={`px-2 py-0.5 rounded text-xs font-medium ${
+                          selectedOrder.refund.status === "completed"
+                            ? "bg-teal-100 text-teal-700"
+                            : "bg-amber-100 text-amber-700"
+                        }`}
+                      >
+                        {selectedOrder.refund.status === "completed"
+                          ? "Đã hoàn tiền"
+                          : "Chờ xử lý"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Modal Footer */}
@@ -883,6 +1240,128 @@ const ListOrderPage: React.FC = () => {
                 className="w-full bg-mono-900 hover:bg-mono-800 text-white py-2.5 rounded-lg font-medium transition-colors"
               >
                 Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Refund Confirmation Modal */}
+      {showRefundModal && refundOrderInfo && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-mono-200">
+              <div className="flex items-center gap-2">
+                <FiDollarSign className="text-teal-600 text-xl" />
+                <h3 className="text-lg font-semibold text-mono-900">
+                  Xác nhận hoàn tiền
+                </h3>
+              </div>
+              <button
+                onClick={handleCloseRefundModal}
+                className="text-mono-400 hover:text-mono-600"
+              >
+                <FiX className="text-xl" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-4 space-y-4">
+              {/* Order Info */}
+              <div className="bg-mono-50 p-3 rounded-lg">
+                <p className="text-sm text-mono-600">Mã đơn hàng</p>
+                <p className="font-semibold text-mono-900">
+                  {refundOrderInfo.orderCode}
+                </p>
+                <p className="text-sm text-mono-500 mt-1">
+                  Khách hàng: {refundOrderInfo.customerName}
+                </p>
+              </div>
+
+              {/* Bank Info */}
+              <div className="bg-teal-50 p-4 rounded-lg border border-teal-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <FaUniversity className="text-teal-600" />
+                  <span className="font-semibold text-teal-800">
+                    Thông tin chuyển khoản
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-mono-500">Ngân hàng:</span>
+                    <span className="font-medium text-mono-800">
+                      {refundOrderInfo.refund?.bankInfo?.bankName}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-mono-500">Số tài khoản:</span>
+                    <span className="font-bold text-mono-900 text-base">
+                      {refundOrderInfo.refund?.bankInfo?.accountNumber}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-mono-500">Chủ tài khoản:</span>
+                    <span className="font-medium text-mono-800">
+                      {refundOrderInfo.refund?.bankInfo?.accountName}
+                    </span>
+                  </div>
+                  <div className="flex justify-between pt-2 mt-2 border-t border-teal-200">
+                    <span className="text-mono-500">Số tiền hoàn:</span>
+                    <span className="font-bold text-teal-700 text-lg">
+                      {refundOrderInfo.refund?.amount?.toLocaleString("vi-VN")}₫
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notes Input */}
+              <div>
+                <label className="block text-sm font-medium text-mono-700 mb-1">
+                  Mã giao dịch / Ghi chú (tùy chọn)
+                </label>
+                <textarea
+                  value={refundNotes}
+                  onChange={(e) => setRefundNotes(e.target.value)}
+                  placeholder="VD: Mã GD: 123456789 - Đã chuyển khoản lúc 10:30..."
+                  rows={3}
+                  className="w-full px-3 py-2 border border-mono-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
+                />
+              </div>
+
+              {/* Warning */}
+              <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+                <p className="text-sm text-amber-800">
+                  ⚠️ Vui lòng đảm bảo đã chuyển khoản thành công trước khi xác
+                  nhận. Hành động này không thể hoàn tác.
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex gap-3 p-4 border-t border-mono-200">
+              <button
+                onClick={handleCloseRefundModal}
+                className="flex-1 px-4 py-2.5 border border-mono-300 text-mono-700 rounded-lg hover:bg-mono-100 font-medium"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleConfirmRefund}
+                disabled={refundLoading}
+                className="flex-1 px-4 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+              >
+                {refundLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Đang xử lý...
+                  </>
+                ) : (
+                  <>
+                    <FiCheck />
+                    Xác nhận đã hoàn tiền
+                  </>
+                )}
               </button>
             </div>
           </div>

@@ -69,6 +69,20 @@ export const userOrderService = {
   // Thanh toán lại đơn hàng
   repayOrder: (orderId: string): Promise<{ data: CreateOrderResponse }> =>
     axiosInstanceAuth.post(`/api/v1/users/orders/${orderId}/repay`),
+
+  // Gửi thông tin ngân hàng để nhận hoàn tiền
+  submitRefundBankInfo: (
+    orderId: string,
+    bankInfo: {
+      bankName: string;
+      accountNumber: string;
+      accountName: string;
+    }
+  ): Promise<{ data: { success: boolean; message: string } }> =>
+    axiosInstanceAuth.post(
+      `/api/v1/users/orders/${orderId}/refund-bank-info`,
+      bankInfo
+    ),
 };
 
 // =======================
@@ -123,13 +137,32 @@ export const adminOrderService = {
   ): Promise<{ data: UpdateOrderStatusResponse }> =>
     axiosInstanceAuth.post(`/api/v1/admin/orders/${orderId}/confirm-return`),
 
-  // Force xác nhận thanh toán cho VNPAY failed callbacks (Admin Only)
-  forceConfirmPayment: (
-    orderId: string
+  // Lấy danh sách đơn hàng cần hoàn tiền
+  getPendingRefunds: (params?: {
+    page?: number;
+    limit?: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }): Promise<{
+    data: {
+      orders: any[];
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
+    };
+  }> =>
+    axiosInstanceAuth.get("/api/v1/admin/orders/pending-refunds", { params }),
+
+  // Admin xác nhận đã hoàn tiền
+  confirmRefund: (
+    orderId: string,
+    notes?: string
   ): Promise<{ data: UpdateOrderStatusResponse }> =>
-    axiosInstanceAuth.post(
-      `/api/v1/admin/orders/${orderId}/force-confirm-payment`
-    ),
+    axiosInstanceAuth.post(`/api/v1/admin/orders/${orderId}/confirm-refund`, {
+      notes,
+    }),
 };
 
 // =======================

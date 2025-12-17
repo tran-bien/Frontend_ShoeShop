@@ -28,6 +28,7 @@ const UserManageOrder: React.FC = () => {
     shipping: 0,
     delivered: 0,
     cancelled: 0,
+    failed: 0, // delivery_failed + returning_to_warehouse + cancelled
     total: 0,
   });
   const [returnStats, setReturnStats] = useState({ total: 0 });
@@ -63,7 +64,11 @@ const UserManageOrder: React.FC = () => {
 
       const res = await userOrderService.getOrders(query);
       setOrders(res.data.orders || []);
-      setStats(res.data.stats || stats);
+      // Merge stats with defaults to ensure 'failed' and 'shipping' are available
+      setStats((prev) => ({
+        ...prev,
+        ...(res.data.stats || {}),
+      }));
     } catch (error) {
       console.error("Lỗi khi tải đơn hàng:", error);
       setOrders([]);
@@ -201,15 +206,26 @@ const UserManageOrder: React.FC = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "text-mono-700 bg-mono-100";
+        return "text-amber-700 bg-amber-50";
       case "confirmed":
-        return "text-mono-black bg-mono-100";
+        return "text-blue-700 bg-blue-50";
+      case "assigned_to_shipper":
+        return "text-indigo-700 bg-indigo-50";
+      case "out_for_delivery":
       case "shipping":
-        return "text-mono-700 bg-mono-200";
+        return "text-violet-700 bg-violet-50";
       case "delivered":
-        return "text-mono-800 bg-mono-100";
+        return "text-emerald-700 bg-emerald-50";
+      case "delivery_failed":
+        return "text-rose-700 bg-rose-50";
+      case "returning_to_warehouse":
+        return "text-orange-700 bg-orange-50";
       case "cancelled":
-        return "text-mono-900 bg-mono-200";
+        return "text-mono-600 bg-mono-100";
+      case "returned":
+        return "text-pink-700 bg-pink-50";
+      case "refunded":
+        return "text-teal-700 bg-teal-50";
       default:
         return "text-mono-600 bg-mono-100";
     }
@@ -221,12 +237,24 @@ const UserManageOrder: React.FC = () => {
         return "Chờ xác nhận";
       case "confirmed":
         return "Đã xác nhận";
+      case "assigned_to_shipper":
+        return "Đã gán shipper";
+      case "out_for_delivery":
+        return "Đang giao hàng";
       case "shipping":
         return "Đang giao";
       case "delivered":
-        return "Đã giao";
+        return "Giao thành công";
+      case "delivery_failed":
+        return "Giao hàng thất bại";
+      case "returning_to_warehouse":
+        return "Đang trả về kho";
       case "cancelled":
         return "Đã hủy";
+      case "returned":
+        return "Đã hoàn trả";
+      case "refunded":
+        return "Đã hoàn tiền";
       default:
         return status;
     }
@@ -337,6 +365,7 @@ const UserManageOrder: React.FC = () => {
     { key: "confirmed", label: "Đã xác nhận", count: stats.confirmed },
     { key: "shipping", label: "Đang giao", count: stats.shipping },
     { key: "delivered", label: "Đã giao", count: stats.delivered },
+    { key: "failed", label: "Giao thất bại", count: stats.failed },
     { key: "cancelled", label: "Đã hủy", count: stats.cancelled },
     { key: "returns", label: "Trả hàng", count: returnStats.total },
   ];
@@ -623,6 +652,28 @@ const UserManageOrder: React.FC = () => {
                     {order.hasCancelRequest && (
                       <p className="text-mono-700 font-medium">
                         ⚠️ Có yêu cầu hủy đang chờ xử lý
+                      </p>
+                    )}
+                    {/* Hiển thị thông báo hoàn tiền cho đơn hủy/giao thất bại thanh toán VNPAY */}
+                    {["cancelled", "returning_to_warehouse"].includes(
+                      order.status
+                    ) &&
+                      order.payment?.paymentStatus === "paid" &&
+                      !order.refund?.bankInfo?.accountNumber && (
+                        <p className="text-teal-700 font-medium mt-2">
+                          💰 Vui lòng nhấn "Xem chi tiết" để gửi thông tin ngân
+                          hàng nhận hoàn tiền
+                        </p>
+                      )}
+                    {order.refund?.status === "pending" &&
+                      order.refund?.bankInfo?.accountNumber && (
+                        <p className="text-blue-700 font-medium mt-2">
+                          ⏳ Đang chờ admin xử lý hoàn tiền
+                        </p>
+                      )}
+                    {order.refund?.status === "completed" && (
+                      <p className="text-emerald-700 font-medium mt-2">
+                        ✅ Đã hoàn tiền thành công
                       </p>
                     )}
                   </div>

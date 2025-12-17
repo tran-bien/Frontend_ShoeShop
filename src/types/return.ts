@@ -16,7 +16,8 @@ export type ReturnRequestStatus =
   | "refunded" // Đã hoàn tiền (bank_transfer)
   | "completed" // Hoàn tất
   | "rejected" // Từ chối
-  | "canceled"; // Khách hủy
+  | "cancel_pending" // Chờ admin duyệt hủy
+  | "canceled"; // Khách hủy (đã được admin duyệt)
 
 export type RefundMethod = "cash" | "bank_transfer";
 
@@ -178,6 +179,15 @@ export interface ReturnRequest {
   cancelledAt?: string;
   cancellationReason?: string;
 
+  // Cancel request (khách đổi ý không muốn trả hàng nữa)
+  cancelReason?: string;
+  cancelRequestedAt?: string;
+  cancelApprovedBy?: {
+    _id: string;
+    name: string;
+  };
+  cancelApprovedAt?: string;
+
   createdAt: string;
   updatedAt: string;
 }
@@ -208,6 +218,7 @@ export interface ReturnRequestStats {
   refunded: number;
   completed: number;
   rejected: number;
+  cancel_pending: number; // Chờ admin duyệt hủy
   canceled: number;
   total: number;
 }
