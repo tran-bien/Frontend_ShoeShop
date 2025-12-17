@@ -302,31 +302,53 @@ const ReturnDetailPage: React.FC = () => {
 
               {/* Thông tin chung */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                {/* Shipping Address */}
-                {request.order?.shippingAddress && (
+                {/* Pickup Address - Địa chỉ lấy hàng trả */}
+                {(request.pickupAddress || request.order?.shippingAddress) && (
                   <div className="bg-mono-50 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-3">
                       <FiMapPin className="text-mono-500" />
                       <h3 className="font-semibold">Địa chỉ lấy hàng</h3>
                     </div>
                     <div className="space-y-2 text-sm">
-                      <p>
-                        <strong>Người gửi:</strong>{" "}
-                        {request.order.shippingAddress.fullName}
-                      </p>
-                      <p>
-                        <strong>SĐT:</strong>{" "}
-                        {request.order.shippingAddress.phone}
-                      </p>
-                      <p className="text-mono-600">
-                        {request.order.shippingAddress.addressLine ||
-                          request.order.shippingAddress.address}
-                        <br />
-                        {request.order.shippingAddress.ward},{" "}
-                        {request.order.shippingAddress.district}
-                        <br />
-                        {request.order.shippingAddress.province}
-                      </p>
+                      {request.pickupAddress ? (
+                        <>
+                          <p>
+                            <strong>Người gửi:</strong>{" "}
+                            {request.pickupAddress.name}
+                          </p>
+                          <p>
+                            <strong>SĐT:</strong> {request.pickupAddress.phone}
+                          </p>
+                          <p className="text-mono-600">
+                            {request.pickupAddress.detail}
+                            <br />
+                            {request.pickupAddress.ward},{" "}
+                            {request.pickupAddress.district}
+                            <br />
+                            {request.pickupAddress.province}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p>
+                            <strong>Người gửi:</strong>{" "}
+                            {request.order?.shippingAddress?.fullName}
+                          </p>
+                          <p>
+                            <strong>SĐT:</strong>{" "}
+                            {request.order?.shippingAddress?.phone}
+                          </p>
+                          <p className="text-mono-600">
+                            {request.order?.shippingAddress?.addressLine ||
+                              request.order?.shippingAddress?.address}
+                            <br />
+                            {request.order?.shippingAddress?.ward},{" "}
+                            {request.order?.shippingAddress?.district}
+                            <br />
+                            {request.order?.shippingAddress?.province}
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}

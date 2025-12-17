@@ -159,27 +159,45 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
             </div>
           </div>
 
-          {/* Shipping Address */}
-          {returnRequest.order?.shippingAddress && (
+          {/* Pickup Address - Địa chỉ lấy hàng trả */}
+          {(returnRequest.pickupAddress ||
+            returnRequest.order?.shippingAddress) && (
             <div className="bg-blue-50 rounded-lg p-4">
               <div className="flex items-center gap-2 text-blue-700 font-semibold mb-3">
                 <FiMapPin />
                 <span>Địa chỉ lấy hàng</span>
               </div>
               <div className="text-sm text-blue-800">
-                <p className="font-medium">
-                  {returnRequest.order.shippingAddress.fullName}
-                </p>
-                <p>{returnRequest.order.shippingAddress.phone}</p>
-                <p>
-                  {returnRequest.order.shippingAddress.addressLine ||
-                    returnRequest.order.shippingAddress.address}
-                </p>
-                <p>
-                  {returnRequest.order.shippingAddress.ward},{" "}
-                  {returnRequest.order.shippingAddress.district},{" "}
-                  {returnRequest.order.shippingAddress.province}
-                </p>
+                {returnRequest.pickupAddress ? (
+                  <>
+                    <p className="font-medium">
+                      {returnRequest.pickupAddress.name}
+                    </p>
+                    <p>{returnRequest.pickupAddress.phone}</p>
+                    <p>{returnRequest.pickupAddress.detail}</p>
+                    <p>
+                      {returnRequest.pickupAddress.ward},{" "}
+                      {returnRequest.pickupAddress.district},{" "}
+                      {returnRequest.pickupAddress.province}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="font-medium">
+                      {returnRequest.order?.shippingAddress?.fullName}
+                    </p>
+                    <p>{returnRequest.order?.shippingAddress?.phone}</p>
+                    <p>
+                      {returnRequest.order?.shippingAddress?.addressLine ||
+                        returnRequest.order?.shippingAddress?.address}
+                    </p>
+                    <p>
+                      {returnRequest.order?.shippingAddress?.ward},{" "}
+                      {returnRequest.order?.shippingAddress?.district},{" "}
+                      {returnRequest.order?.shippingAddress?.province}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           )}

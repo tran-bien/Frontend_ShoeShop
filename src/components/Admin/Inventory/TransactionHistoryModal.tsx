@@ -82,9 +82,9 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-white rounded-lg p-6 w-full max-w-4xl m-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto p-4">
+      <div className="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
+        <div className="flex justify-between items-center mb-6 flex-shrink-0">
           <h2 className="text-2xl font-bold text-mono-800">Lịch sử nhập kho</h2>
           <button
             onClick={onClose}
@@ -95,11 +95,15 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
         </div>
 
         {/* Product Info */}
-        <div className="bg-mono-50 rounded-lg p-4 mb-6">
+        <div className="bg-mono-50 rounded-lg p-4 mb-6 flex-shrink-0">
           <h3 className="font-semibold text-mono-800 mb-2">
             {item.product?.name}
           </h3>
-          <div className="grid grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-4 gap-4 text-sm">
+            <div>
+              <span className="text-mono-600">SKU:</span>{" "}
+              <strong>{item.sku || "N/A"}</strong>
+            </div>
             <div>
               <span className="text-mono-600">Màu sắc:</span>{" "}
               <strong>{item.variant?.color?.name || "N/A"}</strong>
@@ -115,80 +119,82 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
           </div>
         </div>
 
-        {/* Transactions Table */}
-        {loading ? (
-          <div className="text-center py-10 text-mono-500">Đang tải...</div>
-        ) : transactions.length === 0 ? (
-          <div className="text-center py-10 text-mono-500">
-            Chưa có giao dịch nào
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-mono-50">
-          <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-              Thời gian
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-              Loại
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-              Lý do
-            </th>
-            <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
-              Số lượng
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-              Người thực hiện
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
-              Ghi chú
-            </th>
-          </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-          {transactions.map((transaction) => {
-            const typeInfo = getTypeLabel(transaction.type);
-            return (
-              <tr key={transaction._id} className="hover:bg-mono-50">
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
-            {formatDate(transaction.createdAt)}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-            <span
-              className={`px-2 py-1 text-xs font-semibold rounded ${typeInfo.color}`}
-            >
-              {typeInfo.text}
-            </span>
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-700">
-            {getReasonLabel(transaction.reason)}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-right">
-            <div className="font-medium">
-              {transaction.type === "IN" && "+"}
-              {transaction.type === "OUT" && "-"}
-              {transaction.quantityChange}
+        {/* Transactions Table - Scrollable */}
+        <div className="flex-1 overflow-y-auto min-h-0">
+          {loading ? (
+            <div className="text-center py-10 text-mono-500">Đang tải...</div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center py-10 text-mono-500">
+              Chưa có giao dịch nào
             </div>
-            <div className="text-xs text-mono-500">
-              {transaction.quantityBefore} →{" "}
-              {transaction.quantityAfter}
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-mono-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+                      Thời gian
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+                      Loại
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+                      Lý do
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
+                      Số lượng
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+                      Người thực hiện
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+                      Ghi chú
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {transactions.map((transaction) => {
+                    const typeInfo = getTypeLabel(transaction.type);
+                    return (
+                      <tr key={transaction._id} className="hover:bg-mono-50">
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
+                          {formatDate(transaction.createdAt)}
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap">
+                          <span
+                            className={`px-2 py-1 text-xs font-semibold rounded ${typeInfo.color}`}
+                          >
+                            {typeInfo.text}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-700">
+                          {getReasonLabel(transaction.reason)}
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-right">
+                          <div className="font-medium">
+                            {transaction.type === "IN" && "+"}
+                            {transaction.type === "OUT" && "-"}
+                            {transaction.quantityChange}
+                          </div>
+                          <div className="text-xs text-mono-500">
+                            {transaction.quantityBefore} →{" "}
+                            {transaction.quantityAfter}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
+                          {transaction.performedBy?.name || "N/A"}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-mono-600 min-w-[200px]">
+                          {transaction.notes || "-"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
-            {transaction.performedBy?.name || "N/A"}
-                </td>
-                <td className="px-4 py-3 text-sm text-mono-600 max-w-xs truncate">
-            {transaction.notes || "-"}
-                </td>
-              </tr>
-            );
-          })}
-              </tbody>
-            </table>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Pagination */}
         {totalPages > 1 && (

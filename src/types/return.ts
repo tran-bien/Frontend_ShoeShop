@@ -49,6 +49,7 @@ export interface CreateReturnRequestData {
   reasonDetail?: string;
   refundMethod: RefundMethod;
   bankInfo?: BankInfo;
+  pickupAddressId?: string; // ID địa chỉ lấy hàng từ sổ địa chỉ user
 }
 
 // =======================
@@ -156,6 +157,16 @@ export interface ReturnRequest {
   rejectionReason?: string;
   adminNote?: string;
   staffNotes?: string;
+
+  // Pickup address - Địa chỉ lấy hàng trả
+  pickupAddress?: {
+    name: string;
+    phone: string;
+    province: string;
+    district: string;
+    ward: string;
+    detail: string;
+  };
 
   // Received by shipper
   receivedBy?: {

@@ -273,10 +273,19 @@ export interface OrderQueryParams {
 export interface OrderStats {
   pending: number;
   confirmed: number;
-  shipping: number;
+  assigned_to_shipper: number;
+  out_for_delivery: number;
   delivered: number;
+  delivery_failed: number;
+  returning_to_warehouse: number;
   cancelled: number;
+  returned: number;
   total: number;
+  // Combined stats
+  pending_process: number; // pending + confirmed
+  shipping: number; // assigned_to_shipper + out_for_delivery
+  failed: number; // delivery_failed + returning_to_warehouse
+  refunded: number; // returned OR payment.paymentStatus = "refunded"
 }
 
 // =======================

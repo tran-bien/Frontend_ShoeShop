@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from "react";
+﻿import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { adminOrderService } from "../../../services/OrderService";
 import CancelRequestList from "./CancelRequestList";
@@ -27,7 +27,14 @@ const ORDER_STATUS_MAP: Record<string, string> = {
   delivery_failed: "Giao thất bại",
   returning_to_warehouse: "Đang trả về kho",
   cancelled: "Đã hủy",
-  returned: "Đã hoàn trả",
+  returned: "hoàn trả",
+};
+
+// Payment status mapping
+const PAYMENT_STATUS_MAP: Record<string, string> = {
+  pending: "Chưa thanh toán",
+  paid: "Đã thanh toán",
+  failed: "Thanh toán thất bại",
   refunded: "Đã hoàn tiền",
 };
 
@@ -43,27 +50,28 @@ const STATUS_COLORS: Record<string, string> = {
     "bg-orange-50 text-orange-700 border border-orange-200",
   cancelled: "bg-mono-100 text-mono-600 border border-mono-200",
   returned: "bg-pink-50 text-pink-700 border border-pink-200",
-  refunded: "bg-teal-50 text-teal-700 border border-teal-200",
 };
 
 // Tab filters - Phân loại rõ ràng theo trạng thái
+// Key = giá trị gửi lên BE (status param)
 type OrderTab =
   | "all"
-  | "pending"
-  | "delivering"
+  | "pending_process"
+  | "shipping"
   | "delivered"
-  | "delivery_failed"
+  | "failed"
   | "cancelled"
   | "refunded";
 
-const TAB_FILTERS: Record<OrderTab, string[]> = {
-  all: [],
-  pending: ["pending", "confirmed"], // Đơn mới cần xử lý
-  delivering: ["assigned_to_shipper", "out_for_delivery"], // Đang vận chuyển
-  delivered: ["delivered"], // Đã giao thành công (chỉ delivered)
-  delivery_failed: ["delivery_failed", "returning_to_warehouse"], // Giao thất bại, đang trả về kho
-  cancelled: ["cancelled"], // Đã hủy
-  refunded: ["refunded", "returned"], // Đã hoàn tiền / đã trả hàng (kết quả cuối)
+// Mapping tab -> status param gửi lên API
+const TAB_TO_API_STATUS: Record<OrderTab, string> = {
+  all: "",
+  pending_process: "pending_process", // BE sẽ xử lý: pending + confirmed
+  shipping: "shipping", // BE sẽ xử lý: assigned_to_shipper + out_for_delivery
+  delivered: "delivered",
+  failed: "failed", // BE sẽ xử lý: delivery_failed + returning_to_warehouse
+  cancelled: "cancelled",
+  refunded: "refunded", // BE sẽ xử lý: returned OR payment.paymentStatus = "refunded"
 };
 
 // Simplified order interface for list display
@@ -159,6 +167,17 @@ const ListOrderPage: React.FC = () => {
   const [totalOrders, setTotalOrders] = useState(0);
   const ITEMS_PER_PAGE = 20;
 
+  // Stats from API
+  const [stats, setStats] = useState<Record<string, number>>({
+    all: 0,
+    pending_process: 0,
+    shipping: 0,
+    delivered: 0,
+    failed: 0,
+    cancelled: 0,
+    refunded: 0,
+  });
+
   // Refund modal state
   const [showRefundModal, setShowRefundModal] = useState(false);
   const [refundOrderInfo, setRefundOrderInfo] = useState<OrderListItem | null>(
@@ -167,76 +186,104 @@ const ListOrderPage: React.FC = () => {
   const [refundNotes, setRefundNotes] = useState("");
   const [refundLoading, setRefundLoading] = useState(false);
 
-  // Lấy danh sách đơn hàng từ API
-  const fetchOrders = async (page = 1) => {
-    setLoading(true);
-    try {
-      const res = await adminOrderService.getAllOrders({
-        page,
-        limit: ITEMS_PER_PAGE,
-      });
-      const { pagination } = res.data;
-      /* eslint-disable @typescript-eslint/no-explicit-any */
-      setOrders(
-        (res.data.orders || []).map((o: any) => ({
-          _id: o._id,
-          orderCode: o.code || o.orderCode || o._id,
-          customerName: o.user?.name || o.shippingAddress?.name || "",
-          address: [
-            o.shippingAddress?.detail,
-            o.shippingAddress?.ward,
-            o.shippingAddress?.district,
-            o.shippingAddress?.province,
-          ]
-            .filter(Boolean)
-            .join(", "),
-          phone: o.shippingAddress?.phone || o.user?.phone || "",
-          price: o.totalAfterDiscountAndShipping
-            ? o.totalAfterDiscountAndShipping.toLocaleString("vi-VN") + "₫"
-            : "",
-          paymentStatus:
-            o.payment?.paymentStatus === "paid"
-              ? "Đã thanh toán"
-              : "Chưa thanh toán",
-          paymentStatusRaw: o.payment?.paymentStatus,
-          paymentMethod:
-            o.payment?.method === "VNPAY"
-              ? "VNPAY"
-              : o.payment?.method === "COD"
-              ? "COD"
-              : o.payment?.method || "",
-          orderStatus: ORDER_STATUS_MAP[o.status] || o.status || "",
-          orderStatusRaw: o.status,
-          shipperName: o.assignedShipper?.name || "",
-          shipperId: o.assignedShipper?._id || "",
-          shipperPhone: o.assignedShipper?.phone || "",
-          shipperEmail: o.assignedShipper?.email || "",
-          createdAt: o.createdAt,
-          // Refund info
-          refund: o.refund || null,
-          returnConfirmed: o.returnConfirmed || false,
-        }))
-      );
-      /* eslint-enable @typescript-eslint/no-explicit-any */
+  // Lấy danh sách đơn hàng từ API - gọi với status filter
+  const fetchOrders = useCallback(
+    async (page = 1, statusFilter?: string) => {
+      setLoading(true);
+      try {
+        // Gửi status param lên BE để filter từ DB
+        const apiStatus = statusFilter || TAB_TO_API_STATUS[orderTab];
+        const res = await adminOrderService.getAllOrders({
+          page,
+          limit: ITEMS_PER_PAGE,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          status: (apiStatus || undefined) as any,
+        });
+        const { pagination, stats: apiStats } = res.data;
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        setOrders(
+          (res.data.orders || []).map((o: any) => ({
+            _id: o._id,
+            orderCode: o.code || o.orderCode || o._id,
+            customerName: o.user?.name || o.shippingAddress?.name || "",
+            address: [
+              o.shippingAddress?.detail,
+              o.shippingAddress?.ward,
+              o.shippingAddress?.district,
+              o.shippingAddress?.province,
+            ]
+              .filter(Boolean)
+              .join(", "),
+            phone: o.shippingAddress?.phone || o.user?.phone || "",
+            price: o.totalAfterDiscountAndShipping
+              ? o.totalAfterDiscountAndShipping.toLocaleString("vi-VN") + "₫"
+              : "",
+            // Hiển thị đúng trạng thái thanh toán (bao gồm refunded)
+            paymentStatus:
+              PAYMENT_STATUS_MAP[o.payment?.paymentStatus] || "Chưa thanh toán",
+            paymentStatusRaw: o.payment?.paymentStatus,
+            paymentMethod:
+              o.payment?.method === "VNPAY"
+                ? "VNPAY"
+                : o.payment?.method === "COD"
+                ? "COD"
+                : o.payment?.method || "",
+            orderStatus: ORDER_STATUS_MAP[o.status] || o.status || "",
+            orderStatusRaw: o.status,
+            shipperName: o.assignedShipper?.name || "",
+            shipperId: o.assignedShipper?._id || "",
+            shipperPhone: o.assignedShipper?.phone || "",
+            shipperEmail: o.assignedShipper?.email || "",
+            createdAt: o.createdAt,
+            // Refund info
+            refund: o.refund || null,
+            returnConfirmed: o.returnConfirmed || false,
+          }))
+        );
+        /* eslint-enable @typescript-eslint/no-explicit-any */
 
-      // Update pagination state
-      if (pagination) {
-        setCurrentPage(pagination.page);
-        setTotalPages(pagination.totalPages);
-        setTotalOrders(pagination.total);
+        // Update pagination state
+        if (pagination) {
+          setCurrentPage(pagination.page);
+          setTotalPages(pagination.totalPages);
+          setTotalOrders(pagination.total);
+        }
+
+        // Update stats from API
+        if (apiStats) {
+          setStats({
+            all: apiStats.total || 0,
+            pending_process: apiStats.pending_process || 0,
+            shipping: apiStats.shipping || 0,
+            delivered: apiStats.delivered || 0,
+            failed: apiStats.failed || 0,
+            cancelled: apiStats.cancelled || 0,
+            refunded: apiStats.refunded || 0,
+          });
+        }
+      } catch {
+        setOrders([]);
+      } finally {
+        setLoading(false);
       }
-    } catch {
-      setOrders([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [orderTab]
+  );
 
   useEffect(() => {
     if (tab === "orders") {
-      fetchOrders(currentPage);
+      // Khi đổi tab, reset về page 1 và gọi API với status mới
+      fetchOrders(1, TAB_TO_API_STATUS[orderTab]);
     }
-  }, [tab, currentPage]);
+  }, [tab, orderTab, fetchOrders]);
+
+  // Khi chuyển page trong cùng 1 tab
+  useEffect(() => {
+    if (tab === "orders" && currentPage > 1) {
+      fetchOrders(currentPage, TAB_TO_API_STATUS[orderTab]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -300,18 +347,11 @@ const ListOrderPage: React.FC = () => {
     setSelectedOrder(null);
   };
 
-  // Filter orders based on tab, search, payment, status
+  // Filter orders based on search, payment filter only (tab filter đã xử lý từ API)
   const filteredOrders = useMemo(() => {
     let result = orders;
 
-    // Filter by order tab
-    if (orderTab !== "all" && TAB_FILTERS[orderTab].length > 0) {
-      result = result.filter((order) =>
-        TAB_FILTERS[orderTab].includes(order.orderStatusRaw || "")
-      );
-    }
-
-    // Filter by search
+    // Filter by search (client-side bổ sung)
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -333,7 +373,7 @@ const ListOrderPage: React.FC = () => {
     }
 
     return result;
-  }, [orders, orderTab, searchQuery, paymentFilter, statusFilter]);
+  }, [orders, searchQuery, paymentFilter, statusFilter]);
 
   // Xử lý cập nhật trạng thái đơn hàng
   const handleUpdateOrderStatus = async (orderId: string, status: string) => {
@@ -344,7 +384,7 @@ const ListOrderPage: React.FC = () => {
       });
       /* eslint-enable @typescript-eslint/no-explicit-any */
       toast.success(`Cập nhật trạng thái thành công`);
-      fetchOrders();
+      fetchOrders(currentPage, TAB_TO_API_STATUS[orderTab]);
     } catch (error) {
       console.error("Error updating order status:", error);
       const err = error as { response?: { data?: { message?: string } } };
@@ -361,7 +401,7 @@ const ListOrderPage: React.FC = () => {
     try {
       await adminOrderService.confirmReturn(orderId);
       toast.success("Đã xác nhận nhận hàng trả về");
-      fetchOrders();
+      fetchOrders(currentPage, TAB_TO_API_STATUS[orderTab]);
     } catch (error) {
       console.error("Error confirming return:", error);
       toast.error("Không thể xác nhận nhận hàng trả về");
@@ -389,7 +429,8 @@ const ListOrderPage: React.FC = () => {
       await adminOrderService.confirmRefund(refundOrderInfo._id, refundNotes);
       toast.success("Đã xác nhận hoàn tiền thành công");
       handleCloseRefundModal();
-      fetchOrders();
+      // Refresh với status filter hiện tại
+      fetchOrders(currentPage, TAB_TO_API_STATUS[orderTab]);
     } catch (error) {
       console.error("Error confirming refund:", error);
       const err = error as { response?: { data?: { message?: string } } };
@@ -401,31 +442,10 @@ const ListOrderPage: React.FC = () => {
     }
   };
 
-  // Get status counts for tabs
+  // Get status counts from API stats
   const statusCounts = useMemo(() => {
-    const counts: Record<OrderTab, number> = {
-      all: orders.length,
-      pending: 0,
-      delivering: 0,
-      delivered: 0,
-      delivery_failed: 0,
-      cancelled: 0,
-      refunded: 0,
-    };
-
-    orders.forEach((order) => {
-      const status = order.orderStatusRaw || "";
-      if (TAB_FILTERS.pending.includes(status)) counts.pending++;
-      if (TAB_FILTERS.delivering.includes(status)) counts.delivering++;
-      if (TAB_FILTERS.delivered.includes(status)) counts.delivered++;
-      if (TAB_FILTERS.delivery_failed.includes(status))
-        counts.delivery_failed++;
-      if (TAB_FILTERS.cancelled.includes(status)) counts.cancelled++;
-      if (TAB_FILTERS.refunded.includes(status)) counts.refunded++;
-    });
-
-    return counts;
-  }, [orders]);
+    return stats;
+  }, [stats]);
 
   // Count confirmed orders (ready for shipper assignment)
   const confirmedOrdersCount = useMemo(() => {
@@ -565,8 +585,8 @@ const ListOrderPage: React.FC = () => {
                 </div>
               )}
 
-            {/* Refunded → Đã hoàn tiền */}
-            {status === "refunded" && (
+            {/* Đã hoàn tiền (payment.paymentStatus = "refunded") */}
+            {order.paymentStatusRaw === "refunded" && (
               <div className="text-xs text-teal-600 bg-teal-50 px-2 py-1.5 rounded text-center font-medium border border-teal-200">
                 ✅ Đã hoàn tiền
               </div>
@@ -633,9 +653,13 @@ const ListOrderPage: React.FC = () => {
             <div className="flex flex-wrap gap-2 mb-6">
               {[
                 { key: "all" as OrderTab, label: "Tất cả", icon: "📋" },
-                { key: "pending" as OrderTab, label: "Cần xử lý", icon: "⏳" },
                 {
-                  key: "delivering" as OrderTab,
+                  key: "pending_process" as OrderTab,
+                  label: "Cần xử lý",
+                  icon: "⏳",
+                },
+                {
+                  key: "shipping" as OrderTab,
                   label: "Đang giao",
                   icon: "🚚",
                 },
@@ -645,7 +669,7 @@ const ListOrderPage: React.FC = () => {
                   icon: "✅",
                 },
                 {
-                  key: "delivery_failed" as OrderTab,
+                  key: "failed" as OrderTab,
                   label: "Giao thất bại",
                   icon: "⚠️",
                 },
@@ -656,15 +680,18 @@ const ListOrderPage: React.FC = () => {
                 },
                 {
                   key: "refunded" as OrderTab,
-                  label: "Hoàn tiền/Trả hàng",
+                  label: "Trả hàng",
                   icon: "💰",
                 },
               ].map((t) => (
                 <button
                   key={t.key}
                   onClick={() => {
-                    setOrderTab(t.key);
-                    setStatusFilter("");
+                    if (orderTab !== t.key) {
+                      setOrderTab(t.key);
+                      setStatusFilter("");
+                      setCurrentPage(1); // Reset page khi đổi tab
+                    }
                   }}
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     orderTab === t.key

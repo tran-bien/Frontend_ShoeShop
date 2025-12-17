@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { FiArrowLeft, FiPackage, FiAlertCircle, FiCheck } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiPackage,
+  FiAlertCircle,
+  FiCheck,
+  FiMapPin,
+} from "react-icons/fi";
 import toast from "react-hot-toast";
 import { customerReturnService } from "../services/ReturnService";
 import { userOrderService } from "../services/OrderService";
+import { addressService } from "../services/ProfileService";
 import Sidebar from "../components/User/Sidebar";
 import type {
   CreateReturnRequestData,
@@ -11,6 +18,7 @@ import type {
   BankInfo,
   ReturnReason,
 } from "../types/return";
+import type { UserAddress } from "../types/user";
 
 interface OrderItem {
   variant: {
@@ -47,6 +55,11 @@ const CreateReturnPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  // Addresses state
+  const [addresses, setAddresses] = useState<UserAddress[]>([]);
+  const [addressesLoading, setAddressesLoading] = useState(true);
+  const [selectedAddressId, setSelectedAddressId] = useState<string>("default");
+
   // Form state
   const [reason, setReason] = useState<ReturnReason | "">("");
   const [reasonDetail, setReasonDetail] = useState("");
@@ -69,6 +82,7 @@ const CreateReturnPage: React.FC = () => {
 
   useEffect(() => {
     fetchDeliveredOrders();
+    fetchAddresses();
   }, []);
 
   useEffect(() => {
@@ -79,6 +93,27 @@ const CreateReturnPage: React.FC = () => {
       }
     }
   }, [orderId, orders]);
+
+  // Fetch user addresses
+  const fetchAddresses = async () => {
+    try {
+      setAddressesLoading(true);
+      const response = await addressService.getAddresses();
+      console.log("[CreateReturnPage] Addresses response:", response.data);
+      if (response.data.success && response.data.data) {
+        setAddresses(response.data.data);
+        console.log(
+          "[CreateReturnPage] Loaded addresses:",
+          response.data.data.length
+        );
+      }
+    } catch (error) {
+      console.error("[CreateReturnPage] Error fetching addresses:", error);
+      toast.error("Không thể tải danh sách địa chỉ");
+    } finally {
+      setAddressesLoading(false);
+    }
+  };
 
   const fetchDeliveredOrders = async () => {
     try {
@@ -156,6 +191,9 @@ const CreateReturnPage: React.FC = () => {
         reasonDetail: reasonDetail || undefined,
         refundMethod,
         bankInfo: refundMethod === "bank_transfer" ? bankInfo : undefined,
+        // Chỉ gửi pickupAddressId nếu user chọn địa chỉ khác (không phải "default")
+        pickupAddressId:
+          selectedAddressId !== "default" ? selectedAddressId : undefined,
       };
 
       await customerReturnService.createReturnRequest(data);
@@ -350,6 +388,112 @@ const CreateReturnPage: React.FC = () => {
                       {calculateRefundAmount().toLocaleString("vi-VN")}đ
                     </span>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {/* Pickup Address Selection */}
+            {selectedOrder && (
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <FiMapPin className="text-gray-600" />
+                  Địa chỉ lấy hàng trả
+                </h2>
+                <p className="text-sm text-gray-500 mb-4">
+                  Shipper sẽ đến địa chỉ này để lấy hàng trả về
+                </p>
+
+                <div className="space-y-3">
+                  {/* Default option - use order's shipping address */}
+                  <label
+                    className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                      selectedAddressId === "default"
+                        ? "border-black bg-gray-50"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="pickupAddress"
+                      value="default"
+                      checked={selectedAddressId === "default"}
+                      onChange={() => setSelectedAddressId("default")}
+                      className="w-4 h-4 mt-1"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium">Địa chỉ giao hàng của đơn</p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        (Mặc định - Shipper sẽ đến địa chỉ bạn đã nhận hàng)
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* Loading state */}
+                  {addressesLoading && (
+                    <div className="text-sm text-gray-500 pt-2 flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-black"></div>
+                      Đang tải danh sách địa chỉ...
+                    </div>
+                  )}
+
+                  {/* Addresses from address book */}
+                  {!addressesLoading && addresses.length > 0 && (
+                    <>
+                      <div className="text-sm text-gray-500 pt-2">
+                        Hoặc chọn từ sổ địa chỉ ({addresses.length} địa chỉ):
+                      </div>
+                      {addresses.map((addr) => (
+                        <label
+                          key={addr._id}
+                          className={`flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+                            selectedAddressId === addr._id
+                              ? "border-black bg-gray-50"
+                              : "border-gray-200 hover:border-gray-300"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="pickupAddress"
+                            value={addr._id}
+                            checked={selectedAddressId === addr._id}
+                            onChange={() =>
+                              setSelectedAddressId(addr._id || "")
+                            }
+                            className="w-4 h-4 mt-1"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">{addr.name}</p>
+                              {addr.isDefault && (
+                                <span className="text-xs bg-black text-white px-2 py-0.5 rounded">
+                                  Mặc định
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600">
+                              {addr.phone}
+                            </p>
+                            <p className="text-sm text-gray-500 mt-1">
+                              {addr.detail}, {addr.ward}, {addr.district},{" "}
+                              {addr.province}
+                            </p>
+                          </div>
+                        </label>
+                      ))}
+                    </>
+                  )}
+
+                  {!addressesLoading && addresses.length === 0 && (
+                    <p className="text-sm text-gray-400 italic">
+                      Bạn chưa có địa chỉ nào trong sổ địa chỉ.{" "}
+                      <a
+                        href="/user-profile?tab=addresses"
+                        className="text-black underline"
+                      >
+                        Thêm địa chỉ mới
+                      </a>
+                    </p>
+                  )}
                 </div>
               </div>
             )}
