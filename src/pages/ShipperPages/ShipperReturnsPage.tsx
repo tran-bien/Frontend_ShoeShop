@@ -345,21 +345,38 @@ const ShipperReturnsPage = () => {
               <div className="grid grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-2">
                   <FiUser className="text-gray-400" size={16} />
-                  <span className="text-sm">{returnReq.customer?.name}</span>
+                  <span className="text-sm">
+                    {returnReq.pickupAddress?.name ||
+                      returnReq.customer?.name ||
+                      "N/A"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <FiPhone className="text-gray-400" size={16} />
                   <span className="text-sm">
-                    {returnReq.order?.shippingAddress?.phone || "N/A"}
+                    {returnReq.pickupAddress?.phone ||
+                      returnReq.order?.shippingAddress?.phone ||
+                      "N/A"}
                   </span>
                 </div>
                 <div className="col-span-2 flex items-start gap-2">
                   <FiMapPin className="text-gray-400 mt-0.5" size={16} />
                   <span className="text-sm">
-                    {returnReq.order?.shippingAddress?.address},{" "}
-                    {returnReq.order?.shippingAddress?.ward},{" "}
-                    {returnReq.order?.shippingAddress?.district},{" "}
-                    {returnReq.order?.shippingAddress?.province}
+                    {returnReq.pickupAddress ? (
+                      <>
+                        {returnReq.pickupAddress.detail},{" "}
+                        {returnReq.pickupAddress.ward},{" "}
+                        {returnReq.pickupAddress.district},{" "}
+                        {returnReq.pickupAddress.province}
+                      </>
+                    ) : (
+                      <>
+                        {returnReq.order?.shippingAddress?.address},{" "}
+                        {returnReq.order?.shippingAddress?.ward},{" "}
+                        {returnReq.order?.shippingAddress?.district},{" "}
+                        {returnReq.order?.shippingAddress?.province}
+                      </>
+                    )}
                   </span>
                 </div>
               </div>
