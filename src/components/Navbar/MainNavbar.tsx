@@ -124,12 +124,12 @@ const MainNavbar = () => {
         </Link>
       </div>
 
-      {/* navigation links */}
-      <ul className="hidden lg:flex gap-8 xl:gap-16 flex-shrink-0 ml-6 lg:ml-8">
+      {/* navigation links - thu nhỏ để search bar có không gian rộng hơn */}
+      <ul className="hidden lg:flex gap-4 xl:gap-6 flex-shrink-0 ml-4 lg:ml-6">
         <li>
           <Link
             to="/products?sort=newest"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-xs xl:text-sm whitespace-nowrap"
           >
             SẢN PHẨM MỚI
           </Link>
@@ -137,15 +137,15 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?sort=popular"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-xs xl:text-sm whitespace-nowrap"
           >
-            SẢN PHẨM PHỔ BIẾN
+            PHỔ BIẾN
           </Link>
         </li>
         <li>
           <Link
             to="/products?gender=male"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-xs xl:text-sm whitespace-nowrap"
           >
             GIÀY NAM
           </Link>
@@ -153,7 +153,7 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/products?gender=female"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-xs xl:text-sm whitespace-nowrap"
           >
             GIÀY NỮ
           </Link>
@@ -161,16 +161,16 @@ const MainNavbar = () => {
         <li>
           <Link
             to="/blog"
-            className="hover:text-mono-black transition-colors font-medium tracking-tight text-sm xl:text-base whitespace-nowrap"
+            className="hover:text-mono-black transition-colors font-medium tracking-tight text-xs xl:text-sm whitespace-nowrap"
           >
             BLOG
           </Link>
         </li>
       </ul>
 
-      {/* search bar */}
+      {/* search bar - mở rộng để có không gian tìm kiếm lớn hơn */}
       <div
-        className="flex items-center w-full lg:w-1/3 xl:w-1/4 min-w-[200px] mx-3 lg:mx-4 relative"
+        className="flex items-center flex-1 lg:max-w-[400px] xl:max-w-[500px] min-w-[180px] mx-2 lg:mx-4 relative"
         ref={searchRef}
       >
         <form onSubmit={handleSearch} className="w-full relative">
@@ -194,9 +194,9 @@ const MainNavbar = () => {
           </button>
         </form>
 
-        {/* Search suggestions dropdown */}
+        {/* Search suggestions dropdown - căn giữa và responsive */}
         {showSuggestions && (suggestions.length > 0 || loading) && (
-          <div className="absolute top-full left-0 right-0 bg-white border border-mono-200 rounded-lg shadow-lg mt-1 max-h-96 overflow-y-auto z-50">
+          <div className="absolute top-full left-0 right-0 bg-white border border-mono-200 rounded-lg shadow-lg mt-1 max-h-96 overflow-y-auto z-50 min-w-[320px]">
             {loading ? (
               <div className="p-4 text-center text-mono-500">
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-mono-500 mx-auto"></div>

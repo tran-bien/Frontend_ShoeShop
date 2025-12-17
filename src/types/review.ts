@@ -50,7 +50,7 @@ export interface ReviewReply {
 }
 
 // =======================
-// ORDER ITEM FOR REVIEW (from BE populate)
+// ORDER ITEM FOR REVIEW (from BE populate/aggregate)
 // =======================
 
 export interface ReviewOrderItem {
@@ -68,6 +68,9 @@ export interface ReviewOrderItem {
     _id: string;
     value: string | number;
   };
+  // Fields from BE aggregate (orderItem subdocument)
+  productName?: string;
+  image?: string;
   quantity?: number;
   price?: number;
 }

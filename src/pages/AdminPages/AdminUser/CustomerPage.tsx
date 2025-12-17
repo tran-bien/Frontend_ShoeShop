@@ -116,7 +116,7 @@ const ListCustomerPage: React.FC = () => {
   const getStatusBadge = (customer: Customer) => {
     if (customer.blockedAt)
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mono-200 text-mono-800">
           Đã khóa
         </span>
       );
@@ -128,12 +128,12 @@ const ListCustomerPage: React.FC = () => {
       );
     if (!customer.isVerified)
       return (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mono-100 text-mono-600">
           Chưa xác thực
         </span>
       );
     return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-mono-100 text-mono-800">
         Hoạt động
       </span>
     );
@@ -143,7 +143,7 @@ const ListCustomerPage: React.FC = () => {
     const roleStyles: Record<string, string> = {
       admin: "bg-mono-900 text-white",
       staff: "bg-mono-600 text-white",
-      shipper: "bg-blue-600 text-white",
+      shipper: "bg-mono-400 text-white",
       user: "bg-mono-200 text-mono-700",
     };
     const roleLabels: Record<string, string> = {
@@ -223,6 +223,7 @@ const ListCustomerPage: React.FC = () => {
     total: totalUsers,
     admins: customers.filter((c) => c.role === "admin").length,
     staff: customers.filter((c) => c.role === "staff").length,
+    shippers: customers.filter((c) => c.role === "shipper").length,
     blocked: customers.filter((c) => c.blockedAt).length,
   };
 
@@ -242,7 +243,7 @@ const ListCustomerPage: React.FC = () => {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-white rounded-xl border border-mono-200 p-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-mono-100 rounded-lg flex items-center justify-center">
@@ -278,8 +279,21 @@ const ListCustomerPage: React.FC = () => {
         </div>
         <div className="bg-white rounded-xl border border-mono-200 p-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-              <FiUserX className="w-5 h-5 text-red-600" />
+            <div className="w-10 h-10 bg-mono-400 rounded-lg flex items-center justify-center">
+              <FiUsers className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-mono-900">
+                {stats.shippers}
+              </p>
+              <p className="text-sm text-mono-500">Shipper</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl border border-mono-200 p-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-mono-200 rounded-lg flex items-center justify-center">
+              <FiUserX className="w-5 h-5 text-mono-600" />
             </div>
             <div>
               <p className="text-2xl font-bold text-mono-900">
@@ -423,7 +437,7 @@ const ListCustomerPage: React.FC = () => {
                       {sessions.filter(
                         (s) => getSessionUserId(s.user) === customer._id
                       ).length > 0 ? (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-mono-800 text-white">
                           Online (
                           {
                             sessions.filter(
@@ -473,8 +487,8 @@ const ListCustomerPage: React.FC = () => {
                               disabled={loadingUserId === customer._id}
                               className={`px-3 py-1 text-xs font-medium rounded-lg transition-colors ${
                                 customer.blockedAt
-                                  ? "bg-green-100 text-green-700 hover:bg-green-200"
-                                  : "bg-red-100 text-red-700 hover:bg-red-200"
+                                  ? "bg-mono-100 text-mono-700 hover:bg-mono-200"
+                                  : "bg-mono-200 text-mono-800 hover:bg-mono-300"
                               }`}
                             >
                               {loadingUserId === customer._id
