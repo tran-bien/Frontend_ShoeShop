@@ -62,6 +62,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
       initial_stock: "Nhập kho ban đầu",
       restock: "Nhập hàng bổ sung",
       sale: "Xuất bán",
+      delivery_failed: "Giao hàng thất bại",
       return: "Trả hàng",
       damage: "Hàng hỏng",
       adjustment: "Điều chỉnh kiểm kê",
