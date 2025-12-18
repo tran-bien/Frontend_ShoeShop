@@ -51,6 +51,11 @@ const STATUS_CONFIG: Record<
     color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
     icon: <FiCheckCircle size={14} />,
   },
+  delivery_failed: {
+    label: "Thất bại",
+    color: "bg-rose-50 text-rose-700 border border-rose-200",
+    icon: <FiXCircle size={14} />,
+  },
   cancelled: {
     label: "Thất bại",
     color: "bg-rose-50 text-rose-700 border border-rose-200",
@@ -69,8 +74,9 @@ type ShipperStatusTab =
   | "assigned_to_shipper"
   | "out_for_delivery"
   | "delivered"
-  | "returned"
-  | "delivery_failed";
+  | "delivery_failed"
+  | "returning_to_warehouse"
+  | "cancelled";
 
 const MyOrdersPage = () => {
   const navigate = useNavigate();
@@ -96,7 +102,14 @@ const MyOrdersPage = () => {
 
     // Filter by status
     if (filterStatus !== "all") {
-      filtered = filtered.filter((o) => o.status === filterStatus);
+      // ✅ "Đã giao" hiển thị cả delivered + returned
+      if (filterStatus === "delivered") {
+        filtered = filtered.filter(
+          (o) => o.status === "delivered" || o.status === "returned"
+        );
+      } else {
+        filtered = filtered.filter((o) => o.status === filterStatus);
+      }
     }
 
     // Filter by search
@@ -165,6 +178,9 @@ const MyOrdersPage = () => {
   };
 
   const getStatusCounts = () => {
+    const deliveredCount = orders.filter((o) => o.status === "delivered").length;
+    const returnedCount = orders.filter((o) => o.status === "returned").length;
+
     return {
       all: orders.length,
       assigned_to_shipper: orders.filter(
@@ -172,15 +188,15 @@ const MyOrdersPage = () => {
       ).length,
       out_for_delivery: orders.filter((o) => o.status === "out_for_delivery")
         .length,
-      // "Đã giao" = delivered + returned
-      delivered:
-        orders.filter((o) => o.status === "delivered").length +
-        orders.filter((o) => o.status === "returned").length,
-      cancelled: orders.filter((o) => o.status === "cancelled").length,
+
+      // ✅ "Đã giao" = delivered + returned
+      delivered: deliveredCount + returnedCount,
+
+      delivery_failed: orders.filter((o) => o.status === "delivery_failed").length,
       returning_to_warehouse: orders.filter(
         (o) => o.status === "returning_to_warehouse"
       ).length,
-      returned: orders.filter((o) => o.status === "returned").length,
+      cancelled: orders.filter((o) => o.status === "cancelled").length,
     };
   };
 
@@ -285,14 +301,21 @@ const MyOrdersPage = () => {
               label: "Đang giao",
               count: counts.out_for_delivery,
             },
+
+            // ✅ Tab "Đã giao" đã gộp delivered + returned
             { key: "delivered", label: "Đã giao", count: counts.delivered },
-            { key: "returned", label: "Đã giao", count: counts.returned },
+
+            {
+              key: "delivery_failed",
+              label: "Thất bại",
+              count: counts.delivery_failed,
+            },
             {
               key: "returning_to_warehouse",
               label: "Thất bại đang về kho",
               count: counts.returning_to_warehouse,
             },
-            { key: "cancelled", label: "Thất bại", count: counts.cancelled },
+            { key: "cancelled", label: "Đã hủy", count: counts.cancelled },
           ] as { key: ShipperStatusTab; label: string; count: number }[]
         ).map((tab) => (
           <button
@@ -454,24 +477,23 @@ const MyOrdersPage = () => {
                 </div>
 
                 {/* Delivery Attempts */}
-                {order.deliveryAttempts &&
-                  order.deliveryAttempts.length > 0 && (
-                    <div className="mt-3 pt-3 border-t border-mono-100">
-                      <div className="flex items-center gap-2 text-xs text-mono-500">
-                        <FiClock size={12} />
-                        <span>
-                          Lần giao gần nhất:{" "}
-                          {formatDate(
-                            (
-                              order.deliveryAttempts[
-                                order.deliveryAttempts.length - 1
-                              ] as DeliveryAttempt
-                            ).time || order.createdAt
-                          )}
-                        </span>
-                      </div>
+                {order.deliveryAttempts && order.deliveryAttempts.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-mono-100">
+                    <div className="flex items-center gap-2 text-xs text-mono-500">
+                      <FiClock size={12} />
+                      <span>
+                        Lần giao gần nhất:{" "}
+                        {formatDate(
+                          (
+                            order.deliveryAttempts[
+                              order.deliveryAttempts.length - 1
+                            ] as DeliveryAttempt
+                          ).time || order.createdAt
+                        )}
+                      </span>
                     </div>
-                  )}
+                  </div>
+                )}
               </div>
 
               {/* Card Footer - Quick Actions theo BE logic */}
