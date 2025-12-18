@@ -11,7 +11,7 @@ type ImageInput = Image | ProductImage;
 const VariantImagesManager = ({
   variantId,
   images,
-  reloadImages: _reloadImages,
+  reloadImages,
 }: {
   variantId: string;
   images: ImageInput[];
@@ -81,6 +81,10 @@ const VariantImagesManager = ({
         (res?.data?.data?.image ? [res.data.data.image] : []);
       if (added && added.length > 0) {
         setLocalImages((prev: Image[]) => [...(added as Image[]), ...prev]);
+      }
+      // Gọi callback reloadImages nếu có để cha cập nhật prop images
+      if (typeof reloadImages === "function") {
+        await reloadImages();
       }
       toast.success("Tải ảnh thành công");
     } catch (error) {

@@ -221,13 +221,6 @@ const VariantForm: React.FC<VariantFormProps> = ({
         </select>
       </div>
 
-      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <p className="text-sm text-blue-700">
-          💡 <strong>Lưu ý:</strong> Giá bán và số lượng sẽ được thêm khi bạn sử
-          dụng tính năng <strong>Nhập kho (Stock In)</strong>
-        </p>
-      </div>
-
       <div>
         <label className="block text-sm font-semibold text-mono-700 mb-2">
           Giới tính <span className="text-red-500">*</span>
@@ -252,7 +245,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
         </label>
         <p className="text-xs text-mono-500 mb-3">
           Chọn các size có sẵn cho variant này. Số lượng sẽ được quản lý qua
-          Stock In.
+          kho hàng.
         </p>
 
         {/* Constraints Summary khi editing */}
