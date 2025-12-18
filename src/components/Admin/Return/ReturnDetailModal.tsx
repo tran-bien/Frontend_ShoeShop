@@ -79,11 +79,11 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-gray-600 to-gray-600 text-white p-6">
+        <div className="bg-white text-black p-6 border-b">
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-2xl font-bold">Chi tiết yêu cầu trả hàng</h2>
-              <p className="text-blue-100 mt-1">
+              <p className="text-gray-500 mt-1">
                 Mã:{" "}
                 <span className="font-mono">
                   {returnRequest.code || `#${returnRequest._id.slice(-8)}`}
@@ -162,12 +162,12 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
           {/* Pickup Address - Địa chỉ lấy hàng trả */}
           {(returnRequest.pickupAddress ||
             returnRequest.order?.shippingAddress) && (
-            <div className="bg-blue-50 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-blue-700 font-semibold mb-3">
+            <div className="bg-white rounded-lg p-4">
+              <div className="flex items-center gap-2 text-black font-semibold mb-3">
                 <FiMapPin />
                 <span>Địa chỉ lấy hàng</span>
               </div>
-              <div className="text-sm text-blue-800">
+              <div className="text-sm text-black">
                 {returnRequest.pickupAddress ? (
                   <>
                     <p className="font-medium">
@@ -233,6 +233,11 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
                         variant?: {
                           color?: { name?: string; code?: string };
                           size?: { value?: string | number };
+                          images?: { url: string }[];
+                          product?: {
+                            images?: { url: string }[];
+                            name?: string;
+                          };
                         };
                         size?: { value?: string | number };
                         quantity?: number;
@@ -240,90 +245,104 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
                         priceAtPurchase?: number;
                       },
                       idx: number
-                    ) => (
-                      <div
-                        key={idx}
-                        className="bg-white border border-gray-200 rounded-lg p-4 flex gap-4"
-                      >
-                        {item.product?.images?.[0]?.url && (
-                          <img
-                            src={item.product.images[0].url}
-                            alt={item.product?.name || "Product"}
-                            className="w-20 h-20 object-cover rounded-lg"
-                          />
-                        )}
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-800">
-                            {item.product?.name || "Sản phẩm"}
-                          </p>
-                          <div className="flex flex-wrap gap-4 text-sm text-gray-600 mt-2">
-                            <span>
-                              Màu:{" "}
-                              <strong>
-                                {item.variant?.color?.name || "N/A"}
-                              </strong>
-                              {item.variant?.color?.code && (
-                                <span
-                                  className="inline-block w-4 h-4 rounded-full border ml-1 align-middle"
-                                  style={{
-                                    backgroundColor: item.variant.color.code,
-                                  }}
-                                />
-                              )}
-                            </span>
-                            <span>
-                              Size:{" "}
-                              <strong>
-                                {item.variant?.size?.value ||
-                                  item.size?.value ||
-                                  "N/A"}
-                              </strong>
-                            </span>
-                            <span>
-                              SL: <strong>{item.quantity}</strong>
-                            </span>
-                            <span>
-                              Giá:{" "}
-                              <strong>
-                                {formatCurrency(
-                                  item.priceAtPurchase || item.price
+                    ) => {
+                      // Lấy ảnh từ nhiều nguồn theo thứ tự ưu tiên
+                      const imageUrl =
+                        item.variant?.images?.[0]?.url ||
+                        item.variant?.product?.images?.[0]?.url ||
+                        item.product?.images?.[0]?.url;
+
+                      // Lấy tên sản phẩm từ nhiều nguồn
+                      const productName =
+                        item.variant?.product?.name ||
+                        item.product?.name ||
+                        "Sản phẩm";
+
+                      return (
+                        <div
+                          key={idx}
+                          className="bg-white border border-gray-200 rounded-lg p-4 flex gap-4"
+                        >
+                          {imageUrl && (
+                            <img
+                              src={imageUrl}
+                              alt={productName}
+                              className="w-20 h-20 object-cover rounded-lg"
+                            />
+                          )}
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-800">
+                              {productName}
+                            </p>
+                            <div className="flex flex-wrap gap-4 text-sm text-gray-600 mt-2">
+                              <span>
+                                Màu:{" "}
+                                <strong>
+                                  {item.variant?.color?.name || "N/A"}
+                                </strong>
+                                {item.variant?.color?.code && (
+                                  <span
+                                    className="inline-block w-4 h-4 rounded-full border ml-1 align-middle"
+                                    style={{
+                                      backgroundColor: item.variant.color.code,
+                                    }}
+                                  />
                                 )}
-                              </strong>
-                            </span>
+                              </span>
+                              <span>
+                                Size:{" "}
+                                <strong>
+                                  {item.variant?.size?.value ||
+                                    item.size?.value ||
+                                    "N/A"}
+                                </strong>
+                              </span>
+                              <span>
+                                SL: <strong>{item.quantity}</strong>
+                              </span>
+                              <span>
+                                Giá:{" "}
+                                <strong>
+                                  {formatCurrency(
+                                    item.priceAtPurchase || item.price
+                                  )}
+                                </strong>
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )
+                      );
+                    }
                   )}
                 </div>
               </div>
             )}
 
           {/* Refund Info */}
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-center gap-2 text-green-700 font-semibold mb-3">
+          <div className="bg-white border border-black rounded-lg p-4">
+            <div className="flex items-center gap-2 text-black font-semibold mb-3">
               <FiCreditCard />
               <span>Thông tin hoàn tiền</span>
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-green-600">Giá trị đơn hàng:</span>
-                  <span className="font-medium">
+                  <span className="text-black">Giá trị đơn hàng:</span>
+                  <span className="font-medium text-black">
                     {formatCurrency(orderTotal)}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-green-600">Phí trả hàng:</span>
+                  <span className="text-black">Phí trả hàng:</span>
                   <span className="font-medium text-red-600">
                     -{formatCurrency(RETURN_SHIPPING_FEE)}
                   </span>
                 </div>
-                <div className="flex justify-between pt-2 border-t border-green-200">
-                  <span className="text-green-700 font-semibold">
+                <div className="flex justify-between pt-2 border-t border-black">
+                  <span className="text-black font-semibold">
                     Số tiền hoàn:
                   </span>
-                  <span className="text-xl font-bold text-green-800">
+                  <span className="text-xl font-bold text-black">
                     {formatCurrency(refundAmount)}
                   </span>
                 </div>
@@ -332,11 +351,11 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
               {/* Bank Info for bank_transfer */}
               {returnRequest.refundMethod === "bank_transfer" &&
                 returnRequest.bankInfo && (
-                  <div className="bg-white rounded-lg p-3">
-                    <p className="font-medium text-gray-700 mb-2">
+                  <div className="bg-white rounded-lg p-3 border-2 border-black shadow-sm">
+                    <p className="font-medium text-black mb-2">
                       Thông tin ngân hàng:
                     </p>
-                    <div className="space-y-1 text-sm text-gray-600">
+                    <div className="space-y-1 text-sm text-black">
                       <p>
                         Ngân hàng:{" "}
                         <strong>{returnRequest.bankInfo.bankName}</strong>

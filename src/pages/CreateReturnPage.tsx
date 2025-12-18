@@ -42,6 +42,30 @@ interface Order {
   totalAfterDiscountAndShipping: number;
 }
 
+// Danh sách ngân hàng phổ biến tại Việt Nam
+const POPULAR_BANKS = [
+  "Vietcombank - Ngân hàng TMCP Ngoại thương Việt Nam",
+  "VietinBank - Ngân hàng TMCP Công Thương Việt Nam",
+  "BIDV - Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+  "Agribank - Ngân hàng NN&PTNT Việt Nam",
+  "Techcombank - Ngân hàng TMCP Kỹ Thương Việt Nam",
+  "MB Bank - Ngân hàng TMCP Quân đội",
+  "ACB - Ngân hàng TMCP Á Châu",
+  "VPBank - Ngân hàng TMCP Việt Nam Thịnh Vượng",
+  "Sacombank - Ngân hàng TMCP Sài Gòn Thương Tín",
+  "TPBank - Ngân hàng TMCP Tiên Phong",
+  "HDBank - Ngân hàng TMCP Phát triển TP.HCM",
+  "SHB - Ngân hàng TMCP Sài Gòn - Hà Nội",
+  "OCB - Ngân hàng TMCP Phương Đông",
+  "VIB - Ngân hàng TMCP Quốc tế Việt Nam",
+  "SeABank - Ngân hàng TMCP Đông Nam Á",
+  "MSB - Ngân hàng TMCP Hàng Hải Việt Nam",
+  "LPBank - Ngân hàng TMCP Bưu điện Liên Việt",
+  "NCB - Ngân hàng TMCP Quốc Dân",
+  "PVcomBank - Ngân hàng TMCP Đại Chúng Việt Nam",
+  "Khác",
+];
+
 // Phí ship khi trả hàng (30.000đ)
 const RETURN_SHIPPING_FEE = 30000;
 
@@ -593,16 +617,44 @@ const CreateReturnPage: React.FC = () => {
                     <label className="block text-sm font-medium mb-1">
                       Tên ngân hàng *
                     </label>
-                    <input
-                      type="text"
-                      value={bankInfo.bankName}
-                      onChange={(e) =>
-                        setBankInfo({ ...bankInfo, bankName: e.target.value })
+                    <select
+                      value={
+                        POPULAR_BANKS.includes(bankInfo.bankName)
+                          ? bankInfo.bankName
+                          : "Khác"
                       }
-                      placeholder="VD: Vietcombank, BIDV, ..."
-                      className="w-full px-4 py-2 border rounded-lg"
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === "Khác") {
+                          setBankInfo({ ...bankInfo, bankName: "" });
+                        } else {
+                          setBankInfo({ ...bankInfo, bankName: value });
+                        }
+                      }}
+                      className="w-full px-4 py-2 border rounded-lg mb-2"
                       required
-                    />
+                    >
+                      <option value="">-- Chọn ngân hàng --</option>
+                      {POPULAR_BANKS.map((bank) => (
+                        <option key={bank} value={bank}>
+                          {bank}
+                        </option>
+                      ))}
+                    </select>
+                    {/* Nếu chọn Khác thì cho nhập tên ngân hàng */}
+                    {(!POPULAR_BANKS.includes(bankInfo.bankName) ||
+                      bankInfo.bankName === "") && (
+                      <input
+                        type="text"
+                        value={bankInfo.bankName}
+                        onChange={(e) =>
+                          setBankInfo({ ...bankInfo, bankName: e.target.value })
+                        }
+                        placeholder="Nhập tên ngân hàng"
+                        className="w-full px-4 py-2 border rounded-lg mt-2"
+                        required
+                      />
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-1">
