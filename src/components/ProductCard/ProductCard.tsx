@@ -16,9 +16,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   // State cho hover để chỉ chạy slider khi hover
   const [isHovering, setIsHovering] = useState(false);
 
-  // Track loaded images để tránh nháy
-  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-
   // Compare context
   const { addToCompareById, removeFromCompare, isInCompare, isLoading } =
     useCompare();
@@ -27,52 +24,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
   const hasMultipleImages =
     product && Array.isArray(product.images) && product.images.length > 1;
 
-  // Hiệu ứng slide ảnh với tốc độ vừa phải (3 giây cho mỗi ảnh) - chỉ chạy khi hover
+  // CHỈ chạy slider KHI hover
   useEffect(() => {
-    // Chỉ chạy slider khi đang hover VÀ có nhiều ảnh
-    if (!isHovering || !hasMultipleImages || !product) {
+    // KHÔNG chạy nếu không hover hoặc không có nhiều ảnh
+    if (!isHovering || !hasMultipleImages) {
       return;
     }
 
     const interval = setInterval(() => {
-      // Kiểm tra images tồn tại trước khi truy cập length
-      if (Array.isArray(product.images) && product.images.length > 0) {
-        setCurrentImageIndex((prev) => (prev + 1) % product.images!.length);
-      }
-    }, 3000); // Tốc độ chuyển ảnh vừa phải: 3 giây
+      setCurrentImageIndex((prev) => {
+        if (product.images && product.images.length > 0) {
+          return (prev + 1) % product.images.length;
+        }
+        return prev;
+      });
+    }, 800); // 0.8 giây mỗi ảnh
 
     return () => clearInterval(interval);
-  }, [product, product?.images, hasMultipleImages, isHovering]);
+  }, [isHovering, hasMultipleImages, product.images]);
 
-  // Reset về ảnh đầu khi không hover - KHÔNG reset imageLoaded để tránh nháy
+  // Reset về ảnh đầu khi rời chuột
   useEffect(() => {
-    if (!isHovering && currentImageIndex !== 0) {
+    if (!isHovering) {
       setCurrentImageIndex(0);
     }
-  }, [isHovering, currentImageIndex]);
-
-  // Preload all images when component mounts for smooth sliding
-  useEffect(() => {
-    if (product?.images && Array.isArray(product.images)) {
-      product.images.forEach((img) => {
-        if (img?.url) {
-          const image = new Image();
-          image.onload = () => {
-            setLoadedImages((prev) => new Set(prev).add(img.url));
-          };
-          image.src = img.url;
-        }
-      });
-    }
-    // Also preload mainImage
-    if (product?.mainImage) {
-      const image = new Image();
-      image.onload = () => {
-        setLoadedImages((prev) => new Set(prev).add(product.mainImage!));
-      };
-      image.src = product.mainImage;
-    }
-  }, [product?.images, product?.mainImage]);
+  }, [isHovering]);
 
   // Guard clause - return null if product is undefined
   // MUST be after all hooks
@@ -82,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   const inCompare = isInCompare(product._id);
 
-  // Get image URL to display với kiểm tra null/undefined
+  // Get image URL to display
   const imageUrl =
     hasMultipleImages && Array.isArray(product.images)
       ? product.images[currentImageIndex]?.url || ""
@@ -90,9 +66,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         (Array.isArray(product.images) && product.images.length > 0
           ? product.images[0]?.url
           : "/placeholder.jpg");
-
-  // Check if current image is already loaded
-  const isCurrentImageLoaded = loadedImages.has(imageUrl);
 
   // Xử lý khoảng giá
   const renderPrice = () => {
@@ -236,19 +209,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         <img
           src={imageUrl}
           alt={product.name}
-          className="w-full h-full object-contain object-center transition-all duration-500 ease-in-out group-hover:scale-105"
+          className="w-full h-full object-contain object-center transition-transform duration-300 ease-in-out group-hover:scale-105"
           style={{
             transformOrigin: "center center",
-            opacity: isCurrentImageLoaded ? 1 : 0.5,
-          }}
-          onLoad={() => {
-            setLoadedImages((prev) => new Set(prev).add(imageUrl));
           }}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null;
             target.src = "/placeholder.jpg";
-            setLoadedImages((prev) => new Set(prev).add("/placeholder.jpg"));
           }}
         />
 
