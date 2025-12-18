@@ -1319,24 +1319,50 @@ const DiscountPage = () => {
                 </div>
                 <div className="flex flex-wrap gap-6 pt-2">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="isPublic"
-                      checked={form.isPublic}
-                      onChange={handleChange}
-                      className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
-                    />
-                    <span className="text-sm text-mono-700">Công khai</span>
+                  <input
+                    type="checkbox"
+                    name="isPublic"
+                    checked={form.isPublic}
+                    onChange={(e) => {
+                    if (e.target.checked) {
+                      setForm((prev) => ({
+                      ...prev,
+                      isPublic: true,
+                      isRedeemable: false, // Uncheck "Đổi bằng điểm" if "Công khai" is checked
+                      }));
+                    } else {
+                      setForm((prev) => ({
+                      ...prev,
+                      isPublic: false,
+                      }));
+                    }
+                    }}
+                    className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
+                  />
+                  <span className="text-sm text-mono-700">Công khai</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="isRedeemable"
-                      checked={form.isRedeemable}
-                      onChange={handleChange}
-                      className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
-                    />
-                    <span className="text-sm text-mono-700">Đổi bằng điểm</span>
+                  <input
+                    type="checkbox"
+                    name="isRedeemable"
+                    checked={form.isRedeemable}
+                    onChange={(e) => {
+                    if (e.target.checked) {
+                      setForm((prev) => ({
+                      ...prev,
+                      isRedeemable: true,
+                      isPublic: false, // Uncheck "Công khai" if "Đổi bằng điểm" is checked
+                      }));
+                    } else {
+                      setForm((prev) => ({
+                      ...prev,
+                      isRedeemable: false,
+                      }));
+                    }
+                    }}
+                    className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
+                  />
+                  <span className="text-sm text-mono-700">Đổi bằng điểm</span>
                   </label>
                 </div>
                 {form.isRedeemable && (
