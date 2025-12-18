@@ -384,369 +384,323 @@ const UserReviewPage: React.FC = () => {
           <div className="max-w-6xl mx-auto">
             {/* Header */}
             <div className="mb-8">
-              <div className="flex justify-between items-center mb-2">
-                <h1 className="text-3xl font-bold text-mono-900">
-                  Đánh giá của tôi
-                </h1>
-                <Button
-                  icon={<ReloadOutlined />}
-                  onClick={handleRefreshAll}
-                  loading={loading || loadingReviewable}
-                  className="flex items-center gap-2"
-                >
-                  Làm mới tất cả
-                </Button>
-              </div>
+              <h1 className="text-3xl font-bold text-mono-900 mb-2">
+                Đánh giá của tôi
+              </h1>
               <p className="text-mono-600">
                 Quản lý và viết đánh giá cho các sản phẩm bạn đã mua
               </p>
             </div>
 
-            {/* Initial Loading Overlay */}
-            {initialLoading ? (
-              <div className="flex justify-center items-center py-20">
-                <div className="text-center">
-                  <Spin size="large" />
-                  <div className="mt-4 text-mono-600">Đang tải dữ liệu...</div>
-                </div>
-              </div>
-            ) : (
-              <>
-                {/* Reviewable Products Section */}
-                <div className="mb-8">
-                  <div className="bg-white p-6 rounded-xl shadow-sm border border-mono-100">
-                    <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-xl font-semibold flex items-center">
-                        <span className="bg-mono-500 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
-                          <CheckCircleOutlined />
-                        </span>
-                        Sản phẩm chờ đánh giá
-                      </h2>
-                      <Button
-                        icon={<ReloadOutlined />}
-                        onClick={fetchReviewableProducts}
-                        loading={loadingReviewable}
-                        size="small"
-                        className="flex items-center gap-1"
-                      >
-                        Làm mới
-                      </Button>
-                    </div>
-
-                    {loadingReviewable ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {[...Array(3)].map((_, index) => (
-                          <Card
-                            key={index}
-                            className="hover:shadow-md transition-shadow"
-                          >
-                            <Skeleton.Image className="w-full h-48" />
-                            <div className="mt-4">
-                              <Skeleton active paragraph={{ rows: 2 }} />
-                              <div className="mt-4">
-                                <Skeleton.Button className="w-full" />
-                              </div>
-                            </div>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : reviewableProducts.length === 0 ? (
-                      <Empty
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                        description={
-                          <div className="text-mono-500">
-                            <div className="font-medium mb-1">
-                              Không có sản phẩm nào cần đánh giá
-                            </div>
-                            <div className="text-sm">
-                              Tất cả sản phẩm đã được đánh giá hoặc bạn chưa có
-                              đơn hàng nào đã giao
-                            </div>
-                          </div>
-                        }
-                      />
-                    ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {reviewableProducts.map((product) => (
-                          <Badge.Ribbon
-                            key={product.orderItemId}
-                            text={`${product.daysLeftToReview} ngày còn lại`}
-                            color="#374151"
-                          >
-                            <Card
-                              className="hover:shadow-md transition-shadow overflow-hidden"
-                              cover={
-                                <div className="h-48 overflow-hidden relative">
-                                  <img
-                                    src={getProductImage(product)}
-                                    alt={product.product.name}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                      const target =
-                                        e.target as HTMLImageElement;
-                                      target.src = "/placeholder-image.jpg";
-                                    }}
-                                  />
-                                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
-                                    <div className="text-white text-xs">
-                                      Mã đơn: {product.orderCode}
-                                    </div>
-                                  </div>
-                                </div>
-                              }
-                              actions={[
-                                <Button
-                                  type="primary"
-                                  onClick={() => openCreateModal(product)}
-                                  className="w-full"
-                                  key="review"
-                                >
-                                  Đánh giá ngay
-                                </Button>,
-                              ]}
-                            >
-                              <Card.Meta
-                                title={
-                                  <Tooltip title={product.product.name}>
-                                    <div className="text-sm">
-                                      <div className="font-medium truncate">
-                                        {product.product.name}
-                                      </div>
-                                      <div className="flex items-center justify-between mt-1">
-                                        <div className="text-mono-500 text-xs">
-                                          {product.variant.color.name} / Size{" "}
-                                          {product.size.value}
-                                        </div>
-                                        <div className="text-sm font-medium text-mono-black">
-                                          {new Intl.NumberFormat(
-                                            "vi-VN"
-                                          ).format(product.price)}
-                                          d
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </Tooltip>
-                                }
-                                description={
-                                  <div className="mt-2">
-                                    <div className="text-xs text-mono-500 flex items-center justify-between">
-                                      <div>
-                                        <Tooltip title="Ngày nhận hàng">
-                                          <span className="flex items-center">
-                                            <ClockCircleOutlined className="mr-1" />
-                                            {formatDate(product.deliveredAt)}
-                                          </span>
-                                        </Tooltip>
-                                      </div>
-                                      <Tooltip
-                                        title={`Hạn đánh giá: ${
-                                          product.reviewExpiresAt
-                                            ? formatDate(
-                                                product.reviewExpiresAt
-                                              )
-                                            : "Không giới hạn"
-                                        }`}
-                                      >
-                                        <InfoCircleOutlined className="text-mono-500" />
-                                      </Tooltip>
-                                    </div>
-                                  </div>
-                                }
-                              />
-                            </Card>
-                          </Badge.Ribbon>
-                        ))}
-                      </div>
-                    )}
+            <>
+              {/* Reviewable Products Section */}
+              <div className="mb-8">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-mono-100">
+                  <div className="mb-4">
+                    <h2 className="text-xl font-semibold flex items-center">
+                      <span className="bg-mono-900 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
+                        <CheckCircleOutlined />
+                      </span>
+                      Sản phẩm chờ đánh giá
+                    </h2>
                   </div>
-                </div>
 
-                {/* Reviews List */}
-                <div className="mb-6">
-                  <div className="bg-white p-6 rounded-xl shadow-sm border border-mono-100">
-                    <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-xl font-semibold flex items-center">
-                        <span className="bg-mono-700 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
-                          <StarFilled />
-                        </span>
-                        Đánh giá đã viết
-                      </h2>
-                      <Button
-                        icon={<ReloadOutlined />}
-                        onClick={() =>
-                          fetchUserReviews(
-                            pagination.current,
-                            pagination.pageSize
-                          )
-                        }
-                        loading={loading}
-                        size="small"
-                        className="flex items-center gap-1"
-                      >
-                        Làm mới
-                      </Button>
-                    </div>
-
-                    {loading ? (
-                      <div className="space-y-4">
-                        {[...Array(2)].map((_, index) => (
-                          <Card
-                            key={index}
-                            className="hover:shadow-md transition-shadow"
-                          >
-                            <div className="flex gap-4">
-                              <Skeleton.Image className="w-20 h-20 rounded" />
-                              <div className="flex-1">
-                                <Skeleton active paragraph={{ rows: 2 }} />
-                                <div className="flex justify-between items-center mt-3">
-                                  <Skeleton.Button size="small" />
-                                  <Skeleton.Button size="small" />
-                                </div>
-                              </div>
-                            </div>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : reviews.length === 0 ? (
-                      <Empty
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                        description={
-                          <div className="text-mono-500">
-                            <div className="font-medium mb-1">
-                              Bạn chưa có đánh giá nào
-                            </div>
-                            <div className="text-sm">
-                              Hãy đánh giá các sản phẩm đã mua để giúp người
-                              khác tìm hiểu sản phẩm tốt hơn
+                  {loadingReviewable ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {[...Array(3)].map((_, index) => (
+                        <Card
+                          key={index}
+                          className="hover:shadow-md transition-shadow"
+                        >
+                          <Skeleton.Image className="w-full h-48" />
+                          <div className="mt-4">
+                            <Skeleton active paragraph={{ rows: 2 }} />
+                            <div className="mt-4">
+                              <Skeleton.Button className="w-full" />
                             </div>
                           </div>
-                        }
-                      />
-                    ) : (
-                      <div className="space-y-4">
-                        {reviews.map((review) => (
+                        </Card>
+                      ))}
+                    </div>
+                  ) : reviewableProducts.length === 0 ? (
+                    <Empty
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      description={
+                        <div className="text-mono-500">
+                          <div className="font-medium mb-1">
+                            Không có sản phẩm nào cần đánh giá
+                          </div>
+                          <div className="text-sm">
+                            Tất cả sản phẩm đã được đánh giá hoặc bạn chưa có
+                            đơn hàng nào đã giao
+                          </div>
+                        </div>
+                      }
+                    />
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {reviewableProducts.map((product) => (
+                        <Badge.Ribbon
+                          key={product.orderItemId}
+                          text={`${product.daysLeftToReview} ngày còn lại`}
+                          color="#374151"
+                        >
                           <Card
-                            key={review._id}
-                            className="hover:shadow-md transition-shadow border border-mono-100"
-                          >
-                            <div className="flex flex-col sm:flex-row gap-4">
-                              <div className="flex-shrink-0">
+                            className="hover:shadow-md transition-shadow overflow-hidden"
+                            cover={
+                              <div className="h-48 overflow-hidden relative">
                                 <img
-                                  src={
-                                    review.product?.images?.[0]?.url ||
-                                    "/placeholder-image.jpg"
-                                  }
-                                  alt={review.product?.name || "Sản phẩm"}
-                                  className="w-20 h-20 object-cover rounded-lg border border-mono-200"
+                                  src={getProductImage(product)}
+                                  alt={product.product.name}
+                                  className="w-full h-full object-cover"
                                   onError={(e) => {
                                     const target = e.target as HTMLImageElement;
-                                    target.onerror = null;
                                     target.src = "/placeholder-image.jpg";
                                   }}
                                 />
+                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                                  <div className="text-white text-xs">
+                                    Mã đơn: {product.orderCode}
+                                  </div>
+                                </div>
                               </div>
-
-                              <div className="flex-grow">
-                                <div className="flex flex-wrap items-start justify-between gap-2">
-                                  <h3 className="font-medium text-lg">
-                                    {review.product?.name || "Sản phẩm"}
-                                  </h3>
-                                  <div className="text-xs text-mono-500 whitespace-nowrap">
-                                    {format(
-                                      new Date(review.createdAt),
-                                      "dd/MM/yyyy HH:mm",
-                                      { locale: vi }
-                                    )}
+                            }
+                            actions={[
+                              <Button
+                                type="primary"
+                                onClick={() => openCreateModal(product)}
+                                className="w-full"
+                                key="review"
+                              >
+                                Đánh giá ngay
+                              </Button>,
+                            ]}
+                          >
+                            <Card.Meta
+                              title={
+                                <Tooltip title={product.product.name}>
+                                  <div className="text-sm">
+                                    <div className="font-medium truncate">
+                                      {product.product.name}
+                                    </div>
+                                    <div className="flex items-center justify-between mt-1">
+                                      <div className="text-mono-500 text-xs">
+                                        {product.variant.color.name} / Size{" "}
+                                        {product.size.value}
+                                      </div>
+                                      <div className="text-sm font-medium text-mono-black">
+                                        {new Intl.NumberFormat("vi-VN").format(
+                                          product.price
+                                        )}
+                                        d
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Tooltip>
+                              }
+                              description={
+                                <div className="mt-2">
+                                  <div className="text-xs text-mono-500 flex items-center justify-between">
+                                    <div>
+                                      <Tooltip title="Ngày nhận hàng">
+                                        <span className="flex items-center">
+                                          <ClockCircleOutlined className="mr-1" />
+                                          {formatDate(product.deliveredAt)}
+                                        </span>
+                                      </Tooltip>
+                                    </div>
+                                    <Tooltip
+                                      title={`Hạn đánh giá: ${
+                                        product.reviewExpiresAt
+                                          ? formatDate(product.reviewExpiresAt)
+                                          : "Không giới hạn"
+                                      }`}
+                                    >
+                                      <InfoCircleOutlined className="text-mono-500" />
+                                    </Tooltip>
                                   </div>
                                 </div>
+                              }
+                            />
+                          </Card>
+                        </Badge.Ribbon>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
 
-                                <div className="flex items-center gap-2 mb-2">
-                                  <div className="flex">
-                                    {[...Array(5)].map((_, index) => (
-                                      <StarFilled
-                                        key={index}
-                                        className={
-                                          index < review.rating
-                                            ? "text-mono-600"
-                                            : "text-mono-300"
-                                        }
-                                      />
-                                    ))}
-                                  </div>
-                                  <span className="text-sm text-mono-600 font-medium">
-                                    {review.rating}/5
-                                  </span>
-                                </div>
+              {/* Reviews List */}
+              <div className="mb-6">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-mono-100">
+                  <div className="mb-4">
+                    <h2 className="text-xl font-semibold flex items-center">
+                      <span className="bg-mono-900 text-white rounded-full w-7 h-7 inline-flex items-center justify-center mr-2">
+                        <StarFilled />
+                      </span>
+                      Đánh giá đã viết
+                    </h2>
+                  </div>
 
-                                <p className="text-mono-700 mb-2 break-words">
-                                  {review.content}
-                                </p>
-
-                                <div className="flex items-center flex-wrap gap-3 mt-3">
-                                  <span
-                                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                                      review.isActive
-                                        ? "bg-mono-800 text-white"
-                                        : "bg-mono-200 text-mono-600"
-                                    }`}
-                                  >
-                                    {review.isActive
-                                      ? "Hiển thị công khai"
-                                      : "Đã ẩn"}
-                                  </span>
-                                  <span className="text-xs text-mono-500 flex items-center">
-                                    <StarFilled className="text-mono-600 mr-1" />
-                                    {review.numberOfLikes} lượt thích
-                                  </span>
-
-                                  <div className="flex-grow"></div>
-
-                                  <Button
-                                    type="text"
-                                    size="small"
-                                    icon={<EditOutlined />}
-                                    onClick={() => openEditModal(review)}
-                                    className="text-mono-500"
-                                  >
-                                    Sửa
-                                  </Button>
-                                  <Button
-                                    type="text"
-                                    size="small"
-                                    danger
-                                    icon={<DeleteOutlined />}
-                                    onClick={() => handleDeleteReview(review)}
-                                  >
-                                    Xóa
-                                  </Button>
-                                </div>
+                  {loading ? (
+                    <div className="space-y-4">
+                      {[...Array(2)].map((_, index) => (
+                        <Card
+                          key={index}
+                          className="hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex gap-4">
+                            <Skeleton.Image className="w-20 h-20 rounded" />
+                            <div className="flex-1">
+                              <Skeleton active paragraph={{ rows: 2 }} />
+                              <div className="flex justify-between items-center mt-3">
+                                <Skeleton.Button size="small" />
+                                <Skeleton.Button size="small" />
                               </div>
                             </div>
-                          </Card>
-                        ))}
-                      </div>
-                    )}
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : reviews.length === 0 ? (
+                    <Empty
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      description={
+                        <div className="text-mono-500">
+                          <div className="font-medium mb-1">
+                            Bạn chưa có đánh giá nào
+                          </div>
+                          <div className="text-sm">
+                            Hãy đánh giá các sản phẩm đã mua để giúp người khác
+                            tìm hiểu sản phẩm tốt hơn
+                          </div>
+                        </div>
+                      }
+                    />
+                  ) : (
+                    <div className="space-y-4">
+                      {reviews.map((review) => (
+                        <Card
+                          key={review._id}
+                          className="hover:shadow-md transition-shadow border border-mono-100"
+                        >
+                          <div className="flex flex-col sm:flex-row gap-4">
+                            <div className="flex-shrink-0">
+                              <img
+                                src={
+                                  review.product?.images?.[0]?.url ||
+                                  "/placeholder-image.jpg"
+                                }
+                                alt={review.product?.name || "Sản phẩm"}
+                                className="w-20 h-20 object-cover rounded-lg border border-mono-200"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.onerror = null;
+                                  target.src = "/placeholder-image.jpg";
+                                }}
+                              />
+                            </div>
 
-                    {/* Pagination */}
-                    {pagination.total > pagination.pageSize && (
-                      <div className="flex justify-center mt-8">
-                        <Pagination
-                          current={pagination.current}
-                          pageSize={pagination.pageSize}
-                          total={pagination.total}
-                          showSizeChanger
-                          showQuickJumper
-                          showTotal={(total, range) =>
-                            `${range[0]}-${range[1]} của ${total} đánh giá`
-                          }
-                          onChange={handlePaginationChange}
-                        />
-                      </div>
-                    )}
-                  </div>
+                            <div className="flex-grow">
+                              <div className="flex flex-wrap items-start justify-between gap-2">
+                                <h3 className="font-medium text-lg">
+                                  {review.product?.name || "Sản phẩm"}
+                                </h3>
+                                <div className="text-xs text-mono-500 whitespace-nowrap">
+                                  {format(
+                                    new Date(review.createdAt),
+                                    "dd/MM/yyyy HH:mm",
+                                    { locale: vi }
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="flex">
+                                  {[...Array(5)].map((_, index) => (
+                                    <StarFilled
+                                      key={index}
+                                      className={
+                                        index < review.rating
+                                          ? "text-mono-600"
+                                          : "text-mono-300"
+                                      }
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-sm text-mono-600 font-medium">
+                                  {review.rating}/5
+                                </span>
+                              </div>
+
+                              <p className="text-mono-700 mb-2 break-words">
+                                {review.content}
+                              </p>
+
+                              <div className="flex items-center flex-wrap gap-3 mt-3">
+                                <span
+                                  className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                    review.isActive
+                                      ? "bg-mono-800 text-white"
+                                      : "bg-mono-200 text-mono-600"
+                                  }`}
+                                >
+                                  {review.isActive
+                                    ? "Hiển thị công khai"
+                                    : "Đã ẩn"}
+                                </span>
+                                <span className="text-xs text-mono-500 flex items-center">
+                                  <StarFilled className="text-mono-600 mr-1" />
+                                  {review.numberOfLikes} lượt thích
+                                </span>
+
+                                <div className="flex-grow"></div>
+
+                                <Button
+                                  type="text"
+                                  size="small"
+                                  icon={<EditOutlined />}
+                                  onClick={() => openEditModal(review)}
+                                  className="text-mono-500"
+                                >
+                                  Sửa
+                                </Button>
+                                <Button
+                                  type="text"
+                                  size="small"
+                                  danger
+                                  icon={<DeleteOutlined />}
+                                  onClick={() => handleDeleteReview(review)}
+                                >
+                                  Xóa
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Pagination */}
+                  {pagination.total > pagination.pageSize && (
+                    <div className="flex justify-center mt-8">
+                      <Pagination
+                        current={pagination.current}
+                        pageSize={pagination.pageSize}
+                        total={pagination.total}
+                        showSizeChanger
+                        showQuickJumper
+                        showTotal={(total, range) =>
+                          `${range[0]}-${range[1]} của ${total} đánh giá`
+                        }
+                        onChange={handlePaginationChange}
+                      />
+                    </div>
+                  )}
                 </div>
-              </>
-            )}
+              </div>
+            </>
 
             {/* Create Review Modal */}
             <Modal

@@ -358,15 +358,11 @@ const MyCouponsPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto py-8 px-4">
-        <div className="flex flex-col md:flex-row gap-8">
-          <div className="md:w-64 flex-shrink-0 order-first">
-            <Sidebar />
-          </div>
-          <div className="flex-1">
-            <MyCouponsContent />
-          </div>
+    <div className="flex flex-col min-h-screen">
+      <div className="flex flex-1 bg-gray-50">
+        <Sidebar />
+        <div className="flex-1 p-8">
+          <MyCouponsContent />
         </div>
       </div>
     </div>
