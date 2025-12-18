@@ -61,6 +61,7 @@ const AdminChatPage: React.FC = () => {
   // Refs to access latest state in socket handlers
   const activeConversationRef = useRef<ChatConversation | null>(null);
   const conversationsRef = useRef<ChatConversation[]>([]);
+  const userIdRef = useRef<string | undefined>(user?._id);
 
   // Keep refs in sync
   useEffect(() => {
@@ -70,6 +71,10 @@ const AdminChatPage: React.FC = () => {
   useEffect(() => {
     conversationsRef.current = conversations;
   }, [conversations]);
+
+  useEffect(() => {
+    userIdRef.current = user?._id;
+  }, [user?._id]);
 
   // Modal states
   const [showNewChatModal, setShowNewChatModal] = useState(false);
@@ -88,6 +93,79 @@ const AdminChatPage: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
+
+  // Helper function to update conversation with new message - inline version for socket handlers
+  const updateConversationInline = useCallback(
+    (conversationId: string, message: ConversationMessage) => {
+      setConversations((prev) => {
+        const currentActive = activeConversationRef.current;
+        const currentUserId = userIdRef.current;
+        // Check if sender is the current user (admin/staff)
+        const senderId =
+          typeof message.senderId === "object"
+            ? message.senderId._id
+            : message.senderId;
+        const isOwnMessage = senderId === currentUserId;
+
+        const updated = prev.map((c) =>
+          c._id === conversationId
+            ? {
+                ...c,
+                lastMessage: {
+                  text: message.text,
+                  type: message.type || "text",
+                  createdAt: message.createdAt,
+                  senderId: senderId,
+                },
+                // Don't increase unread if it's our own message or we're viewing this conversation
+                unreadCount:
+                  currentActive?._id === conversationId || isOwnMessage
+                    ? 0
+                    : (c.unreadCount || 0) + 1,
+              }
+            : c
+        );
+        // Sort by last message time
+        return updated.sort((a, b) => {
+          const aTime = a.lastMessage?.createdAt
+            ? new Date(a.lastMessage.createdAt).getTime()
+            : 0;
+          const bTime = b.lastMessage?.createdAt
+            ? new Date(b.lastMessage.createdAt).getTime()
+            : 0;
+          return bTime - aTime;
+        });
+      });
+    },
+    []
+  );
+
+  // Reload conversations function
+  const reloadConversations = useCallback(async () => {
+    try {
+      console.log("[AdminChat] Reloading conversations...");
+      const response = await chatService.getConversations({});
+
+      if (response.data.success && response.data.data) {
+        const convs = response.data.data.conversations || [];
+        const sorted = convs.sort(
+          (a: ChatConversation, b: ChatConversation) => {
+            const aTime = a.lastMessage?.createdAt
+              ? new Date(a.lastMessage.createdAt).getTime()
+              : 0;
+            const bTime = b.lastMessage?.createdAt
+              ? new Date(b.lastMessage.createdAt).getTime()
+              : 0;
+            return bTime - aTime;
+          }
+        );
+        setConversations(sorted);
+        console.log("[AdminChat] Reloaded", sorted.length, "conversations");
+      }
+    } catch (error) {
+      console.error("[AdminChat] Failed to reload conversations:", error);
+    }
+  }, []);
 
   // Initialize Socket.IO
   useEffect(() => {
@@ -134,7 +212,7 @@ const AdminChatPage: React.FC = () => {
         }
 
         // Update conversation list
-        updateConversationWithNewMessage(data.conversationId, data.message);
+        updateConversationInline(data.conversationId, data.message);
       }
     );
 
@@ -156,22 +234,73 @@ const AdminChatPage: React.FC = () => {
         if (!existingConv) {
           // New conversation - reload list
           console.log("[AdminChat] New conversation detected, reloading...");
-          loadConversations();
+          reloadConversations();
         } else if (data.fullMessage) {
           // Existing conversation - update it
-          updateConversationWithNewMessage(
-            data.conversationId,
-            data.fullMessage
-          );
+          updateConversationInline(data.conversationId, data.fullMessage);
         }
+      }
+    );
 
-        // Reload conversations to get any new ones
-        loadConversations();
+    // Listen for admin-specific notifications (all new messages across all conversations)
+    newSocket.on(
+      "chat:adminNotification",
+      (data: {
+        conversationId: string;
+        message: string;
+        fullMessage?: ConversationMessage;
+        conversation?: ChatConversation;
+      }) => {
+        console.log("[AdminChat] Received chat:adminNotification:", data);
+        const currentActive = activeConversationRef.current;
+
+        // Check if this is a NEW conversation not in our list
+        const existingConv = conversationsRef.current.find(
+          (c) => c._id === data.conversationId
+        );
+
+        if (!existingConv && data.conversation) {
+          // New conversation - add to list immediately
+          console.log("[AdminChat] New conversation, adding to list...");
+          setConversations((prev) => {
+            // Check again to prevent duplicates
+            if (prev.some((c) => c._id === data.conversationId)) {
+              return prev;
+            }
+            const newConv = {
+              ...data.conversation!,
+              unreadCount: 1,
+            };
+            // Sort with newest first
+            return [newConv, ...prev].sort((a, b) => {
+              const aTime = a.lastMessage?.createdAt
+                ? new Date(a.lastMessage.createdAt).getTime()
+                : 0;
+              const bTime = b.lastMessage?.createdAt
+                ? new Date(b.lastMessage.createdAt).getTime()
+                : 0;
+              return bTime - aTime;
+            });
+          });
+        } else if (data.fullMessage) {
+          // Existing conversation - update message and unread count
+          // Only add to messages if this is the active conversation
+          if (currentActive && data.conversationId === currentActive._id) {
+            setMessages((prev) => {
+              const exists = prev.some((m) => m._id === data.fullMessage!._id);
+              if (exists) return prev;
+              return [...prev, data.fullMessage!];
+            });
+          }
+          // Update conversation list
+          updateConversationInline(data.conversationId, data.fullMessage);
+        }
       }
     );
 
     newSocket.on("chat:userTyping", (data: { userId: string }) => {
-      if (data.userId !== user?._id) {
+      const currentUserId = userIdRef.current;
+      if (data.userId !== currentUserId) {
         setIsTyping(true);
       }
     });
@@ -187,44 +316,7 @@ const AdminChatPage: React.FC = () => {
       newSocket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
-
-  // Helper to update conversation list with new message
-  const updateConversationWithNewMessage = (
-    conversationId: string,
-    message: ConversationMessage
-  ) => {
-    setConversations((prev) => {
-      const currentActive = activeConversationRef.current;
-      const updated = prev.map((c) =>
-        c._id === conversationId
-          ? {
-              ...c,
-              lastMessage: {
-                text: message.text,
-                type: message.type,
-                createdAt: message.createdAt,
-                senderId: message.senderId._id,
-              },
-              unreadCount:
-                currentActive?._id === conversationId
-                  ? 0
-                  : (c.unreadCount || 0) + 1,
-            }
-          : c
-      );
-      // Sort by last message time
-      return updated.sort((a, b) => {
-        const aTime = a.lastMessage?.createdAt
-          ? new Date(a.lastMessage.createdAt).getTime()
-          : 0;
-        const bTime = b.lastMessage?.createdAt
-          ? new Date(b.lastMessage.createdAt).getTime()
-          : 0;
-        return bTime - aTime;
-      });
-    });
-  };
+  }, [token, updateConversationInline, reloadConversations]);
 
   // Load all conversations (NO status filter)
   const loadConversations = useCallback(async () => {
