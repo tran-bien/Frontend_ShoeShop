@@ -254,11 +254,11 @@ const OrderDetailPage = () => {
 
         {/* Order Header Card */}
         <div className="bg-white rounded-xl border border-mono-200 shadow-sm overflow-hidden">
-          <div className="bg-mono-900 text-white px-6 py-4">
+          <div className="bg-white px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-400 text-sm mb-1">Mã đơn hàng</p>
-                <h1 className="text-2xl font-bold font-mono">
+                <p className="text-mono-500 text-sm mb-1">Mã đơn hàng</p>
+                <h1 className="text-2xl font-bold text-mono-900 font-mono">
                   #{order.code.slice(-8).toUpperCase()}
                 </h1>
               </div>
@@ -538,27 +538,65 @@ const OrderDetailPage = () => {
 
             <div className="p-6">
               <div className="space-y-4">
-                {order.deliveryAttempts.map(
-                  (attempt: DeliveryAttempt, index: number) => {
+                {/* FIX: Nhóm attempts theo cặp (out_for_delivery + result) để hiển thị đúng số lần giao */}
+                {(() => {
+                  const groupedAttempts: Array<{
+                    startAttempt: DeliveryAttempt;
+                    resultAttempt?: DeliveryAttempt;
+                  }> = [];
+
+                  for (let i = 0; i < order.deliveryAttempts.length; i++) {
+                    const current = order.deliveryAttempts[i];
+
+                    // Nếu là out_for_delivery, tìm result tiếp theo
+                    if (current.status === "out_for_delivery") {
+                      const next = order.deliveryAttempts[i + 1];
+                      if (
+                        next &&
+                        (next.status === "success" || next.status === "failed")
+                      ) {
+                        groupedAttempts.push({
+                          startAttempt: current,
+                          resultAttempt: next,
+                        });
+                        i++; // Skip next vì đã lấy rồi
+                      } else {
+                        // Chỉ có out_for_delivery, chưa có kết quả
+                        groupedAttempts.push({ startAttempt: current });
+                      }
+                    } else if (
+                      current.status === "success" ||
+                      current.status === "failed"
+                    ) {
+                      // Result không có out_for_delivery đi kèm (edge case)
+                      groupedAttempts.push({
+                        startAttempt: current,
+                      });
+                    }
+                  }
+
+                  return groupedAttempts.map((group, index) => {
+                    const displayAttempt =
+                      group.resultAttempt || group.startAttempt;
                     const config =
-                      STATUS_CONFIG[attempt.status] ||
+                      STATUS_CONFIG[displayAttempt.status] ||
                       STATUS_CONFIG.assigned_to_shipper;
+
                     return (
                       <div key={index} className="flex gap-4">
                         <div className="flex flex-col items-center">
                           <div
                             className={`w-3 h-3 rounded-full ${
-                              attempt.status === "success"
+                              displayAttempt.status === "success"
                                 ? "bg-emerald-500"
-                                : attempt.status === "failed"
+                                : displayAttempt.status === "failed"
                                 ? "bg-rose-500"
                                 : "bg-amber-400"
                             }`}
                           />
-                          {order.deliveryAttempts &&
-                            index < order.deliveryAttempts.length - 1 && (
-                              <div className="w-0.5 flex-1 bg-mono-200 mt-2" />
-                            )}
+                          {index < groupedAttempts.length - 1 && (
+                            <div className="w-0.5 flex-1 bg-mono-200 mt-2" />
+                          )}
                         </div>
                         <div className="flex-1 pb-4">
                           <div className="flex items-center gap-2 mb-1">
@@ -571,19 +609,32 @@ const OrderDetailPage = () => {
                               {config.label}
                             </span>
                           </div>
-                          <p className="text-sm text-mono-500">
-                            {formatDate(attempt.time)}
-                          </p>
-                          {attempt.note && (
+
+                          {/* Hiển thị thời gian bắt đầu giao */}
+                          {group.startAttempt && (
+                            <p className="text-sm text-mono-500">
+                              Bắt đầu: {formatDate(group.startAttempt.time)}
+                            </p>
+                          )}
+
+                          {/* Hiển thị kết quả nếu có */}
+                          {group.resultAttempt &&
+                            group.resultAttempt !== group.startAttempt && (
+                              <p className="text-sm text-mono-500">
+                                Kết quả: {formatDate(group.resultAttempt.time)}
+                              </p>
+                            )}
+
+                          {displayAttempt.note && (
                             <p className="text-sm text-mono-600 mt-1 bg-mono-50 rounded-lg px-3 py-2">
-                              {attempt.note}
+                              {displayAttempt.note}
                             </p>
                           )}
                         </div>
                       </div>
                     );
-                  }
-                )}
+                  });
+                })()}
               </div>
             </div>
           </div>

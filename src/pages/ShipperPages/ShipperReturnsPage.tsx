@@ -557,17 +557,17 @@ const ShipperReturnsPage = () => {
       {/* Detail Modal */}
       {showDetailModal && selectedReturn && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+          <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden shadow-2xl border-2 border-mono-900">
             {/* Header */}
-            <div className="bg-gradient-to-r from-mono-700 to-mono-800 text-white px-6 py-4">
+            <div className="bg-white border-b-2 border-mono-900 px-6 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold">
+                  <h2 className="text-lg font-bold text-mono-900">
                     Chi tiết yêu cầu trả hàng
                   </h2>
-                  <p className="text-mono-200 text-sm mt-0.5">
+                  <p className="text-mono-700 text-sm mt-0.5">
                     Mã:{" "}
-                    <span className="font-mono">
+                    <span className="font-mono font-semibold text-mono-900">
                       {selectedReturn.code ||
                         `#${selectedReturn._id.slice(-8).toUpperCase()}`}
                     </span>
@@ -580,7 +580,7 @@ const ShipperReturnsPage = () => {
                       setShowDetailModal(false);
                       setSelectedReturn(null);
                     }}
-                    className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                    className="p-2 hover:bg-mono-100 rounded-full transition-colors text-mono-900"
                   >
                     <FiX size={20} />
                   </button>
@@ -593,33 +593,29 @@ const ShipperReturnsPage = () => {
               {/* Grid Info */}
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Request Info */}
-                <div className="bg-mono-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-mono-700 font-semibold mb-3">
+                <div className="bg-white border border-mono-900 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-mono-900 font-semibold mb-3">
                     <FiPackage size={16} />
                     <span>Thông tin yêu cầu</span>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-mono-500">Mã đơn hàng:</span>
-                      <span className="font-mono font-medium text-blue-600">
+                      <span className="text-mono-700">Mã đơn hàng:</span>
+                      <span className="font-mono font-medium text-mono-900">
                         {selectedReturn.order?.code || "N/A"}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-mono-500">Ngày tạo:</span>
-                      <span>{formatDate(selectedReturn.createdAt)}</span>
+                      <span className="text-mono-700">Ngày tạo:</span>
+                      <span className="text-mono-900">
+                        {formatDate(selectedReturn.createdAt)}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-mono-500">
+                      <span className="text-mono-700">
                         Phương thức hoàn tiền:
                       </span>
-                      <span
-                        className={`font-medium ${
-                          selectedReturn.refundMethod === "cash"
-                            ? "text-amber-600"
-                            : "text-blue-600"
-                        }`}
-                      >
+                      <span className="font-medium text-mono-900">
                         {selectedReturn.refundMethod === "bank_transfer"
                           ? "Chuyển khoản"
                           : "Tiền mặt"}
@@ -629,29 +625,29 @@ const ShipperReturnsPage = () => {
                 </div>
 
                 {/* Customer Info */}
-                <div className="bg-mono-50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 text-mono-700 font-semibold mb-3">
+                <div className="bg-white border border-mono-900 rounded-lg p-4">
+                  <div className="flex items-center gap-2 text-mono-900 font-semibold mb-3">
                     <FiUser size={16} />
                     <span>Thông tin khách hàng</span>
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-mono-500">Họ tên:</span>
-                      <span className="font-medium">
+                      <span className="text-mono-700">Họ tên:</span>
+                      <span className="font-medium text-mono-900">
                         {selectedReturn.customer?.name || "N/A"}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-mono-500">SĐT:</span>
-                      <span>
+                      <span className="text-mono-700">SĐT:</span>
+                      <span className="text-mono-900">
                         {selectedReturn.pickupAddress?.phone ||
                           selectedReturn.customer?.phone ||
                           "N/A"}
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-mono-500">Email:</span>
-                      <span className="truncate max-w-[180px]">
+                      <span className="text-mono-700">Email:</span>
+                      <span className="truncate max-w-[180px] text-mono-900">
                         {selectedReturn.customer?.email || "N/A"}
                       </span>
                     </div>
@@ -660,12 +656,12 @@ const ShipperReturnsPage = () => {
               </div>
 
               {/* Pickup Address */}
-              <div className="bg-blue-50 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-blue-700 font-semibold mb-3">
+              <div className="bg-white border border-mono-900 rounded-lg p-4">
+                <div className="flex items-center gap-2 text-mono-900 font-semibold mb-3">
                   <FiMapPin size={16} />
                   <span>Địa chỉ lấy hàng</span>
                 </div>
-                <div className="text-sm text-blue-800">
+                <div className="text-sm text-mono-900">
                   {selectedReturn.pickupAddress ? (
                     <>
                       <p className="font-medium">
@@ -696,22 +692,22 @@ const ShipperReturnsPage = () => {
                       </p>
                     </>
                   ) : (
-                    <p className="text-mono-500">Không có thông tin địa chỉ</p>
+                    <p className="text-mono-700">Không có thông tin địa chỉ</p>
                   )}
                 </div>
               </div>
 
               {/* Reason */}
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <h3 className="font-semibold text-amber-800 mb-2">
+              <div className="bg-white border border-mono-900 rounded-lg p-4">
+                <h3 className="font-semibold text-mono-900 mb-2">
                   Lý do trả hàng
                 </h3>
-                <p className="text-amber-700 font-medium">
+                <p className="text-mono-900 font-medium">
                   {REASON_LABELS[selectedReturn.reason] ||
                     selectedReturn.reason}
                 </p>
                 {selectedReturn.reasonDetail && (
-                  <p className="text-amber-600 text-sm mt-2 italic">
+                  <p className="text-mono-700 text-sm mt-2 italic">
                     "{selectedReturn.reasonDetail}"
                   </p>
                 )}
@@ -729,20 +725,35 @@ const ShipperReturnsPage = () => {
                         (item, idx: number) => (
                           <div
                             key={idx}
-                            className="bg-white border border-mono-200 rounded-lg p-3 flex gap-3"
+                            className="bg-white border border-mono-900 rounded-lg p-3 flex gap-3"
                           >
-                            {item.variant?.product?.images?.[0]?.url && (
+                            {(item.image ||
+                              item.variant?.product?.images?.[0]?.url) && (
                               <img
-                                src={item.variant.product.images[0].url}
-                                alt={item.variant.product?.name || "Product"}
-                                className="w-16 h-16 object-cover rounded-lg"
+                                src={
+                                  item.image ||
+                                  item.variant?.product?.images?.[0]?.url ||
+                                  ""
+                                }
+                                alt={
+                                  item.productName ||
+                                  item.variant?.product?.name ||
+                                  "Sản phẩm"
+                                }
+                                className="w-16 h-16 object-cover rounded-lg border border-mono-300"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src =
+                                    "/image/product.jpg";
+                                }}
                               />
                             )}
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium text-mono-800 truncate">
-                                {item.variant?.product?.name || "Sản phẩm"}
+                              <p className="font-medium text-mono-900 truncate">
+                                {item.productName ||
+                                  item.variant?.product?.name ||
+                                  "Sản phẩm"}
                               </p>
-                              <div className="flex flex-wrap gap-3 text-xs text-mono-600 mt-1">
+                              <div className="flex flex-wrap gap-3 text-xs text-mono-900 mt-1">
                                 <span>
                                   Màu:{" "}
                                   <strong>
@@ -772,16 +783,14 @@ const ShipperReturnsPage = () => {
                 )}
 
               {/* Refund Info */}
-              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-                <div className="flex items-center gap-2 text-emerald-700 font-semibold mb-3">
+              <div className="bg-white border border-mono-900 rounded-lg p-4">
+                <div className="flex items-center gap-2 text-mono-900 font-semibold mb-3">
                   <FiDollarSign size={16} />
                   <span>Thông tin hoàn tiền</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-emerald-600">
-                    Số tiền hoàn cho khách:
-                  </span>
-                  <span className="text-xl font-bold text-emerald-700">
+                  <span className="text-mono-900">Số tiền hoàn cho khách:</span>
+                  <span className="text-xl font-bold text-mono-900">
                     {formatCurrency(selectedReturn.refundAmount)}
                   </span>
                 </div>
@@ -789,11 +798,11 @@ const ShipperReturnsPage = () => {
                 {/* Bank Info */}
                 {selectedReturn.refundMethod === "bank_transfer" &&
                   selectedReturn.bankInfo && (
-                    <div className="mt-3 pt-3 border-t border-emerald-200">
-                      <p className="font-medium text-emerald-700 mb-2 text-sm">
+                    <div className="mt-3 pt-3 border-t border-mono-900">
+                      <p className="font-medium text-mono-900 mb-2 text-sm">
                         Thông tin ngân hàng:
                       </p>
-                      <div className="space-y-1 text-sm text-emerald-800">
+                      <div className="space-y-1 text-sm text-mono-900">
                         <p>
                           Ngân hàng:{" "}
                           <strong>{selectedReturn.bankInfo.bankName}</strong>

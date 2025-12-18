@@ -46,7 +46,12 @@ const STATUS_CONFIG: Record<
     color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
     icon: <FiCheckCircle size={14} />,
   },
-  delivery_failed: {
+  returned: {
+    label: "Đã giao",
+    color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    icon: <FiCheckCircle size={14} />,
+  },
+  cancelled: {
     label: "Thất bại",
     color: "bg-rose-50 text-rose-700 border border-rose-200",
     icon: <FiXCircle size={14} />,
@@ -161,8 +166,7 @@ const MyOrdersPage = () => {
       out_for_delivery: orders.filter((o) => o.status === "out_for_delivery")
         .length,
       delivered: orders.filter((o) => o.status === "delivered").length,
-      delivery_failed: orders.filter((o) => o.status === "delivery_failed")
-        .length,
+      cancelled: orders.filter((o) => o.status === "cancelled").length,
     };
   };
 
@@ -255,9 +259,9 @@ const MyOrdersPage = () => {
             },
             { key: "delivered", label: "Đã giao", count: counts.delivered },
             {
-              key: "delivery_failed",
+              key: "cancelled",
               label: "Thất bại",
-              count: counts.delivery_failed,
+              count: counts.cancelled,
             },
           ] as { key: ShipperStatusTab; label: string; count: number }[]
         ).map((tab) => (

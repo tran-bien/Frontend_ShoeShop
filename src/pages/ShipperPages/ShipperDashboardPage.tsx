@@ -47,6 +47,11 @@ const STATUS_CONFIG: Record<
     color: "bg-rose-50 text-rose-700 border border-rose-200",
     icon: <FiXCircle size={14} />,
   },
+  cancelled: {
+    label: "Thất bại",
+    color: "bg-rose-50 text-rose-700 border border-rose-200",
+    icon: <FiXCircle size={14} />,
+  },
 };
 
 interface ShipperStats {
@@ -100,8 +105,11 @@ const ShipperDashboardPage = () => {
       // Calculate stats
       const totalOrders = orders.length;
       const completed = orders.filter((o) => o.status === "delivered").length;
+      // FIX: Đơn returning_to_warehouse (sau 3 lần giao thất bại) cũng tính là failed
       const failed = orders.filter(
-        (o) => o.status === "delivery_failed"
+        (o) =>
+          o.status === "delivery_failed" ||
+          o.status === "returning_to_warehouse"
       ).length;
       const successRate =
         totalOrders > 0 ? ((completed / totalOrders) * 100).toFixed(1) : "0";
