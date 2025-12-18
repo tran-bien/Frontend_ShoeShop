@@ -135,12 +135,13 @@ const AIChatbot: React.FC = () => {
         const { data } = response.data;
 
         // Xác định loại message dựa trên response
+        // Chỉ warning khi: rate limit, quota hết, ngoài scope, không có context (khi đã train)
+        // Khi chưa train (!trained) → AI trả lời tự do → KHÔNG warning
         const isWarning =
           data.rateLimited ||
           data.quotaExhausted ||
           data.outOfScope ||
-          data.noContext ||
-          !data.trained; // Chưa train cũng là warning
+          data.noContext;
 
         const assistantMessage: ChatMessage = {
           id: (Date.now() + 1).toString(),
