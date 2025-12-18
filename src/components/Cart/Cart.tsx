@@ -603,6 +603,11 @@ const Cart: React.FC = () => {
     };
   }, [debouncedUpdateQuantity]);
 
+  // Add scroll to top on component mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-mono-50 flex items-center justify-center">
