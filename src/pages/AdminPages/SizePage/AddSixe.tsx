@@ -1,5 +1,6 @@
 ﻿import React, { useState } from "react";
 import { adminSizeService } from "../../../services/SizeService";
+import { toast } from "react-hot-toast";
 
 interface AddSizeProps {
   handleClose: () => void;
@@ -23,10 +24,11 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
         type,
         description,
       });
+      toast.success("Thêm kích thước thành công");
       if (onSuccess) onSuccess();
       handleClose();
     } catch {
-      setError("Thêm size thất bại!");
+      setError("Thêm size thất bại");
     } finally {
       setLoading(false);
     }

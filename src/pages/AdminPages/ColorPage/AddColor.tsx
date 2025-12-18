@@ -29,6 +29,9 @@ const AddColor: React.FC<AddColorProps> = ({ handleClose, onSuccess }) => {
           type,
         });
       }
+      // Show success toast here
+      const { toast } = await import("react-hot-toast");
+      toast.success("Thêm màu sắc thành công");
       if (onSuccess) onSuccess();
       handleClose();
     } catch {

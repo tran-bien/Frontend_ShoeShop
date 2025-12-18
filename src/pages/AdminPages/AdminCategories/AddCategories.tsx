@@ -1,5 +1,7 @@
 ﻿import React, { useState } from "react";
 import { adminCategoryService } from "../../../services/CategoryService";
+import { toast } from "react-hot-toast";
+import { isAxiosError } from "axios";
 
 interface AddCategoryProps {
   handleClose: () => void;
@@ -34,10 +36,19 @@ const AddCategoryPage: React.FC<AddCategoryProps> = ({
         name: categoryName,
         description: categoryDescription,
       });
+      toast.success("Tạo danh mục thành công");
       if (onSuccess) onSuccess();
       handleClose();
-    } catch {
-      setError("Thêm danh mục thất bại!");
+    } catch (err: unknown) {
+      let errMsg = "Thêm danh mục thất bại!";
+      if (isAxiosError(err)) {
+        const data = err.response?.data as { message?: string } | undefined;
+        errMsg = data?.message || errMsg;
+      } else if (err instanceof Error) {
+        errMsg = err.message || errMsg;
+      }
+      toast.error(errMsg);
+      setError(errMsg);
     } finally {
       setLoading(false);
     }

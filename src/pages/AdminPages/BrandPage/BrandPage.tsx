@@ -25,12 +25,12 @@ const ViewDetailModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-mono-900 text-white p-6 rounded-t-xl">
+        <div className="sticky top-0 bg-white text-black p-6 rounded-t-xl border-b">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold">Chi tiết Thương hiệu</h2>
             <button
               onClick={onClose}
-              className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
+              className="text-black hover:text-gray-600 text-3xl font-bold leading-none"
             >
               ×
             </button>
@@ -39,28 +39,28 @@ const ViewDetailModal: React.FC<{
         <div className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-mono-500 font-medium">ID</p>
-              <p className="text-mono-800 font-mono text-sm">{brand._id}</p>
+              <p className="text-sm text-gray-500 font-medium">ID</p>
+              <p className="text-black font-mono text-sm">{brand._id}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">
+              <p className="text-sm text-gray-500 font-medium">
                 Tên thương hiệu
               </p>
-              <p className="text-mono-800 font-semibold">{brand.name}</p>
+              <p className="text-black font-semibold">{brand.name}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Slug</p>
-              <p className="text-mono-800 font-mono text-sm">{brand.slug}</p>
+              <p className="text-sm text-gray-500 font-medium">Slug</p>
+              <p className="text-black font-mono text-sm">{brand.slug}</p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">Trạng thái</p>
+              <p className="text-sm text-gray-500 font-medium">Trạng thái</p>
               <div className="mt-1">
                 {brand.isActive ? (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
                     Hoạt động
                   </span>
                 ) : (
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-mono-100 text-mono-800">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
                     Không hoạt động
                   </span>
                 )}
@@ -68,14 +68,14 @@ const ViewDetailModal: React.FC<{
             </div>
           </div>
           <div>
-            <p className="text-sm text-mono-500 font-medium">Mô tả</p>
-            <p className="text-mono-800 mt-1">
+            <p className="text-sm text-gray-500 font-medium">Mô tả</p>
+            <p className="text-black mt-1">
               {brand.description || "Không có mô tả"}
             </p>
           </div>
           {brand.logo?.url && (
             <div>
-              <p className="text-sm text-mono-500 font-medium mb-2">Logo</p>
+              <p className="text-sm text-gray-500 font-medium mb-2">Logo</p>
               <img
                 src={brand.logo.url}
                 alt={brand.name}
@@ -85,18 +85,18 @@ const ViewDetailModal: React.FC<{
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
             <div>
-              <p className="text-sm text-mono-500 font-medium">Ngày tạo</p>
-              <p className="text-mono-800 text-sm">
+              <p className="text-sm text-gray-500 font-medium">Ngày tạo</p>
+              <p className="text-black text-sm">
                 {brand.createdAt
                   ? new Date(brand.createdAt).toLocaleString("vi-VN")
                   : "N/A"}
               </p>
             </div>
             <div>
-              <p className="text-sm text-mono-500 font-medium">
-                Cập nhật lẩn cuối
+              <p className="text-sm text-gray-500 font-medium">
+                Cập nhật lần cuối
               </p>
-              <p className="text-mono-800 text-sm">
+              <p className="text-black text-sm">
                 {brand.updatedAt
                   ? new Date(brand.updatedAt).toLocaleString("vi-VN")
                   : "N/A"}
@@ -105,8 +105,8 @@ const ViewDetailModal: React.FC<{
           </div>
           {brand.deletedAt && (
             <div className="pt-4 border-t">
-              <p className="text-sm text-mono-500 font-medium">Ngày xóa</p>
-              <p className="text-mono-800 text-sm">
+              <p className="text-sm text-gray-500 font-medium">Ngày xóa</p>
+              <p className="text-black text-sm">
                 {new Date(brand.deletedAt).toLocaleString("vi-VN")}
               </p>
             </div>
@@ -473,12 +473,12 @@ const ListBrandsPage: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-mono-300">
+          {/* <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-mono-300">
             <h3 className="text-sm font-medium text-mono-900 mb-1">
               Tổng số thương hiệu đã xóa
             </h3>
             <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
-          </div>
+          </div> */}
         </div>
       )}
 

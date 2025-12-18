@@ -41,11 +41,6 @@ const AIChatbot: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Ẩn chatbot trong trang admin
-  if (isAdminPage) {
-    return null;
-  }
-
   // Auto scroll to bottom
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -81,6 +76,11 @@ const AIChatbot: React.FC = () => {
       ]);
     }
   }, [isOpen, messages.length, isTrained]);
+
+  // Ẩn chatbot trong trang admin - PHẢI Ở SAU TẤT CẢ HOOKS
+  if (isAdminPage) {
+    return null;
+  }
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return;

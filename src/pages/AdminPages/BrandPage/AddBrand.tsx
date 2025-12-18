@@ -1,5 +1,6 @@
 ﻿import React, { useState } from "react";
 import { adminBrandService } from "../../../services/BrandService";
+import { toast } from "react-hot-toast";
 
 interface AddBrandProps {
   handleClose: () => void;
@@ -26,11 +27,16 @@ const AddBrand: React.FC<AddBrandProps> = ({ handleClose, onSuccess }) => {
     setLoading(true);
     setError(null);
     try {
-      await adminBrandService.create(formData);
+      const res = await adminBrandService.create(formData);
+      const msg = res?.data?.message || "Tạo thương hiệu thành công";
+      toast.success(msg);
       if (onSuccess) onSuccess();
       handleClose();
-    } catch {
-      setError("Thêm thương hiệu thất bại!");
+    } catch (err: any) {
+      const errMsg =
+        err?.response?.data?.message || "Thêm thương hiệu thất bại!";
+      toast.error(errMsg);
+      setError(errMsg);
     } finally {
       setLoading(false);
     }

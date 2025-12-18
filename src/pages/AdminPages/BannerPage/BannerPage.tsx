@@ -891,7 +891,7 @@ const BannerPage: React.FC = () => {
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              T?o Banner Ð?u Tiên
+              Tạo Banner Đầu Tiên
             </button>
           )}
         </div>

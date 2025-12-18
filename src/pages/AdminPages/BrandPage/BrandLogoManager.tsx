@@ -19,6 +19,7 @@ const BrandLogoManager = ({ brandId, reloadBrand }: BrandLogoManagerProps) => {
   );
   const [uploading, setUploading] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { canManageImages } = useAuth();
 
@@ -105,11 +106,6 @@ const BrandLogoManager = ({ brandId, reloadBrand }: BrandLogoManagerProps) => {
           </svg>
           {canManageImages() ? "Quản Lý Logo Thương Hiệu" : "Logo Thương Hiệu"}
         </h3>
-        {logo?.url && (
-          <span className="text-sm text-mono-500 bg-mono-100 px-3 py-1 rounded-full">
-            Đã có logo
-          </span>
-        )}
       </div>
 
       {/* Upload Section */}
@@ -295,9 +291,7 @@ const BrandLogoManager = ({ brandId, reloadBrand }: BrandLogoManagerProps) => {
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (confirm("Bạn có chắc muốn xóa logo này?")) {
-                      handleRemove();
-                    }
+                    setShowConfirmDelete(true);
                   }}
                   className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                   title="Xóa logo"
@@ -361,6 +355,42 @@ const BrandLogoManager = ({ brandId, reloadBrand }: BrandLogoManagerProps) => {
             className="max-w-full max-h-full object-contain rounded-lg"
             onClick={(e) => e.stopPropagation()}
           />
+        </div>
+      )}
+
+      {/* Confirm Delete Modal */}
+      {showConfirmDelete && (
+        <div
+          className="fixed inset-0 z-[120] bg-black/50 flex items-center justify-center p-4"
+          onClick={() => setShowConfirmDelete(false)}
+        >
+          <div
+            className="bg-white rounded-lg p-6 w-full max-w-sm text-black"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold mb-2">Xác nhận xóa logo</h3>
+            <p className="text-sm text-mono-700 mb-4">
+              Bạn có chắc muốn xóa logo này?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowConfirmDelete(false)}
+                className="px-4 py-2 rounded-md bg-mono-200"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  setShowConfirmDelete(false);
+                  await handleRemove();
+                }}
+                className="px-4 py-2 rounded-md bg-red-600 text-white"
+              >
+                Xóa
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

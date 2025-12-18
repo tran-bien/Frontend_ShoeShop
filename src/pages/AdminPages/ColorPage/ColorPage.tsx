@@ -487,12 +487,12 @@ const ColorPage: React.FC = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
-          <div className="bg-gradient-to-br from-mono-200 to-mono-300 rounded-xl p-6 shadow-sm border border-mono-400">
+          {/* <div className="bg-gradient-to-br from-mono-200 to-mono-300 rounded-xl p-6 shadow-sm border border-mono-400">
             <h3 className="text-sm font-medium text-mono-700 mb-1">
               Tổng số màu sắc đã xóa
             </h3>
             <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
-          </div>
+          </div> */}
         </div>
       )}
 
