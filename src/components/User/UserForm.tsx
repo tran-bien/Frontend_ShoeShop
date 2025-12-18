@@ -308,10 +308,67 @@ const UserForm: React.FC = () => {
       formData.append("avatar", file);
 
       const res = await profileService.updateAvatar(formData);
-      if (res.data.success && res.data.data) {
-        setUser((prev) =>
-          prev ? { ...prev, avatar: res.data.data?.avatar } : null
-        );
+      if (res.data.success) {
+        // If server returned updated data use it, otherwise refetch profile
+        if (res.data.data) {
+          const returnedAvatar = res.data.data?.avatar;
+          let updatedAvatar: string | { url: string; public_id: string } | undefined = returnedAvatar;
+          try {
+            const url =
+              typeof returnedAvatar === "string"
+                ? returnedAvatar
+                : returnedAvatar?.url;
+            if (url) {
+              const sep = url.includes("?") ? "&" : "?";
+              const busted = `${url}${sep}v=${Date.now()}`;
+              updatedAvatar =
+                typeof returnedAvatar === "string"
+                  ? { url: busted, public_id: "" }
+                  : {
+                      ...returnedAvatar,
+                      url: busted,
+                      public_id: (returnedAvatar?.public_id ?? "") as string,
+                    };
+            }
+          } catch {
+            updatedAvatar = returnedAvatar;
+          }
+
+          setUser((prev) => (prev ? { ...prev, avatar: updatedAvatar } : null));
+        } else {
+          // fallback: fetch latest profile to obtain avatar
+          try {
+            const profileRes = await profileService.getProfile();
+            if (profileRes.data.success && profileRes.data.data) {
+              const latest = profileRes.data.data;
+              // cache-bust latest.avatar if present
+              const returnedAvatar = latest.avatar;
+              if (returnedAvatar) {
+                const url =
+                  typeof returnedAvatar === "string"
+                    ? returnedAvatar
+                    : returnedAvatar?.url;
+                if (url) {
+                  const sep = url.includes("?") ? "&" : "?";
+                  const busted = `${url}${sep}v=${Date.now()}`;
+                  latest.avatar =
+                    typeof returnedAvatar === "string"
+                      ? { url: busted, public_id: "" }
+                      : { ...returnedAvatar, url: busted };
+                }
+              }
+              setUser(latest);
+            }
+          } catch (err) {
+            console.error(
+              "Failed to refetch profile after avatar upload:",
+              err
+            );
+          }
+        }
+
+        // reset file input so user can re-select same file if needed
+        if (fileInputRef.current) fileInputRef.current.value = "";
         toast.success("Cập nhật ảnh đại diện thành công");
       }
     } catch (error) {
@@ -329,6 +386,8 @@ const UserForm: React.FC = () => {
       const res = await profileService.deleteAvatar();
       if (res.data.success) {
         setUser((prev) => (prev ? { ...prev, avatar: undefined } : null));
+        // reset file input
+        if (fileInputRef.current) fileInputRef.current.value = "";
         toast.success("Đã xóa ảnh đại diện");
       }
     } catch (error) {

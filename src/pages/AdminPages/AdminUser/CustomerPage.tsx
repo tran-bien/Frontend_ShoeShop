@@ -475,7 +475,7 @@ const ListCustomerPage: React.FC = () => {
                               className="p-1.5 text-mono-600 hover:bg-mono-100 rounded-lg transition-colors"
                               title="Đổi vai trò"
                             >
-                              <FiShield className="w-4 h-4" />
+                              <FiUsers className="w-4 h-4" />
                             </button>
                           )}
 
