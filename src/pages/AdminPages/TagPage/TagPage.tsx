@@ -755,7 +755,7 @@ const TagPage: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      {!showDeleted ? (
+      {!showDeleted && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-black mb-1">
@@ -763,25 +763,20 @@ const TagPage: React.FC = () => {
             </h3>
             <p className="text-3xl font-bold text-mono-900">{totalCount}</p>
           </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 shadow-sm border border-mono-200">
+
+          <div className="bg-gradient-to-br from-mono-50 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-800 mb-1">
               Tags hoạt động
             </h3>
             <p className="text-3xl font-bold text-mono-800">{activeCount}</p>
           </div>
+
           <div className="bg-gradient-to-br from-mono-100 to-mono-100 rounded-xl p-6 shadow-sm border border-mono-200">
             <h3 className="text-sm font-medium text-mono-700 mb-1">
               Tags vô hiệu
             </h3>
             <p className="text-3xl font-bold text-mono-900">{inactiveCount}</p>
           </div>
-        </div>
-      ) : (
-        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 shadow-sm border border-mono-300 mb-6">
-          <h3 className="text-sm font-medium text-mono-900 mb-1">
-            Tags đã xóa
-          </h3>
-          <p className="text-3xl font-bold text-mono-900">{deletedCount}</p>
         </div>
       )}
 
