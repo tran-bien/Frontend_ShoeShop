@@ -178,7 +178,7 @@ export interface StockOutData {
   variantId: string;
   sizeId: string;
   quantity: number;
-  reason?: string; // "sale" | "damage" | "lost" | "return_supplier" | "gift" | "other"
+  reason?: string; // "sale" | "damage" | "lost" | "other"
   notes?: string;
   orderId?: string;
 }
@@ -188,7 +188,7 @@ export interface AdjustStockData {
   variantId: string;
   sizeId: string;
   newQuantity: number;
-  reason: string; // "adjustment" | "damage" | "inventory_count" | "correction"
+  reason: string; // "adjustment" | "damage" | "lost" | "other"
   notes?: string;
 }
 

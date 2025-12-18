@@ -32,24 +32,11 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
     return ((stats.completedOrders / stats.totalOrders) * 100).toFixed(1);
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return "Chưa cập nhật";
-    return new Date(dateString).toLocaleString("vi-VN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-white rounded-lg p-6 max-w-3xl w-full m-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto text-xs">
+      <div className="bg-white rounded-lg p-6 max-w-6xl w-full m-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-mono-800">
-            ?? Chi tiết Shipper
-          </h2>
+          <h2 className="text-2xl font-bold text-mono-800">Chi tiết Shipper</h2>
           <button
             onClick={onClose}
             className="text-mono-500 hover:text-mono-700 text-2xl font-bold"
@@ -69,10 +56,6 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
               <strong>{shipper.name}</strong>
             </div>
             <div>
-              <span className="text-mono-600">Email:</span>{" "}
-              <strong>{shipper.email}</strong>
-            </div>
-            <div>
               <span className="text-mono-600">Số điện thoại:</span>{" "}
               <strong>{shipper.phone}</strong>
             </div>
@@ -90,13 +73,24 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
                   : "🔴 Không hoạt động"}
               </span>
             </div>
+            {/* Email as a block */}
+            <div className="col-span-2 flex flex-col min-w-0">
+              <span className="text-mono-600">Email:</span>
+              <strong
+                className="text-xs md:text-xs lg:text-xs break-all min-w-0"
+                style={{ wordBreak: "break-all", whiteSpace: "normal" }}
+                title={shipper.email}
+              >
+                {shipper.email}
+              </strong>
+            </div>
           </div>
         </div>
 
         {/* Capacity Info */}
         <div className="bg-mono-50 rounded-lg p-4 mb-6">
           <h3 className="font-semibold text-mono-800 mb-3">
-            Công su?t làm vi?c
+            Công suất làm việc
           </h3>
           <div className="grid grid-cols-2 gap-4 text-sm mb-3">
             <div>
@@ -113,7 +107,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
           {/* Capacity Bar */}
           <div>
             <div className="flex justify-between text-xs text-mono-600 mb-1">
-              <span>Công su?t</span>
+              <span>Công suất</span>
               <span>
                 {(
                   (shipper.shipper.activeOrders / shipper.shipper.maxOrders) *
@@ -147,35 +141,10 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
           </div>
         </div>
 
-        {/* Location Info */}
-        {shipper.shipper.currentLocation && (
-          <div className="bg-mono-50 rounded-lg p-4 mb-6">
-            <h3 className="font-semibold text-mono-800 mb-3">
-              📍 Vị trí hiện tại
-            </h3>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-mono-600">Vĩ độ:</span>{" "}
-                <strong>{shipper.shipper.currentLocation.latitude}</strong>
-              </div>
-              <div>
-                <span className="text-mono-600">Kinh độ:</span>{" "}
-                <strong>{shipper.shipper.currentLocation.longitude}</strong>
-              </div>
-              <div className="col-span-2">
-                <span className="text-mono-600">Cập nhật lần cuối:</span>{" "}
-                <strong>
-                  {formatDate(shipper.shipper.currentLocation.updatedAt)}
-                </strong>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Statistics */}
         {loading ? (
           <div className="text-center py-6 text-mono-500">
-            Ðang tại thàng kê...
+            Đang tải thống kê...
           </div>
         ) : stats ? (
           <div className="bg-mono-50 rounded-lg p-4">
@@ -221,7 +190,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
           </div>
         ) : (
           <div className="text-center py-6 text-mono-800">
-            Không thể tại thàng kê
+            Không thể tải thống kê
           </div>
         )}
 
@@ -231,7 +200,7 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
             onClick={onClose}
             className="px-6 py-2 bg-mono-200 rounded-lg hover:bg-mono-300 font-medium"
           >
-            Ðóng
+            Đóng
           </button>
         </div>
       </div>

@@ -231,7 +231,7 @@ const ProductComparePage: React.FC = () => {
 
                         {/* Product Image with Navigation */}
                         <div className="relative group">
-                          <Link to={`/products/${product.slug}`}>
+                          <Link to={`/product/${product.slug}`}>
                             <img
                               src={currentImage}
                               alt={product.name}

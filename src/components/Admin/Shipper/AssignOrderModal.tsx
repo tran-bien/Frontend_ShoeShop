@@ -230,23 +230,23 @@ const AssignOrderModal = ({
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="bg-mono-900 text-white px-6 py-4 flex items-center justify-between">
+        <div className="bg-white text-mono-900 px-6 py-4 flex items-center justify-between border-b border-mono-200">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
-              <FiTruck size={20} />
+            <div className="w-10 h-10 bg-mono-100 rounded-lg flex items-center justify-center">
+              <FiTruck size={20} className="text-mono-900" />
             </div>
             <div>
               <h2 className="text-lg font-semibold">
                 Gán đơn hàng cho Shipper
               </h2>
-              <p className="text-white/60 text-sm">
+              <p className="text-mono-500 text-sm">
                 Chọn đơn hàng đã xác nhận và shipper để gán
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-white/80 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
+            className="text-mono-500 hover:text-mono-900 transition-colors p-2 hover:bg-mono-100 rounded-lg"
           >
             <FiX size={24} />
           </button>

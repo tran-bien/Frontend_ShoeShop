@@ -19,6 +19,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
   const [sizeGuide, setSizeGuide] = useState<SizeGuide | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen && productId) {
@@ -78,19 +79,55 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
 
     if (sizeChart?.image?.url) {
       return (
-        <div className="space-y-4">
-          <h4 className="font-semibold text-mono-black flex items-center gap-2">
-            <span className="text-lg">📏</span>
-            Bảng Size
-          </h4>
+        <div className="space-y-5">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xl font-bold text-mono-black flex items-center gap-2">
+              <span className="text-2xl">📏</span>
+              Bảng Size
+            </h4>
+            <button
+              onClick={() => setFullscreenImage(sizeChart.image.url)}
+              className="text-xs px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                />
+              </svg>
+              Xem chi tiết
+            </button>
+          </div>
           {sizeChart.description && (
-            <p className="text-sm text-mono-600">{sizeChart.description}</p>
+            <p className="text-sm text-mono-600 leading-relaxed bg-mono-50 p-4 rounded-lg">
+              {sizeChart.description}
+            </p>
           )}
-          <img
-            src={sizeChart.image.url}
-            alt="Báº£ng size"
-            className="w-full rounded-lg border border-mono-200"
-          />
+          <div
+            className="relative group cursor-pointer"
+            onClick={() => setFullscreenImage(sizeChart.image.url)}
+          >
+            {/* chỉnh chiều rộng ảnh */}
+            <img
+              src={sizeChart.image.url}
+              alt="Bảng size"
+              className="max-h-[20rem] w-full rounded-xl border-2 border-mono-200 shadow-lg object-contain hover:border-mono-400 transition-all duration-300 hover:shadow-xl"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 rounded-xl flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white px-4 py-2 rounded-lg shadow-lg">
+                <span className="text-sm font-medium text-mono-900">
+                  Click để phóng to
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
@@ -160,21 +197,54 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
 
     if (measurementGuide?.image?.url) {
       return (
-        <div className="space-y-4">
-          <h4 className="font-semibold text-mono-black flex items-center gap-2">
-            <span className="text-lg">📄</span>
-            Hướng dẫn đo
-          </h4>
+        <div className="space-y-5">
+          <div className="flex items-center justify-between">
+            <h4 className="text-xl font-bold text-mono-black flex items-center gap-2">
+              <span className="text-2xl">📐</span>
+              Hướng dẫn đo
+            </h4>
+            <button
+              onClick={() => setFullscreenImage(measurementGuide.image.url)}
+              className="text-xs px-3 py-1.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                />
+              </svg>
+              Xem chi tiết
+            </button>
+          </div>
           {measurementGuide.description && (
-            <p className="text-sm text-mono-600">
+            <p className="text-sm text-mono-600 leading-relaxed bg-mono-50 p-4 rounded-lg">
               {measurementGuide.description}
             </p>
           )}
-          <img
-            src={measurementGuide.image.url}
-            alt="Hướng dẫn đo"
-            className="w-full rounded-lg border border-mono-200"
-          />
+          <div
+            className="relative group cursor-pointer"
+            onClick={() => setFullscreenImage(measurementGuide.image.url)}
+          >
+            <img
+              src={measurementGuide.image.url}
+              alt="Hướng dẫn đo"
+              className="max-h-[30rem] w-full rounded-xl border-2 border-mono-200 shadow-lg object-contain hover:border-mono-400 transition-all duration-300 hover:shadow-xl"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 rounded-xl flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white px-4 py-2 rounded-lg shadow-lg">
+                <span className="text-sm font-medium text-mono-900">
+                  Click để phóng to
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       );
     }
@@ -217,7 +287,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-luxury max-w-4xl w-full max-h-[90vh] overflow-hidden animate-slide-up">
+        <div className="bg-white rounded-2xl shadow-luxury max-w-6xl w-full max-h-[95vh] overflow-hidden animate-slide-up">
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-mono-200">
             <h2 className="text-2xl font-bold text-mono-black">
@@ -232,7 +302,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
           </div>
 
           {/* Content */}
-          <div className="px-6 py-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+          <div className="px-8 py-8 overflow-y-auto max-h-[calc(95vh-80px)]">
             {loading ? (
               <div className="flex items-center justify-center py-12">
                 <div className="w-10 h-10 border-2 border-mono-300 border-t-mono-black rounded-full animate-spin" />
@@ -253,7 +323,7 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
                 </div>
               </div>
             ) : sizeGuide ? (
-              <div className="space-y-6">
+              <div className="space-y-8">
                 {/* Product Info */}
                 {sizeGuide.product && (
                   <div className="pb-4 border-b border-mono-200">
@@ -298,17 +368,35 @@ const SizeGuideModal: React.FC<SizeGuideModalProps> = ({
             ) : null}
           </div>
 
-          {/* Footer */}
-          <div className="px-6 py-4 border-t border-mono-200 bg-mono-50">
-            <button
-              onClick={onClose}
-              className="w-full px-6 py-3 bg-mono-black text-white rounded-lg font-medium hover:bg-mono-900 transition-colors"
-            >
-              Đóng
-            </button>
-          </div>
+          {/* Footer đã bỏ nút đóng */}
         </div>
       </div>
+
+      {/* Fullscreen Image Viewer */}
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 z-[60] bg-black bg-opacity-95 flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <button
+            onClick={() => setFullscreenImage(null)}
+            className="absolute top-4 right-4 p-3 bg-white rounded-full hover:bg-mono-100 transition-colors z-10"
+          >
+            <XMarkIcon className="w-6 h-6 text-mono-900" />
+          </button>
+          <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center">
+            <img
+              src={fullscreenImage}
+              alt="Chi tiết ảnh"
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-full shadow-lg">
+            <p className="text-sm text-mono-700">Click vào nền để đóng</p>
+          </div>
+        </div>
+      )}
     </>
   );
 };

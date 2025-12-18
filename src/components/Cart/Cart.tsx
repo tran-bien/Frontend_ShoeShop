@@ -785,7 +785,7 @@ const Cart: React.FC = () => {
 
                             <div className="flex flex-col items-end space-y-2">
                               <div className="text-lg font-semibold text-mono-900">
-                                {(item.price || 0).toLocaleString()}d
+                                {(item.price || 0).toLocaleString()}đ
                               </div>
                               {item.variant?.price !==
                                 item.variant?.priceFinal && (
@@ -847,7 +847,7 @@ const Cart: React.FC = () => {
                             </div>
 
                             <div className="text-lg font-semibold text-mono-black">
-                              {getItemTotalPrice(item).toLocaleString()}d
+                              {getItemTotalPrice(item).toLocaleString()}đ
                             </div>
                           </div>
                         </div>
@@ -936,7 +936,7 @@ const Cart: React.FC = () => {
                       <span>
                         Tạm tính ({optimisticTotals.totalQuantity} sản phẩm)
                       </span>
-                      <span>{optimisticTotals.subTotal.toLocaleString()}d</span>
+                      <span>{optimisticTotals.subTotal.toLocaleString()}đ</span>
                     </div>
 
                     {selectedItems.length > 0 && previewData?.discount > 0 && (
@@ -951,14 +951,14 @@ const Cart: React.FC = () => {
                     <div className="flex justify-between text-mono-600">
                       <span className="flex items-center space-x-1">
                         <FiTruck />
-                        <span>Phí vẩn chuyện</span>
+                        <span>Phí vận chuyển</span>
                       </span>
                       <span>
                         {(selectedItems.length > 0
                           ? previewData?.shippingFee || 0
                           : 0
                         ).toLocaleString()}
-                        d
+                        đ
                       </span>
                     </div>
                   </div>
@@ -975,7 +975,7 @@ const Cart: React.FC = () => {
                               (previewData?.discount || 0)
                             ).toLocaleString()
                           : "0"}
-                        d
+                        đ
                       </span>
                     </div>
                   </div>

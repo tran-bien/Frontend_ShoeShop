@@ -14,8 +14,7 @@ const STOCKOUT_REASONS = [
   { value: "sale", label: "Bán hàng" },
   { value: "damage", label: "Hàng hư hỏng" },
   { value: "lost", label: "Hàng mất mát" },
-  { value: "return_supplier", label: "Trả hàng nhà cung cấp" },
-  { value: "gift", label: "Hàng tặng/khuyến mãi" },
+  {value: "adjustment", label: "Điều chỉnh" },
   { value: "other", label: "Lý do khác" },
 ];
 
