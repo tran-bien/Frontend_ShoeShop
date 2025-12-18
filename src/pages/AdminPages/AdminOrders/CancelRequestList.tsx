@@ -2,6 +2,7 @@
 import { adminOrderService } from "../../../services/OrderService";
 import type { CancelRequest } from "../../../types/order";
 import { FiRefreshCw } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -24,10 +25,7 @@ const CancelRequestList: React.FC = () => {
         limit: ITEMS_PER_PAGE,
         status: statusFilter as "pending" | "approved" | "rejected" | undefined,
       });
-      // BE trả về: { success, message, cancelRequests, pagination }
       setRequests(res.data.cancelRequests || []);
-
-      // Update pagination state
       if (res.data.pagination) {
         setCurrentPage(res.data.pagination.page);
         setTotalPages(res.data.pagination.totalPages);
@@ -41,23 +39,34 @@ const CancelRequestList: React.FC = () => {
   };
 
   const handleApprove = async (id: string) => {
-    await adminOrderService.processCancelRequest(id, {
-      status: "approved",
-      adminResponse: "Chấp nhận cho phép hủy đơn",
-    });
-    fetchRequests(currentPage);
+    try {
+      await adminOrderService.processCancelRequest(id, {
+        status: "approved",
+        adminResponse: "Chấp nhận cho phép hủy đơn",
+      });
+      toast.success("Đã duyệt yêu cầu hủy đơn!");
+      fetchRequests(currentPage);
+    } catch {
+      toast.error("Duyệt yêu cầu thất bại!");
+    }
   };
 
   const handleReject = async (id: string) => {
-    await adminOrderService.processCancelRequest(id, {
-      status: "rejected",
-      adminResponse: "Từ chối yêu cầu hủy đơn",
-    });
-    fetchRequests(currentPage);
+    try {
+      await adminOrderService.processCancelRequest(id, {
+        status: "rejected",
+        adminResponse: "Từ chối yêu cầu hủy đơn",
+      });
+      toast.success("Đã từ chối yêu cầu hủy đơn!");
+      fetchRequests(currentPage);
+    } catch {
+      toast.error("Từ chối yêu cầu thất bại!");
+    }
   };
 
   useEffect(() => {
     fetchRequests(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, statusFilter]);
 
   const filteredRequests = requests.filter(

@@ -492,7 +492,7 @@ const ShipperReturnsPage = () => {
                         setShowConfirmReceived(true);
                       }}
                       disabled={actionLoading === returnReq._id}
-                      className="flex-1 inline-flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2.5 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
+                      className="flex-1 inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2.5 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
                     >
                       <FiCheck size={14} />
                       {actionLoading === returnReq._id
@@ -960,7 +960,7 @@ const ShipperReturnsPage = () => {
                     setShowDetailModal(false);
                     setShowConfirmReceived(true);
                   }}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm"
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-sm"
                 >
                   Xác nhận nhận hàng
                 </button>
@@ -1035,7 +1035,7 @@ const ShipperReturnsPage = () => {
               <button
                 onClick={handleConfirmReceived}
                 disabled={actionLoading === selectedReturn._id}
-                className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+                className="flex-1 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 font-medium"
               >
                 {actionLoading === selectedReturn._id
                   ? "Đang xử lý..."

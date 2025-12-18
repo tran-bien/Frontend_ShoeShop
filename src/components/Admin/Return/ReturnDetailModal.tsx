@@ -6,6 +6,7 @@
   FiCreditCard,
   FiTruck,
   FiCheck,
+  FiClock,
 } from "react-icons/fi";
 import type { ReturnRequest } from "../../../types/return";
 
@@ -131,6 +132,15 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
                       : "Tiền mặt (qua shipper)"}
                   </span>
                 </div>
+                {returnRequest.status === "rejected" &&
+                  returnRequest.rejectionReason && (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-gray-500">Lý do từ chối:</span>
+                      <span className="text-red-600 font-medium">
+                        {returnRequest.rejectionReason}
+                      </span>
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -403,7 +413,7 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
 
                 {/* Refund collected by shipper (for cash method) */}
                 {returnRequest.refundMethod === "cash" &&
-                  returnRequest.refundCollectedByShipper && (
+                  returnRequest.refundCollectedByShipper?.collectedAt && (
                     <div className="bg-white rounded-xl p-3 border border-green-600">
                       <div className="flex items-center gap-2 text-green-700 font-medium mb-2">
                         <FiCheck />
@@ -414,7 +424,8 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
                           Số tiền:{" "}
                           <strong className="text-green-700">
                             {formatCurrency(
-                              returnRequest.refundCollectedByShipper.amount
+                              returnRequest.refundCollectedByShipper.amount ||
+                                returnRequest.refundAmount
                             )}
                           </strong>
                         </p>
@@ -430,6 +441,29 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
                             {returnRequest.refundCollectedByShipper.note}
                           </p>
                         )}
+                      </div>
+                    </div>
+                  )}
+
+                {/* Show pending refund status if not collected yet */}
+                {returnRequest.refundMethod === "cash" &&
+                  returnRequest.status === "approved" &&
+                  !returnRequest.refundCollectedByShipper?.collectedAt && (
+                    <div className="bg-white rounded-xl p-3 border border-orange-400">
+                      <div className="flex items-center gap-2 text-orange-600 font-medium mb-2">
+                        <FiClock />
+                        <span>Chưa giao tiền hoàn</span>
+                      </div>
+                      <div className="space-y-1 text-sm text-black">
+                        <p>
+                          Số tiền hoàn:{" "}
+                          <strong className="text-orange-600">
+                            {formatCurrency(returnRequest.refundAmount)}
+                          </strong>
+                        </p>
+                        <p className="italic text-gray-600">
+                          Shipper sẽ giao tiền khi nhận hàng từ khách
+                        </p>
                       </div>
                     </div>
                   )}
