@@ -284,6 +284,7 @@ const MyOrdersPage = () => {
               label: "Thất bại đang về kho",
               count: counts.returning_to_warehouse,
             },
+            { key: "cancelled", label: "Thất bại", count: counts.cancelled },
           ] as { key: ShipperStatusTab; label: string; count: number }[]
         ).map((tab) => (
           <button

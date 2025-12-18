@@ -346,7 +346,7 @@ const UserOrderDetailPage: React.FC = () => {
 
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
             {/* Header đơn hàng */}
-            <div className="bg-gradient-to-r from-mono-500 to-mono-black text-white p-6">
+            <div className="border-b border-mono-300 p-6 bg-white">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">
@@ -356,10 +356,6 @@ const UserOrderDetailPage: React.FC = () => {
                     className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(
                       order.status
                     )}`}
-                    style={{
-                      color: "#374151",
-                      backgroundColor: "rgba(255,255,255,0.9)",
-                    }}
                   >
                     {getStatusText(order.status)}
                   </span>

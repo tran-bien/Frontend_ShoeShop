@@ -360,6 +360,28 @@ const DiscountPage = () => {
       return;
     }
 
+    // Required field validations
+    if (!form.scope) {
+      toast.error("Phạm vi áp dụng là bắt buộc");
+      setSubmitting(false);
+      return;
+    }
+
+    if (
+      !form.conditions?.maxUsagePerUser ||
+      form.conditions.maxUsagePerUser <= 0
+    ) {
+      toast.error("Số lần dùng/người phải lớn hơn 0");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!form.conditions?.minQuantity || form.conditions.minQuantity <= 0) {
+      toast.error("Số lượng sản phẩm tối thiểu phải lớn hơn 0");
+      setSubmitting(false);
+      return;
+    }
+
     if (form.scope === "PRODUCTS" && form.applicableProducts.length === 0) {
       toast.error("Phạm vi 'Sản phẩm cụ thể' cần chọn ít nhất 1 sản phẩm");
       setSubmitting(false);
@@ -1319,50 +1341,50 @@ const DiscountPage = () => {
                 </div>
                 <div className="flex flex-wrap gap-6 pt-2">
                   <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="isPublic"
-                    checked={form.isPublic}
-                    onChange={(e) => {
-                    if (e.target.checked) {
-                      setForm((prev) => ({
-                      ...prev,
-                      isPublic: true,
-                      isRedeemable: false, // Uncheck "Đổi bằng điểm" if "Công khai" is checked
-                      }));
-                    } else {
-                      setForm((prev) => ({
-                      ...prev,
-                      isPublic: false,
-                      }));
-                    }
-                    }}
-                    className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
-                  />
-                  <span className="text-sm text-mono-700">Công khai</span>
+                    <input
+                      type="checkbox"
+                      name="isPublic"
+                      checked={form.isPublic}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setForm((prev) => ({
+                            ...prev,
+                            isPublic: true,
+                            isRedeemable: false, // Uncheck "Đổi bằng điểm" if "Công khai" is checked
+                          }));
+                        } else {
+                          setForm((prev) => ({
+                            ...prev,
+                            isPublic: false,
+                          }));
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
+                    />
+                    <span className="text-sm text-mono-700">Công khai</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="isRedeemable"
-                    checked={form.isRedeemable}
-                    onChange={(e) => {
-                    if (e.target.checked) {
-                      setForm((prev) => ({
-                      ...prev,
-                      isRedeemable: true,
-                      isPublic: false, // Uncheck "Công khai" if "Đổi bằng điểm" is checked
-                      }));
-                    } else {
-                      setForm((prev) => ({
-                      ...prev,
-                      isRedeemable: false,
-                      }));
-                    }
-                    }}
-                    className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
-                  />
-                  <span className="text-sm text-mono-700">Đổi bằng điểm</span>
+                    <input
+                      type="checkbox"
+                      name="isRedeemable"
+                      checked={form.isRedeemable}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setForm((prev) => ({
+                            ...prev,
+                            isRedeemable: true,
+                            isPublic: false, // Uncheck "Công khai" if "Đổi bằng điểm" is checked
+                          }));
+                        } else {
+                          setForm((prev) => ({
+                            ...prev,
+                            isRedeemable: false,
+                          }));
+                        }
+                      }}
+                      className="w-4 h-4 rounded border-mono-300 text-mono-900 focus:ring-mono-500"
+                    />
+                    <span className="text-sm text-mono-700">Đổi bằng điểm</span>
                   </label>
                 </div>
                 {form.isRedeemable && (
