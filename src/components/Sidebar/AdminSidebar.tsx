@@ -125,13 +125,13 @@ const AdminSidebar = () => {
 
   return (
     <aside
-      className={`bg-mono-900 border-r border-mono-800 min-h-screen transition-all duration-300 ${
+      className={`bg-mono-900 border-r border-mono-800 h-full flex flex-col transition-all duration-300 ${
         isExpanded ? "w-56" : "w-16"
-      } sticky top-0 left-0 text-white py-4`}
+      } text-white`}
       id="adminSide"
     >
       {/* Logo - Đồng bộ với MainNavbar */}
-      <div className="px-4 mb-6">
+      <div className="px-4 py-4 flex-shrink-0">
         <Link to="/" className="group flex items-center gap-2 justify-center">
           <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center transform group-hover:rotate-12 group-hover:scale-105 transition-all duration-300 shadow-md">
             <span className="text-xl font-black italic text-mono-900 tracking-tighter">
@@ -154,14 +154,14 @@ const AdminSidebar = () => {
       {/* Toggle Button */}
       <button
         onClick={toggleSidebar}
-        className="w-full text-white hover:text-mono-300 focus:outline-none mb-4 flex flex-row items-center justify-center gap-2 px-4 transition-colors duration-200"
+        className="w-full text-white hover:text-mono-300 focus:outline-none mb-4 flex flex-row items-center justify-center gap-2 px-4 transition-colors duration-200 flex-shrink-0"
       >
         <FaBars className="text-lg" />
         {isExpanded && <span className="text-sm">Menu</span>}
       </button>
 
-      {/* Menu Items */}
-      <div className="flex flex-col gap-1">
+      {/* Menu Items - Scrollable */}
+      <div className="flex-1 overflow-y-auto flex flex-col gap-1 pb-4">
         {filteredLinks.map((link, index) => (
           <div key={index}>
             <div className="flex items-center justify-between transition-all duration-300 hover:bg-mono-800">

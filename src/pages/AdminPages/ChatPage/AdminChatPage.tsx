@@ -498,283 +498,273 @@ const AdminChatPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar */}
-        <div className="w-80 bg-white border-r border-mono-200 flex flex-col overflow-hidden">
-          {/* Header */}
-          <div className="p-4 border-b border-mono-200 shrink-0">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-mono-900">Chat Hỗ Trợ</h2>
+    <div className="h-full w-full flex bg-white">
+      {/* Left Panel - Conversations List */}
+      <div className="w-80 border-r border-mono-200 flex flex-col">
+        {/* Header - Fixed at top */}
+        <div className="p-4 border-b border-mono-200 flex-shrink-0">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-mono-900">Chat Hỗ Trợ</h2>
+            <button
+              onClick={() => setShowNewChatModal(true)}
+              className="p-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 transition-colors"
+              title="Tạo cuộc hội thoại mới"
+            >
+              <FiPlus className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Search */}
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-mono-400" />
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-mono-50 border border-mono-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-900"
+            />
+          </div>
+        </div>
+
+        {/* Conversation List */}
+        <div className="flex-1 overflow-y-auto">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-40">
+              <FiLoader className="w-6 h-6 animate-spin text-mono-400" />
+            </div>
+          ) : filteredConversations.length === 0 ? (
+            <div className="text-center text-mono-500 py-10">
+              <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-mono-300" />
+              <p>Không có cuộc hội thoại</p>
               <button
                 onClick={() => setShowNewChatModal(true)}
-                className="p-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 transition-colors"
-                title="Tạo cuộc hội thoại mới"
+                className="mt-4 px-4 py-2 text-sm bg-mono-900 text-white rounded-lg hover:bg-mono-800"
               >
-                <FiPlus className="w-5 h-5" />
+                Bắt đầu chat
               </button>
             </div>
-
-            {/* Search */}
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-mono-400" />
-              <input
-                type="text"
-                placeholder="Tìm kiếm..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-mono-50 border border-mono-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-900"
-              />
-            </div>
-          </div>
-
-          {/* Conversation List */}
-          <div className="flex-1 overflow-y-auto">
-            {isLoading ? (
-              <div className="flex items-center justify-center h-40">
-                <FiLoader className="w-6 h-6 animate-spin text-mono-400" />
-              </div>
-            ) : filteredConversations.length === 0 ? (
-              <div className="text-center text-mono-500 py-10">
-                <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-mono-300" />
-                <p>Không có cuộc hội thoại</p>
-                <button
-                  onClick={() => setShowNewChatModal(true)}
-                  className="mt-4 px-4 py-2 text-sm bg-mono-900 text-white rounded-lg hover:bg-mono-800"
-                >
-                  Bắt đầu chat
-                </button>
-              </div>
-            ) : (
-              <div className="divide-y divide-mono-100">
-                {filteredConversations.map((conv) => {
-                  const customer = getCustomerInfo(conv);
-                  const customerRole = conv.participants.find(
-                    (p: Participant) =>
-                      p.role === "user" || p.role === "shipper"
-                  )?.role;
-
-                  return (
-                    <button
-                      key={conv._id}
-                      onClick={() => setActiveConversation(conv)}
-                      className={`w-full p-4 text-left hover:bg-mono-50 transition-colors ${
-                        activeConversation?._id === conv._id
-                          ? "bg-mono-100"
-                          : ""
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="relative">
-                          <div className="w-10 h-10 rounded-full bg-mono-200 flex items-center justify-center overflow-hidden">
-                            {customer?.avatar?.url ? (
-                              <img
-                                src={customer.avatar.url}
-                                alt={customer.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <FiUser className="w-5 h-5 text-mono-500" />
-                            )}
-                          </div>
-                          <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <p className="font-medium text-mono-900 truncate">
-                              {customer?.name || "Khách hàng"}
-                            </p>
-                            {conv.unreadCount && conv.unreadCount > 0 && (
-                              <span className="px-1.5 py-0.5 text-xs bg-mono-900 text-white rounded-full">
-                                {conv.unreadCount}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            {customerRole && getRoleBadge(customerRole)}
-                          </div>
-                          <p className="text-sm text-mono-500 truncate mt-1">
-                            {conv.lastMessage?.text || "Bắt đầu trò chuyện"}
-                          </p>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col">
-          {!activeConversation ? (
-            <div className="flex-1 flex items-center justify-center bg-mono-50">
-              <div className="text-center">
-                <FiMessageCircle className="w-16 h-16 mx-auto mb-4 text-mono-300" />
-                <h3 className="text-xl font-semibold text-mono-700 mb-2">
-                  Chọn cuộc hội thoại
-                </h3>
-                <p className="text-mono-500 mb-4">
-                  Chọn từ danh sách bên trái để bắt đầu
-                </p>
-                <button
-                  onClick={() => setShowNewChatModal(true)}
-                  className="px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 inline-flex items-center gap-2"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  Tạo cuộc hội thoại
-                </button>
-              </div>
-            </div>
           ) : (
-            <>
-              {/* Chat Header */}
-              <div className="bg-white border-b border-mono-200 p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-mono-200 flex items-center justify-center overflow-hidden">
-                      {getCustomerInfo(activeConversation)?.avatar?.url ? (
-                        <img
-                          src={getCustomerInfo(activeConversation)?.avatar?.url}
-                          alt=""
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <FiUser className="w-5 h-5 text-mono-500" />
-                      )}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-mono-900">
-                          {getCustomerInfo(activeConversation)?.name ||
-                            "Khách hàng"}
-                        </h3>
-                        {getRoleBadge(
-                          activeConversation.participants.find(
-                            (p: Participant) =>
-                              p.role === "user" || p.role === "shipper"
-                          )?.role || ""
-                        )}
-                      </div>
-                      <p className="text-sm text-mono-500">
-                        {getCustomerInfo(activeConversation)?.email}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setActiveConversation(null)}
-                    className="p-2 text-mono-500 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors md:hidden"
-                  >
-                    <FiX className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
+            <div className="divide-y divide-mono-100">
+              {filteredConversations.map((conv) => {
+                const customer = getCustomerInfo(conv);
+                const customerRole = conv.participants.find(
+                  (p: Participant) => p.role === "user" || p.role === "shipper"
+                )?.role;
 
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-mono-50">
-                {messages.map((msg) => {
-                  const isOwn = msg.senderId._id === user?._id;
-                  return (
-                    <div
-                      key={msg._id}
-                      className={`flex ${
-                        isOwn ? "justify-end" : "justify-start"
-                      }`}
-                    >
-                      <div
-                        className={`max-w-[70%] p-3 rounded-2xl ${
-                          isOwn
-                            ? "bg-mono-900 text-white rounded-br-sm"
-                            : "bg-white text-mono-800 border border-mono-200 rounded-bl-sm"
-                        }`}
-                      >
-                        {!isOwn && (
-                          <p className="text-xs text-mono-500 mb-1">
-                            {msg.senderId.name}
-                          </p>
-                        )}
-                        <p className="text-sm whitespace-pre-wrap">
-                          {msg.text}
-                        </p>
-                        <div
-                          className={`flex items-center gap-1 mt-1 ${
-                            isOwn ? "justify-end" : ""
-                          }`}
-                        >
-                          <span
-                            className={`text-[10px] ${
-                              isOwn ? "text-mono-300" : "text-mono-400"
-                            }`}
-                          >
-                            {new Date(msg.createdAt).toLocaleTimeString(
-                              "vi-VN",
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
-                          </span>
-                          {isOwn && msg.isRead && (
-                            <FiCheck className="w-3 h-3 text-mono-300" />
+                return (
+                  <button
+                    key={conv._id}
+                    onClick={() => setActiveConversation(conv)}
+                    className={`w-full p-4 text-left hover:bg-mono-50 transition-colors ${
+                      activeConversation?._id === conv._id ? "bg-mono-100" : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <div className="w-10 h-10 rounded-full bg-mono-200 flex items-center justify-center overflow-hidden">
+                          {customer?.avatar?.url ? (
+                            <img
+                              src={customer.avatar.url}
+                              alt={customer.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <FiUser className="w-5 h-5 text-mono-500" />
                           )}
                         </div>
+                        <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-medium text-mono-900 truncate">
+                            {customer?.name || "Khách hàng"}
+                          </p>
+                          {conv.unreadCount && conv.unreadCount > 0 && (
+                            <span className="px-1.5 py-0.5 text-xs bg-mono-900 text-white rounded-full">
+                              {conv.unreadCount}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {customerRole && getRoleBadge(customerRole)}
+                        </div>
+                        <p className="text-sm text-mono-500 truncate mt-1">
+                          {conv.lastMessage?.text || "Bắt đầu trò chuyện"}
+                        </p>
                       </div>
                     </div>
-                  );
-                })}
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="bg-white p-3 rounded-2xl rounded-bl-sm border border-mono-200">
-                      <div className="flex items-center gap-1">
-                        <span className="w-2 h-2 bg-mono-400 rounded-full animate-bounce" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {!activeConversation ? (
+          <div className="flex-1 flex items-center justify-center bg-mono-50">
+            <div className="text-center">
+              <FiMessageCircle className="w-16 h-16 mx-auto mb-4 text-mono-300" />
+              <h3 className="text-xl font-semibold text-mono-700 mb-2">
+                Chọn cuộc hội thoại
+              </h3>
+              <p className="text-mono-500 mb-4">
+                Chọn từ danh sách bên trái để bắt đầu
+              </p>
+              <button
+                onClick={() => setShowNewChatModal(true)}
+                className="px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 inline-flex items-center gap-2"
+              >
+                <FiPlus className="w-4 h-4" />
+                Tạo cuộc hội thoại
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Chat Header */}
+            <div className="bg-white border-b border-mono-200 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-mono-200 flex items-center justify-center overflow-hidden">
+                    {getCustomerInfo(activeConversation)?.avatar?.url ? (
+                      <img
+                        src={getCustomerInfo(activeConversation)?.avatar?.url}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <FiUser className="w-5 h-5 text-mono-500" />
+                    )}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-mono-900">
+                        {getCustomerInfo(activeConversation)?.name ||
+                          "Khách hàng"}
+                      </h3>
+                      {getRoleBadge(
+                        activeConversation.participants.find(
+                          (p: Participant) =>
+                            p.role === "user" || p.role === "shipper"
+                        )?.role || ""
+                      )}
+                    </div>
+                    <p className="text-sm text-mono-500">
+                      {getCustomerInfo(activeConversation)?.email}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setActiveConversation(null)}
+                  className="p-2 text-mono-500 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors md:hidden"
+                >
+                  <FiX className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-mono-50">
+              {messages.map((msg) => {
+                const isOwn = msg.senderId._id === user?._id;
+                return (
+                  <div
+                    key={msg._id}
+                    className={`flex ${
+                      isOwn ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[70%] p-3 rounded-2xl ${
+                        isOwn
+                          ? "bg-mono-900 text-white rounded-br-sm"
+                          : "bg-white text-mono-800 border border-mono-200 rounded-bl-sm"
+                      }`}
+                    >
+                      {!isOwn && (
+                        <p className="text-xs text-mono-500 mb-1">
+                          {msg.senderId.name}
+                        </p>
+                      )}
+                      <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                      <div
+                        className={`flex items-center gap-1 mt-1 ${
+                          isOwn ? "justify-end" : ""
+                        }`}
+                      >
                         <span
-                          className="w-2 h-2 bg-mono-400 rounded-full animate-bounce"
-                          style={{ animationDelay: "0.1s" }}
-                        />
-                        <span
-                          className="w-2 h-2 bg-mono-400 rounded-full animate-bounce"
-                          style={{ animationDelay: "0.2s" }}
-                        />
+                          className={`text-[10px] ${
+                            isOwn ? "text-mono-300" : "text-mono-400"
+                          }`}
+                        >
+                          {new Date(msg.createdAt).toLocaleTimeString("vi-VN", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                        {isOwn && msg.isRead && (
+                          <FiCheck className="w-3 h-3 text-mono-300" />
+                        )}
                       </div>
                     </div>
                   </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* Input */}
-              <div className="p-4 border-t border-mono-200 bg-white">
-                <div className="flex items-center gap-2">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={inputMessage}
-                    onChange={(e) => {
-                      setInputMessage(e.target.value);
-                      handleTyping();
-                    }}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Nhập tin nhắn..."
-                    className="flex-1 px-4 py-2.5 bg-mono-50 border border-mono-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent"
-                    disabled={isSending}
-                  />
-                  <button
-                    onClick={sendMessage}
-                    disabled={!inputMessage.trim() || isSending}
-                    className="p-2.5 bg-mono-900 text-white rounded-full hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {isSending ? (
-                      <FiLoader className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <FiSend className="w-5 h-5" />
-                    )}
-                  </button>
+                );
+              })}
+              {isTyping && (
+                <div className="flex justify-start">
+                  <div className="bg-white p-3 rounded-2xl rounded-bl-sm border border-mono-200">
+                    <div className="flex items-center gap-1">
+                      <span className="w-2 h-2 bg-mono-400 rounded-full animate-bounce" />
+                      <span
+                        className="w-2 h-2 bg-mono-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.1s" }}
+                      />
+                      <span
+                        className="w-2 h-2 bg-mono-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.2s" }}
+                      />
+                    </div>
+                  </div>
                 </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <div className="p-4 border-t border-mono-200 bg-white">
+              <div className="flex items-center gap-2">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={inputMessage}
+                  onChange={(e) => {
+                    setInputMessage(e.target.value);
+                    handleTyping();
+                  }}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Nhập tin nhắn..."
+                  className="flex-1 px-4 py-2.5 bg-mono-50 border border-mono-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent"
+                  disabled={isSending}
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={!inputMessage.trim() || isSending}
+                  className="p-2.5 bg-mono-900 text-white rounded-full hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-colors"
+                >
+                  {isSending ? (
+                    <FiLoader className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <FiSend className="w-5 h-5" />
+                  )}
+                </button>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* New Chat Modal */}

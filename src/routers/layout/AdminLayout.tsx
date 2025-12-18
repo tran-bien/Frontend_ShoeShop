@@ -14,30 +14,29 @@ const AdminLayout = () => {
     }
   }, [location.pathname, isChatPage]);
 
-  // Render đặc biệt cho chat page - full height, no scroll
-  if (isChatPage) {
-    return (
-      <div className="flex h-screen bg-mono-50 overflow-hidden">
-        <AdminSidebar />
-        <div className="flex flex-col flex-1 overflow-hidden">
-          <AdminNavbar />
-          <main className="flex-1 overflow-hidden">
-            <Outlet />
-          </main>
-        </div>
-      </div>
-    );
-  }
-
-  // Render bình thường cho các trang khác
+  // Layout chung cho tất cả trang admin - sử dụng fixed height
   return (
-    <div className="flex bg-mono-50 min-h-screen">
+    <div className="fixed inset-0 flex bg-mono-50">
+      {/* Sidebar - cố định bên trái */}
       <AdminSidebar />
-      <div className="flex flex-col flex-1 min-h-screen">
+
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col min-w-0 h-full">
+        {/* Navbar - cố định trên cùng */}
         <AdminNavbar />
-        <div className="p-4 flex-1 bg-mono-50">
-          <Outlet />
-        </div>
+
+        {/* Content area */}
+        {isChatPage ? (
+          // Chat page: full height, no padding, no scroll
+          <div className="flex-1 min-h-0">
+            <Outlet />
+          </div>
+        ) : (
+          // Các trang khác: có scroll và padding
+          <div className="flex-1 overflow-auto p-4">
+            <Outlet />
+          </div>
+        )}
       </div>
     </div>
   );
