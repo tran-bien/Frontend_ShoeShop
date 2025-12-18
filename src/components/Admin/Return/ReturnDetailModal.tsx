@@ -378,25 +378,25 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
 
           {/* Shipper Info */}
           {returnRequest.assignedShipper && (
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-purple-700 font-semibold mb-3">
+            <div className="bg-white border border-black rounded-xl p-4">
+              <div className="flex items-center gap-2 text-black font-semibold mb-3">
                 <FiTruck />
                 <span>Thông tin shipper</span>
               </div>
               <div className="grid md:grid-cols-2 gap-4 text-sm">
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-purple-600">Tên:</span>
+                    <span className="text-black">Tên:</span>
                     <span className="font-medium">
                       {returnRequest.assignedShipper.name}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-purple-600">SĐT:</span>
+                    <span className="text-black">SĐT:</span>
                     <span>{returnRequest.assignedShipper.phone}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-purple-600">Ngày phân công:</span>
+                    <span className="text-black">Ngày phân công:</span>
                     <span>{formatDate(returnRequest.assignedAt)}</span>
                   </div>
                 </div>
@@ -404,12 +404,12 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
                 {/* Refund collected by shipper (for cash method) */}
                 {returnRequest.refundMethod === "cash" &&
                   returnRequest.refundCollectedByShipper && (
-                    <div className="bg-white rounded-lg p-3">
-                      <div className="flex items-center gap-2 text-green-600 font-medium mb-2">
+                    <div className="bg-white rounded-xl p-3 border border-green-600">
+                      <div className="flex items-center gap-2 text-green-700 font-medium mb-2">
                         <FiCheck />
                         <span>Đã giao tiền hoàn</span>
                       </div>
-                      <div className="space-y-1 text-sm text-gray-600">
+                      <div className="space-y-1 text-sm text-black">
                         <p>
                           Số tiền:{" "}
                           <strong className="text-green-700">

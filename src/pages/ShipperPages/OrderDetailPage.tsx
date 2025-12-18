@@ -76,6 +76,11 @@ const STATUS_CONFIG: Record<
     color: "bg-rose-50 text-rose-700 border border-rose-200",
     icon: <FiXCircle size={16} />,
   },
+  returned: {
+    label: "Giao thành công",
+    color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    icon: <FiCheckCircle size={16} />,
+  },
 };
 
 const OrderDetailPage = () => {
