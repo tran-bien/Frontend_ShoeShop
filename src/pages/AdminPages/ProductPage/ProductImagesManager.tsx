@@ -11,7 +11,6 @@ type ImageInput = Image | ProductImage;
 const ProductImagesManager = ({
   productId,
   images,
-  reloadImages: _reloadImages,
 }: {
   productId: string;
   images: ImageInput[];
@@ -81,6 +80,10 @@ const ProductImagesManager = ({
         (res?.data?.data?.image ? [res.data.data.image] : []);
       if (added && added.length > 0) {
         setLocalImages((prev: Image[]) => [...(added as Image[]), ...prev]);
+      }
+      // Gọi callback reloadImages nếu có để cha cập nhật prop images
+      if (typeof reloadImages === "function") {
+        await reloadImages();
       }
       toast.success("Tải ảnh thành công");
     } catch (error) {

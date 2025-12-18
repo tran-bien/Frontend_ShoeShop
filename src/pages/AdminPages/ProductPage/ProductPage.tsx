@@ -935,11 +935,11 @@ const ProductPage = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-mono-800 to-mono-900 text-white p-6 rounded-t-xl">
+            <div className="sticky top-0 bg-white text-mono-900 p-6 rounded-t-xl border-b border-mono-200">
               <div className="flex justify-between items-center">
                 <div>
                   <h2 className="text-xl font-bold">Sửa Sản Phẩm</h2>
-                  <p className="text-sm text-mono-300 mt-1">
+                  <p className="text-sm text-mono-500 mt-1">
                     Cập nhật thông tin sản phẩm
                   </p>
                 </div>
