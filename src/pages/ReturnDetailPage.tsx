@@ -246,22 +246,22 @@ const ReturnDetailPage: React.FC = () => {
           </div>
 
           <div className="bg-white shadow-md rounded-lg overflow-hidden">
-            {/* Header gradient giống UserOrderDetailPage */}
-            <div className="bg-gradient-to-r from-mono-500 to-mono-black text-white p-6">
+            {/* Header đổi nền trắng chữ đen */}
+            <div className="bg-white text-mono-black p-6 border-b border-mono-200">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">
                     Yêu cầu trả hàng{" "}
                     {request.code || `#${request._id.slice(-8)}`}
                   </h2>
-                  <p className="text-mono-200 text-sm mb-3">
+                  <p className="text-mono-500 text-sm mb-3">
                     Đơn hàng: {request.order?.code || "N/A"}
                   </p>
                   <span
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
                     style={{
-                      color: "#374151",
-                      backgroundColor: "rgba(255,255,255,0.9)",
+                      color: "#111827",
+                      backgroundColor: "#F3F4F6",
                     }}
                   >
                     <StatusIcon className="w-4 h-4" />

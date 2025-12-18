@@ -786,7 +786,7 @@ const ReturnPage = () => {
                 ))}
               </select>
             </div>
-            <div className="mb-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-800">
+            <div className="mb-4 p-3 bg-gray-50 rounded-lg text-sm text-black-900">
               <p>
                 Shipper sẽ đến địa chỉ khách hàng để lấy hàng trả
                 {selectedReturn.refundMethod === "cash" &&
