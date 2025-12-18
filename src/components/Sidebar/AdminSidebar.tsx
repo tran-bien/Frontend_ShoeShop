@@ -32,7 +32,7 @@ interface LinkProps {
   name: string;
   href?: string;
   icon: React.ElementType;
-  subLinks?: { name: string; href: string }[];
+  subLinks?: { name: string; href: string; icon: React.ElementType }[];
   adminOnly?: boolean; // Chỉ admin mới thấy
 }
 
@@ -63,36 +63,32 @@ const AdminSidebar = () => {
       name: "Dashboard",
       href: "/admin/dashboard",
       icon: GrDashboard,
-      adminOnly: true, // Chỉ admin mới thấy dashboard
+      adminOnly: true,
     },
     {
       name: "Users",
       href: "/admin/users",
       icon: GrUser,
-      adminOnly: true, // Chỉ admin mới thấy
-      subLinks: [
-        { name: "All Users", href: "/admin/users" },
-        //{ name: "Add User", href: "/admin/users/add" },
-      ],
+      adminOnly: true,
     },
     {
       name: "Products",
       href: "/admin/products",
       icon: GrCube,
       subLinks: [
-        { name: "Products", href: "/admin/products" },
-        { name: "Variants", href: "/admin/products/variants" },
+        { name: "Products", href: "/admin/products", icon: GrCube },
+        { name: "Variants", href: "/admin/products/variants", icon: FaPalette },
+        { name: "Categories", href: "/admin/categories", icon: GrClipboard },
+        { name: "Brand", href: "/admin/brand", icon: FaTrademark },
+        { name: "Tags", href: "/admin/tags", icon: FaTags },
+        { name: "Color", href: "/admin/color", icon: FaPalette },
+        { name: "Size", href: "/admin/size", icon: FaRulerCombined },
       ],
     },
-    { name: "Categories", href: "/admin/categories", icon: GrClipboard },
-    { name: "Brand", href: "/admin/brand", icon: FaTrademark },
     { name: "Banner", href: "/admin/banners", icon: FaImage },
-    { name: "Color", href: "/admin/color", icon: FaPalette },
-    { name: "Size", href: "/admin/size", icon: FaRulerCombined },
-    { name: "Tags", href: "/admin/tags", icon: FaTags },
-    { name: "Orders", href: "/admin/orders", icon: GrCart },
     { name: "Inventory", href: "/admin/inventory", icon: FaWarehouse },
     { name: "Shippers", href: "/admin/shippers", icon: FaTruck },
+    { name: "Orders", href: "/admin/orders", icon: GrCart },
     { name: "Returns", href: "/admin/returns", icon: FaExchangeAlt },
     { name: "Reviews", href: "/admin/reviews", icon: FaRegCommentDots },
     { name: "Blogs", href: "/admin/blogs", icon: FaBlog },
@@ -104,12 +100,6 @@ const AdminSidebar = () => {
       name: "Coupon",
       href: "/admin/products/discount",
       icon: FaGift,
-    },
-    {
-      name: "Settings",
-      href: "/admin/settings",
-      icon: GrSettingsOption,
-      adminOnly: true, // Chỉ admin mới thấy
     },
   ];
 
