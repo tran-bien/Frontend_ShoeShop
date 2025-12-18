@@ -10,14 +10,14 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  // State cho hiệu ứng fade-in khi ảnh được tải
-  const [imageLoaded, setImageLoaded] = useState(false);
-
   // State cho hiệu ứng slide ảnh
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // State cho hover để chỉ chạy slider khi hover
   const [isHovering, setIsHovering] = useState(false);
+
+  // Track loaded images để tránh nháy
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
 
   // Compare context
   const { addToCompareById, removeFromCompare, isInCompare, isLoading } =
@@ -29,26 +29,50 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   // Hiệu ứng slide ảnh với tốc độ vừa phải (3 giây cho mỗi ảnh) - chỉ chạy khi hover
   useEffect(() => {
-    if (!hasMultipleImages || !product || !isHovering) return;
+    // Chỉ chạy slider khi đang hover VÀ có nhiều ảnh
+    if (!isHovering || !hasMultipleImages || !product) {
+      return;
+    }
 
     const interval = setInterval(() => {
       // Kiểm tra images tồn tại trước khi truy cập length
       if (Array.isArray(product.images) && product.images.length > 0) {
         setCurrentImageIndex((prev) => (prev + 1) % product.images!.length);
-        // Reset trạng thái imageLoaded khi chuyển ảnh
-        setImageLoaded(false);
       }
     }, 3000); // Tốc độ chuyển ảnh vừa phải: 3 giây
 
     return () => clearInterval(interval);
   }, [product, product?.images, hasMultipleImages, isHovering]);
 
-  // Reset về ảnh đầu khi không hover
+  // Reset về ảnh đầu khi không hover - KHÔNG reset imageLoaded để tránh nháy
   useEffect(() => {
-    if (!isHovering) {
+    if (!isHovering && currentImageIndex !== 0) {
       setCurrentImageIndex(0);
     }
-  }, [isHovering]);
+  }, [isHovering, currentImageIndex]);
+
+  // Preload all images when component mounts for smooth sliding
+  useEffect(() => {
+    if (product?.images && Array.isArray(product.images)) {
+      product.images.forEach((img) => {
+        if (img?.url) {
+          const image = new Image();
+          image.onload = () => {
+            setLoadedImages((prev) => new Set(prev).add(img.url));
+          };
+          image.src = img.url;
+        }
+      });
+    }
+    // Also preload mainImage
+    if (product?.mainImage) {
+      const image = new Image();
+      image.onload = () => {
+        setLoadedImages((prev) => new Set(prev).add(product.mainImage!));
+      };
+      image.src = product.mainImage;
+    }
+  }, [product?.images, product?.mainImage]);
 
   // Guard clause - return null if product is undefined
   // MUST be after all hooks
@@ -58,7 +82,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
 
   const inCompare = isInCompare(product._id);
 
-  // Get image URL to display với ki?m tra null/undefined
+  // Get image URL to display với kiểm tra null/undefined
   const imageUrl =
     hasMultipleImages && Array.isArray(product.images)
       ? product.images[currentImageIndex]?.url || ""
@@ -66,6 +90,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         (Array.isArray(product.images) && product.images.length > 0
           ? product.images[0]?.url
           : "/placeholder.jpg");
+
+  // Check if current image is already loaded
+  const isCurrentImageLoaded = loadedImages.has(imageUrl);
 
   // Xử lý khoảng giá
   const renderPrice = () => {
@@ -112,7 +139,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         {product.hasDiscount ? (
           <>
             <span className="text-mono-900 font-bold text-base md:text-lg">
-              {finalPrice.toLocaleString()}d
+              {finalPrice.toLocaleString()}đ
             </span>
             {product.originalPrice && (
               <span className="text-mono-400 text-sm line-through">
@@ -171,7 +198,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      {/* Phần ẩnh sản phẩm với hi?u ẩng chuyện đổi m?m mới */}
+      {/* Phần ảnh sản phẩm với hiệu ứng chuyển đổi mềm mới */}
       <div className="aspect-square w-full overflow-hidden bg-mono-50 relative">
         {/* Compare Button - Top Left */}
         <button
@@ -209,22 +236,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
         <img
           src={imageUrl}
           alt={product.name}
-          className={`w-full h-full object-contain object-center transition-all duration-700 ease-in-out hover:scale-105 ${
-            imageLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          className="w-full h-full object-contain object-center transition-all duration-500 ease-in-out group-hover:scale-105"
           style={{
             transformOrigin: "center center",
+            opacity: isCurrentImageLoaded ? 1 : 0.5,
           }}
-          onLoad={() => setImageLoaded(true)}
+          onLoad={() => {
+            setLoadedImages((prev) => new Set(prev).add(imageUrl));
+          }}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.onerror = null;
             target.src = "/placeholder.jpg";
-            setImageLoaded(true);
+            setLoadedImages((prev) => new Set(prev).add("/placeholder.jpg"));
           }}
         />
 
-        {/* Hiện thọ các chờ báo slide n?u có nhi?u ẩnh */}
+        {/* Hiện thị các chờ báo slide nếu có nhiều ảnh */}
         {hasMultipleImages && Array.isArray(product.images) && (
           <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1 z-10">
             {product.images.map((_, idx) => (

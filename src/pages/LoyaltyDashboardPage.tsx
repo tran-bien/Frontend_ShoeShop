@@ -750,6 +750,10 @@ const LoyaltyDashboardContent: React.FC = () => {
 
 // Wrapper component with Sidebar
 const LoyaltyDashboard: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex flex-1 bg-mono-100">

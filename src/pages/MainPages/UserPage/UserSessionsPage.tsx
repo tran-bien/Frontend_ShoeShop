@@ -1,4 +1,4 @@
-﻿import React, { useState } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { Button, Card, Typography, Space, Divider } from "antd";
 import {
   DesktopOutlined,
@@ -12,6 +12,10 @@ const { Title, Text } = Typography;
 
 const UserSessionsPage: React.FC = () => {
   const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   const handleOpen = () => {
     setVisible(true);

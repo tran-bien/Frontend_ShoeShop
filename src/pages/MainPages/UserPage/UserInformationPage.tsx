@@ -1,9 +1,13 @@
-﻿import React from "react";
+﻿import React, { useEffect } from "react";
 import Sidebar from "../../../components/User/Sidebar";
 import UserForm from "../../../components/User/UserForm";
 // import banner from "../../../assets/banner.jpg";
 
 const UserInformation: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -32,4 +36,3 @@ const UserInformation: React.FC = () => {
 };
 
 export default UserInformation;
-

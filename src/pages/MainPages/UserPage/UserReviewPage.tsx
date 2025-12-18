@@ -64,6 +64,10 @@ const UserReviewPage: React.FC = () => {
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   // Fetch user reviews
   const fetchUserReviews = useCallback(async (page = 1, limit = 10) => {
     try {

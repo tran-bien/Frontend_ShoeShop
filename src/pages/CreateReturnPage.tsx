@@ -81,6 +81,7 @@ const CreateReturnPage: React.FC = () => {
   ];
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchDeliveredOrders();
     fetchAddresses();
   }, []);

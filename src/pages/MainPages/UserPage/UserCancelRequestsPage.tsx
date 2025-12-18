@@ -12,6 +12,10 @@ const UserCancelRequestsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const fetchCancelRequests = async (status?: string) => {
     setLoading(true);
     try {

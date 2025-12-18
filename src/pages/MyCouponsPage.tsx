@@ -353,11 +353,15 @@ const MyCouponsContent: React.FC = () => {
 };
 
 const MyCouponsPage: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto py-8 px-4">
         <div className="flex flex-col md:flex-row gap-8">
-          <div className="md:w-64 flex-shrink-0">
+          <div className="md:w-64 flex-shrink-0 order-first">
             <Sidebar />
           </div>
           <div className="flex-1">

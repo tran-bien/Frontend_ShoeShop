@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { userViewHistoryService } from "../services/ViewHistoryService";
 import Sidebar from "../components/User/Sidebar";
+import ProductCard from "../components/ProductCard/ProductCard";
+import { convertToProductCardProduct } from "../services/ProductService";
 import type { Product } from "../types/product";
 import type { ViewHistory } from "../types/viewHistory";
 
@@ -17,6 +19,8 @@ const UserViewHistoryContent: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchHistory();
@@ -43,15 +47,17 @@ const UserViewHistoryContent: React.FC = () => {
   };
 
   const handleClearHistory = async () => {
-    if (!window.confirm("Bạn có chắc muốn xóa toàn bộ lịch sử xem?")) return;
-
     try {
+      setDeleting(true);
       await userViewHistoryService.clearHistory();
       toast.success("Đã xóa lịch sử xem");
       setHistory([]);
+      setShowDeleteModal(false);
     } catch (error) {
       console.error("Error clearing history:", error);
       toast.error("Không thể xóa lịch sử xem");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -108,7 +114,7 @@ const UserViewHistoryContent: React.FC = () => {
 
           {history.length > 0 && (
             <button
-              onClick={handleClearHistory}
+              onClick={() => setShowDeleteModal(true)}
               className="mt-4 sm:mt-0 flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
             >
               <FiTrash2 className="w-4 h-4" />
@@ -137,62 +143,24 @@ const UserViewHistoryContent: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* Products Grid - Larger cards */}
+            {/* Products Grid - Using ProductCard component */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {history.map((item) => (
-                <div
-                  key={item._id}
-                  onClick={() => handleProductClick(item)}
-                  className="group cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100"
-                >
-                  {/* Product Image */}
-                  <div className="aspect-square bg-gray-100 overflow-hidden relative">
-                    <img
-                      src={item.product?.images?.[0]?.url || "/placeholder.jpg"}
-                      alt={item.product?.name || "Sản phẩm"}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "/placeholder.jpg";
-                      }}
+              {history.map((item) => {
+                const cardProduct = convertToProductCardProduct(item.product);
+                return (
+                  <div key={item._id} className="relative">
+                    <ProductCard
+                      product={cardProduct}
+                      onClick={() => handleProductClick(item)}
                     />
-                    {/* Time badge */}
-                    <div className="absolute top-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                    {/* Time badge overlay */}
+                    <div className="absolute top-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 z-10 pointer-events-none">
                       <FiClock className="w-3 h-3" />
                       <span>{formatDate(item.createdAt)}</span>
                     </div>
                   </div>
-
-                  {/* Product Info */}
-                  <div className="p-4">
-                    <h3 className="text-base font-medium text-gray-900 line-clamp-2 mb-3 min-h-[48px] group-hover:text-blue-600 transition-colors">
-                      {item.product?.name || "Sản phẩm không xác định"}
-                    </h3>
-
-                    {/* Price */}
-                    {item.product?.priceRange?.min ? (
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-lg font-bold text-red-600">
-                          {item.product.priceRange.min.toLocaleString("vi-VN")}₫
-                        </span>
-                        {item.product.priceRange.max &&
-                          item.product.priceRange.min !==
-                            item.product.priceRange.max && (
-                            <span className="text-sm text-gray-500">
-                              -{" "}
-                              {item.product.priceRange.max.toLocaleString(
-                                "vi-VN"
-                              )}
-                              ₫
-                            </span>
-                          )}
-                      </div>
-                    ) : (
-                      <span className="text-gray-500">Liên hệ</span>
-                    )}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Pagination */}
@@ -222,12 +190,67 @@ const UserViewHistoryContent: React.FC = () => {
           </>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <FiTrash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">
+                  Xóa lịch sử xem
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Hành động này không thể hoàn tác
+                </p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Bạn có chắc chắn muốn xóa toàn bộ lịch sử xem của mình? Tất cả{" "}
+              {history.length} sản phẩm sẽ bị xóa khỏi danh sách.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleting}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleClearHistory}
+                disabled={deleting}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              >
+                {deleting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Đang xóa...
+                  </>
+                ) : (
+                  <>
+                    <FiTrash2 className="w-4 h-4" />
+                    Xóa tất cả
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 // Wrapper component with Sidebar
 const UserViewHistory: React.FC = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex flex-1 bg-mono-100">

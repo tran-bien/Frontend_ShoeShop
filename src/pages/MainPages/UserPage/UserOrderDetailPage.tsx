@@ -32,6 +32,10 @@ const UserOrderDetailPage: React.FC = () => {
   const [showRepayModal, setShowRepayModal] = useState(false);
   const [showRefundModal, setShowRefundModal] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const fetchOrderDetail = async () => {
     if (!orderId) return;
 

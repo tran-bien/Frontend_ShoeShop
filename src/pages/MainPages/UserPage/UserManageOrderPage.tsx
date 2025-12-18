@@ -44,6 +44,10 @@ const UserManageOrder: React.FC = () => {
   const [selectedOrderForRepay, setSelectedOrderForRepay] =
     useState<Order | null>(null);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const fetchOrders = async (status?: string) => {
     if (status === "returns") {
       // Fetch return requests instead
