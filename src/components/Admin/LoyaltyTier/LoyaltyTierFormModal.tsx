@@ -39,9 +39,16 @@ const LoyaltyTierFormModal: React.FC<LoyaltyTierFormModalProps> = ({
   });
 
   useEffect(() => {
+    // Automatically set minSpending for new tier creation
+    // Keep it equal to previous tier's maxSpending (no +1 to avoid step validation error)
+    const autoMinSpending =
+      !tier && initialValues?.maxSpending !== undefined
+        ? initialValues.maxSpending
+        : tier?.minSpending ?? initialValues?.minSpending ?? 0;
+
     setFormData({
       name: tier?.name ?? initialValues?.name ?? "",
-      minSpending: tier?.minSpending ?? initialValues?.minSpending ?? 0,
+      minSpending: autoMinSpending,
       maxSpending: tier?.maxSpending ?? initialValues?.maxSpending,
       benefits: {
         pointsMultiplier:

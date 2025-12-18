@@ -157,7 +157,7 @@ const AdminLoyaltyTierPage = () => {
                 let displayOrder = 0;
                 if (prev) {
                   if (prev.maxSpending != null) {
-                    minSpending = prev.maxSpending + 1;
+                    minSpending = prev.maxSpending;
                   } else {
                     // If previous tier has no max (it's top), pick a sensible step
                     minSpending = (prev.minSpending ?? 0) + 1000000;
