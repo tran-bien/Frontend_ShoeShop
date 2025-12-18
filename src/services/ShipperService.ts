@@ -70,6 +70,13 @@ export const shipperService = {
   // Cập nhật trạng thái sẵn sàng nhận đơn
   updateAvailability: (isAvailable: boolean): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch("/api/v1/shipper/availability", { isAvailable }),
+
+  // Cập nhật thông tin cá nhân shipper (phone, name)
+  updateProfile: (data: {
+    phone?: string;
+    name?: string;
+  }): Promise<{ data: ApiResponse }> =>
+    axiosInstanceAuth.put("/api/v1/users/profile", data),
 };
 
 export default {

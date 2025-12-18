@@ -4,7 +4,6 @@
  */
 import { useState, useEffect, useCallback } from "react";
 import {
-  FiUser,
   FiPhone,
   FiMail,
   FiCalendar,
@@ -18,11 +17,18 @@ import {
   FiRefreshCw,
   FiAlertCircle,
   FiStar,
+  FiEdit2,
+  FiSave,
+  FiX,
 } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { shipperService } from "../../services/ShipperService";
 import { useAuth } from "../../hooks/useAuth";
 import type { Order } from "../../types/order";
+
+// Default avatar URL
+const DEFAULT_AVATAR =
+  "https://ui-avatars.com/api/?name=S&background=374151&color=fff&size=200&bold=true";
 
 // Interface cho local stats (không có trong types vì tính từ orders)
 interface LocalShipperStats {
@@ -42,6 +48,11 @@ const ShipperProfilePage = () => {
   );
   const [loading, setLoading] = useState(true);
   const [toggleLoading, setToggleLoading] = useState(false);
+
+  // Edit phone state
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
+  const [phoneValue, setPhoneValue] = useState(user?.phone || "");
+  const [savingPhone, setSavingPhone] = useState(false);
 
   const fetchProfileData = useCallback(async () => {
     try {
@@ -127,6 +138,42 @@ const ShipperProfilePage = () => {
     }
   };
 
+  // Handle save phone number
+  const handleSavePhone = async () => {
+    if (!phoneValue.trim()) {
+      toast.error("Vui lòng nhập số điện thoại");
+      return;
+    }
+
+    // Validate phone format (Vietnamese phone) - khớp với backend validator
+    const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
+    if (!phoneRegex.test(phoneValue.replace(/\s/g, ""))) {
+      toast.error("Số điện thoại không hợp lệ (VD: 0901234567)");
+      return;
+    }
+
+    try {
+      setSavingPhone(true);
+      await shipperService.updateProfile({ phone: phoneValue });
+
+      // Update localStorage
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        const userData = JSON.parse(storedUser);
+        userData.phone = phoneValue;
+        localStorage.setItem("user", JSON.stringify(userData));
+      }
+
+      toast.success("Đã cập nhật số điện thoại");
+      setIsEditingPhone(false);
+    } catch (error) {
+      console.error("Error updating phone:", error);
+      toast.error("Không thể cập nhật số điện thoại");
+    } finally {
+      setSavingPhone(false);
+    }
+  };
+
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("vi-VN", {
       day: "2-digit",
@@ -172,16 +219,15 @@ const ShipperProfilePage = () => {
             {/* Profile Header */}
             <div className="bg-gradient-to-r from-mono-800 to-mono-900 px-6 py-8">
               <div className="flex items-center gap-5">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center ring-4 ring-white/30">
-                  {user?.avatar?.url ? (
-                    <img
-                      src={user.avatar.url}
-                      alt="Avatar"
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    <FiUser className="text-mono-400" size={32} />
-                  )}
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center ring-4 ring-white/30 overflow-hidden">
+                  <img
+                    src={user?.avatar?.url || DEFAULT_AVATAR}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = DEFAULT_AVATAR;
+                    }}
+                  />
                 </div>
                 <div className="text-white">
                   <h2 className="text-xl font-bold">{user?.name || "N/A"}</h2>
@@ -234,13 +280,54 @@ const ShipperProfilePage = () => {
                   <div className="p-2 bg-white rounded-lg border border-mono-200">
                     <FiPhone className="text-mono-500" size={18} />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-xs text-mono-500 font-medium">
                       Số điện thoại
                     </p>
-                    <p className="text-sm text-mono-900 font-medium">
-                      {user?.phone || "N/A"}
-                    </p>
+                    {isEditingPhone ? (
+                      <div className="flex items-center gap-2 mt-1">
+                        <input
+                          type="tel"
+                          value={phoneValue}
+                          onChange={(e) => setPhoneValue(e.target.value)}
+                          placeholder="Nhập số điện thoại"
+                          className="flex-1 px-2 py-1 text-sm border border-mono-300 rounded focus:outline-none focus:ring-1 focus:ring-mono-400"
+                        />
+                        <button
+                          onClick={handleSavePhone}
+                          disabled={savingPhone}
+                          className="p-1.5 bg-emerald-500 text-white rounded hover:bg-emerald-600 disabled:opacity-50"
+                        >
+                          {savingPhone ? (
+                            <FiRefreshCw className="animate-spin" size={14} />
+                          ) : (
+                            <FiSave size={14} />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setIsEditingPhone(false);
+                            setPhoneValue(user?.phone || "");
+                          }}
+                          className="p-1.5 bg-mono-200 text-mono-600 rounded hover:bg-mono-300"
+                        >
+                          <FiX size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-mono-900 font-medium">
+                          {phoneValue || user?.phone || "Chưa cập nhật"}
+                        </p>
+                        <button
+                          onClick={() => setIsEditingPhone(true)}
+                          className="p-1 text-mono-400 hover:text-mono-600"
+                          title="Chỉnh sửa số điện thoại"
+                        >
+                          <FiEdit2 size={12} />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
 

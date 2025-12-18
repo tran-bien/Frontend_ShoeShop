@@ -262,17 +262,7 @@ const ShipperLayout = () => {
                   })}
                 </p>
               </div>
-              <div className="w-10 h-10 bg-mono-200 rounded-full flex items-center justify-center">
-                {user?.avatar ? (
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  <FiUser className="text-mono-500" size={18} />
-                )}
-              </div>
+              <></>
             </div>
           </div>
         </header>

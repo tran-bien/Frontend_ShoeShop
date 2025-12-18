@@ -170,12 +170,12 @@ const CancelRequestList: React.FC = () => {
         </table>
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
+      {/* Pagination - Luôn hiển thị khi có data */}
+      {requests.length > 0 && (
         <div className="mt-6 flex items-center justify-between">
           <div className="text-sm text-mono-500">
-            Hiển thị {filteredRequests.length} / {totalRequests} yêu cầu (Trang{" "}
-            {currentPage} / {totalPages})
+            Hiển thị {filteredRequests.length} / {totalRequests} yêu cầu • Trang{" "}
+            {currentPage} / {totalPages}
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -185,33 +185,35 @@ const CancelRequestList: React.FC = () => {
             >
               Trước
             </button>
-            <div className="flex items-center gap-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                let pageNum: number;
-                if (totalPages <= 5) {
-                  pageNum = i + 1;
-                } else if (currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (currentPage >= totalPages - 2) {
-                  pageNum = totalPages - 4 + i;
-                } else {
-                  pageNum = currentPage - 2 + i;
-                }
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`px-3 py-2 text-sm rounded-lg ${
-                      currentPage === pageNum
-                        ? "bg-mono-900 text-white"
-                        : "border border-mono-200 hover:bg-mono-100"
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-            </div>
+            {totalPages > 1 && (
+              <div className="flex items-center gap-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum: number;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`px-3 py-2 text-sm rounded-lg ${
+                        currentPage === pageNum
+                          ? "bg-mono-900 text-white"
+                          : "border border-mono-200 hover:bg-mono-100"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
@@ -219,23 +221,14 @@ const CancelRequestList: React.FC = () => {
             >
               Sau
             </button>
+            <button
+              onClick={() => fetchRequests(currentPage)}
+              className="px-3 py-2 text-sm border border-mono-200 rounded-lg hover:bg-mono-100 inline-flex items-center gap-1"
+            >
+              <FiRefreshCw size={14} />
+              Làm mới
+            </button>
           </div>
-        </div>
-      )}
-
-      {/* Summary when single page */}
-      {totalPages <= 1 && (
-        <div className="mt-4 flex items-center justify-between text-sm text-mono-500">
-          <span>
-            Hiển thị {filteredRequests.length} / {totalRequests} yêu cầu
-          </span>
-          <button
-            onClick={() => fetchRequests(currentPage)}
-            className="inline-flex items-center gap-1 text-mono-600 hover:text-mono-900"
-          >
-            <FiRefreshCw size={14} />
-            Làm mới
-          </button>
         </div>
       )}
     </div>
