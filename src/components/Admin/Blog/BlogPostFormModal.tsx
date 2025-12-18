@@ -40,6 +40,28 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
 
   const [newTag, setNewTag] = useState("");
 
+  // Handle delete featured image
+  const handleDeleteFeaturedImage = async () => {
+    if (!formData.featuredImage?.public_id) return;
+
+    try {
+      // Nếu đang edit bài viết có sẵn, xóa qua API featured image
+      if (post) {
+        await blogImageService.removeFeaturedImage(post._id);
+      } else {
+        // Nếu đang tạo mới, xóa trực tiếp trên Cloudinary
+        await blogImageService.deleteCloudinaryImage(
+          formData.featuredImage.public_id
+        );
+      }
+      setFormData({ ...formData, featuredImage: undefined });
+      toast.success("Đã xóa ảnh đại diện");
+    } catch (error) {
+      console.error("Failed to delete featured image:", error);
+      toast.error("Không thể xóa ảnh");
+    }
+  };
+
   // Handle upload featured image
   const handleUploadFeaturedImage = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -62,10 +84,9 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
     setUploadingImage(true);
     try {
       const formDataUpload = new FormData();
-      formDataUpload.append("featuredImage", file);
-
       if (post) {
         // If editing existing post, use uploadFeaturedImage API
+        formDataUpload.append("featuredImage", file);
         const response = await blogImageService.uploadFeaturedImage(
           post._id,
           formDataUpload
@@ -79,6 +100,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
         });
       } else {
         // For new post, upload as content image (general upload without postId)
+        formDataUpload.append("image", file);
         const response = await blogImageService.uploadBlogContentImage(
           formDataUpload
         );
@@ -293,9 +315,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
                 />
                 <button
                   type="button"
-                  onClick={() =>
-                    setFormData({ ...formData, featuredImage: undefined })
-                  }
+                  onClick={handleDeleteFeaturedImage}
                   className="absolute top-2 right-2 p-1 bg-mono-1000 text-white rounded-full hover:bg-mono-700"
                 >
                   <XMarkIcon className="w-4 h-4" />

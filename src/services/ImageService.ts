@@ -225,6 +225,14 @@ export const blogImageService = {
     axiosInstanceAuth.delete(
       `/api/v1/admin/images/blog/${postId}/featured-image`
     ),
+
+  // Xóa ảnh tạm trên cloudinary (cho blog chưa tạo)
+  deleteCloudinaryImage: (
+    publicId: string
+  ): Promise<{ data: DeleteImageResponse }> =>
+    axiosInstanceAuth.delete(`/api/v1/admin/images/cloudinary`, {
+      data: { publicId },
+    }),
 };
 
 // Default export

@@ -373,16 +373,16 @@ const LoyaltyDashboardContent: React.FC = () => {
       >
         <div
           onClick={() => navigate("/my-coupons")}
-          className="bg-gradient-to-r from-gray-800 to-black text-white p-6 rounded-xl cursor-pointer hover:shadow-lg transition-all group"
+          className="bg-white text-black p-6 rounded-xl cursor-pointer hover:shadow-lg transition-all group border border-gray-200"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
-                <Wallet className="w-6 h-6" />
+              <div className="w-12 h-12 bg-black/10 rounded-xl flex items-center justify-center">
+                <Wallet className="w-6 h-6 text-black" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold">Kho Voucher Của Bạn</h3>
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-gray-500">
                   Xem và quản lý các mã giảm giá đã thu thập
                 </p>
               </div>
