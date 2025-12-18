@@ -592,6 +592,22 @@ const LoyaltyDashboardContent: React.FC = () => {
             {redeemableCoupons.map((coupon) => {
               const pointCost = coupon.pointCost ?? 0;
               const canRedeem = stats && stats.currentPoints >= pointCost;
+
+              // Xác định text hiển thị - ẩn số 0
+              const hasDescription = !!(
+                coupon.description && coupon.description.trim()
+              );
+              const hasValue =
+                typeof coupon.value === "number" && coupon.value > 0;
+              const discountText = hasValue
+                ? coupon.type === "percent"
+                  ? `Giảm ${coupon.value}%`
+                  : `Giảm ${coupon.value?.toLocaleString("vi-VN")}đ`
+                : null;
+              const displayText = hasDescription
+                ? coupon.description
+                : discountText;
+
               return (
                 <div
                   key={coupon._id}
@@ -602,12 +618,9 @@ const LoyaltyDashboardContent: React.FC = () => {
                       <p className="font-bold text-lg text-gray-900">
                         {coupon.code}
                       </p>
-                      <p className="text-sm text-gray-600">
-                        {coupon.description ||
-                          (coupon.type === "percent"
-                            ? `Giảm ${coupon.value}%`
-                            : `Giảm ${coupon.value?.toLocaleString("vi-VN")}đ`)}
-                      </p>
+                      {displayText && (
+                        <p className="text-sm text-gray-600">{displayText}</p>
+                      )}
                     </div>
                     <span className="text-sm font-semibold text-black bg-gray-100 px-2 py-1 rounded">
                       {pointCost.toLocaleString()} điểm
