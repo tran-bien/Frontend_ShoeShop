@@ -186,6 +186,13 @@ const ListOrderPage: React.FC = () => {
   const [refundNotes, setRefundNotes] = useState("");
   const [refundLoading, setRefundLoading] = useState(false);
 
+  // Confirm return modal state
+  const [showConfirmReturnModal, setShowConfirmReturnModal] = useState(false);
+  const [returnOrderInfo, setReturnOrderInfo] = useState<OrderListItem | null>(
+    null
+  );
+  const [confirmReturnLoading, setConfirmReturnLoading] = useState(false);
+
   // Lấy danh sách đơn hàng từ API - gọi với status filter
   const fetchOrders = useCallback(
     async (page = 1, statusFilter?: string) => {
@@ -395,16 +402,30 @@ const ListOrderPage: React.FC = () => {
   };
 
   // Xác nhận nhận hàng trả về
-  const handleConfirmReturn = async (orderId: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xác nhận đã nhận hàng trả về?")) return;
+  const handleConfirmReturn = async (order: OrderListItem) => {
+    setReturnOrderInfo(order);
+    setShowConfirmReturnModal(true);
+  };
 
+  const handleCloseConfirmReturnModal = () => {
+    setShowConfirmReturnModal(false);
+    setReturnOrderInfo(null);
+  };
+
+  const handleConfirmReturnSubmit = async () => {
+    if (!returnOrderInfo) return;
+
+    setConfirmReturnLoading(true);
     try {
-      await adminOrderService.confirmReturn(orderId);
+      await adminOrderService.confirmReturn(returnOrderInfo._id);
       toast.success("Đã xác nhận nhận hàng trả về");
+      handleCloseConfirmReturnModal();
       fetchOrders(currentPage, TAB_TO_API_STATUS[orderTab]);
     } catch (error) {
       console.error("Error confirming return:", error);
       toast.error("Không thể xác nhận nhận hàng trả về");
+    } finally {
+      setConfirmReturnLoading(false);
     }
   };
 
@@ -541,7 +562,7 @@ const ListOrderPage: React.FC = () => {
               <>
                 <button
                   className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
-                  onClick={() => handleConfirmReturn(order._id)}
+                  onClick={() => handleConfirmReturn(order)}
                 >
                   <FiCheck size={12} />
                   Nhận về kho
@@ -1387,6 +1408,93 @@ const ListOrderPage: React.FC = () => {
                   <>
                     <FiCheck />
                     Xác nhận đã hoàn tiền
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Return Modal */}
+      {showConfirmReturnModal && returnOrderInfo && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-mono-200">
+              <div className="flex items-center gap-2">
+                <FiCheck className="text-gray-600 text-xl" />
+                <h3 className="text-lg font-semibold text-mono-900">
+                  Xác nhận nhận hàng trả về
+                </h3>
+              </div>
+              <button
+                onClick={handleCloseConfirmReturnModal}
+                className="text-mono-400 hover:text-mono-600"
+              >
+                <FiX className="text-xl" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-4 space-y-4">
+              {/* Order Info */}
+              <div className="bg-mono-50 p-3 rounded-lg">
+                <p className="text-sm text-mono-600">Mã đơn hàng</p>
+                <p className="font-semibold text-mono-900">
+                  {returnOrderInfo.orderCode}
+                </p>
+                <p className="text-sm text-mono-500 mt-1">
+                  Khách hàng: {returnOrderInfo.customerName}
+                </p>
+              </div>
+
+              {/* Warning */}
+              <div className="bg-gray-50 p-4 rounded-lg border border-blue-200">
+                <p className="text-sm text-black
+                -800">
+                  📦 Bạn có chắc chắn muốn xác nhận đã nhận hàng trả về?
+                </p>
+                <p className="text-xs text-black
+                -600 mt-2">
+                  Sau khi xác nhận, hàng sẽ được hoàn vào kho và đơn hàng sẽ
+                  chuyển sang trạng thái "Đã Hủy".
+                </p>
+              </div>
+
+              {/* Payment Warning if paid */}
+              {returnOrderInfo.paymentStatusRaw === "paid" && (
+                <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+                  <p className="text-sm text-amber-800">
+                    💰 Đơn hàng đã thanh toán. Khách hàng cần gửi thông tin ngân
+                    hàng để được hoàn tiền.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex gap-3 p-4 border-t border-mono-200">
+              <button
+                onClick={handleCloseConfirmReturnModal}
+                className="flex-1 px-4 py-2.5 border border-mono-300 text-mono-700 rounded-lg hover:bg-mono-100 font-medium"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleConfirmReturnSubmit}
+                disabled={confirmReturnLoading}
+                className="flex-1 px-4 py-2.5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+              >
+                {confirmReturnLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Đang xử lý...
+                  </>
+                ) : (
+                  <>
+                    <FiCheck />
+                    Xác nhận nhận hàng
                   </>
                 )}
               </button>
