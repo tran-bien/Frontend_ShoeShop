@@ -64,6 +64,7 @@ const KnowledgeBasePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isClearAllModalOpen, setIsClearAllModalOpen] = useState(false);
   const [selectedDocument, setSelectedDocument] =
     useState<KnowledgeDocument | null>(null);
   const [documentToDelete, setDocumentToDelete] =
@@ -151,6 +152,29 @@ const KnowledgeBasePage: React.FC = () => {
     }
   };
 
+  // Clear All Documents - DANGEROUS
+  const handleClearAll = async () => {
+    try {
+      const response = await adminKnowledgeService.clearAllDocuments();
+      if (response.data.success) {
+        toast.success(
+          response.data.message || "Đã xóa toàn bộ dữ liệu huấn luyện"
+        );
+        // Cast to check for warning property
+        const resData = response.data as { warning?: string };
+        if (resData.warning) {
+          toast(resData.warning, { icon: "⚠️", duration: 5000 });
+        }
+        setIsClearAllModalOpen(false);
+        fetchDocuments();
+        fetchStatistics();
+      }
+    } catch (error) {
+      console.error("Clear all error:", error);
+      toast.error("Không thể xóa dữ liệu");
+    }
+  };
+
   const handleDownloadTemplate = async () => {
     try {
       const blob = await adminKnowledgeService.downloadExcelTemplate();
@@ -206,6 +230,14 @@ const KnowledgeBasePage: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => setIsClearAllModalOpen(true)}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+            title="Xóa toàn bộ dữ liệu huấn luyện"
+          >
+            <FiTrash2 className="w-4 h-4" />
+            Clear All
+          </button>
           <button
             onClick={handleDownloadTemplate}
             className="px-4 py-2 bg-mono-100 text-mono-700 rounded-lg hover:bg-mono-200 transition-colors flex items-center gap-2"
@@ -531,6 +563,50 @@ const KnowledgeBasePage: React.FC = () => {
           }}
           onConfirm={confirmDelete}
         />
+      )}
+
+      {/* Clear All Confirmation Modal */}
+      {isClearAllModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4 shadow-2xl">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                <FiAlertTriangle className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-mono-900">
+                  Xóa toàn bộ Knowledge Base?
+                </h3>
+                <p className="text-sm text-mono-500">
+                  Hành động này không thể hoàn tác
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+              <p className="text-sm text-red-800">
+                <strong>⚠️ Cảnh báo:</strong> Thao tác này sẽ xóa{" "}
+                <strong>{statistics?.total || 0}</strong> tài liệu và AI sẽ quay
+                về trạng thái chưa được huấn luyện.
+              </p>
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setIsClearAllModalOpen(false)}
+                className="px-4 py-2 border border-mono-200 rounded-lg hover:bg-mono-50 transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleClearAll}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Xác nhận xóa tất cả
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

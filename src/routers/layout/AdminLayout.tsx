@@ -14,28 +14,32 @@ const AdminLayout = () => {
     }
   }, [location.pathname, isChatPage]);
 
-  return (
-    <>
-      <div className="flex flex-row bg-mono-50 min-h-screen">
-        <div>
-          <AdminSidebar />
-        </div>
-        <div
-          className={`flex flex-col w-full ${
-            isChatPage ? "h-screen" : "min-h-screen"
-          }`}
-        >
+  // Render đặc biệt cho chat page - full height, no scroll
+  if (isChatPage) {
+    return (
+      <div className="flex h-screen bg-mono-50 overflow-hidden">
+        <AdminSidebar />
+        <div className="flex flex-col flex-1 overflow-hidden">
           <AdminNavbar />
-          <div
-            className={`${
-              isChatPage ? "flex-1 overflow-hidden" : "p-4"
-            } bg-mono-50`}
-          >
+          <main className="flex-1 overflow-hidden">
             <Outlet />
-          </div>
+          </main>
         </div>
       </div>
-    </>
+    );
+  }
+
+  // Render bình thường cho các trang khác
+  return (
+    <div className="flex bg-mono-50 min-h-screen">
+      <AdminSidebar />
+      <div className="flex flex-col flex-1 min-h-screen">
+        <AdminNavbar />
+        <div className="p-4 flex-1 bg-mono-50">
+          <Outlet />
+        </div>
+      </div>
+    </div>
   );
 };
 

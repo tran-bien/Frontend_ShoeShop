@@ -283,8 +283,22 @@ const AdminChatPage: React.FC = () => {
 
     // Load messages
     loadMessages(activeConversation._id);
+
+    // Focus input when conversation is selected
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeConversation?._id, socket?.connected]);
+
+  // Scroll to bottom when messages change or active conversation changes
+  useEffect(() => {
+    // Small delay to ensure DOM is updated
+    const timer = setTimeout(() => {
+      scrollToBottom();
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [activeConversation?._id, scrollToBottom]);
 
   const loadMessages = async (conversationId: string) => {
     try {
@@ -484,12 +498,12 @@ const AdminChatPage: React.FC = () => {
   };
 
   return (
-    <div className="h-full bg-mono-50">
-      <div className="flex h-full">
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-80 bg-white border-r border-mono-200 flex flex-col h-full">
+        <div className="w-80 bg-white border-r border-mono-200 flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="p-4 border-b border-mono-200">
+          <div className="p-4 border-b border-mono-200 shrink-0">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-mono-900">Chat Hỗ Trợ</h2>
               <button

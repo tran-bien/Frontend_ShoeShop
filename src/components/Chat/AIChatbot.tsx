@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import {
   FiMessageSquare,
   FiX,
@@ -28,6 +29,9 @@ const cleanMarkdown = (text: string): string => {
 };
 
 const AIChatbot: React.FC = () => {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith("/admin");
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
@@ -36,6 +40,11 @@ const AIChatbot: React.FC = () => {
   const [isTrained, setIsTrained] = useState<boolean | null>(null); // Track training status
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Ẩn chatbot trong trang admin
+  if (isAdminPage) {
+    return null;
+  }
 
   // Auto scroll to bottom
   const scrollToBottom = useCallback(() => {
@@ -186,7 +195,7 @@ const AIChatbot: React.FC = () => {
     <>
       {/* Chat Window - BÊN PHẢI, Ở DƯỚI */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-mono-200 overflow-hidden animate-slide-up">
+        <div className="fixed bottom-6 right-6 z-[9999] w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-mono-200 overflow-hidden animate-slide-up">
           {/* Header - NỀN TRẮNG CHỮ ĐEN */}
           <div className="bg-white border-b border-mono-200 p-4">
             <div className="flex items-center gap-3">
@@ -322,7 +331,7 @@ const AIChatbot: React.FC = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-300 bg-mono-black text-white hover:bg-mono-800"
+          className="fixed bottom-6 right-6 z-[9999] p-4 rounded-full shadow-lg transition-all duration-300 bg-mono-black text-white hover:bg-mono-800"
           aria-label="Mở chat AI"
         >
           <FiMessageSquare className="w-6 h-6" />
