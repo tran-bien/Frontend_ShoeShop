@@ -94,11 +94,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
       return (
         <div className="flex flex-col">
           <span className="text-mono-900 font-bold text-base md:text-lg">
-            {displayMin.toLocaleString()} - {displayMax.toLocaleString()}d
+            {displayMin.toLocaleString()} - {displayMax.toLocaleString()}đ
           </span>
           {product.originalPrice && (
             <span className="text-mono-400 text-sm line-through">
-              G?c: {product.originalPrice.toLocaleString()}d
+              Gốc: {product.originalPrice.toLocaleString()}đ
             </span>
           )}
         </div>
@@ -116,13 +116,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
             </span>
             {product.originalPrice && (
               <span className="text-mono-400 text-sm line-through">
-                {product.originalPrice.toLocaleString()}d
+                {product.originalPrice.toLocaleString()}đ
               </span>
             )}
           </>
         ) : (
           <span className="text-mono-900 font-bold text-base md:text-lg">
-            {finalPrice.toLocaleString()}d
+            {finalPrice.toLocaleString()}đ
           </span>
         )}
       </div>
