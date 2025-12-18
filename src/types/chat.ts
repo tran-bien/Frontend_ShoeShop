@@ -106,9 +106,8 @@ export interface ConversationMessage {
     name: string;
     avatar?: { url: string };
   };
-  type: "text" | "image" | "system";
-  text?: string;
-  images?: Array<{ url: string; public_id: string }>;
+  type: "text";
+  text: string;
   isRead: boolean;
   readBy: string[];
   createdAt: string;
@@ -139,9 +138,8 @@ export interface CreateConversationData {
 }
 
 export interface SendMessageData {
-  type: "text" | "image";
-  text?: string;
-  images?: Array<{ url: string; public_id: string }>;
+  type: "text";
+  text: string;
 }
 
 export interface ConversationsQueryParams {

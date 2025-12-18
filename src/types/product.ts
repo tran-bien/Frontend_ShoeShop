@@ -57,10 +57,13 @@ export interface Variant {
     stockStatus: "in_stock" | "low_stock" | "out_of_stock";
     sizeInventory?: Array<{
       sizeId: string;
-      sizeValue: string;
+      sizeValue: string | number;
       quantity: number;
-      sku: string;
-      isAvailable: boolean;
+      sku?: string;
+      costPrice?: number;
+      sellingPrice?: number;
+      finalPrice?: number;
+      isAvailable?: boolean;
       isLowStock?: boolean;
       isOutOfStock?: boolean;
     }>;

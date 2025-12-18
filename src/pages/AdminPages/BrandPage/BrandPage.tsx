@@ -147,8 +147,9 @@ const EditBrand: React.FC<{
       toast.success(successMsg);
       onSuccess();
       onClose();
-    } catch {
+    } catch (error: unknown) {
       // capture error message from backend when available
+      const err = error as { response?: { data?: { message?: string } } };
       const errMsg =
         err?.response?.data?.message || "Cập nhật thương hiệu thất bại!";
       setError(errMsg);

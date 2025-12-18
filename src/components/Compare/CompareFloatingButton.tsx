@@ -12,7 +12,7 @@ const CompareFloatingButton: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-8 left-8 z-50 flex items-center gap-3">
+    <div className="fixed bottom-24 left-6 z-40 flex items-center gap-3">
       {/* Clear Button */}
       <button
         onClick={clearCompare}

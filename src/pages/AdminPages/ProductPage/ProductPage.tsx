@@ -278,17 +278,6 @@ const ProductPage = () => {
     }
   };
 
-  const handleUpdateStockStatus = async (product: Product) => {
-    try {
-      await productAdminService.updateStockStatus(product._id);
-      toast.success("Đã cập nhật trạng thái tồn kho");
-      fetchProducts();
-    } catch (error) {
-      console.error("Error updating stock status:", error);
-      toast.error("Không thể cập nhật trạng thái tồn kho");
-    }
-  };
-
   const openModal = (type: string, product?: Product) => {
     if (product) setSelectedProduct(product);
     switch (type) {

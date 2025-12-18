@@ -22,7 +22,8 @@ const ReviewDetailModal = ({
         setLoading(true);
         const res = await adminReviewApi.getReviewById(initialReview._id);
         // BE returns { success, review, isDeleted }
-        const reviewData = res.data.review || res.data.data || res.data;
+        const resData = res.data as { review?: Review; data?: Review };
+        const reviewData = resData.review || resData.data;
         if (reviewData && reviewData._id) {
           setReview(reviewData);
         }

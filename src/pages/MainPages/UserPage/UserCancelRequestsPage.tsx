@@ -25,7 +25,13 @@ const UserCancelRequestsPage: React.FC = () => {
       }
 
       const res = await userOrderService.getUserCancelRequests(params);
-      setCancelRequests(res.data.data.cancelRequests || []);
+      const resData = res.data as {
+        data?: { cancelRequests?: CancelRequest[] };
+        cancelRequests?: CancelRequest[];
+      };
+      setCancelRequests(
+        resData.data?.cancelRequests || resData.cancelRequests || []
+      );
     } catch (error) {
       console.error("Lỗi khi tải yêu cầu hủy đơn:", error);
       setCancelRequests([]);

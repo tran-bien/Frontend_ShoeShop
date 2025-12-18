@@ -52,10 +52,11 @@ export interface Variant {
       sizeId: string;
       sizeValue: string | number;
       quantity: number;
-      costPrice: number;
-      sellingPrice: number;
-      isLowStock: boolean;
-      isOutOfStock: boolean;
+      costPrice?: number;
+      sellingPrice?: number;
+      finalPrice?: number;
+      isLowStock?: boolean;
+      isOutOfStock?: boolean;
     }>;
   };
 }

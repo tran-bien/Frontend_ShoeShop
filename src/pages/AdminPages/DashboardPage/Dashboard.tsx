@@ -226,7 +226,7 @@ const Dashboard = () => {
           pointHoverRadius: 6,
         },
         {
-          label: "Lỗi nhuẩn",
+          label: "Lợi nhuận",
           data: dailyRevenue.map((item) => item.profit),
           borderColor: "rgb(34, 197, 94)",
           backgroundColor: "rgba(34, 197, 94, 0.1)",
@@ -593,10 +593,10 @@ const Dashboard = () => {
                       Doanh thu
                     </th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
-                      Lỗi nhuẩn
+                      Lợi nhuận
                     </th>
                     <th className="px-4 py-3 text-right text-xs font-medium text-mono-500 uppercase tracking-wider">
-                      Từ su?t
+                      Tỷ suất
                     </th>
                   </tr>
                 </thead>

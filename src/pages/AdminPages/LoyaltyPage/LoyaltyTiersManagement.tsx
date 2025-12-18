@@ -18,8 +18,11 @@ const LoyaltyTiersManagement: React.FC = () => {
     try {
       setLoading(true);
       const response = await adminLoyaltyService.getAllTiers();
-      if (response.data.success) {
-        setTiers(response.data.data.tiers);
+      if (response.data.success && response.data.data) {
+        const data = response.data.data as
+          | { tiers?: LoyaltyTier[] }
+          | LoyaltyTier[];
+        setTiers(Array.isArray(data) ? data : data.tiers || []);
       }
     } catch (error) {
       console.error("Error fetching tiers:", error);
@@ -135,7 +138,7 @@ const LoyaltyTiersManagement: React.FC = () => {
                 <div className="mb-4 pb-4 border-b border-gray-200">
                   <p className="text-sm text-gray-600 mb-2">Khoảng điểm:</p>
                   <p className="font-semibold text-black">
-                    {tier.minPoints.toLocaleString()} -{" "}
+                    {(tier.minPoints ?? 0).toLocaleString()} -{" "}
                     {tier.maxPoints ? tier.maxPoints.toLocaleString() : "∞"}{" "}
                     điểm
                   </p>
@@ -241,6 +244,3 @@ const LoyaltyTiersManagement: React.FC = () => {
 };
 
 export default LoyaltyTiersManagement;
-
-
-

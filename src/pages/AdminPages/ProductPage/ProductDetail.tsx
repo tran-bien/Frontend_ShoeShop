@@ -770,9 +770,11 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                           <div>
                             <span className="text-mono-500">Tạo:</span>
                             <span className="ml-1 text-mono-600">
-                              {new Date(variant.createdAt).toLocaleDateString(
-                                "vi-VN"
-                              )}
+                              {variant.createdAt
+                                ? new Date(
+                                    variant.createdAt
+                                  ).toLocaleDateString("vi-VN")
+                                : "N/A"}
                             </span>
                           </div>
                         </div>

@@ -184,37 +184,20 @@ const AIChatbot: React.FC = () => {
 
   return (
     <>
-      {/* Chat Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-300 ${
-          isOpen
-            ? "bg-mono-700 text-white rotate-0"
-            : "bg-mono-black text-white hover:bg-mono-800"
-        }`}
-        aria-label="Mở chat hỗ trợ"
-      >
-        {isOpen ? (
-          <FiX className="w-6 h-6" />
-        ) : (
-          <FiMessageSquare className="w-6 h-6" />
-        )}
-      </button>
-
-      {/* Chat Window */}
+      {/* Chat Window - BÊN PHẢI, Ở DƯỚI */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-mono-200 overflow-hidden animate-slide-up">
-          {/* Header */}
-          <div className="bg-mono-black text-white p-4">
+        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-mono-200 overflow-hidden animate-slide-up">
+          {/* Header - NỀN TRẮNG CHỮ ĐEN */}
+          <div className="bg-white border-b border-mono-200 p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <FiMessageSquare className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-full bg-mono-100 flex items-center justify-center">
+                <FiMessageSquare className="w-5 h-5 text-mono-700" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold">Trợ lý AI</h3>
-                <p className="text-xs text-mono-300">
+                <h3 className="font-semibold text-mono-900">Trợ lý AI</h3>
+                <p className="text-xs text-mono-500">
                   {isTrained === false ? (
-                    <span className="flex items-center gap-1 text-amber-300">
+                    <span className="flex items-center gap-1 text-amber-600">
                       <FiInfo className="w-3 h-3" />
                       Chưa train kiến thức về ShoeShop
                     </span>
@@ -225,6 +208,13 @@ const AIChatbot: React.FC = () => {
                   )}
                 </p>
               </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-2 hover:bg-mono-100 rounded-full transition-colors"
+                aria-label="Đóng chat"
+              >
+                <FiX className="w-5 h-5 text-mono-600" />
+              </button>
             </div>
           </div>
 
@@ -326,6 +316,17 @@ const AIChatbot: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Chat Button - BÊN PHẢI, Ở TRÊN WINDOW */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg transition-all duration-300 bg-mono-black text-white hover:bg-mono-800"
+          aria-label="Mở chat AI"
+        >
+          <FiMessageSquare className="w-6 h-6" />
+        </button>
       )}
     </>
   );

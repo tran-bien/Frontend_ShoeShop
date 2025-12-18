@@ -218,63 +218,83 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
           </div>
 
           {/* Products in Order */}
-          {returnRequest.order?.items &&
-            returnRequest.order.items.length > 0 && (
+          {returnRequest.order?.orderItems &&
+            returnRequest.order.orderItems.length > 0 && (
               <div>
                 <h3 className="font-semibold text-gray-700 mb-3">
-                  Sản phẩm trả hàng ({returnRequest.order.items.length} sản
+                  Sản phẩm trả hàng ({returnRequest.order.orderItems.length} sản
                   phẩm)
                 </h3>
                 <div className="space-y-3">
-                  {returnRequest.order.items.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="bg-white border border-gray-200 rounded-lg p-4 flex gap-4"
-                    >
-                      {item.product?.images?.[0]?.url && (
-                        <img
-                          src={item.product.images[0].url}
-                          alt={item.product?.name || "Product"}
-                          className="w-20 h-20 object-cover rounded-lg"
-                        />
-                      )}
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-800">
-                          {item.product?.name || "Sản phẩm"}
-                        </p>
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 mt-2">
-                          <span>
-                            Màu:{" "}
-                            <strong>
-                              {item.variant?.color?.name || "N/A"}
-                            </strong>
-                            {item.variant?.color?.code && (
-                              <span
-                                className="inline-block w-4 h-4 rounded-full border ml-1 align-middle"
-                                style={{
-                                  backgroundColor: item.variant.color.code,
-                                }}
-                              />
-                            )}
-                          </span>
-                          <span>
-                            Size: <strong>{item.size?.value || "N/A"}</strong>
-                          </span>
-                          <span>
-                            SL: <strong>{item.quantity}</strong>
-                          </span>
-                          <span>
-                            Giá:{" "}
-                            <strong>
-                              {formatCurrency(
-                                item.priceAtPurchase || item.price
+                  {returnRequest.order.orderItems.map(
+                    (
+                      item: {
+                        product?: { images?: { url: string }[]; name?: string };
+                        variant?: {
+                          color?: { name?: string; code?: string };
+                          size?: { value?: string | number };
+                        };
+                        size?: { value?: string | number };
+                        quantity?: number;
+                        price?: number;
+                        priceAtPurchase?: number;
+                      },
+                      idx: number
+                    ) => (
+                      <div
+                        key={idx}
+                        className="bg-white border border-gray-200 rounded-lg p-4 flex gap-4"
+                      >
+                        {item.product?.images?.[0]?.url && (
+                          <img
+                            src={item.product.images[0].url}
+                            alt={item.product?.name || "Product"}
+                            className="w-20 h-20 object-cover rounded-lg"
+                          />
+                        )}
+                        <div className="flex-1">
+                          <p className="font-medium text-gray-800">
+                            {item.product?.name || "Sản phẩm"}
+                          </p>
+                          <div className="flex flex-wrap gap-4 text-sm text-gray-600 mt-2">
+                            <span>
+                              Màu:{" "}
+                              <strong>
+                                {item.variant?.color?.name || "N/A"}
+                              </strong>
+                              {item.variant?.color?.code && (
+                                <span
+                                  className="inline-block w-4 h-4 rounded-full border ml-1 align-middle"
+                                  style={{
+                                    backgroundColor: item.variant.color.code,
+                                  }}
+                                />
                               )}
-                            </strong>
-                          </span>
+                            </span>
+                            <span>
+                              Size:{" "}
+                              <strong>
+                                {item.variant?.size?.value ||
+                                  item.size?.value ||
+                                  "N/A"}
+                              </strong>
+                            </span>
+                            <span>
+                              SL: <strong>{item.quantity}</strong>
+                            </span>
+                            <span>
+                              Giá:{" "}
+                              <strong>
+                                {formatCurrency(
+                                  item.priceAtPurchase || item.price
+                                )}
+                              </strong>
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </div>
             )}

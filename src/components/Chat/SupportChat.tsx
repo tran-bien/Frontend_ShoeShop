@@ -1,38 +1,61 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import {
-  FiMessageCircle,
-  FiX,
-  FiSend,
-  FiLoader,
-  FiUser,
-  FiHeadphones,
-  FiImage,
-} from "react-icons/fi";
-import { chatService, ChatConversation } from "../../services/ChatService";
+import { FiX, FiSend, FiLoader, FiHeadphones, FiTruck } from "react-icons/fi";
+import { chatService } from "../../services/ChatService";
 import type { ConversationMessage } from "../../types/chat";
 import { useAuth } from "../../hooks/useAuth";
 import { io, Socket } from "socket.io-client";
 import toast from "react-hot-toast";
 
+interface ChatConversation {
+  _id: string;
+  participants: Array<{
+    userId: {
+      _id: string;
+      name: string;
+      avatar?: { url: string };
+      role: string;
+    };
+    role: string;
+  }>;
+  lastMessage?: {
+    text: string;
+    type: string;
+    createdAt: string;
+    senderId: string;
+  };
+}
+
+/**
+ * SupportChat - SIMPLIFIED
+ * Mỗi user/shipper chỉ có 1 conversation duy nhất với staff/admin
+ */
 const SupportChat: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
   const token = localStorage.getItem("token");
+
   const [isOpen, setIsOpen] = useState(false);
-  const [conversations, setConversations] = useState<ChatConversation[]>([]);
-  const [activeConversation, setActiveConversation] =
-    useState<ChatConversation | null>(null);
+  const [conversation, setConversation] = useState<ChatConversation | null>(
+    null
+  );
   const [messages, setMessages] = useState<ConversationMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isTyping, setIsTyping] = useState(false);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const conversationRef = useRef<ChatConversation | null>(null);
+
+  // Keep conversationRef in sync
+  useEffect(() => {
+    conversationRef.current = conversation;
+  }, [conversation]);
+
+  // Check if user is shipper
+  const isShipper = user?.role === "shipper";
 
   // Auto scroll to bottom
   const scrollToBottom = useCallback(() => {
@@ -43,105 +66,175 @@ const SupportChat: React.FC = () => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Initialize Socket.IO
+  // Initialize Socket.IO when chat opens
   useEffect(() => {
-    if (isAuthenticated && token && isOpen) {
-      const socketUrl = import.meta.env.VITE_API_URL || "http://localhost:5005";
-      const newSocket = io(socketUrl, {
-        auth: { token },
-        transports: ["websocket", "polling"],
-      });
+    if (!isAuthenticated || !token || !isOpen) return;
 
-      newSocket.on("connect", () => {
-        console.log("[SupportChat] Socket connected");
-      });
+    const socketUrl = import.meta.env.VITE_API_URL || "http://localhost:5005";
+    console.log("[SupportChat] Connecting to socket:", socketUrl);
 
-      newSocket.on(
-        "chat:newMessage",
-        (data: { message: ConversationMessage; conversationId: string }) => {
-          if (
-            activeConversation &&
-            data.conversationId === activeConversation._id
-          ) {
-            setMessages((prev) => [...prev, data.message]);
-          }
-          // Update conversation list with new last message
-          setConversations((prev) =>
-            prev.map((c) =>
-              c._id === data.conversationId
-                ? {
-                    ...c,
-                    lastMessage: {
-                      text: data.message.text,
-                      type: data.message.type,
-                      createdAt: data.message.createdAt,
-                      senderId: data.message.senderId._id,
-                    },
-                  }
-                : c
-            )
-          );
-        }
-      );
+    const newSocket = io(socketUrl, {
+      auth: { token },
+      transports: ["websocket", "polling"],
+    });
 
-      newSocket.on("chat:userTyping", (data: { userId: string }) => {
-        if (data.userId !== user?._id) {
-          setIsTyping(true);
-        }
-      });
-
-      newSocket.on("chat:userStopTyping", () => {
-        setIsTyping(false);
-      });
-
-      newSocket.on("connect_error", (error: Error) => {
-        console.error("[SupportChat] Socket error:", error);
-      });
-
-      setSocket(newSocket);
-
-      return () => {
-        newSocket.disconnect();
-      };
-    }
-  }, [isAuthenticated, token, isOpen, activeConversation, user?._id]);
-
-  // Load conversations when chat opens
-  useEffect(() => {
-    if (isOpen && isAuthenticated) {
-      loadConversations();
-    }
-  }, [isOpen, isAuthenticated]);
-
-  // Load messages when conversation is selected
-  useEffect(() => {
-    if (activeConversation) {
-      loadMessages(activeConversation._id);
-      // Join socket room
-      if (socket) {
-        socket.emit(
+    newSocket.on("connect", () => {
+      console.log("[SupportChat] Socket connected:", newSocket.id);
+      // Re-join room if conversation exists
+      if (conversationRef.current) {
+        newSocket.emit(
           "chat:join",
-          activeConversation._id,
-          (response: { success: boolean; error?: string }) => {
-            if (!response.success) {
-              console.error("[SupportChat] Join error:", response.error);
-            }
+          conversationRef.current._id,
+          (res: { success: boolean }) => {
+            console.log(
+              "[SupportChat] Re-joined room after reconnect:",
+              res.success
+            );
           }
         );
       }
-    }
-  }, [activeConversation, socket]);
+    });
 
-  const loadConversations = async () => {
+    newSocket.on("disconnect", () => {
+      console.log("[SupportChat] Socket disconnected");
+    });
+
+    newSocket.on("connect_error", (error: Error) => {
+      console.error("[SupportChat] Socket error:", error);
+    });
+
+    // Listen for new messages - USE REF to get latest conversation
+    newSocket.on(
+      "chat:newMessage",
+      (data: { message: ConversationMessage; conversationId: string }) => {
+        console.log("[SupportChat] Received chat:newMessage:", data);
+        const currentConv = conversationRef.current;
+
+        if (currentConv && data.conversationId === currentConv._id) {
+          setMessages((prev) => {
+            // Prevent duplicates
+            const exists = prev.some((m) => m._id === data.message._id);
+            if (exists) {
+              console.log("[SupportChat] Message already exists, skipping");
+              return prev;
+            }
+            console.log("[SupportChat] Adding new message to state");
+            return [...prev, data.message];
+          });
+        }
+      }
+    );
+
+    // Listen for notifications (backup channel)
+    newSocket.on(
+      "chat:notification",
+      (data: { conversationId: string; fullMessage?: ConversationMessage }) => {
+        console.log("[SupportChat] Received chat:notification:", data);
+        const currentConv = conversationRef.current;
+
+        if (
+          currentConv &&
+          data.conversationId === currentConv._id &&
+          data.fullMessage
+        ) {
+          setMessages((prev) => {
+            const exists = prev.some((m) => m._id === data.fullMessage!._id);
+            if (exists) return prev;
+            return [...prev, data.fullMessage!];
+          });
+        }
+      }
+    );
+
+    newSocket.on("chat:userTyping", (data: { userId: string }) => {
+      if (data.userId !== user?._id) {
+        setIsTyping(true);
+      }
+    });
+
+    newSocket.on("chat:userStopTyping", () => {
+      setIsTyping(false);
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+      console.log("[SupportChat] Disconnecting socket");
+      newSocket.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, token, isOpen]);
+
+  // Load/Create conversation when chat opens
+  useEffect(() => {
+    if (isOpen && isAuthenticated) {
+      initializeConversation();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, isAuthenticated]);
+
+  // Join socket room when conversation is ready
+  useEffect(() => {
+    if (!conversation || !socket?.connected) return;
+
+    console.log("[SupportChat] Joining conversation room:", conversation._id);
+
+    socket.emit(
+      "chat:join",
+      conversation._id,
+      (response: { success: boolean; error?: string }) => {
+        if (response.success) {
+          console.log("[SupportChat] Joined room successfully");
+        } else {
+          console.error("[SupportChat] Failed to join room:", response.error);
+        }
+      }
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversation?._id, socket?.connected]);
+
+  /**
+   * Initialize conversation - get existing or create new
+   */
+  const initializeConversation = async () => {
     try {
       setIsLoading(true);
-      const response = await chatService.getConversations({ status: "active" });
-      if (response.data.success && response.data.data) {
-        const data = response.data.data;
-        setConversations(data.conversations || []);
+      console.log("[SupportChat] Initializing conversation...");
+
+      // Try to get existing conversations first
+      const response = await chatService.getConversations({});
+
+      if (
+        response.data.success &&
+        response.data.data?.conversations &&
+        response.data.data.conversations.length > 0
+      ) {
+        // Use the first conversation (most recent)
+        const existingConv = response.data.data.conversations[0];
+        console.log(
+          "[SupportChat] Found existing conversation:",
+          existingConv._id
+        );
+        setConversation(existingConv as unknown as ChatConversation);
+        await loadMessages(existingConv._id);
+      } else {
+        // Create new conversation with initial message
+        console.log("[SupportChat] No existing conversation, creating new...");
+        const createResponse = await chatService.createConversation({
+          initialMessage: "Xin chào, tôi cần hỗ trợ.",
+        });
+
+        if (createResponse.data.success && createResponse.data.data) {
+          const newConv = createResponse.data.data;
+          console.log("[SupportChat] Created new conversation:", newConv._id);
+          setConversation(newConv as unknown as ChatConversation);
+          await loadMessages(newConv._id);
+          toast.success("Đã kết nối với bộ phận hỗ trợ");
+        }
       }
     } catch (error) {
-      console.error("Failed to load conversations:", error);
+      console.error("[SupportChat] Failed to initialize conversation:", error);
+      toast.error("Không thể kết nối với bộ phận hỗ trợ");
     } finally {
       setIsLoading(false);
     }
@@ -149,97 +242,55 @@ const SupportChat: React.FC = () => {
 
   const loadMessages = async (conversationId: string) => {
     try {
-      setIsLoading(true);
+      console.log("[SupportChat] Loading messages for:", conversationId);
       const response = await chatService.getMessages(conversationId, {
         limit: 50,
       });
+
       if (response.data.success && response.data.data) {
-        const data = response.data.data;
-        setMessages(data.messages || []);
+        setMessages(response.data.data.messages || []);
+        console.log(
+          "[SupportChat] Loaded",
+          response.data.data.messages?.length,
+          "messages"
+        );
         // Mark as read
         await chatService.markAsRead(conversationId);
       }
     } catch (error) {
-      console.error("Failed to load messages:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const createNewConversation = async () => {
-    try {
-      setIsLoading(true);
-      const response = await chatService.createConversation({
-        initialMessage: "Xin chào, tôi cần hỗ trợ.",
-      });
-      if (response.data.success && response.data.data) {
-        const newConversation = response.data.data;
-        // Kiểm tra conversation đã tồn tại trong list chưa
-        const exists = conversations.find((c) => c._id === newConversation._id);
-        if (!exists) {
-          setConversations((prev) => [newConversation, ...prev]);
-        } else {
-          // Update conversation trong list (có thể đã được reopen)
-          setConversations((prev) =>
-            prev.map((c) =>
-              c._id === newConversation._id ? newConversation : c
-            )
-          );
-        }
-        setActiveConversation(newConversation);
-        // Reload conversations để có danh sách mới nhất
-        loadConversations();
-        toast.success("Đã kết nối với bộ phận hỗ trợ");
-      }
-    } catch (error) {
-      console.error("Failed to create conversation:", error);
-      toast.error("Không thể kết nối với bộ phận hỗ trợ");
-    } finally {
-      setIsLoading(false);
+      console.error("[SupportChat] Failed to load messages:", error);
     }
   };
 
   const sendMessage = async () => {
-    const hasText = inputMessage.trim();
-    const hasImages = selectedImages.length > 0;
-
-    if ((!hasText && !hasImages) || !activeConversation || isSending) return;
+    if (!inputMessage.trim() || !conversation || isSending) return;
 
     const messageText = inputMessage.trim();
-    const imagesToSend = [...selectedImages];
-
     setInputMessage("");
-    setSelectedImages([]);
-    setPreviewImages([]);
     setIsSending(true);
 
     // Stop typing indicator
     if (socket) {
-      socket.emit("chat:stopTyping", activeConversation._id);
+      socket.emit("chat:stopTyping", conversation._id);
     }
 
     try {
-      // Xác định loại tin nhắn: chỉ "text" hoặc "image"
-      let messageType: "text" | "image" = "text";
-      if (hasImages && !hasText) {
-        messageType = "image";
-      }
-
-      // Prefer Socket.IO for real-time
       if (socket?.connected) {
+        console.log("[SupportChat] Sending message via socket...");
+
         socket.emit(
           "chat:sendMessage",
           {
-            conversationId: activeConversation._id,
-            type: messageType,
-            text: messageText || "", // Luôn gửi text (có thể rỗng)
-            images: imagesToSend,
+            conversationId: conversation._id,
+            type: "text",
+            text: messageText,
           },
           (response: {
             success: boolean;
             message?: ConversationMessage;
             error?: string;
           }) => {
+            console.log("[SupportChat] Send message response:", response);
             if (!response.success) {
               toast.error(response.error || "Không thể gửi tin nhắn");
             }
@@ -248,38 +299,36 @@ const SupportChat: React.FC = () => {
         );
       } else {
         // HTTP fallback
-        const response = await chatService.sendMessage(activeConversation._id, {
-          type: messageType,
-          text: messageText || "",
-          images: hasImages
-            ? imagesToSend.map((img) => ({ url: img, public_id: "" }))
-            : undefined,
+        console.log(
+          "[SupportChat] Socket not connected, using HTTP fallback..."
+        );
+        const response = await chatService.sendMessage(conversation._id, {
+          type: "text",
+          text: messageText,
         });
+
         if (response.data.success && response.data.data) {
-          const newMessage = response.data.data;
-          setMessages((prev) => [...prev, newMessage]);
+          setMessages((prev) => [...prev, response.data.data!]);
         }
         setIsSending(false);
       }
     } catch (error) {
-      console.error("Failed to send message:", error);
+      console.error("[SupportChat] Failed to send message:", error);
       toast.error("Không thể gửi tin nhắn");
       setIsSending(false);
     }
   };
 
   const handleTyping = () => {
-    if (socket && activeConversation) {
-      socket.emit("chat:typing", activeConversation._id);
+    if (socket && conversation) {
+      socket.emit("chat:typing", conversation._id);
 
-      // Clear existing timeout
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
 
-      // Set new timeout to stop typing
       typingTimeoutRef.current = setTimeout(() => {
-        socket.emit("chat:stopTyping", activeConversation._id);
+        socket.emit("chat:stopTyping", conversation._id);
       }, 2000);
     }
   };
@@ -291,339 +340,166 @@ const SupportChat: React.FC = () => {
     }
   };
 
+  // Don't render if not authenticated
   if (!isAuthenticated) {
     return null;
   }
 
   return (
     <>
-      {/* Chat Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-8 right-8 z-40 p-4 rounded-full shadow-lg transition-all duration-300 ${
-          isOpen
-            ? "bg-mono-600 text-white"
-            : "bg-white text-mono-black border border-mono-200 hover:bg-mono-50"
-        }`}
-        aria-label="Chat hỗ trợ"
-      >
-        {isOpen ? (
-          <FiX className="w-6 h-6" />
-        ) : (
-          <FiHeadphones className="w-6 h-6" />
-        )}
-      </button>
-
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-8 z-40 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-mono-200 overflow-hidden">
-          {/* Header */}
-          <div className="bg-mono-900 text-white p-4">
+        <div className="fixed bottom-6 right-[420px] z-50 w-96 max-w-[calc(100vw-3rem)] bg-white rounded-2xl shadow-xl border border-mono-200 overflow-hidden">
+          {/* Header - Hiển thị khác nhau cho user và shipper */}
+          <div className="bg-white border-b border-mono-200 p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                <FiHeadphones className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-full bg-mono-100 flex items-center justify-center">
+                {isShipper ? (
+                  <FiTruck className="w-5 h-5 text-blue-600" />
+                ) : (
+                  <FiHeadphones className="w-5 h-5 text-mono-700" />
+                )}
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold">Hỗ trợ khách hàng</h3>
-                <p className="text-xs text-mono-300">
-                  {activeConversation
-                    ? "Đang trò chuyện"
+                <h3 className="font-semibold text-mono-900">
+                  {isShipper ? "Hỗ trợ Shipper" : "Hỗ trợ khách hàng"}
+                </h3>
+                <p className="text-xs text-mono-500">
+                  {isShipper
+                    ? "Liên hệ quản lý đơn hàng"
                     : "Chat trực tiếp với nhân viên"}
                 </p>
               </div>
-              {activeConversation && (
-                <button
-                  onClick={() => setActiveConversation(null)}
-                  className="text-mono-300 hover:text-white"
-                >
-                  ←
-                </button>
-              )}
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-2 hover:bg-mono-100 rounded-full transition-colors"
+                aria-label="Đóng chat"
+              >
+                <FiX className="w-5 h-5 text-mono-600" />
+              </button>
             </div>
           </div>
 
-          {/* Content */}
-          {!activeConversation ? (
-            // Conversation List
-            <div className="h-80 overflow-y-auto">
-              {isLoading ? (
-                <div className="flex items-center justify-center h-full">
-                  <FiLoader className="w-6 h-6 animate-spin text-mono-400" />
-                </div>
-              ) : conversations.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-                  <FiMessageCircle className="w-12 h-12 text-mono-300 mb-4" />
-                  <p className="text-mono-600 mb-4">
-                    Chưa có cuộc hội thoại nào
-                  </p>
-                  <button
-                    onClick={createNewConversation}
-                    className="px-4 py-2 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors"
+          {/* Messages */}
+          <div className="h-80 overflow-y-auto p-4 space-y-3 bg-mono-50">
+            {isLoading ? (
+              <div className="flex items-center justify-center h-full">
+                <FiLoader className="w-6 h-6 animate-spin text-mono-400" />
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="text-center text-mono-500 py-8">
+                Bắt đầu cuộc trò chuyện
+              </div>
+            ) : (
+              messages.map((msg) => {
+                const isOwn = msg.senderId._id === user?._id;
+                return (
+                  <div
+                    key={msg._id}
+                    className={`flex ${
+                      isOwn ? "justify-end" : "justify-start"
+                    }`}
                   >
-                    Bắt đầu trò chuyện
-                  </button>
-                </div>
-              ) : (
-                <div className="divide-y divide-mono-100">
-                  {conversations.map((conv) => (
-                    <button
-                      key={conv._id}
-                      onClick={() => setActiveConversation(conv)}
-                      className="w-full p-4 text-left hover:bg-mono-50 transition-colors"
+                    <div
+                      className={`max-w-[80%] p-3 rounded-2xl ${
+                        isOwn
+                          ? "bg-mono-900 text-white rounded-br-sm"
+                          : "bg-white text-mono-800 border border-mono-200 rounded-bl-sm"
+                      }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-mono-100 flex items-center justify-center">
-                          <FiUser className="w-5 h-5 text-mono-500" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-mono-900 truncate">
-                            Hỗ trợ #{conv._id.slice(-6)}
-                          </p>
-                          <p className="text-sm text-mono-500 truncate">
-                            {conv.lastMessage?.text || "Bắt đầu cuộc hội thoại"}
-                          </p>
-                        </div>
-                        {conv.unreadCount && conv.unreadCount > 0 && (
-                          <span className="px-2 py-1 text-xs bg-mono-900 text-white rounded-full">
-                            {conv.unreadCount}
-                          </span>
-                        )}
-                      </div>
-                    </button>
-                  ))}
-                  {/* Nút liên hệ hỗ trợ - sẽ tự reopen conversation cũ nếu có */}
-                  <button
-                    onClick={createNewConversation}
-                    className="w-full p-4 text-center text-mono-600 hover:bg-mono-50 transition-colors"
-                  >
-                    + Liên hệ hỗ trợ
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            // Messages View
-            <>
-              <div className="h-64 overflow-y-auto p-4 space-y-3 bg-mono-50">
-                {isLoading ? (
-                  <div className="flex items-center justify-center h-full">
-                    <FiLoader className="w-6 h-6 animate-spin text-mono-400" />
-                  </div>
-                ) : messages.length === 0 ? (
-                  <div className="text-center text-mono-500 py-8">
-                    Bắt đầu cuộc trò chuyện
-                  </div>
-                ) : (
-                  messages.map((msg) => {
-                    const isOwn = msg.senderId._id === user?._id;
-                    return (
-                      <div
-                        key={msg._id}
-                        className={`flex ${
-                          isOwn ? "justify-end" : "justify-start"
+                      {!isOwn && (
+                        <p className="text-xs text-mono-500 mb-1">
+                          {msg.senderId.name}
+                        </p>
+                      )}
+                      <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                      <span
+                        className={`text-[10px] mt-1 block ${
+                          isOwn ? "text-mono-300" : "text-mono-400"
                         }`}
                       >
-                        <div
-                          className={`max-w-[80%] p-3 rounded-2xl ${
-                            isOwn
-                              ? "bg-mono-900 text-white rounded-br-sm"
-                              : "bg-white text-mono-800 border border-mono-200 rounded-bl-sm"
-                          }`}
-                        >
-                          {!isOwn && (
-                            <p className="text-xs text-mono-500 mb-1">
-                              {msg.senderId.name}
-                            </p>
-                          )}
-                          {/* Hiển thị images nếu có */}
-                          {msg.images && msg.images.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              {msg.images.map(
-                                (
-                                  img: { url: string; public_id: string },
-                                  idx: number
-                                ) => (
-                                  <img
-                                    key={idx}
-                                    src={img.url}
-                                    alt="Chat image"
-                                    className="max-w-[150px] rounded-lg"
-                                  />
-                                )
-                              )}
-                            </div>
-                          )}
-                          {/* Hiển thị text nếu có */}
-                          {msg.text && (
-                            <p className="text-sm whitespace-pre-wrap">
-                              {msg.text}
-                            </p>
-                          )}
-                          <span
-                            className={`text-[10px] mt-1 block ${
-                              isOwn ? "text-mono-300" : "text-mono-400"
-                            }`}
-                          >
-                            {new Date(msg.createdAt).toLocaleTimeString(
-                              "vi-VN",
-                              {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-                {isTyping && (
-                  <div className="flex justify-start">
-                    <div className="bg-white p-3 rounded-2xl rounded-bl-sm border border-mono-200">
-                      <div className="flex items-center gap-1">
-                        <span className="w-2 h-2 bg-mono-400 rounded-full animate-bounce" />
-                        <span
-                          className="w-2 h-2 bg-mono-400 rounded-full animate-bounce"
-                          style={{ animationDelay: "0.1s" }}
-                        />
-                        <span
-                          className="w-2 h-2 bg-mono-400 rounded-full animate-bounce"
-                          style={{ animationDelay: "0.2s" }}
-                        />
-                      </div>
+                        {new Date(msg.createdAt).toLocaleTimeString("vi-VN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
                     </div>
                   </div>
-                )}
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* Image Preview */}
-              {previewImages.length > 0 && (
-                <div className="px-4 py-2 border-t border-mono-200 bg-mono-50">
-                  <div className="flex flex-wrap gap-2">
-                    {previewImages.map((img, idx) => (
-                      <div key={idx} className="relative">
-                        <img
-                          src={img}
-                          alt={`Preview ${idx + 1}`}
-                          className="w-16 h-16 object-cover rounded-lg"
-                        />
-                        <button
-                          onClick={() => {
-                            setPreviewImages((prev) =>
-                              prev.filter((_, i) => i !== idx)
-                            );
-                            setSelectedImages((prev) =>
-                              prev.filter((_, i) => i !== idx)
-                            );
-                          }}
-                          className="absolute -top-1 -right-1 w-5 h-5 bg-mono-1000 text-white rounded-full text-xs flex items-center justify-center hover:bg-mono-700"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
+                );
+              })
+            )}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-white p-3 rounded-2xl rounded-bl-sm border border-mono-200">
+                  <div className="flex items-center gap-1">
+                    <span className="w-2 h-2 bg-mono-400 rounded-full animate-bounce" />
+                    <span
+                      className="w-2 h-2 bg-mono-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0.1s" }}
+                    />
+                    <span
+                      className="w-2 h-2 bg-mono-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0.2s" }}
+                    />
                   </div>
                 </div>
-              )}
-
-              {/* Input */}
-              <div className="p-4 border-t border-mono-200 bg-white">
-                <div className="flex items-center gap-2">
-                  {/* Hidden file input */}
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="hidden"
-                    onChange={(e) => {
-                      const files = e.target.files;
-                      if (files) {
-                        const newImages: string[] = [];
-                        const newPreviews: string[] = [];
-
-                        const remainingSlots = 10 - selectedImages.length;
-                        const filesToProcess = Math.min(
-                          files.length,
-                          remainingSlots
-                        );
-
-                        if (files.length > remainingSlots) {
-                          toast.error(`Chỉ được gửi tối đa 10 ảnh`);
-                        }
-
-                        for (let i = 0; i < filesToProcess; i++) {
-                          const file = files[i];
-                          const reader = new FileReader();
-                          reader.onload = (event) => {
-                            const base64 = event.target?.result as string;
-                            newImages.push(base64);
-                            newPreviews.push(base64);
-
-                            if (newImages.length === filesToProcess) {
-                              setSelectedImages((prev) => [
-                                ...prev,
-                                ...newImages,
-                              ]);
-                              setPreviewImages((prev) => [
-                                ...prev,
-                                ...newPreviews,
-                              ]);
-                            }
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }
-                      // Reset input
-                      e.target.value = "";
-                    }}
-                  />
-
-                  {/* Image upload button */}
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isSending || selectedImages.length >= 10}
-                    className="p-2.5 text-mono-600 hover:text-mono-900 hover:bg-mono-100 rounded-full disabled:text-mono-300 disabled:cursor-not-allowed transition-colors"
-                    aria-label="Đính kèm ảnh"
-                    title="Đính kèm ảnh (tối đa 10 ảnh)"
-                  >
-                    <FiImage className="w-5 h-5" />
-                  </button>
-
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={inputMessage}
-                    onChange={(e) => {
-                      setInputMessage(e.target.value);
-                      handleTyping();
-                    }}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Nhập tin nhắn..."
-                    className="flex-1 px-4 py-2.5 bg-mono-50 border border-mono-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent"
-                    disabled={isSending}
-                  />
-                  <button
-                    onClick={sendMessage}
-                    disabled={
-                      (!inputMessage.trim() && selectedImages.length === 0) ||
-                      isSending
-                    }
-                    className="p-2.5 bg-mono-900 text-white rounded-full hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-colors"
-                    aria-label="Gửi tin nhắn"
-                  >
-                    {isSending ? (
-                      <FiLoader className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <FiSend className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
               </div>
-            </>
-          )}
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <div className="p-4 border-t border-mono-200 bg-white">
+            <div className="flex items-center gap-2">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputMessage}
+                onChange={(e) => {
+                  setInputMessage(e.target.value);
+                  handleTyping();
+                }}
+                onKeyPress={handleKeyPress}
+                placeholder="Nhập tin nhắn..."
+                className="flex-1 px-4 py-2.5 bg-mono-50 border border-mono-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent"
+                disabled={isSending || isLoading}
+              />
+              <button
+                onClick={sendMessage}
+                disabled={!inputMessage.trim() || isSending || isLoading}
+                className="p-2.5 bg-mono-900 text-white rounded-full hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-colors"
+                aria-label="Gửi tin nhắn"
+              >
+                {isSending ? (
+                  <FiLoader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <FiSend className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </div>
         </div>
+      )}
+
+      {/* Chat Button - Hiển thị khác nhau cho user và shipper */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className={`fixed bottom-6 right-24 z-50 p-4 rounded-full shadow-lg transition-all duration-300 border hover:bg-mono-50 ${
+            isShipper
+              ? "bg-blue-50 text-blue-600 border-blue-200"
+              : "bg-white text-mono-black border-mono-200"
+          }`}
+          aria-label={
+            isShipper ? "Chat hỗ trợ shipper" : "Chat hỗ trợ khách hàng"
+          }
+        >
+          {isShipper ? (
+            <FiTruck className="w-6 h-6" />
+          ) : (
+            <FiHeadphones className="w-6 h-6" />
+          )}
+        </button>
       )}
     </>
   );

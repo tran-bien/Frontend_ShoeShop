@@ -70,28 +70,32 @@ export const LoyaltyBadge = () => {
       </div>
 
       {/* Progress to Next Tier */}
-      {loyaltyInfo.nextTier && nextTierMinPoints > tierMinPoints && (
-        <div className="ml-2 flex flex-col items-end">
-          <span className="text-[10px] text-mono-500 leading-tight">
-            Còn{" "}
-            {loyaltyInfo.pointsToNextTier?.toLocaleString() ||
-              (nextTierMinPoints - loyaltyInfo.currentPoints).toLocaleString()}
-          </span>
-          <div className="w-16 h-1 bg-mono-200 rounded-full overflow-hidden mt-0.5">
-            <div
-              className="h-full bg-mono-black transition-all duration-300"
-              style={{
-                width: `${Math.min(
-                  100,
-                  ((loyaltyInfo.currentPoints - tierMinPoints) /
-                    (nextTierMinPoints - tierMinPoints)) *
-                    100
-                )}%`,
-              }}
-            />
+      {loyaltyInfo.nextTier &&
+        nextTierMinPoints !== undefined &&
+        nextTierMinPoints > tierMinPoints && (
+          <div className="ml-2 flex flex-col items-end">
+            <span className="text-[10px] text-mono-500 leading-tight">
+              Còn{" "}
+              {loyaltyInfo.pointsToNextTier?.toLocaleString() ||
+                (
+                  nextTierMinPoints - loyaltyInfo.currentPoints
+                ).toLocaleString()}
+            </span>
+            <div className="w-16 h-1 bg-mono-200 rounded-full overflow-hidden mt-0.5">
+              <div
+                className="h-full bg-mono-black transition-all duration-300"
+                style={{
+                  width: `${Math.min(
+                    100,
+                    ((loyaltyInfo.currentPoints - tierMinPoints) /
+                      (nextTierMinPoints - tierMinPoints)) *
+                      100
+                  )}%`,
+                }}
+              />
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </Link>
   );
 };

@@ -7,10 +7,7 @@ import {
   FiSearch,
   FiX,
   FiCheck,
-  FiCheckCircle,
   FiPlus,
-  FiRefreshCw,
-  FiImage,
   FiTruck,
 } from "react-icons/fi";
 import { chatService, ChatConversation } from "../../../services/ChatService";
@@ -29,11 +26,6 @@ interface Participant {
   };
 }
 
-interface ImageItem {
-  url: string;
-  public_id?: string;
-}
-
 interface ChatUser {
   _id: string;
   name: string;
@@ -43,9 +35,14 @@ interface ChatUser {
   phone?: string;
 }
 
+/**
+ * AdminChatPage - SIMPLIFIED
+ * Không có status open/close, mỗi cặp user chỉ có 1 conversation
+ */
 const AdminChatPage: React.FC = () => {
   const { user } = useAuth();
   const token = localStorage.getItem("token");
+
   const [conversations, setConversations] = useState<ChatConversation[]>([]);
   const [activeConversation, setActiveConversation] =
     useState<ChatConversation | null>(null);
@@ -56,15 +53,25 @@ const AdminChatPage: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "closed">(
-    "active"
-  );
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // New conversation modal states
+  // Refs to access latest state in socket handlers
+  const activeConversationRef = useRef<ChatConversation | null>(null);
+  const conversationsRef = useRef<ChatConversation[]>([]);
+
+  // Keep refs in sync
+  useEffect(() => {
+    activeConversationRef.current = activeConversation;
+  }, [activeConversation]);
+
+  useEffect(() => {
+    conversationsRef.current = conversations;
+  }, [conversations]);
+
+  // Modal states
   const [showNewChatModal, setShowNewChatModal] = useState(false);
   const [availableUsers, setAvailableUsers] = useState<ChatUser[]>([]);
   const [userSearchTerm, setUserSearchTerm] = useState("");
@@ -73,11 +80,7 @@ const AdminChatPage: React.FC = () => {
   >("all");
   const [loadingUsers, setLoadingUsers] = useState(false);
 
-  // Image states
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
-
-  // Auto scroll to bottom
+  // Auto scroll
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
@@ -88,122 +91,217 @@ const AdminChatPage: React.FC = () => {
 
   // Initialize Socket.IO
   useEffect(() => {
-    if (token) {
-      const socketUrl = import.meta.env.VITE_API_URL || "http://localhost:5005";
-      const newSocket = io(socketUrl, {
-        auth: { token },
-        transports: ["websocket", "polling"],
-      });
+    if (!token) return;
 
-      newSocket.on("connect", () => {
-        console.log("[AdminChat] Socket connected");
-      });
+    const socketUrl = import.meta.env.VITE_API_URL || "http://localhost:5005";
+    console.log("[AdminChat] Connecting to socket:", socketUrl);
 
-      newSocket.on(
-        "chat:newMessage",
-        (data: { message: ConversationMessage; conversationId: string }) => {
-          if (
-            activeConversation &&
-            data.conversationId === activeConversation._id
-          ) {
-            setMessages((prev) => [...prev, data.message]);
-          }
-          // Update conversation list
-          setConversations((prev) =>
-            prev.map((c) =>
-              c._id === data.conversationId
-                ? {
-                    ...c,
-                    lastMessage: {
-                      text: data.message.text,
-                      type: data.message.type,
-                      createdAt: data.message.createdAt,
-                      senderId: data.message.senderId._id,
-                    },
-                    unreadCount:
-                      activeConversation?._id === data.conversationId
-                        ? 0
-                        : (c.unreadCount || 0) + 1,
-                  }
-                : c
-            )
+    const newSocket = io(socketUrl, {
+      auth: { token },
+      transports: ["websocket", "polling"],
+    });
+
+    newSocket.on("connect", () => {
+      console.log("[AdminChat] Socket connected:", newSocket.id);
+    });
+
+    newSocket.on("disconnect", () => {
+      console.log("[AdminChat] Socket disconnected");
+    });
+
+    newSocket.on("connect_error", (error: Error) => {
+      console.error("[AdminChat] Socket error:", error);
+    });
+
+    // Listen for new messages in joined conversation rooms
+    newSocket.on(
+      "chat:newMessage",
+      (data: { message: ConversationMessage; conversationId: string }) => {
+        console.log("[AdminChat] Received chat:newMessage:", data);
+        const currentActive = activeConversationRef.current;
+
+        // Update messages if in active conversation
+        if (currentActive && data.conversationId === currentActive._id) {
+          setMessages((prev) => {
+            const exists = prev.some((m) => m._id === data.message._id);
+            if (exists) {
+              console.log("[AdminChat] Message already exists");
+              return prev;
+            }
+            console.log("[AdminChat] Adding message to state");
+            return [...prev, data.message];
+          });
+        }
+
+        // Update conversation list
+        updateConversationWithNewMessage(data.conversationId, data.message);
+      }
+    );
+
+    // Listen for notifications (messages from conversations not yet joined)
+    newSocket.on(
+      "chat:notification",
+      (data: {
+        conversationId: string;
+        message: string;
+        fullMessage?: ConversationMessage;
+      }) => {
+        console.log("[AdminChat] Received chat:notification:", data);
+
+        // Check if this is a NEW conversation not in our list
+        const existingConv = conversationsRef.current.find(
+          (c) => c._id === data.conversationId
+        );
+
+        if (!existingConv) {
+          // New conversation - reload list
+          console.log("[AdminChat] New conversation detected, reloading...");
+          loadConversations();
+        } else if (data.fullMessage) {
+          // Existing conversation - update it
+          updateConversationWithNewMessage(
+            data.conversationId,
+            data.fullMessage
           );
         }
-      );
 
-      newSocket.on("chat:notification", () => {
+        // Reload conversations to get any new ones
         loadConversations();
-      });
+      }
+    );
 
-      newSocket.on("chat:userTyping", (data: { userId: string }) => {
-        if (data.userId !== user?._id) {
-          setIsTyping(true);
-        }
-      });
+    newSocket.on("chat:userTyping", (data: { userId: string }) => {
+      if (data.userId !== user?._id) {
+        setIsTyping(true);
+      }
+    });
 
-      newSocket.on("chat:userStopTyping", () => {
-        setIsTyping(false);
-      });
+    newSocket.on("chat:userStopTyping", () => {
+      setIsTyping(false);
+    });
 
-      setSocket(newSocket);
+    setSocket(newSocket);
 
-      return () => {
-        newSocket.disconnect();
-      };
-    }
+    return () => {
+      console.log("[AdminChat] Disconnecting socket");
+      newSocket.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, activeConversation, user?._id]);
+  }, [token]);
 
-  // Load conversations
+  // Helper to update conversation list with new message
+  const updateConversationWithNewMessage = (
+    conversationId: string,
+    message: ConversationMessage
+  ) => {
+    setConversations((prev) => {
+      const currentActive = activeConversationRef.current;
+      const updated = prev.map((c) =>
+        c._id === conversationId
+          ? {
+              ...c,
+              lastMessage: {
+                text: message.text,
+                type: message.type,
+                createdAt: message.createdAt,
+                senderId: message.senderId._id,
+              },
+              unreadCount:
+                currentActive?._id === conversationId
+                  ? 0
+                  : (c.unreadCount || 0) + 1,
+            }
+          : c
+      );
+      // Sort by last message time
+      return updated.sort((a, b) => {
+        const aTime = a.lastMessage?.createdAt
+          ? new Date(a.lastMessage.createdAt).getTime()
+          : 0;
+        const bTime = b.lastMessage?.createdAt
+          ? new Date(b.lastMessage.createdAt).getTime()
+          : 0;
+        return bTime - aTime;
+      });
+    });
+  };
+
+  // Load all conversations (NO status filter)
   const loadConversations = useCallback(async () => {
     try {
       setIsLoading(true);
-      const params: { status?: string } = {};
-      if (statusFilter !== "all") {
-        params.status = statusFilter;
-      }
-      const response = await chatService.getConversations(params);
+      console.log("[AdminChat] Loading conversations...");
+
+      const response = await chatService.getConversations({});
+
       if (response.data.success && response.data.data) {
-        const data = response.data.data;
-        setConversations(data.conversations || []);
+        const convs = response.data.data.conversations || [];
+        // Sort by last message time
+        const sorted = convs.sort(
+          (a: ChatConversation, b: ChatConversation) => {
+            const aTime = a.lastMessage?.createdAt
+              ? new Date(a.lastMessage.createdAt).getTime()
+              : 0;
+            const bTime = b.lastMessage?.createdAt
+              ? new Date(b.lastMessage.createdAt).getTime()
+              : 0;
+            return bTime - aTime;
+          }
+        );
+        setConversations(sorted);
+        console.log("[AdminChat] Loaded", sorted.length, "conversations");
       }
     } catch (error) {
-      console.error("Failed to load conversations:", error);
+      console.error("[AdminChat] Failed to load conversations:", error);
     } finally {
       setIsLoading(false);
     }
-  }, [statusFilter]);
+  }, []);
 
+  // Load conversations on mount
   useEffect(() => {
     loadConversations();
   }, [loadConversations]);
 
-  // Load messages when conversation is selected
+  // Join socket room when conversation is selected
   useEffect(() => {
-    if (activeConversation) {
-      loadMessages(activeConversation._id);
-      if (socket) {
-        socket.emit(
-          "chat:join",
-          activeConversation._id,
-          (response: { success: boolean; error?: string }) => {
-            if (!response.success) {
-              console.error("[AdminChat] Join error:", response.error);
-            }
-          }
-        );
+    if (!activeConversation || !socket?.connected) return;
+
+    console.log("[AdminChat] Joining conversation:", activeConversation._id);
+
+    socket.emit(
+      "chat:join",
+      activeConversation._id,
+      (response: { success: boolean; error?: string }) => {
+        if (response.success) {
+          console.log("[AdminChat] Joined room successfully");
+        } else {
+          console.error("[AdminChat] Failed to join room:", response.error);
+        }
       }
-    }
-  }, [activeConversation, socket]);
+    );
+
+    // Load messages
+    loadMessages(activeConversation._id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeConversation?._id, socket?.connected]);
 
   const loadMessages = async (conversationId: string) => {
     try {
+      console.log("[AdminChat] Loading messages for:", conversationId);
       const response = await chatService.getMessages(conversationId, {
         limit: 100,
       });
+
       if (response.data.success && response.data.data) {
-        const data = response.data.data;
-        setMessages(data.messages || []);
+        setMessages(response.data.data.messages || []);
+        console.log(
+          "[AdminChat] Loaded",
+          response.data.data.messages?.length,
+          "messages"
+        );
+
+        // Mark as read
         await chatService.markAsRead(conversationId);
         setConversations((prev) =>
           prev.map((c) =>
@@ -212,11 +310,11 @@ const AdminChatPage: React.FC = () => {
         );
       }
     } catch (error) {
-      console.error("Failed to load messages:", error);
+      console.error("[AdminChat] Failed to load messages:", error);
     }
   };
 
-  // Load available users for new chat
+  // Load users for new chat modal
   const loadAvailableUsers = useCallback(async () => {
     try {
       setLoadingUsers(true);
@@ -232,7 +330,7 @@ const AdminChatPage: React.FC = () => {
         setAvailableUsers(response.data.data.users || []);
       }
     } catch (error) {
-      console.error("Failed to load users:", error);
+      console.error("[AdminChat] Failed to load users:", error);
       toast.error("Không thể tải danh sách người dùng");
     } finally {
       setLoadingUsers(false);
@@ -245,35 +343,30 @@ const AdminChatPage: React.FC = () => {
     }
   }, [showNewChatModal, loadAvailableUsers]);
 
-  // Create new conversation with selected user
+  // Start chat with user
   const handleStartChat = async (targetUser: ChatUser) => {
     try {
       setLoadingUsers(true);
       const response = await chatService.createConversation({
         targetUserId: targetUser._id,
       });
+
       if (response.data.success && response.data.data) {
-        const newConversation = response.data.data;
-        // Kiểm tra conversation đã tồn tại trong list chưa
-        const exists = conversations.find((c) => c._id === newConversation._id);
+        const newConv = response.data.data;
+        console.log("[AdminChat] Created/got conversation:", newConv._id);
+
+        // Check if conversation already exists in list
+        const exists = conversations.find((c) => c._id === newConv._id);
         if (!exists) {
-          setConversations((prev) => [newConversation, ...prev]);
-        } else {
-          // Update conversation trong list (có thể đã được reopen)
-          setConversations((prev) =>
-            prev.map((c) =>
-              c._id === newConversation._id ? newConversation : c
-            )
-          );
+          setConversations((prev) => [newConv, ...prev]);
         }
-        setActiveConversation(newConversation);
+
+        setActiveConversation(newConv);
         setShowNewChatModal(false);
-        // Reload conversations để có danh sách mới nhất
-        loadConversations();
-        toast.success(`Bắt đầu chat với ${targetUser.name}`);
+        toast.success(`Đã mở chat với ${targetUser.name}`);
       }
     } catch (error) {
-      console.error("Failed to create conversation:", error);
+      console.error("[AdminChat] Failed to create conversation:", error);
       toast.error("Không thể tạo cuộc hội thoại");
     } finally {
       setLoadingUsers(false);
@@ -281,17 +374,10 @@ const AdminChatPage: React.FC = () => {
   };
 
   const sendMessage = async () => {
-    const hasText = inputMessage.trim();
-    const hasImages = selectedImages.length > 0;
-
-    if ((!hasText && !hasImages) || !activeConversation || isSending) return;
+    if (!inputMessage.trim() || !activeConversation || isSending) return;
 
     const messageText = inputMessage.trim();
-    const imagesToSend = [...selectedImages];
-
     setInputMessage("");
-    setSelectedImages([]);
-    setPreviewImages([]);
     setIsSending(true);
 
     if (socket) {
@@ -299,28 +385,22 @@ const AdminChatPage: React.FC = () => {
     }
 
     try {
-      // Xác định loại tin nhắn: mixed nếu có cả text và images
-      let messageType: "text" | "image" | "mixed" = "text";
-      if (hasImages && hasText) {
-        messageType = "mixed";
-      } else if (hasImages) {
-        messageType = "image";
-      }
-
       if (socket?.connected) {
+        console.log("[AdminChat] Sending message via socket...");
+
         socket.emit(
           "chat:sendMessage",
           {
             conversationId: activeConversation._id,
-            type: messageType,
-            text: messageText || "",
-            images: imagesToSend,
+            type: "text",
+            text: messageText,
           },
           (response: {
             success: boolean;
             message?: ConversationMessage;
             error?: string;
           }) => {
+            console.log("[AdminChat] Send response:", response);
             if (!response.success) {
               toast.error(response.error || "Không thể gửi tin nhắn");
             }
@@ -328,65 +408,23 @@ const AdminChatPage: React.FC = () => {
           }
         );
       } else {
+        // HTTP fallback
+        console.log("[AdminChat] Using HTTP fallback...");
         const response = await chatService.sendMessage(activeConversation._id, {
-          type: messageType,
-          text: messageText || "",
-          images: hasImages
-            ? imagesToSend.map((img) => ({ url: img, public_id: "" }))
-            : undefined,
+          type: "text",
+          text: messageText,
         });
+
         if (response.data.success && response.data.data) {
-          const newMessage = response.data.data;
-          setMessages((prev) => [...prev, newMessage]);
+          const newMsg = response.data.data;
+          setMessages((prev) => [...prev, newMsg]);
         }
         setIsSending(false);
       }
     } catch (error) {
-      console.error("Failed to send message:", error);
+      console.error("[AdminChat] Failed to send:", error);
       toast.error("Không thể gửi tin nhắn");
       setIsSending(false);
-    }
-  };
-
-  const handleCloseConversation = async (conversationId: string) => {
-    try {
-      await chatService.closeConversation(conversationId);
-      toast.success("Đã đóng cuộc hội thoại");
-      setConversations((prev) =>
-        prev.map((c) =>
-          c._id === conversationId ? { ...c, status: "closed" } : c
-        )
-      );
-      if (activeConversation?._id === conversationId) {
-        setActiveConversation((prev) =>
-          prev ? { ...prev, status: "closed" } : null
-        );
-      }
-    } catch (error) {
-      console.error("Failed to close conversation:", error);
-      toast.error("Không thể đóng cuộc hội thoại");
-    }
-  };
-
-  const handleReopenConversation = async (conversationId: string) => {
-    try {
-      const response = await chatService.reopenConversation(conversationId);
-      if (response.data.success) {
-        toast.success("Đã mở lại cuộc hội thoại");
-        setConversations((prev) =>
-          prev.map((c) =>
-            c._id === conversationId ? { ...c, status: "active" } : c
-          )
-        );
-        if (activeConversation?._id === conversationId) {
-          setActiveConversation((prev) =>
-            prev ? { ...prev, status: "active" } : null
-          );
-        }
-      }
-    } catch (error) {
-      console.error("Failed to reopen conversation:", error);
-      toast.error("Không thể mở lại cuộc hội thoại");
     }
   };
 
@@ -411,13 +449,13 @@ const AdminChatPage: React.FC = () => {
     }
   };
 
-  // Filter conversations
+  // Filter conversations by search
   const filteredConversations = conversations.filter((conv) => {
     if (!searchTerm) return true;
-    const customerName = conv.participants.find(
+    const customer = conv.participants.find(
       (p: Participant) => p.role === "user" || p.role === "shipper"
-    )?.userId.name;
-    return customerName?.toLowerCase().includes(searchTerm.toLowerCase());
+    )?.userId;
+    return customer?.name?.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   const getCustomerInfo = (conv: ChatConversation) => {
@@ -446,10 +484,10 @@ const AdminChatPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-mono-50">
-      <div className="flex h-[calc(100vh-80px)]">
-        {/* Sidebar - Conversation List */}
-        <div className="w-80 bg-white border-r border-mono-200 flex flex-col">
+    <div className="h-full bg-mono-50">
+      <div className="flex h-full">
+        {/* Sidebar */}
+        <div className="w-80 bg-white border-r border-mono-200 flex flex-col h-full">
           {/* Header */}
           <div className="p-4 border-b border-mono-200">
             <div className="flex items-center justify-between mb-4">
@@ -464,36 +502,15 @@ const AdminChatPage: React.FC = () => {
             </div>
 
             {/* Search */}
-            <div className="relative mb-3">
+            <div className="relative">
               <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-mono-400" />
               <input
                 type="text"
-                placeholder="Tìm kiếm khách hàng..."
+                placeholder="Tìm kiếm..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-mono-50 border border-mono-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mono-900"
               />
-            </div>
-
-            {/* Status Filter */}
-            <div className="flex gap-2">
-              {(["all", "active", "closed"] as const).map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setStatusFilter(status)}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
-                    statusFilter === status
-                      ? "bg-mono-900 text-white"
-                      : "bg-mono-100 text-mono-600 hover:bg-mono-200"
-                  }`}
-                >
-                  {status === "all"
-                    ? "Tất cả"
-                    : status === "active"
-                    ? "Đang mở"
-                    : "Đã đóng"}
-                </button>
-              ))}
             </div>
           </div>
 
@@ -506,12 +523,12 @@ const AdminChatPage: React.FC = () => {
             ) : filteredConversations.length === 0 ? (
               <div className="text-center text-mono-500 py-10">
                 <FiMessageCircle className="w-10 h-10 mx-auto mb-3 text-mono-300" />
-                <p>Không có cuộc hội thoại nào</p>
+                <p>Không có cuộc hội thoại</p>
                 <button
                   onClick={() => setShowNewChatModal(true)}
                   className="mt-4 px-4 py-2 text-sm bg-mono-900 text-white rounded-lg hover:bg-mono-800"
                 >
-                  Bắt đầu chat mới
+                  Bắt đầu chat
                 </button>
               </div>
             ) : (
@@ -522,6 +539,7 @@ const AdminChatPage: React.FC = () => {
                     (p: Participant) =>
                       p.role === "user" || p.role === "shipper"
                   )?.role;
+
                   return (
                     <button
                       key={conv._id}
@@ -545,9 +563,7 @@ const AdminChatPage: React.FC = () => {
                               <FiUser className="w-5 h-5 text-mono-500" />
                             )}
                           </div>
-                          {conv.status === "active" && (
-                            <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
-                          )}
+                          <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
@@ -562,14 +578,9 @@ const AdminChatPage: React.FC = () => {
                           </div>
                           <div className="flex items-center gap-2 mt-0.5">
                             {customerRole && getRoleBadge(customerRole)}
-                            {conv.status === "closed" && (
-                              <span className="px-1.5 py-0.5 text-[10px] bg-red-100 text-red-700 rounded">
-                                Đã đóng
-                              </span>
-                            )}
                           </div>
                           <p className="text-sm text-mono-500 truncate mt-1">
-                            {conv.lastMessage?.text || "Bắt đầu cuộc hội thoại"}
+                            {conv.lastMessage?.text || "Bắt đầu trò chuyện"}
                           </p>
                         </div>
                       </div>
@@ -591,14 +602,14 @@ const AdminChatPage: React.FC = () => {
                   Chọn cuộc hội thoại
                 </h3>
                 <p className="text-mono-500 mb-4">
-                  Chọn một cuộc hội thoại từ danh sách bên trái để bắt đầu
+                  Chọn từ danh sách bên trái để bắt đầu
                 </p>
                 <button
                   onClick={() => setShowNewChatModal(true)}
                   className="px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 inline-flex items-center gap-2"
                 >
                   <FiPlus className="w-4 h-4" />
-                  Tạo cuộc hội thoại mới
+                  Tạo cuộc hội thoại
                 </button>
               </div>
             </div>
@@ -637,35 +648,12 @@ const AdminChatPage: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {activeConversation.status === "active" ? (
-                      <button
-                        onClick={() =>
-                          handleCloseConversation(activeConversation._id)
-                        }
-                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-mono-600 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors"
-                      >
-                        <FiCheckCircle className="w-4 h-4" />
-                        Đóng hội thoại
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() =>
-                          handleReopenConversation(activeConversation._id)
-                        }
-                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-green-600 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors"
-                      >
-                        <FiRefreshCw className="w-4 h-4" />
-                        Mở lại
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setActiveConversation(null)}
-                      className="p-2 text-mono-500 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors md:hidden"
-                    >
-                      <FiX className="w-5 h-5" />
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setActiveConversation(null)}
+                    className="p-2 text-mono-500 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors md:hidden"
+                  >
+                    <FiX className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
 
@@ -692,23 +680,9 @@ const AdminChatPage: React.FC = () => {
                             {msg.senderId.name}
                           </p>
                         )}
-                        {msg.images && msg.images.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-2">
-                            {msg.images.map((img: ImageItem, idx: number) => (
-                              <img
-                                key={idx}
-                                src={img.url}
-                                alt="Chat image"
-                                className="max-w-[200px] rounded-lg"
-                              />
-                            ))}
-                          </div>
-                        )}
-                        {msg.text && (
-                          <p className="text-sm whitespace-pre-wrap">
-                            {msg.text}
-                          </p>
-                        )}
+                        <p className="text-sm whitespace-pre-wrap">
+                          {msg.text}
+                        </p>
                         <div
                           className={`flex items-center gap-1 mt-1 ${
                             isOwn ? "justify-end" : ""
@@ -755,142 +729,35 @@ const AdminChatPage: React.FC = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Image Preview */}
-              {previewImages.length > 0 && (
-                <div className="px-4 py-2 border-t border-mono-200 bg-mono-50">
-                  <div className="flex flex-wrap gap-2">
-                    {previewImages.map((img, idx) => (
-                      <div key={idx} className="relative">
-                        <img
-                          src={img}
-                          alt={`Preview ${idx + 1}`}
-                          className="w-16 h-16 object-cover rounded-lg"
-                        />
-                        <button
-                          onClick={() => {
-                            setPreviewImages((prev) =>
-                              prev.filter((_, i) => i !== idx)
-                            );
-                            setSelectedImages((prev) =>
-                              prev.filter((_, i) => i !== idx)
-                            );
-                          }}
-                          className="absolute -top-1 -right-1 w-5 h-5 bg-mono-900 text-white rounded-full text-xs flex items-center justify-center hover:bg-mono-700"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               {/* Input */}
-              {activeConversation.status === "active" ? (
-                <div className="p-4 border-t border-mono-200 bg-white">
-                  <div className="flex items-center gap-2">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className="hidden"
-                      onChange={(e) => {
-                        const files = e.target.files;
-                        if (files) {
-                          const remainingSlots = 10 - selectedImages.length;
-                          const filesToProcess = Math.min(
-                            files.length,
-                            remainingSlots
-                          );
-
-                          if (files.length > remainingSlots) {
-                            toast.error("Chỉ được gửi tối đa 10 ảnh");
-                          }
-
-                          const newImages: string[] = [];
-                          const newPreviews: string[] = [];
-
-                          for (let i = 0; i < filesToProcess; i++) {
-                            const file = files[i];
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                              const base64 = event.target?.result as string;
-                              newImages.push(base64);
-                              newPreviews.push(base64);
-
-                              if (newImages.length === filesToProcess) {
-                                setSelectedImages((prev) => [
-                                  ...prev,
-                                  ...newImages,
-                                ]);
-                                setPreviewImages((prev) => [
-                                  ...prev,
-                                  ...newPreviews,
-                                ]);
-                              }
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        }
-                        e.target.value = "";
-                      }}
-                    />
-
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={isSending || selectedImages.length >= 10}
-                      className="p-2.5 text-mono-600 hover:text-mono-900 hover:bg-mono-100 rounded-full disabled:text-mono-300 disabled:cursor-not-allowed transition-colors"
-                      title="Đính kèm ảnh"
-                    >
-                      <FiImage className="w-5 h-5" />
-                    </button>
-
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={inputMessage}
-                      onChange={(e) => {
-                        setInputMessage(e.target.value);
-                        handleTyping();
-                      }}
-                      onKeyPress={handleKeyPress}
-                      placeholder="Nhập tin nhắn..."
-                      className="flex-1 px-4 py-2.5 bg-mono-50 border border-mono-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent"
-                      disabled={isSending}
-                    />
-                    <button
-                      onClick={sendMessage}
-                      disabled={
-                        (!inputMessage.trim() && selectedImages.length === 0) ||
-                        isSending
-                      }
-                      className="p-2.5 bg-mono-900 text-white rounded-full hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-colors"
-                    >
-                      {isSending ? (
-                        <FiLoader className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <FiSend className="w-5 h-5" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-4 border-t border-mono-200 bg-mono-100 text-center">
-                  <p className="text-mono-500 mb-2">
-                    Cuộc hội thoại này đã đóng
-                  </p>
+              <div className="p-4 border-t border-mono-200 bg-white">
+                <div className="flex items-center gap-2">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={inputMessage}
+                    onChange={(e) => {
+                      setInputMessage(e.target.value);
+                      handleTyping();
+                    }}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Nhập tin nhắn..."
+                    className="flex-1 px-4 py-2.5 bg-mono-50 border border-mono-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-mono-900 focus:border-transparent"
+                    disabled={isSending}
+                  />
                   <button
-                    onClick={() =>
-                      handleReopenConversation(activeConversation._id)
-                    }
-                    className="px-4 py-2 text-sm bg-mono-900 text-white rounded-lg hover:bg-mono-800 inline-flex items-center gap-2"
+                    onClick={sendMessage}
+                    disabled={!inputMessage.trim() || isSending}
+                    className="p-2.5 bg-mono-900 text-white rounded-full hover:bg-mono-800 disabled:bg-mono-300 disabled:cursor-not-allowed transition-colors"
                   >
-                    <FiRefreshCw className="w-4 h-4" />
-                    Mở lại hội thoại
+                    {isSending ? (
+                      <FiLoader className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <FiSend className="w-5 h-5" />
+                    )}
                   </button>
                 </div>
-              )}
+              </div>
             </>
           )}
         </div>
@@ -950,7 +817,7 @@ const AdminChatPage: React.FC = () => {
               ) : availableUsers.length === 0 ? (
                 <div className="text-center text-mono-500 py-10">
                   <FiUser className="w-10 h-10 mx-auto mb-3 text-mono-300" />
-                  <p>Không tìm thấy người dùng nào</p>
+                  <p>Không tìm thấy người dùng</p>
                 </div>
               ) : (
                 <div className="divide-y divide-mono-100">
@@ -982,11 +849,6 @@ const AdminChatPage: React.FC = () => {
                           <p className="text-sm text-mono-500 truncate">
                             {chatUser.email}
                           </p>
-                          {chatUser.phone && (
-                            <p className="text-xs text-mono-400">
-                              {chatUser.phone}
-                            </p>
-                          )}
                         </div>
                         <FiMessageCircle className="w-5 h-5 text-mono-400" />
                       </div>

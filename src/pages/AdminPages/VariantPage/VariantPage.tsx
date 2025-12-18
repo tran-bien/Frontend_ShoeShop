@@ -573,8 +573,8 @@ const VariantPage: React.FC = () => {
                           v.inventorySummary.sizeInventory.length > 0 ? (
                             (() => {
                               const prices = v.inventorySummary.sizeInventory
-                                .map((s) => s.finalPrice)
-                                .filter((p) => p > 0);
+                                .map((s) => s.finalPrice ?? s.sellingPrice ?? 0)
+                                .filter((p): p is number => p > 0);
                               if (prices.length === 0) {
                                 return (
                                   <span className="text-sm text-mono-400 italic">
@@ -1016,7 +1016,7 @@ const VariantPage: React.FC = () => {
             </button>
             <VariantImagesManager
               variantId={showImageManager}
-              images={variantImages}
+              images={variantImages || []}
               reloadImages={async () => {
                 // Gọi lại API lấy variant theo id
                 const res = await adminVariantService.getVariantById(

@@ -3,17 +3,35 @@ import { toast } from "react-hot-toast";
 import { productImageService } from "../../../services/ImageService";
 import { useAuth } from "../../../hooks/useAuth";
 import type { Image } from "../../../types/image";
+import type { ProductImage } from "../../../types/common";
+
+// Accept both Image and ProductImage types
+type ImageInput = Image | ProductImage;
 
 const ProductImagesManager = ({
   productId,
   images,
+  reloadImages: _reloadImages,
 }: {
   productId: string;
-  images: Image[];
+  images: ImageInput[];
+  reloadImages?: () => Promise<void>;
 }) => {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [localImages, setLocalImages] = useState<Image[]>(images);
+  // Normalize images to Image type
+  const normalizeImages = (imgs: ImageInput[]): Image[] =>
+    imgs.map((img) => ({
+      _id: (img as Image)._id || (img as ProductImage).public_id,
+      url: img.url,
+      publicId: (img as Image).publicId || (img as ProductImage).public_id,
+      displayOrder: img.displayOrder,
+      isMain: img.isMain,
+      alt: img.alt,
+    }));
+  const [localImages, setLocalImages] = useState<Image[]>(
+    normalizeImages(images)
+  );
   const [uploading, setUploading] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -26,7 +44,7 @@ const ProductImagesManager = ({
   const { canManageImages } = useAuth();
 
   useEffect(() => {
-    setLocalImages(images);
+    setLocalImages(normalizeImages(images));
   }, [images]);
 
   // Tạo preview URL khi chọn file
