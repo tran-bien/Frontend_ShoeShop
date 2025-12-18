@@ -24,7 +24,6 @@ import {
 import { toast } from "react-hot-toast";
 import { shipperService } from "../../services/ShipperService";
 import { useAuth } from "../../hooks/useAuth";
-import type { Order } from "../../types/order";
 
 // Default avatar URL
 const DEFAULT_AVATAR =
@@ -33,9 +32,9 @@ const DEFAULT_AVATAR =
 // Interface cho local stats (không có trong types vì tính từ orders)
 interface LocalShipperStats {
   totalOrders: number;
-  delivered: number;
-  failed: number;
-  inProgress: number;
+  completedOrders: number;
+  failedOrders: number;
+  activeOrders: number;
   successRate: string;
 }
 
@@ -58,34 +57,18 @@ const ShipperProfilePage = () => {
     try {
       setLoading(true);
 
-      // Fetch orders to calculate stats
-      const ordersResponse = await shipperService.getMyOrders();
+      // Fetch stats from backend API
+      const statsResponse = await shipperService.getMyStats();
       /* eslint-disable @typescript-eslint/no-explicit-any */
-      const ordersResponseData =
-        (ordersResponse.data as any)?.data || ordersResponse.data;
-      const ordersData = ordersResponseData?.orders || ordersResponseData || [];
-      const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
+      const statsData = (statsResponse.data as any)?.data?.stats || {};
       /* eslint-enable @typescript-eslint/no-explicit-any */
 
-      // Calculate stats
-      const totalOrders = orders.length;
-      const delivered = orders.filter((o) => o.status === "delivered").length;
-      const failed = orders.filter(
-        (o) => o.status === "delivery_failed"
-      ).length;
-      const inProgress = orders.filter(
-        (o) =>
-          o.status === "assigned_to_shipper" || o.status === "out_for_delivery"
-      ).length;
-      const successRate =
-        totalOrders > 0 ? ((delivered / totalOrders) * 100).toFixed(1) : "0";
-
       setStats({
-        totalOrders,
-        delivered,
-        failed,
-        inProgress,
-        successRate,
+        totalOrders: statsData.totalOrders || 0,
+        completedOrders: statsData.completedOrders || 0,
+        failedOrders: statsData.failedOrders || 0,
+        activeOrders: statsData.activeOrders || 0,
+        successRate: statsData.successRate || "0",
       });
 
       // Get availability from user context (from login response)
@@ -454,7 +437,7 @@ const ShipperProfilePage = () => {
                   <span className="text-sm text-emerald-700">Đã giao</span>
                 </div>
                 <span className="font-bold text-emerald-700">
-                  {stats?.delivered || 0}
+                  {stats?.completedOrders || 0}
                 </span>
               </div>
 
@@ -465,7 +448,7 @@ const ShipperProfilePage = () => {
                   <span className="text-sm text-rose-700">Thất bại</span>
                 </div>
                 <span className="font-bold text-rose-700">
-                  {stats?.failed || 0}
+                  {stats?.failedOrders || 0}
                 </span>
               </div>
 
@@ -476,7 +459,7 @@ const ShipperProfilePage = () => {
                   <span className="text-sm text-amber-700">Đang giao</span>
                 </div>
                 <span className="font-bold text-amber-700">
-                  {stats?.inProgress || 0}
+                  {stats?.activeOrders || 0}
                 </span>
               </div>
 

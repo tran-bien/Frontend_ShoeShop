@@ -115,7 +115,7 @@ const AssignOrderModal = ({
           const shipperInfo = s.shipper || {};
           const isAvailable = shipperInfo.isAvailable === true;
           const activeOrders = shipperInfo.activeOrders || 0;
-          const maxOrders = shipperInfo.maxOrders || 20;
+          const maxOrders = shipperInfo.maxOrders || 50;
           const deliveryStats = shipperInfo.deliveryStats || { successful: 0 };
 
           return {

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { adminShipperService } from "../../../services/ShipperService";
 import type { Shipper } from "../../../types/shipper";
 
@@ -7,15 +7,19 @@ interface Props {
   onClose: () => void;
 }
 
+interface ShipperStats {
+  totalOrders: number;
+  completedOrders: number;
+  failedOrders: number;
+  activeOrders: number;
+  successRate: string | number;
+}
+
 const ShipperDetailModal = ({ shipper, onClose }: Props) => {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<ShipperStats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       setLoading(true);
       const response = await adminShipperService.getShipperStats(shipper._id);
@@ -25,7 +29,11 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [shipper._id]);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
 
   const getSuccessRate = () => {
     if (!stats || stats.totalOrders === 0) return 0;
@@ -92,53 +100,64 @@ const ShipperDetailModal = ({ shipper, onClose }: Props) => {
           <h3 className="font-semibold text-mono-800 mb-3">
             Công suất làm việc
           </h3>
-          <div className="grid grid-cols-2 gap-4 text-sm mb-3">
-            <div>
-              <span className="text-mono-600">Đơn đang giao:</span>{" "}
-              <strong className="text-mono-black">
-                {shipper.shipper.activeOrders}
-              </strong>
-            </div>
-            <div>
-              <span className="text-mono-600">Giới hạn đơn:</span>{" "}
-              <strong>{shipper.shipper.maxOrders}</strong>
-            </div>
-          </div>
-          {/* Capacity Bar */}
-          <div>
-            <div className="flex justify-between text-xs text-mono-600 mb-1">
-              <span>Công suất</span>
-              <span>
-                {(
-                  (shipper.shipper.activeOrders / shipper.shipper.maxOrders) *
-                  100
-                ).toFixed(0)}
-                %
-              </span>
-            </div>
-            <div className="bg-mono-200 rounded-full h-3 overflow-hidden">
-              <div
-                className={`h-full ${
-                  (shipper.shipper.activeOrders / shipper.shipper.maxOrders) *
-                    100 >=
-                  80
-                    ? "bg-mono-800"
-                    : (shipper.shipper.activeOrders /
-                        shipper.shipper.maxOrders) *
+          {loading ? (
+            <div className="text-center py-4 text-mono-500">Đang tải...</div>
+          ) : stats ? (
+            <>
+              <div className="grid grid-cols-2 gap-4 text-sm mb-3">
+                <div>
+                  <span className="text-mono-600">Đơn đang giao:</span>{" "}
+                  <strong className="text-mono-black">
+                    {stats.activeOrders || 0}
+                  </strong>
+                </div>
+                <div>
+                  <span className="text-mono-600">Giới hạn đơn:</span>{" "}
+                  <strong>{shipper.shipper.maxOrders}</strong>
+                </div>
+              </div>
+              {/* Capacity Bar */}
+              <div>
+                <div className="flex justify-between text-xs text-mono-600 mb-1">
+                  <span>Công suất</span>
+                  <span>
+                    {(
+                      ((stats.activeOrders || 0) / shipper.shipper.maxOrders) *
+                      100
+                    ).toFixed(0)}
+                    %
+                  </span>
+                </div>
+                <div className="bg-mono-200 rounded-full h-3 overflow-hidden">
+                  <div
+                    className={`h-full ${
+                      ((stats.activeOrders || 0) / shipper.shipper.maxOrders) *
                         100 >=
-                      50
-                    ? "bg-mono-1000"
-                    : "bg-mono-700"
-                }`}
-                style={{
-                  width: `${
-                    (shipper.shipper.activeOrders / shipper.shipper.maxOrders) *
-                    100
-                  }%`,
-                }}
-              />
+                      80
+                        ? "bg-mono-800"
+                        : ((stats.activeOrders || 0) /
+                            shipper.shipper.maxOrders) *
+                            100 >=
+                          50
+                        ? "bg-mono-1000"
+                        : "bg-mono-700"
+                    }`}
+                    style={{
+                      width: `${
+                        ((stats.activeOrders || 0) /
+                          shipper.shipper.maxOrders) *
+                        100
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-4 text-mono-800">
+              Không thể tải dữ liệu
             </div>
-          </div>
+          )}
         </div>
 
         {/* Statistics */}

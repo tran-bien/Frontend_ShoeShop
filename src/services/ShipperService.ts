@@ -71,6 +71,10 @@ export const shipperService = {
   updateAvailability: (isAvailable: boolean): Promise<{ data: ApiResponse }> =>
     axiosInstanceAuth.patch("/api/v1/shipper/availability", { isAvailable }),
 
+  // Lấy thống kê của chính shipper
+  getMyStats: (): Promise<{ data: ShipperStatsResponse }> =>
+    axiosInstanceAuth.get("/api/v1/shipper/stats"),
+
   // Cập nhật thông tin cá nhân shipper (phone, name)
   updateProfile: (data: {
     phone?: string;

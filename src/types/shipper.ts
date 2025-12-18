@@ -25,7 +25,7 @@ export interface ShipperDeliveryStats {
 export interface ShipperInfo {
   isAvailable: boolean; // Trạng thái sẵn sàng nhận đơn
   activeOrders: number; // Số đơn đang giao
-  maxOrders: number; // Số đơn tối đa có thể nhận (default: 20)
+  maxOrders: number; // Số đơn tối đa có thể nhận (default: 50)
   deliveryStats: ShipperDeliveryStats;
   currentLocation?: {
     latitude?: number;

@@ -173,6 +173,7 @@ const MyOrdersPage = () => {
         .length,
       delivered: orders.filter((o) => o.status === "delivered").length,
       cancelled: orders.filter((o) => o.status === "cancelled").length,
+      returning_to_warehouse: orders.filter((o) => o.status === "returning_to_warehouse").length,
     };
   };
 
@@ -279,9 +280,9 @@ const MyOrdersPage = () => {
             },
             { key: "delivered", label: "Đã giao", count: counts.delivered },
             {
-              key: "cancelled",
-              label: "Thất bại",
-              count: counts.cancelled,
+              key: "returning_to_warehouse",
+              label: "Thất bại đang về kho",
+              count: counts.returning_to_warehouse,
             },
           ] as { key: ShipperStatusTab; label: string; count: number }[]
         ).map((tab) => (
