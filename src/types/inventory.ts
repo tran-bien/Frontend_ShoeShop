@@ -124,6 +124,9 @@ export interface InventoryTransaction {
   quantityChange: number;
   quantityAfter: number;
   costPrice: number;
+  // Tracking giá vốn trung bình (Weighted Average Cost)
+  averageCostPriceBefore?: number;
+  averageCostPriceAfter?: number;
   totalCost: number;
   targetProfitPercent?: number;
   percentDiscount?: number;

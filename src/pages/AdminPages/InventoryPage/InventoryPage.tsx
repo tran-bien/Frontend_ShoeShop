@@ -61,6 +61,13 @@ const InventoryPage = () => {
     totalQuantity: number;
     totalValue: number;
     variantCount: number;
+    // Pricing info
+    avgCostPrice: number;
+    avgSellingPrice: number;
+    avgFinalPrice: number;
+    avgDiscountPercent: number;
+    expectedProfit: number;
+    profitMargin: number;
   } | null>(null);
 
   // Modals
@@ -119,10 +126,59 @@ const InventoryPage = () => {
           0
         );
         const variantIds = new Set(items.map((item) => item.variant?._id));
+
+        // Calculate weighted average prices
+        const totalWeightedCostPrice = items.reduce(
+          (sum, item) => sum + item.quantity * (item.averageCostPrice || 0),
+          0
+        );
+        const totalWeightedSellingPrice = items.reduce(
+          (sum, item) => sum + item.quantity * (item.sellingPrice || 0),
+          0
+        );
+        const totalWeightedFinalPrice = items.reduce(
+          (sum, item) => sum + item.quantity * (item.finalPrice || 0),
+          0
+        );
+        const totalWeightedDiscount = items.reduce(
+          (sum, item) => sum + item.quantity * (item.percentDiscount || 0),
+          0
+        );
+
+        const avgCostPrice =
+          totalQuantity > 0 ? totalWeightedCostPrice / totalQuantity : 0;
+        const avgSellingPrice =
+          totalQuantity > 0 ? totalWeightedSellingPrice / totalQuantity : 0;
+        const avgFinalPrice =
+          totalQuantity > 0 ? totalWeightedFinalPrice / totalQuantity : 0;
+        const avgDiscountPercent =
+          totalQuantity > 0 ? totalWeightedDiscount / totalQuantity : 0;
+
+        // Calculate expected profit
+        const expectedProfit = items.reduce(
+          (sum, item) =>
+            sum +
+            item.quantity *
+              ((item.finalPrice || 0) - (item.averageCostPrice || 0)),
+          0
+        );
+
+        // Calculate profit margin
+        const profitMargin =
+          avgFinalPrice > 0
+            ? ((avgFinalPrice - avgCostPrice) / avgFinalPrice) * 100
+            : 0;
+
         setProductSummary({
           totalQuantity,
           totalValue,
           variantCount: variantIds.size,
+          avgCostPrice: Math.round(avgCostPrice),
+          avgSellingPrice: Math.round(avgSellingPrice),
+          avgFinalPrice: Math.round(avgFinalPrice),
+          avgDiscountPercent: Math.round(avgDiscountPercent * 10) / 10,
+          expectedProfit: Math.round(expectedProfit),
+          profitMargin: Math.round(profitMargin * 10) / 10,
         });
       } else {
         setProductSummary(null);
@@ -447,7 +503,9 @@ const InventoryPage = () => {
               </span>
             )}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          {/* Row 1: Inventory Info */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div className="bg-white p-3 rounded-lg shadow-sm">
               <p className="text-sm text-mono-500">Tổng số lượng tồn</p>
               <p className="text-2xl font-bold text-mono-800">
@@ -455,7 +513,7 @@ const InventoryPage = () => {
               </p>
             </div>
             <div className="bg-white p-3 rounded-lg shadow-sm">
-              <p className="text-sm text-mono-500">Giá trị tồn kho</p>
+              <p className="text-sm text-mono-500">Giá trị tồn kho (giá vốn)</p>
               <p className="text-2xl font-bold text-mono-800">
                 {productSummary.totalValue.toLocaleString("vi-VN")}đ
               </p>
@@ -468,6 +526,12 @@ const InventoryPage = () => {
                 </p>
               </div>
             )}
+            <div className="bg-white p-3 rounded-lg shadow-sm border-l-4 border-green-500">
+              <p className="text-sm text-mono-500">Lợi nhuận dự kiến</p>
+              <p className="text-2xl font-bold text-green-600">
+                {productSummary.expectedProfit.toLocaleString("vi-VN")}đ
+              </p>
+            </div>
           </div>
         </div>
       )}

@@ -573,7 +573,7 @@ const VariantPage: React.FC = () => {
                           v.inventorySummary.sizeInventory.length > 0 ? (
                             (() => {
                               const prices = v.inventorySummary.sizeInventory
-                                .map((s) => s.sellingPrice)
+                                .map((s) => s.finalPrice)
                                 .filter((p) => p > 0);
                               if (prices.length === 0) {
                                 return (

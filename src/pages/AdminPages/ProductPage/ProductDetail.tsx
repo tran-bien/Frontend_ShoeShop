@@ -587,19 +587,6 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                             </div>
                             <div className="bg-white rounded-lg p-2 border border-mono-200">
                               <div className="text-xs text-mono-500">
-                                Giá bán
-                              </div>
-                              <div className="text-lg font-bold text-green-600">
-                                {(
-                                  variant as any
-                                ).inventorySummary.finalPrice?.toLocaleString(
-                                  "vi-VN"
-                                ) || 0}
-                                đ
-                              </div>
-                            </div>
-                            <div className="bg-white rounded-lg p-2 border border-mono-200">
-                              <div className="text-xs text-mono-500">
                                 Giá trị tồn
                               </div>
                               <div className="text-lg font-bold text-blue-600">

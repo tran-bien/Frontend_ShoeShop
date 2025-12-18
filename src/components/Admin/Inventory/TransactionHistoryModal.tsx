@@ -145,6 +145,12 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                       Số lượng
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+                      Giá vốn lô
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
+                      Giá vốn TB
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
                       Người thực hiện
                     </th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-mono-500 uppercase tracking-wider">
@@ -180,6 +186,33 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
                             {transaction.quantityBefore} →{" "}
                             {transaction.quantityAfter}
                           </div>
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-700">
+                          {transaction.costPrice?.toLocaleString("vi-VN")}đ
+                        </td>
+                        <td className="px-4 py-3 whitespace-nowrap text-sm">
+                          {transaction.type === "IN" ? (
+                            <div className="space-y-1">
+                              <div className="text-xs text-mono-500">
+                                Trước:{" "}
+                                {(
+                                  transaction.averageCostPriceBefore || 0
+                                ).toLocaleString("vi-VN")}
+                                đ
+                              </div>
+                              <div className="font-medium text-green-700">
+                                Sau:{" "}
+                                {(
+                                  transaction.averageCostPriceAfter ||
+                                  transaction.costPrice ||
+                                  0
+                                ).toLocaleString("vi-VN")}
+                                đ
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-mono-400">-</span>
+                          )}
                         </td>
                         <td className="px-4 py-3 whitespace-nowrap text-sm text-mono-900">
                           {transaction.performedBy?.name || "N/A"}
