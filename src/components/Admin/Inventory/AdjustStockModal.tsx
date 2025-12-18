@@ -11,10 +11,14 @@ interface Props {
 
 // Các lý do điều chỉnh tồn kho (theo logic BE)
 const ADJUST_REASONS = [
+  { value: "restock", label: "Nhập hàng bổ sung" },
+  { value: "manual", label: "Điều chỉnh thủ công" },
+  { value: "sale", label: "Bán hàng" },
+  { value: "return", label: "Hàng trả lại" },
   { value: "adjustment", label: "Kiểm kê điều chỉnh" },
   { value: "damage", label: "Hàng hư hỏng/mất mát" },
-  { value: "inventory_count", label: "Kiểm kê định kỳ" },
-  { value: "correction", label: "Sửa sai số liệu" },
+  { value: "lost", label: "Hàng mất" },
+  { value: "other", label: "Khác" },
 ];
 
 const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {

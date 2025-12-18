@@ -95,22 +95,22 @@ const InventoryDetailModal = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl m-4 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-mono-800 to-mono-900 text-white p-6 rounded-t-xl border-b border-mono-700">
+        <div className="sticky top-0 bg-white text-black p-6 rounded-t-xl border-b border-mono-200">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="bg-white/10 backdrop-blur-sm p-2 rounded-lg">
-                <CubeIcon className="w-6 h-6" />
+              <div className="bg-mono-100 p-2 rounded-lg">
+                <CubeIcon className="w-6 h-6 text-mono-800" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold">Chi tiết tồn kho</h2>
-                <p className="text-sm text-mono-200 mt-1">
+                <p className="text-sm text-mono-600 mt-1">
                   SKU: {item.sku || "N/A"}
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="text-white hover:bg-white/10 rounded-lg p-2 transition-colors"
+              className="text-mono-800 hover:bg-mono-100 rounded-lg p-2 transition-colors"
             >
               <XMarkIcon className="w-6 h-6" />
             </button>
@@ -304,10 +304,3 @@ const InventoryDetailModal = ({
 };
 
 export default InventoryDetailModal;
-
-
-
-
-
-
-

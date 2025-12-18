@@ -63,7 +63,6 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
       restock: "Nhập hàng bổ sung",
       sale: "Xuất bán",
       return: "Trả hàng",
-      exchange: "Đổi hàng",
       damage: "Hàng hỏng",
       adjustment: "Điều chỉnh kiểm kê",
       other: "Khác",
@@ -85,7 +84,7 @@ const TransactionHistoryModal = ({ item, onClose }: Props) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto p-4">
       <div className="bg-white rounded-lg p-6 w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
         <div className="flex justify-between items-center mb-6 flex-shrink-0">
-          <h2 className="text-2xl font-bold text-mono-800">Lịch sử nhập kho</h2>
+          <h2 className="text-2xl font-bold text-mono-800">Lịch sử kho</h2>
           <button
             onClick={onClose}
             className="text-mono-500 hover:text-mono-700 text-2xl font-bold"

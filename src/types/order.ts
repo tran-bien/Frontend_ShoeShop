@@ -43,15 +43,6 @@ export interface OrderItem {
   quantity: number;
   price: number;
   image: string;
-  hasBeenExchanged?: boolean;
-  exchangeHistory?: Array<{
-    returnRequestId: string;
-    exchangedAt: string;
-    fromVariant: string;
-    fromSize: string;
-    toVariant: string;
-    toSize: string;
-  }>;
 }
 
 // =======================

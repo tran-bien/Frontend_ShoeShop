@@ -274,7 +274,7 @@ const UserManageOrder: React.FC = () => {
     );
   };
 
-  // Check if order can request return/exchange (delivered within 7 days, no existing return request)
+  // Check if order can request return (delivered within 7 days, no existing return request)
   const canRequestReturn = (order: Order) => {
     if (order.status !== "delivered" || !order.deliveredAt) return false;
 
