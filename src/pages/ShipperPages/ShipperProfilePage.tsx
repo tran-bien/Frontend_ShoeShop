@@ -148,7 +148,7 @@ const ShipperProfilePage = () => {
     // Validate phone format (Vietnamese phone) - khớp với backend validator
     const phoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
     if (!phoneRegex.test(phoneValue.replace(/\s/g, ""))) {
-      toast.error("Số điện thoại không hợp lệ (VD: 0901234567)");
+      toast.error("Số điện thoại không hợp lệ");
       return;
     }
 

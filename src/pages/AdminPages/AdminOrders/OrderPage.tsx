@@ -982,10 +982,10 @@ const ListOrderPage: React.FC = () => {
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl relative max-h-[90vh] overflow-hidden">
             {/* Modal Header */}
-            <div className="bg-mono-900 text-white px-6 py-4 flex items-center justify-between">
+            <div className="bg-white text-mono-900 px-6 py-4 flex items-center justify-between border-b border-mono-200">
               <div>
                 <h3 className="text-lg font-semibold">Chi tiết đơn hàng</h3>
-                <p className="text-mono-300 text-sm font-mono">
+                <p className="text-mono-500 text-sm font-mono">
                   #{selectedOrder.orderCode.slice(-8).toUpperCase()}
                 </p>
               </div>

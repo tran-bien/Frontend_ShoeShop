@@ -79,6 +79,12 @@ const MyOrdersPage = () => {
   const [filterStatus, setFilterStatus] = useState<ShipperStatusTab>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [pendingAction, setPendingAction] = useState<{
+    orderId: string;
+    status: UpdateDeliveryStatusData["status"];
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
     fetchOrders();
@@ -186,24 +192,38 @@ const MyOrdersPage = () => {
     e.stopPropagation();
 
     const confirmMessages: Record<string, string> = {
-      out_for_delivery: "Xác nhận bắt đầu giao hàng?",
-      delivered: "Xác nhận đã giao hàng thành công?",
-      delivery_failed: "Xác nhận giao hàng thất bại?",
+      out_for_delivery: "Bạn có chắc chắn muốn bắt đầu giao hàng không?",
+      delivered: "Bạn có chắc chắn đã giao hàng thành công không?",
+      delivery_failed: "Bạn có chắc chắn giao hàng thất bại không?",
     };
 
-    if (!window.confirm(confirmMessages[newStatus])) return;
+    // Hiển thị modal xác nhận
+    setPendingAction({
+      orderId,
+      status: newStatus,
+      message: confirmMessages[newStatus],
+    });
+    setShowConfirmModal(true);
+  };
+
+  const confirmQuickAction = async () => {
+    if (!pendingAction) return;
 
     try {
-      setUpdatingOrderId(orderId);
-      await shipperService.updateDeliveryStatus(orderId, { status: newStatus });
+      setUpdatingOrderId(pendingAction.orderId);
+      setShowConfirmModal(false);
+      await shipperService.updateDeliveryStatus(pendingAction.orderId, {
+        status: pendingAction.status,
+      });
       toast.success(
-        newStatus === "delivered"
+        pendingAction.status === "delivered"
           ? "Đã xác nhận giao thành công!"
-          : newStatus === "out_for_delivery"
+          : pendingAction.status === "out_for_delivery"
           ? "Đã bắt đầu giao hàng!"
           : "Đã cập nhật trạng thái thất bại!"
       );
       fetchOrders();
+      setPendingAction(null);
     } catch (error) {
       const err = error as { response?: { data?: { message?: string } } };
       toast.error(err.response?.data?.message || "Có lỗi xảy ra");
@@ -517,6 +537,71 @@ const MyOrdersPage = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && pendingAction && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div
+                  className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    pendingAction.status === "delivered"
+                      ? "bg-emerald-100"
+                      : pendingAction.status === "delivery_failed"
+                      ? "bg-rose-100"
+                      : "bg-amber-100"
+                  }`}
+                >
+                  {pendingAction.status === "delivered" ? (
+                    <FiCheckCircle className="text-emerald-600" size={24} />
+                  ) : pendingAction.status === "delivery_failed" ? (
+                    <FiXCircle className="text-rose-600" size={24} />
+                  ) : (
+                    <FiTruck className="text-amber-600" size={24} />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-mono-900">
+                    Xác nhận hành động
+                  </h3>
+                  <p className="text-sm text-mono-500">
+                    Vui lòng xác nhận để tiếp tục
+                  </p>
+                </div>
+              </div>
+
+              <p className="text-mono-700 mb-6">{pendingAction.message}</p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowConfirmModal(false);
+                    setPendingAction(null);
+                  }}
+                  disabled={updatingOrderId !== null}
+                  className="flex-1 px-4 py-2.5 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-xl font-medium transition-colors disabled:opacity-50"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  onClick={confirmQuickAction}
+                  disabled={updatingOrderId !== null}
+                  className={`flex-1 px-4 py-2.5 text-white rounded-xl font-medium transition-colors disabled:opacity-50 ${
+                    pendingAction.status === "delivered"
+                      ? "bg-emerald-500 hover:bg-emerald-600"
+                      : pendingAction.status === "delivery_failed"
+                      ? "bg-rose-500 hover:bg-rose-600"
+                      : "bg-amber-500 hover:bg-amber-600"
+                  }`}
+                >
+                  {updatingOrderId !== null ? "Đang xử lý..." : "Xác nhận"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
