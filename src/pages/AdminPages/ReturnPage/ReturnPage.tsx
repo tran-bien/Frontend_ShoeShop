@@ -495,12 +495,12 @@ const ReturnPage = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-blue-600">
+                    <span className="text-sm text-black-900">
                       {returnReq.order?.code || "N/A"}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="font-semibold text-green-600">
+                    <span className="font-semibold text-black-900">
                       {formatCurrency(returnReq.refundAmount)}
                     </span>
                   </td>
@@ -957,14 +957,14 @@ const ReturnPage = () => {
               <button
                 onClick={() => handleApproveCancel(false)}
                 disabled={actionLoading}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
               >
                 {actionLoading ? "..." : "Từ chối hủy"}
               </button>
               <button
                 onClick={() => handleApproveCancel(true)}
                 disabled={actionLoading}
-                className="flex-1 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
+                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
               >
                 {actionLoading ? "..." : "Duyệt hủy"}
               </button>
