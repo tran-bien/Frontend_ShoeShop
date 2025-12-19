@@ -47,6 +47,10 @@ const parseQueryParams = (
 
 const ProductListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  // Auto scroll to top when page mounts hoặc searchParams thay đổi
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [searchParams]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
