@@ -10,6 +10,11 @@ const BlogListPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // Auto scroll to top when page mounts or category changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [selectedCategory]);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);

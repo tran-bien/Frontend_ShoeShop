@@ -21,6 +21,10 @@ import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 
 const ProductComparePage: React.FC = () => {
   const { compareList, removeFromCompare, clearCompare } = useCompare();
+  // Auto scroll to top when page mounts or compareList changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [compareList]);
   const [selectedVariantImages, setSelectedVariantImages] = useState<
     Map<string, number>
   >(new Map());
