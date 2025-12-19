@@ -11,12 +11,14 @@ type ImageInput = Image | ProductImage;
 const ProductImagesManager = ({
   productId,
   images,
-  reloadImages,
+  reloadImages: _reloadImages,
 }: {
   productId: string;
   images: ImageInput[];
   reloadImages?: () => Promise<void>;
 }) => {
+  // _reloadImages is passed but not used - parent will reload when modal closes
+  void _reloadImages;
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
   // Normalize images to Image type
@@ -81,11 +83,25 @@ const ProductImagesManager = ({
       setPreviewUrls([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
       // Update local images from response to avoid forcing a full page reload
+      // Backend returns images at top level (res.data.images) not nested in data.data
       const added =
+        res?.data?.images ||
         res?.data?.data?.images ||
         (res?.data?.data?.image ? [res.data.data.image] : []);
       if (added && added.length > 0) {
-        setLocalImages((prev: Image[]) => [...(added as Image[]), ...prev]);
+        // Normalize the added images to match Image type
+        // Backend returns public_id (with underscore), frontend uses publicId
+        const normalizedAdded = added.map(
+          (img: Partial<Image> & { public_id?: string }) => ({
+            _id: img._id || img.public_id || img.publicId || "",
+            url: img.url || "",
+            publicId: img.publicId || img.public_id || "",
+            displayOrder: img.displayOrder,
+            isMain: img.isMain,
+            alt: img.alt,
+          })
+        );
+        setLocalImages(normalizedAdded);
       }
       // NOTE: Don't call reloadImages here - it will override localImages via useEffect
       // Parent will reload when modal closes via closeModal("images")

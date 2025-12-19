@@ -473,59 +473,66 @@ const AdminBlogPage = () => {
 
             {/* Categories Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categories.map((category) => (
-                <div
-                  key={category._id}
-                  className="bg-white border border-mono-200 rounded-xl p-6 hover:shadow-medium transition-shadow"
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-bold text-mono-black mb-1">
-                        {category.name}
-                      </h3>
-                      <p className="text-sm text-mono-600">
-                        {category.description || "Chưa có mô tả"}
-                      </p>
-                    </div>
-                    <span
-                      className={`px-2 py-1 text-xs rounded ${
-                        category.isActive
-                          ? "bg-mono-200 text-mono-900"
-                          : "bg-mono-100 text-mono-500"
-                      }`}
-                    >
-                      {category.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </div>
+              {categories.map((category) => {
+                // Đếm số bài viết thuộc category này
+                const postCount = posts.filter(
+                  (post) => post.category._id === category._id
+                ).length;
 
-                  <div className="flex items-center justify-between pt-4 border-t border-mono-100">
-                    <span className="text-sm text-mono-600">
-                      {category.postCount || 0} bài viết
-                    </span>
-                    <div className="flex items-center gap-2">
-                      {canUpdate() && (
-                        <button
-                          onClick={() => {
-                            setEditingCategory(category);
-                            setShowCategoryModal(true);
-                          }}
-                          className="p-2 text-mono-600 hover:text-mono-black hover:bg-mono-100 rounded-lg transition-colors"
-                        >
-                          <PencilIcon className="w-5 h-5" />
-                        </button>
-                      )}
-                      {canDelete() && (
-                        <button
-                          onClick={() => handleDeleteCategory(category._id)}
-                          className="p-2 text-mono-700 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors"
-                        >
-                          <TrashIcon className="w-5 h-5" />
-                        </button>
-                      )}
+                return (
+                  <div
+                    key={category._id}
+                    className="bg-white border border-mono-200 rounded-xl p-6 hover:shadow-medium transition-shadow"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-mono-black mb-1">
+                          {category.name}
+                        </h3>
+                        <p className="text-sm text-mono-600">
+                          {category.description || "Chưa có mô tả"}
+                        </p>
+                      </div>
+                      <span
+                        className={`px-2 py-1 text-xs rounded ${
+                          category.isActive
+                            ? "bg-mono-200 text-mono-900"
+                            : "bg-mono-100 text-mono-500"
+                        }`}
+                      >
+                        {category.isActive ? "Hoạt động" : "Ẩn"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-4 border-t border-mono-100">
+                      <span className="text-sm text-mono-600">
+                        {postCount} bài viết
+                      </span>
+                      <div className="flex items-center gap-2">
+                        {canUpdate() && (
+                          <button
+                            onClick={() => {
+                              setEditingCategory(category);
+                              setShowCategoryModal(true);
+                            }}
+                            className="p-2 text-mono-600 hover:text-mono-black hover:bg-mono-100 rounded-lg transition-colors"
+                          >
+                            <PencilIcon className="w-5 h-5" />
+                          </button>
+                        )}
+                        {canDelete() && (
+                          <button
+                            onClick={() => handleDeleteCategory(category._id)}
+                            className="p-2 text-mono-700 hover:text-mono-900 hover:bg-mono-100 rounded-lg transition-colors"
+                          >
+                            <TrashIcon className="w-5 h-5" />
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         )}

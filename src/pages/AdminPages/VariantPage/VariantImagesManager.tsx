@@ -81,11 +81,25 @@ const VariantImagesManager = ({
       setSelectedFiles(null);
       setPreviewUrls([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
+      // Backend returns images at top level (res.data.images) not nested in data.data
       const added =
+        res?.data?.images ||
         res?.data?.data?.images ||
         (res?.data?.data?.image ? [res.data.data.image] : []);
       if (added && added.length > 0) {
-        setLocalImages((prev: Image[]) => [...(added as Image[]), ...prev]);
+        // Normalize the added images to match Image type
+        // Backend returns public_id (with underscore), frontend uses publicId
+        const normalizedAdded = added.map(
+          (img: Partial<Image> & { public_id?: string }) => ({
+            _id: img._id || img.public_id || img.publicId || "",
+            url: img.url || "",
+            publicId: img.publicId || img.public_id || "",
+            displayOrder: img.displayOrder,
+            isMain: img.isMain,
+            alt: img.alt,
+          })
+        );
+        setLocalImages(normalizedAdded);
       }
       // NOTE: Don't call reloadImages here - it will override localImages via useEffect
       // Parent will reload when modal closes via closeImageManager()

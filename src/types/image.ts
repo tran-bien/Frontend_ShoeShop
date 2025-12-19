@@ -11,6 +11,7 @@ export interface Image {
   _id: string;
   url: string;
   publicId: string;
+  public_id?: string; // Backend returns public_id (with underscore)
   displayOrder?: number;
   isMain?: boolean;
   alt?: string;
@@ -37,6 +38,8 @@ export interface UploadImageResponse {
   message: string;
   url?: string;
   public_id?: string;
+  // Backend returns images at top level for product/variant uploads
+  images?: Image[];
   data?: {
     images?: Image[];
     image?: Image;
