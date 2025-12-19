@@ -12,11 +12,15 @@ import type {
 import type { Product } from "../types/product";
 
 const RecommendationsPage: React.FC = () => {
+  const [selectedType, setSelectedType] =
+    useState<RecommendationType>("personalized");
+  // Auto scroll to top when page mounts hoặc selectedType thay đổi
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [selectedType]);
   const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedType, setSelectedType] =
-    useState<RecommendationType>("personalized");
 
   useEffect(() => {
     fetchRecommendations();

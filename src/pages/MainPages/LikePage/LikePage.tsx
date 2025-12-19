@@ -15,6 +15,11 @@ const LikePage: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
+  // Auto scroll to top when page mounts hoặc wishlist thay đổi
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [wishlist]);
+
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
