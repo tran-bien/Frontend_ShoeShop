@@ -167,19 +167,18 @@ const Footer: React.FC = () => {
           </div>
         </div>
       </div>
-
       {/* Payment Methods */}
       <div className="border-t border-mono-200">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-mono-600">Chấp nhận thanh toán</p>
-            <div className="flex items-center gap-4">
-              <img
-                src="/image/vnpay.jpg"
-                alt="VNPay"
-                className="h-10 rounded-md border border-mono-200 bg-white object-contain p-1.5"
-              />
-            </div>
+          <div className="flex flex-col items-center gap-4">
+        <p className="text-sm text-mono-600 text-center">Chấp nhận thanh toán</p>
+        <div className="flex items-center justify-center gap-4">
+          <img
+            src="/image/vnpay.jpg"
+            alt="VNPay"
+            className="h-10 rounded-md border border-mono-200 bg-white object-contain p-1.5"
+          />
+        </div>
           </div>
         </div>
       </div>

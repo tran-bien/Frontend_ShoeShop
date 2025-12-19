@@ -66,7 +66,7 @@ const FAQPage: React.FC = () => {
         {
           question: "Phí vận chuyển là bao nhiêu?",
           answer:
-            "Phí vận chuyển tùy thuộc vào địa chỉ giao hàng: Nội thành HCM: 20,000đ, Các tỉnh thành khác: 30,000đ - 50,000đ. Đơn hàng từ 500,000đ trở lên được miễn phí vận chuyển toàn quốc.",
+            "Phí vận chuyển cố định toàn quốc: 30,000đ. Miễn phí vận chuyển cho đơn hàng từ 1,000,000đ trở lên.",
         },
         {
           question: "Thời gian giao hàng mất bao lâu?",
@@ -87,28 +87,33 @@ const FAQPage: React.FC = () => {
     },
     {
       id: "returns",
-      name: "Đổi trả",
+      name: "Trả hàng",
       icon: FiRefreshCw,
       items: [
         {
-          question: "Chính sách đổi trả của ShoeStore như thế nào?",
+          question: "Chính sách trả hàng của ShoeStore như thế nào?",
           answer:
-            "ShoeStore hỗ trợ đổi trả trong vòng 7 ngày kể từ ngày nhận hàng với điều kiện: Sản phẩm còn nguyên tem mác, chưa qua sử dụng, còn đầy đủ hộp và phụ kiện đi kèm. Lưu ý: Một số sản phẩm khuyến mãi có thể không áp dụng đổi trả.",
+            "ShoeStore hỗ trợ trả hàng trong vòng 7 ngày kể từ ngày nhận hàng (đơn hàng có trạng thái 'Đã giao') với điều kiện: Sản phẩm còn nguyên tem mác, chưa qua sử dụng, còn đầy đủ hộp và phụ kiện đi kèm. Lưu ý: Chỉ hỗ trợ trả toàn bộ đơn hàng, không trả từng sản phẩm riêng lẻ.",
         },
         {
-          question: "Làm thế nào để yêu cầu đổi/trả hàng?",
+          question: "Làm thế nào để yêu cầu trả hàng?",
           answer:
-            "Để yêu cầu đổi/trả: 1) Đăng nhập vào tài khoản, 2) Vào 'Đơn hàng của tôi', 3) Chọn đơn hàng cần đổi/trả, 4) Nhấn 'Yêu cầu đổi trả' và điền thông tin, 5) Chờ xác nhận từ shop (trong vòng 24h). Sau khi được xác nhận, bạn có thể gửi hàng về địa chỉ shop hoặc đợi shipper đến lấy.",
+            "Để yêu cầu trả hàng: 1) Đăng nhập vào tài khoản, 2) Vào 'Đơn hàng của tôi', 3) Chọn đơn hàng đã giao cần trả, 4) Nhấn 'Yêu cầu trả hàng' và điền lý do, 5) Chọn phương thức hoàn tiền (tiền mặt hoặc chuyển khoản ngân hàng), 6) Chọn địa chỉ để shipper đến lấy hàng, 7) Chờ xác nhận từ shop (trong vòng 24h). Sau khi được duyệt, shipper sẽ đến lấy hàng trả.",
         },
         {
-          question: "Phí đổi trả hàng ai chịu?",
+          question: "Phí trả hàng là bao nhiêu?",
           answer:
-            "Nếu lỗi từ shop (gửi sai size, màu, sản phẩm lỗi), ShoeStore sẽ chịu toàn bộ phí vận chuyển đổi trả. Nếu đổi trả vì lý đo cá nhân (không vừa, không thích), khách hàng sẽ chịu phí vận chuyển 2 chiều.",
+            "Phí vận chuyển trả hàng cố định: 30,000đ. Số tiền hoàn lại = Tổng đơn hàng - 30,000đ phí trả hàng. Ví dụ: Đơn hàng 500,000đ → Hoàn lại 470,000đ.",
         },
         {
           question: "Thời gian hoàn tiền mất bao lâu?",
           answer:
-            "Sau khi shop nhận được hàng trả và kiểm tra đạt yêu cầu: Hoàn tiền vào ví ShoeStore: ngay lập tức. Hoàn tiền vào tài khoản ngân hàng: 3-5 ngày làm việc. Hoàn tiền qua VNPay: 7-15 ngày làm việc tùy ngân hàng.",
+            "Sau khi shop nhận được hàng trả và kiểm tra đạt yêu cầu, hoàn tiền theo phương thức bạn đã chọn: Hoàn tiền mặt khi shipper lấy hàng: Nhận ngay khi giao hàng cho shipper. Hoàn tiền qua chuyển khoản ngân hàng: 1-3 ngày làm việc sau khi shop xác nhận.",
+        },
+        {
+          question: "Tôi có thể hủy yêu cầu trả hàng không?",
+          answer:
+            "Bạn có thể hủy yêu cầu trả hàng khi đơn đang ở trạng thái 'Chờ duyệt' hoặc 'Đã duyệt' (chưa có shipper lấy hàng). Sau khi đã hủy yêu cầu trả hàng, bạn không thể tạo yêu cầu trả hàng mới cho đơn này.",
         },
       ],
     },
@@ -120,7 +125,7 @@ const FAQPage: React.FC = () => {
         {
           question: "ShoeStore hỗ trợ những phương thức thanh toán nào?",
           answer:
-            "Chúng tôi hỗ trợ các phương thức: 1) Thanh toán khi nhận hàng (COD), 2) Thanh toán qua VNPay (ATM nội địa, Visa/Mastercard, QR Code), 3) Chuyển khoản ngân hàng. Tất cả giao dịch được bảo mật tuyệt đối.",
+            "Chúng tôi hỗ trợ 2 phương thức thanh toán: 1) Thanh toán khi nhận hàng (COD) - Trả tiền mặt cho shipper khi giao hàng, 2) Thanh toán qua VNPay - Hỗ trợ thẻ ATM nội địa, Visa/Mastercard, QR Code. Tất cả giao dịch được bảo mật tuyệt đối.",
         },
         {
           question: "Thanh toán online có an toàn không?",
@@ -131,12 +136,18 @@ const FAQPage: React.FC = () => {
           question:
             "Tôi có thể sử dụng nhiều mã giảm giá cho một đơn hàng không?",
           answer:
-            "Mỗi đơn hàng chỉ được áp dụng 1 mã giảm giá. Tuy nhiên, bạn có thể kết hợp mã giảm giá với các chương trình khuyến mãi sẵn có (nếu điều kiện cho phép) và sử dụng điểm tích lũy để giảm thêm.",
+            "Mỗi đơn hàng chỉ được áp dụng 1 mã giảm giá. Tuy nhiên, bạn có thể kết hợp mã giảm giá với miễn phí vận chuyển (đơn từ 1,000,000đ) và sử dụng điểm tích lũy để giảm thêm.",
         },
         {
           question: "Làm sao để sử dụng mã giảm giá?",
           answer:
             "Khi thanh toán, nhập mã giảm giá vào ô 'Mã giảm giá' và nhấn 'Áp dụng'. Hệ thống sẽ tự động tính toán giảm giá nếu mã hợp lệ. Lưu ý kiểm tra điều kiện áp dụng của từng mã (giá trị đơn hàng tối thiểu, danh mục sản phẩm áp dụng...).",
+        },
+        {
+          question:
+            "Tôi đã thanh toán VNPay nhưng đơn hàng chưa được xác nhận?",
+          answer:
+            "Thông thường giao dịch VNPay được xử lý trong vòng 5-10 phút. Nếu sau 30 phút đơn hàng vẫn chưa được cập nhật, vui lòng liên hệ hotline 1900 1234 với mã giao dịch để được hỗ trợ kiểm tra.",
         },
       ],
     },
@@ -158,7 +169,7 @@ const FAQPage: React.FC = () => {
         {
           question: "Chương trình tích điểm hoạt động như thế nào?",
           answer:
-            "Mỗi 10,000đ chi tiêu = 1 điểm. Điểm có thể đổi thành voucher giảm giá (100 điểm = 10,000đ). Ngoài ra, bạn còn được tích điểm khi viết đánh giá sản phẩm, mời bạn bè... Điểm có hiệu lực 12 tháng kể từ ngày tích lũy.",
+            "Mỗi 10,000đ chi tiêu = 1 điểm. Điểm có thể đổi thành voucher giảm giá. Ngoài ra, bạn còn được tích điểm khi viết đánh giá sản phẩm, mời bạn bè... Điểm có hiệu lực 12 tháng kể từ ngày tích lũy.",
         },
         {
           question: "Làm sao để thay đổi thông tin tài khoản?",
@@ -232,7 +243,7 @@ const FAQPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-mono-50">
       {/* Header */}
-      <div className="bg-mono-black text-white">
+      <div className="bg-mono-900 text-white">
         <div className="container mx-auto px-4 py-12">
           <Link
             to="/"
@@ -241,7 +252,7 @@ const FAQPage: React.FC = () => {
             <FiArrowLeft className="w-4 h-4" />
             <span>Quay lại trang chủ</span>
           </Link>
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white">
             Câu hỏi thường gặp
           </h1>
           <p className="text-mono-300 max-w-2xl mb-8">
@@ -257,7 +268,7 @@ const FAQPage: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Tìm kiếm câu hỏi..."
-              className="w-full pl-12 pr-4 py-4 rounded-xl bg-mono-900 border border-mono-700 text-white placeholder-mono-500 focus:ring-2 focus:ring-white focus:border-transparent transition-all outline-none"
+              className="w-full pl-12 pr-4 py-4 rounded-xl bg-mono-900 border border-mono-700 text-white placeholder-mono-500 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-mono-800 focus:border-transparent transition-all outline-none"
             />
           </div>
         </div>
@@ -431,20 +442,13 @@ const FAQPage: React.FC = () => {
         {/* Contact CTA */}
         <div className="mt-16 bg-mono-100 rounded-2xl p-8 md:p-12 text-center">
           <h3 className="text-2xl font-bold text-mono-black mb-4">
-            Vẫn chưa tìm được câu trả lời?
+            Vẫn chưa tìm được câu trả lời ?
           </h3>
           <p className="text-mono-600 mb-8 max-w-xl mx-auto">
             Đội ngũ hỗ trợ của chúng tôi luôn sẵn sàng giúp đỡ bạn. Liên hệ ngay
-            qua các kênh dưới đây.
+            qua các kênh dưới đây hoặc Chat hỗ trợ trực tiếp trên website.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-mono-black text-white rounded-xl font-semibold hover:bg-mono-800 transition-colors"
-            >
-              <FiMessageCircle className="w-5 h-5" />
-              Gửi tin nhắn
-            </Link>
             <a
               href="tel:19001234"
               className="inline-flex items-center gap-2 px-8 py-3.5 bg-white border border-mono-300 text-mono-800 rounded-xl font-semibold hover:border-mono-500 transition-colors"
@@ -459,4 +463,3 @@ const FAQPage: React.FC = () => {
 };
 
 export default FAQPage;
-
