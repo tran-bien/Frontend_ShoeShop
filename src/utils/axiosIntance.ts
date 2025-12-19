@@ -171,6 +171,8 @@ axiosInstanceAuth.interceptors.response.use(
         "/api/v1/orders/vnpay/callback",
         "/api/v1/orders/vnpay/ipn",
         "/api/v1/users/coupons", // Skip toast for coupon collect - component handles it
+        "/api/v1/users/images/avatar", // Skip toast for avatar - component handles it
+        "/api/v1/admin/loyalty-tiers", // Skip toast for admin operations - component handles it
       ];
 
       const shouldSkipToast =
