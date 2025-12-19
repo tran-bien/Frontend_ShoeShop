@@ -43,9 +43,9 @@ ChartJS.register(
 );
 
 const periods = [
-  { value: "week", label: "Tuẩn này" },
+  { value: "week", label: "Tuần này" },
   { value: "month", label: "Tháng này" },
-  { value: "year", label: "Nam nay" },
+  { value: "year", label: "Năm nay" },
 ];
 
 const months = [
@@ -332,7 +332,7 @@ const Dashboard = () => {
       },
       title: {
         display: true,
-        text: `Doanh thu theo tháng nam ${selectedYear}`,
+        text: `Doanh thu theo tháng năm ${selectedYear}`,
       },
     },
     scales: {
@@ -479,9 +479,45 @@ const Dashboard = () => {
               Không có dữ liệu doanh thu
             </div>
           ) : (
-            <div className="h-80">
-              <Line data={dailyRevenueChartData} options={lineChartOptions} />
-            </div>
+            <>
+              <div className="h-80">
+                <Line data={dailyRevenueChartData} options={lineChartOptions} />
+              </div>
+              {/* Summary của khoảng thời gian đã chọn */}
+              <div className="mt-4 p-4 bg-mono-50 rounded-lg border border-mono-200">
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <p className="text-mono-600">
+                      Tổng doanh thu (khoảng chọn)
+                    </p>
+                    <p className="text-lg font-semibold text-blue-600">
+                      {formatCurrency(
+                        dailyRevenue.reduce(
+                          (sum, item) => sum + item.revenue,
+                          0
+                        )
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-mono-600">
+                      Tổng lợi nhuận (khoảng chọn)
+                    </p>
+                    <p className="text-lg font-semibold text-green-600">
+                      {formatCurrency(
+                        dailyRevenue.reduce((sum, item) => sum + item.profit, 0)
+                      )}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-mono-600">Số đơn hàng</p>
+                    <p className="text-lg font-semibold text-mono-900">
+                      {dailyRevenue.reduce((sum, item) => sum + item.count, 0)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
         </div>
 
