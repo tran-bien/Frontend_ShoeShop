@@ -82,10 +82,8 @@ const ProductImagesManager = ({
       if (added && added.length > 0) {
         setLocalImages((prev: Image[]) => [...(added as Image[]), ...prev]);
       }
-      // Gọi callback reloadImages nếu có để cha cập nhật prop images
-      if (typeof reloadImages === "function") {
-        await reloadImages();
-      }
+      // NOTE: Don't call reloadImages here - it will override localImages via useEffect
+      // Parent will reload when modal closes via closeModal("images")
       toast.success("Tải ảnh thành công");
     } catch (error) {
       console.error("Upload failed:", error);

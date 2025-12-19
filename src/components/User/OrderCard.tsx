@@ -50,7 +50,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
         </div>
         <div className="flex items-center justify-between">
           <span className="text-sm text-mono-600">
-            Ðon giá: {price?.toLocaleString()}d
+            Đơn giá: {price?.toLocaleString()}đ
           </span>
           {showTotal && (
             <span className="text-mono-800 font-semibold">
@@ -64,4 +64,3 @@ const OrderCard: React.FC<OrderCardProps> = ({
 };
 
 export default OrderCard;
-
