@@ -15,12 +15,13 @@ import {
   Progress,
   Divider,
 } from "antd";
+
+const { TextArea } = Input;
 import {
   ExclamationCircleOutlined,
   EditOutlined,
   DeleteOutlined,
   StarFilled,
-  ReloadOutlined,
   ClockCircleOutlined,
   CheckCircleOutlined,
   InfoCircleOutlined,
@@ -33,9 +34,8 @@ import {
 } from "../../../services/ReviewService";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
+import toast from "react-hot-toast";
 import Sidebar from "../../../components/User/Sidebar";
-
-const { TextArea } = Input;
 const { confirm } = Modal;
 
 const UserReviewPage: React.FC = () => {
@@ -93,7 +93,7 @@ const UserReviewPage: React.FC = () => {
           ? error.message
           : (error as { response?: { data?: { message?: string } } })?.response
               ?.data?.message || "Có lỗi xảy ra khi tải đánh giá";
-      message.error(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -115,7 +115,7 @@ const UserReviewPage: React.FC = () => {
           : (error as { response?: { data?: { message?: string } } })?.response
               ?.data?.message ||
             "Có lỗi xảy ra khi tải sản phẩm có thể đánh giá";
-      message.error(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setLoadingReviewable(false);
     }
@@ -146,15 +146,15 @@ const UserReviewPage: React.FC = () => {
   // Validate form
   const validateForm = useCallback(() => {
     if (!content.trim()) {
-      message.error("Vui lòng nhập nội dung đánh giá!");
+      toast.error("Vui lòng nhập nội dung đánh giá!");
       return false;
     }
     if (content.trim().length < 10) {
-      message.error("Nội dung đánh giá phải có ít nhất 10 ký tự!");
+      toast.error("Nội dung đánh giá phải có ít nhất 10 ký tự!");
       return false;
     }
     if (rating < 1 || rating > 5) {
-      message.error("Vui lòng chọn số sao từ 1 đến 5!");
+      toast.error("Vui lòng chọn số sao từ 1 đến 5!");
       return false;
     }
     return true;
@@ -181,15 +181,13 @@ const UserReviewPage: React.FC = () => {
       console.log("Phản hồi từ server:", response);
 
       if (response.data.success) {
-        message.success("Đánh giá sản phẩm thành công!");
+        toast.success("Đánh giá sản phẩm thành công!");
         setIsCreateModalVisible(false);
         resetForm();
         // Refresh both reviews and reviewable products
         await Promise.all([fetchUserReviews(), fetchReviewableProducts()]);
       } else {
-        message.error(
-          response.data.message || "Có lỗi xảy ra khi tạo đánh giá"
-        );
+        toast.error(response.data.message || "Có lỗi xảy ra khi tạo đánh giá");
       }
     } catch (error: unknown) {
       console.error("Lỗi khi gửi đánh giá:", error);
@@ -198,7 +196,7 @@ const UserReviewPage: React.FC = () => {
           ? error.message
           : (error as { response?: { data?: { message?: string } } })?.response
               ?.data?.message || "Có lỗi xảy ra khi tạo đánh giá";
-      message.error(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -229,7 +227,7 @@ const UserReviewPage: React.FC = () => {
         updateData
       );
       if (response.data.success) {
-        message.success("Cập nhật đánh giá thành công!");
+        toast.success("Cập nhật đánh giá thành công!");
         setIsEditModalVisible(false);
         resetForm();
         fetchUserReviews(pagination.current, pagination.pageSize);
@@ -240,7 +238,7 @@ const UserReviewPage: React.FC = () => {
           ? error.message
           : (error as { response?: { data?: { message?: string } } })?.response
               ?.data?.message || "Có lỗi xảy ra khi cập nhật đánh giá";
-      message.error(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -268,7 +266,7 @@ const UserReviewPage: React.FC = () => {
           try {
             const response = await reviewApi.deleteReview(review._id);
             if (response.data.success) {
-              message.success("Xóa đánh giá thành công!");
+              toast.success("Xóa đánh giá thành công!");
               await Promise.all([
                 fetchUserReviews(pagination.current, pagination.pageSize),
                 fetchReviewableProducts(),
@@ -281,7 +279,7 @@ const UserReviewPage: React.FC = () => {
                 : (error as { response?: { data?: { message?: string } } })
                     ?.response?.data?.message ||
                   "Có lỗi xảy ra khi xóa đánh giá";
-            message.error(errorMessage);
+            toast.error(errorMessage);
           }
         },
       });
@@ -289,37 +287,17 @@ const UserReviewPage: React.FC = () => {
     [fetchUserReviews, fetchReviewableProducts, pagination]
   );
 
-  // Handle modal close with confirmation
+  // Handle modal close
   const handleModalClose = useCallback(
     (modalType: "create" | "edit") => {
-      if (content.trim()) {
-        confirm({
-          title: "Xác nhận đóng",
-          icon: <ExclamationCircleOutlined />,
-          content:
-            "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn đóng không?",
-          okText: "Đóng",
-          okType: "danger",
-          cancelText: "Tiếp tục chỉnh sửa",
-          onOk: () => {
-            if (modalType === "create") {
-              setIsCreateModalVisible(false);
-            } else {
-              setIsEditModalVisible(false);
-            }
-            resetForm();
-          },
-        });
+      if (modalType === "create") {
+        setIsCreateModalVisible(false);
       } else {
-        if (modalType === "create") {
-          setIsCreateModalVisible(false);
-        } else {
-          setIsEditModalVisible(false);
-        }
-        resetForm();
+        setIsEditModalVisible(false);
       }
+      resetForm();
     },
-    [content, resetForm]
+    [resetForm]
   );
 
   // Open create modal
@@ -345,15 +323,6 @@ const UserReviewPage: React.FC = () => {
     },
     [fetchUserReviews, pagination]
   );
-
-  // Handle refresh all data
-  const handleRefreshAll = useCallback(async () => {
-    await Promise.all([
-      fetchUserReviews(pagination.current, pagination.pageSize),
-      fetchReviewableProducts(),
-    ]);
-    message.success("Đã làm mới dữ liệu!");
-  }, [fetchUserReviews, fetchReviewableProducts, pagination]);
 
   // Format date helper function
   const formatDate = useCallback((dateString: string) => {
@@ -467,9 +436,8 @@ const UserReviewPage: React.FC = () => {
                             }
                             actions={[
                               <Button
-                                type="primary"
                                 onClick={() => openCreateModal(product)}
-                                className="w-full"
+                                className="w-full !bg-mono-900 !text-white hover:!bg-mono-800 !border-0"
                                 key="review"
                               >
                                 Đánh giá ngay
@@ -492,7 +460,7 @@ const UserReviewPage: React.FC = () => {
                                         {new Intl.NumberFormat("vi-VN").format(
                                           product.price
                                         )}
-                                        d
+                                        đ
                                       </div>
                                     </div>
                                   </div>
@@ -711,6 +679,14 @@ const UserReviewPage: React.FC = () => {
               confirmLoading={submitting}
               okText="Gửi đánh giá"
               cancelText="Hủy"
+              okButtonProps={{
+                className:
+                  "!bg-mono-900 !text-white hover:!bg-mono-800 !border-0",
+              }}
+              cancelButtonProps={{
+                className:
+                  "!bg-mono-900 !text-white hover:!bg-mono-800 !border-0",
+              }}
               keyboard={true}
               maskClosable={false}
               width={500}
@@ -749,14 +725,14 @@ const UserReviewPage: React.FC = () => {
                   <div className="mt-3 border-t border-mono-200 pt-3">
                     <div className="text-xs text-mono-500 flex items-center justify-between">
                       <span>
-                        Thểi hơn đánh giá còn:{" "}
+                        Thời hạn đánh giá còn:{" "}
                         {selectedProduct.daysLeftToReview} ngày
                       </span>
                       <span>
-                        Hơn cuối:{" "}
+                        Hạn cuối:{" "}
                         {selectedProduct.reviewExpiresAt
                           ? formatDate(selectedProduct.reviewExpiresAt)
-                          : "Không giới hơn"}
+                          : "Không giới hạn"}
                       </span>
                     </div>
                     <Progress
@@ -765,7 +741,7 @@ const UserReviewPage: React.FC = () => {
                         (selectedProduct.daysLeftToReview / 30) * 100
                       )}
                       size="small"
-                      status="active"
+                      strokeColor="#171717"
                       showInfo={false}
                       className="mt-1"
                     />
@@ -819,6 +795,14 @@ const UserReviewPage: React.FC = () => {
               confirmLoading={submitting}
               okText="Cập nhật"
               cancelText="Hủy"
+              okButtonProps={{
+                className:
+                  "!bg-mono-900 !text-white hover:!bg-mono-800 !border-0",
+              }}
+              cancelButtonProps={{
+                className:
+                  "!bg-mono-900 !text-white hover:!bg-mono-800 !border-0",
+              }}
               keyboard={true}
               maskClosable={false}
               width={500}
@@ -859,7 +843,7 @@ const UserReviewPage: React.FC = () => {
 
               <div className="mb-4 text-center">
                 <label className="block text-sm font-medium mb-2">
-                  Ðánh giá sao:
+                  Mức độ hài lòng của bạn:
                 </label>
                 <Rate value={rating} onChange={setRating} className="text-xl" />
               </div>
