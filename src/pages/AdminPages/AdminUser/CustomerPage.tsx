@@ -64,8 +64,12 @@ const ListCustomerPage: React.FC = () => {
         limit: itemsPerPage,
       };
       if (roleFilter !== "all") params.role = roleFilter;
-      if (statusFilter === "blocked") params.isBlock = true;
-      if (statusFilter === "active") params.isBlock = false;
+      // Gửi đúng tham số lọc trạng thái
+      if (statusFilter === "blocked") {
+        params.isBlock = true;
+      } else if (statusFilter === "active") {
+        params.isBlock = false;
+      }
 
       const res = await adminUserService.getAllUsers(params);
       // BE trả về: { success, data: [...], total, totalPages, currentPage }

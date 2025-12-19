@@ -195,8 +195,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product, attributes }) => {
         </h3>
         <ul className="list-disc pl-5 space-y-1 text-mono-700">
           <li>Bảo hành chính hãng 12 tháng</li>
-          <li>Đổi trả trong vòng 30 ngày nếu có lỗi từ nhà sản xuất</li>
-          <li>Miễn phí vận chuyển với đơn hàng từ 500.000đ</li>
+          <li>Đổi trả trong vòng 7 ngày nếu có lỗi từ nhà sản xuất</li>
+          <li>Miễn phí vận chuyển với đơn hàng từ 1,000,000đ trở lên</li>
         </ul>
       </div>
     </div>

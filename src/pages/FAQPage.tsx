@@ -66,7 +66,7 @@ const FAQPage: React.FC = () => {
         {
           question: "Phí vận chuyển là bao nhiêu?",
           answer:
-            "Phí vận chuyển cố định toàn quốc: 30,000đ. Miễn phí vận chuyển cho đơn hàng từ 1,000,000đ trở lên.",
+            "Phí vận chuyển cố định toàn quốc: 30.000đ. Miễn phí vận chuyển cho đơn hàng từ 1.000.000đ trở lên.",
         },
         {
           question: "Thời gian giao hàng mất bao lâu?",
