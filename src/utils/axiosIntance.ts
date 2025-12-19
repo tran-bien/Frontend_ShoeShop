@@ -170,6 +170,7 @@ axiosInstanceAuth.interceptors.response.use(
         "/api/v1/auth/logout",
         "/api/v1/orders/vnpay/callback",
         "/api/v1/orders/vnpay/ipn",
+        "/api/v1/users/coupons", // Skip toast for coupon collect - component handles it
       ];
 
       const shouldSkipToast =

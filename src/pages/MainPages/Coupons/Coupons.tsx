@@ -116,9 +116,13 @@ const CouponsPage: React.FC = () => {
       toast.success("Đã thu thập mã giảm giá thành công!");
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } } };
-      toast.error(
-        error.response?.data?.message || "Không thể thu thập mã giảm giá"
-      );
+      const errorMessage = error.response?.data?.message;
+      // Only show toast once - component handles error display
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error("Không thể thu thập mã giảm giá");
+      }
     } finally {
       setCollectingId(null);
     }

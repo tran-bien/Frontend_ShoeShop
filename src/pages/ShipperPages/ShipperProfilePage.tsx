@@ -23,7 +23,9 @@ import {
 } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { shipperService } from "../../services/ShipperService";
+import profileService from "../../services/ProfileService";
 import { useAuth } from "../../hooks/useAuth";
+import { User } from "../../types/user";
 
 // Default avatar URL
 const DEFAULT_AVATAR =
@@ -39,23 +41,33 @@ interface LocalShipperStats {
 }
 
 const ShipperProfilePage = () => {
-  const { user } = useAuth();
+  const { user: authUser } = useAuth();
+  const [user, setUser] = useState<User | null>(authUser);
   const [stats, setStats] = useState<LocalShipperStats | null>(null);
   // Initialize from user's shipper info (from login response)
   const [isAvailable, setIsAvailable] = useState(
-    user?.shipper?.isAvailable ?? false
+    authUser?.shipper?.isAvailable ?? false
   );
   const [loading, setLoading] = useState(true);
   const [toggleLoading, setToggleLoading] = useState(false);
 
   // Edit phone state
   const [isEditingPhone, setIsEditingPhone] = useState(false);
-  const [phoneValue, setPhoneValue] = useState(user?.phone || "");
+  const [phoneValue, setPhoneValue] = useState(authUser?.phone || "");
   const [savingPhone, setSavingPhone] = useState(false);
 
   const fetchProfileData = useCallback(async () => {
     try {
       setLoading(true);
+
+      // Fetch user profile from backend (like UserForm does)
+      const profileRes = await profileService.getProfile();
+      if (profileRes.data.success && profileRes.data.data) {
+        const userData = profileRes.data.data;
+        setUser(userData);
+        setPhoneValue(userData.phone || "");
+        setIsAvailable(userData.shipper?.isAvailable ?? false);
+      }
 
       // Fetch stats from backend API
       const statsResponse = await shipperService.getMyStats();
@@ -70,19 +82,13 @@ const ShipperProfilePage = () => {
         activeOrders: statsData.activeOrders || 0,
         successRate: statsData.successRate || "0",
       });
-
-      // Get availability from user context (from login response)
-      // This is persisted in localStorage and updated on toggle
-      if (user?.shipper) {
-        setIsAvailable(user.shipper.isAvailable);
-      }
     } catch (error) {
       console.error("Error fetching profile data:", error);
       toast.error("Không thể tải thông tin profile");
     } finally {
       setLoading(false);
     }
-  }, [user?.shipper]);
+  }, []);
 
   useEffect(() => {
     fetchProfileData();
@@ -300,7 +306,7 @@ const ShipperProfilePage = () => {
                     ) : (
                       <div className="flex items-center gap-2">
                         <p className="text-sm text-black font-medium">
-                          {phoneValue || user?.phone || "Chưa cập nhật"}
+                          {user?.phone || "Chưa cập nhật"}
                         </p>
                         <button
                           onClick={() => setIsEditingPhone(true)}
