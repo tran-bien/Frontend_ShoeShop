@@ -42,10 +42,15 @@ const VariantImagesManager = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { canManageImages } = useAuth();
+  const prevImagesRef = useRef<ImageInput[]>(images);
 
   // Cập nhật localImages khi images props thay đổi
   useEffect(() => {
-    setLocalImages(normalizeImages(images));
+    // Only update localImages if images prop actually changed (not just re-render)
+    if (JSON.stringify(prevImagesRef.current) !== JSON.stringify(images)) {
+      setLocalImages(normalizeImages(images));
+      prevImagesRef.current = images;
+    }
   }, [images]);
 
   // Tạo preview URL khi chọn file

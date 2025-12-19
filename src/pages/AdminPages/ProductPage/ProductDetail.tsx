@@ -574,7 +574,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                             </div>
                             <div className="bg-white rounded-lg p-2 border border-mono-200">
                               <div className="text-xs text-mono-500">
-                                Giá vốn TB
+                                Giá vốn Trung bình
                               </div>
                               <div className="text-lg font-bold text-mono-800">
                                 {(
@@ -589,7 +589,7 @@ const ProductDetail = ({ product, handleClose }: ProductDetailProps) => {
                               <div className="text-xs text-mono-500">
                                 Giá trị tồn
                               </div>
-                              <div className="text-lg font-bold text-blue-600">
+                              <div className="text-lg font-bold text-Black-900">
                                 {(
                                   variant as any
                                 ).inventorySummary.totalValue?.toLocaleString(
