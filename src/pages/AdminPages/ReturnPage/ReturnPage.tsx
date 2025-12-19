@@ -133,14 +133,14 @@ const ReturnPage = () => {
   const [shippers, setShippers] = useState<Shipper[]>([]);
   const [actionLoading, setActionLoading] = useState(false);
 
-  const fetchReturns = useCallback(async () => {
+  const fetchReturns = async (page = currentPage, status = filterStatus) => {
     try {
       setLoading(true);
       const params: Record<string, unknown> = {
-        page: currentPage,
+        page,
         limit: 20,
       };
-      if (filterStatus) params.status = filterStatus;
+      if (status) params.status = status;
 
       const response = await adminReturnService.getAllReturnRequests(params);
       const data = response.data.data;
@@ -152,7 +152,7 @@ const ReturnPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, filterStatus]);
+  };
 
   const fetchStats = async () => {
     try {
@@ -179,19 +179,29 @@ const ReturnPage = () => {
     }
   };
 
-  // Effect để reset page về 1 khi filter thay đổi
+  // Fetch lần đầu khi component mount
+  useEffect(() => {
+    fetchReturns(1, filterStatus);
+    fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Khi filter thay đổi: reset page về 1 và fetch với filter mới
   useEffect(() => {
     setCurrentPage(1);
+    fetchReturns(1, filterStatus);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterStatus]);
 
-  // Effect để fetch data khi currentPage hoặc filterStatus thay đổi
+  // Khi chuyển trang (không phải do filter): fetch với page mới
   useEffect(() => {
-    fetchReturns();
-  }, [fetchReturns]);
-
-  useEffect(() => {
-    fetchStats();
-  }, []);
+    // Chỉ fetch khi currentPage > 1 (tức là user đang chuyển trang)
+    // Tránh fetch 2 lần khi filter change (vì đã fetch ở useEffect trên)
+    if (currentPage > 1) {
+      fetchReturns(currentPage, filterStatus);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   // Approve return request
   const handleApprove = async () => {
