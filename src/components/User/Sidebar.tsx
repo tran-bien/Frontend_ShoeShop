@@ -49,6 +49,11 @@ const Sidebar: React.FC = () => {
       label: "Thông tin tài khoản",
     },
     {
+      path: "/user-change-password",
+      icon: <FaKey className="text-lg" />,
+      label: "Đổi mật khẩu",
+    },
+    {
       path: "/user-manage-order",
       icon: <FaClipboardList className="text-lg" />,
       label: "Quản lý đơn hàng",
@@ -89,20 +94,15 @@ const Sidebar: React.FC = () => {
       icon: <FaHistory className="text-lg" />,
       label: "Lịch sử xem",
     },
+     {
+      path: "/user-sessions",
+      icon: <FaLaptopCode className="text-lg" />,
+      label: "Phiên đăng nhập",
+    },
     {
       path: "/recommendations",
       icon: <FaLightbulb className="text-lg" />,
       label: "Gợi ý cho bạn",
-    },
-    {
-      path: "/user-change-password",
-      icon: <FaKey className="text-lg" />,
-      label: "Đổi mật khẩu",
-    },
-    {
-      path: "/user-sessions",
-      icon: <FaLaptopCode className="text-lg" />,
-      label: "Phiên đăng nhập",
     },
   ];
 

@@ -107,6 +107,12 @@ const UserSessionsPage: React.FC = () => {
                         size="large"
                         icon={<DesktopOutlined />}
                         onClick={handleOpen}
+                        style={{
+                          backgroundColor: "#000",
+                          color: "#fff",
+                          border: "none",
+                        }}
+                        className="hover:!bg-black hover:!text-white"
                       >
                         Xem tất cả phiên đăng nhập
                       </Button>

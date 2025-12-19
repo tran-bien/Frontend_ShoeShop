@@ -1342,7 +1342,7 @@ const UserForm: React.FC = () => {
                         </p>
                         <p className="text-sm text-gray-500">
                           Nhận email khi đơn hàng có thay đổi (xác nhận, đang
-                          giao, đã giao, hủy, đổi hàng, trả hàng)
+                          giao, đã giao, hủy, trả hàng)
                         </p>
                       </div>
                       <input

@@ -42,9 +42,8 @@ const LoyaltyDashboardContent: React.FC = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, transRes, tiersRes] = await Promise.all([
+      const [statsRes, tiersRes] = await Promise.all([
         userLoyaltyService.getLoyaltyInfo(),
-        userLoyaltyService.getTransactions({ page: 1, limit: 10 }),
         userLoyaltyService.getTiers(),
       ]);
 
@@ -52,10 +51,6 @@ const LoyaltyDashboardContent: React.FC = () => {
 
       if (statsRes.data.success) {
         setStats(statsRes.data.data);
-      }
-      if (transRes.data.success) {
-        setTransactions(transRes.data.data.transactions || []);
-        setTotalPages(transRes.data.data.pagination?.totalPages || 1);
       }
       if (tiersRes.data.success) {
         // BE user API trả về { success, data: [...tiers] }
@@ -86,6 +81,9 @@ const LoyaltyDashboardContent: React.FC = () => {
       } catch (err) {
         console.log("Could not fetch redeemable coupons:", err);
       }
+
+      // Reset page về 1 và fetch transactions
+      setPage(1);
     } catch (error) {
       console.error("Error fetching loyalty data:", error);
       toast.error("Không thể tải thông tin điểm thưởng");
@@ -135,9 +133,7 @@ const LoyaltyDashboardContent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (page > 1) {
-      fetchTransactions();
-    }
+    fetchTransactions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
