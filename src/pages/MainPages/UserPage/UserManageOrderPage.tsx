@@ -43,6 +43,10 @@ const UserManageOrder: React.FC = () => {
   const [showRepayModal, setShowRepayModal] = useState(false);
   const [selectedOrderForRepay, setSelectedOrderForRepay] =
     useState<Order | null>(null);
+  const [showCancelReturnModal, setShowCancelReturnModal] = useState(false);
+  const [selectedReturnForCancel, setSelectedReturnForCancel] =
+    useState<ReturnRequest | null>(null);
+  const [cancelReturnLoading, setCancelReturnLoading] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -352,15 +356,34 @@ const UserManageOrder: React.FC = () => {
     return labels[reason] || reason;
   };
 
-  const handleCancelReturn = async (id: string) => {
-    if (!window.confirm("Bạn có chắc muốn hủy yêu cầu trả hàng này?")) return;
+  const handleCancelReturn = async (returnRequest: ReturnRequest) => {
+    setSelectedReturnForCancel(returnRequest);
+    setShowCancelReturnModal(true);
+  };
+
+  const handleConfirmCancelReturn = async () => {
+    if (!selectedReturnForCancel) return;
+
+    setCancelReturnLoading(true);
     try {
-      await customerReturnService.cancelReturnRequest(id);
+      await customerReturnService.cancelReturnRequest(
+        selectedReturnForCancel._id
+      );
       toast.success("Đã hủy yêu cầu trả hàng");
       fetchReturnRequests();
+      setShowCancelReturnModal(false);
+      setSelectedReturnForCancel(null);
     } catch (error) {
       toast.error("Không thể hủy yêu cầu");
+    } finally {
+      setCancelReturnLoading(false);
     }
+  };
+
+  const handleCloseCancelReturnModal = () => {
+    if (cancelReturnLoading) return;
+    setShowCancelReturnModal(false);
+    setSelectedReturnForCancel(null);
   };
 
   const statusTabs = [
@@ -458,7 +481,7 @@ const UserManageOrder: React.FC = () => {
                           </button>
                           {request.status === "pending" && (
                             <button
-                              onClick={() => handleCancelReturn(request._id)}
+                              onClick={() => handleCancelReturn(request)}
                               className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900"
                             >
                               Hủy yêu cầu
@@ -706,7 +729,7 @@ const UserManageOrder: React.FC = () => {
                 <div className="flex justify-end mt-4 pt-4 border-t">
                   <p className="text-lg font-bold text-mono-900">
                     Tổng cộng:{" "}
-                    {order.totalAfterDiscountAndShipping?.toLocaleString()}d
+                    {order.totalAfterDiscountAndShipping?.toLocaleString()}đ
                   </p>
                 </div>
               </div>
@@ -733,6 +756,39 @@ const UserManageOrder: React.FC = () => {
         orderAmount={selectedOrderForRepay?.totalAfterDiscountAndShipping || 0}
         loading={!!repayLoading}
       />
+
+      {/* Cancel Return Modal */}
+      {showCancelReturnModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold mb-4">Xác nhận hủy yêu cầu</h2>
+            <p className="text-mono-700 mb-6">
+              Bạn có chắc muốn hủy yêu cầu trả hàng{" "}
+              <span className="font-semibold">
+                {selectedReturnForCancel?.code ||
+                  `#${selectedReturnForCancel?._id.slice(-8)}`}
+              </span>
+              ?
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={handleCloseCancelReturnModal}
+                disabled={cancelReturnLoading}
+                className="px-4 py-2 border border-mono-300 rounded hover:bg-mono-100 disabled:opacity-50"
+              >
+                Không
+              </button>
+              <button
+                onClick={handleConfirmCancelReturn}
+                disabled={cancelReturnLoading}
+                className="px-4 py-2 bg-mono-800 text-white rounded hover:bg-mono-900 disabled:opacity-50"
+              >
+                {cancelReturnLoading ? "Đang xử lý..." : "Xác nhận hủy"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
