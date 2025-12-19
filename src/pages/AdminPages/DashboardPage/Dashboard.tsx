@@ -94,6 +94,9 @@ const Dashboard = () => {
     monthlyRevenue: true,
   });
 
+  // Dropdown state for order details
+  const [showOrderDetails, setShowOrderDetails] = useState(false);
+
   // Load functions with useCallback
   const loadDashboardData = useCallback(async () => {
     try {
@@ -449,6 +452,220 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Chi tiết thống kê đơn hàng - Collapsible */}
+      {dashboardData?.ordersByStatus && (
+        <div className="bg-white rounded-lg shadow-sm border">
+          {/* Header with toggle button */}
+          <button
+            onClick={() => setShowOrderDetails(!showOrderDetails)}
+            className="w-full px-6 py-4 flex items-center justify-between hover:bg-mono-50 transition-colors"
+          >
+            <h3 className="text-lg font-semibold">
+              Chi tiết thống kê đơn hàng
+            </h3>
+            <svg
+              className={`w-5 h-5 text-mono-600 transition-transform ${
+                showOrderDetails ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+
+          {/* Collapsible content */}
+          {showOrderDetails && (
+            <div className="px-6 pb-6 space-y-6 border-t border-mono-200">
+              {/* Chi tiết đơn hàng theo trạng thái */}
+              <div className="pt-6">
+                <h4 className="text-md font-semibold mb-4">
+                  Chi tiết đơn hàng theo trạng thái
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  {/* Pending */}
+                  <div className="p-4 bg-white border-2 border-mono-300 rounded-lg hover:border-mono-400 transition-colors">
+                    <p className="text-xs text-mono-600 mb-1">Chờ xác nhận</p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.pending}
+                    </p>
+                  </div>
+
+                  {/* Confirmed */}
+                  <div className="p-4 bg-white border-2 border-mono-300 rounded-lg hover:border-mono-400 transition-colors">
+                    <p className="text-xs text-mono-600 mb-1">Đã xác nhận</p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.confirmed}
+                    </p>
+                  </div>
+
+                  {/* Assigned to Shipper */}
+                  <div className="p-4 bg-white border-2 border-mono-300 rounded-lg hover:border-mono-400 transition-colors">
+                    <p className="text-xs text-mono-600 mb-1">
+                      Đã giao shipper
+                    </p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.assigned_to_shipper}
+                    </p>
+                  </div>
+
+                  {/* Out for Delivery */}
+                  <div className="p-4 bg-white border-2 border-mono-300 rounded-lg hover:border-mono-400 transition-colors">
+                    <p className="text-xs text-mono-600 mb-1">Đang giao</p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.out_for_delivery}
+                    </p>
+                  </div>
+
+                  {/* Delivered */}
+                  <div className="p-4 bg-mono-100 border-2 border-mono-400 rounded-lg">
+                    <p className="text-xs text-mono-700 mb-1">Đã giao</p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.delivered}
+                    </p>
+                  </div>
+
+                  {/* Delivery Failed */}
+                  <div className="p-4 bg-white border-2 border-mono-300 rounded-lg hover:border-mono-400 transition-colors">
+                    <p className="text-xs text-mono-600 mb-1">Giao thất bại</p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.delivery_failed}
+                    </p>
+                  </div>
+
+                  {/* Returning to Warehouse */}
+                  <div className="p-4 bg-white border-2 border-mono-300 rounded-lg hover:border-mono-400 transition-colors">
+                    <p className="text-xs text-mono-600 mb-1">
+                      Đang trả về kho
+                    </p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.returning_to_warehouse}
+                    </p>
+                  </div>
+
+                  {/* Cancelled */}
+                  <div className="p-4 bg-white border-2 border-mono-300 rounded-lg hover:border-mono-400 transition-colors">
+                    <p className="text-xs text-mono-600 mb-1">Đã hủy</p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.cancelled}
+                    </p>
+                  </div>
+
+                  {/* Returned */}
+                  <div className="p-4 bg-white border-2 border-mono-300 rounded-lg hover:border-mono-400 transition-colors">
+                    <p className="text-xs text-mono-600 mb-1">Đã trả hàng</p>
+                    <p className="text-2xl font-bold text-mono-900">
+                      {dashboardData.ordersByStatus.returned}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Method Stats */}
+              {dashboardData.ordersByPaymentMethod && (
+                <div className="pt-6 border-t border-mono-200">
+                  <h4 className="text-md font-semibold mb-3">
+                    Theo phương thức thanh toán
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {Object.entries(dashboardData.ordersByPaymentMethod).map(
+                      ([method, count]) => (
+                        <div
+                          key={method}
+                          className="p-3 bg-mono-50 border border-mono-200 rounded-lg"
+                        >
+                          <p className="text-xs text-mono-600 mb-1">
+                            {method === "COD"
+                              ? "Thanh toán khi nhận hàng COD"
+                              : method === "VNPAY"
+                              ? "Thanh toán VNPay"
+                              : method || "Chưa xác định"}
+                          </p>
+                          <p className="text-xl font-bold text-mono-900">
+                            {count}
+                          </p>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Status Stats */}
+              {dashboardData.ordersByPaymentStatus && (
+                <div className="pt-6 border-t border-mono-200">
+                  <h4 className="text-md font-semibold mb-3">
+                    Theo trạng thái thanh toán
+                  </h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {Object.entries(dashboardData.ordersByPaymentStatus).map(
+                      ([status, data]) => (
+                        <div
+                          key={status}
+                          className={`p-3 border rounded-lg ${
+                            status === "paid"
+                              ? "bg-green-50 border-green-200"
+                              : status === "refunded"
+                              ? "bg-teal-50 border-teal-200"
+                              : status === "failed"
+                              ? "bg-red-50 border-red-200"
+                              : "bg-amber-50 border-amber-200"
+                          }`}
+                        >
+                          <p
+                            className={`text-xs mb-1 ${
+                              status === "paid"
+                                ? "text-green-700"
+                                : status === "refunded"
+                                ? "text-teal-700"
+                                : status === "failed"
+                                ? "text-red-700"
+                                : "text-amber-700"
+                            }`}
+                          >
+                            {status === "paid"
+                              ? "Đã thanh toán"
+                              : status === "refunded"
+                              ? "Đã hoàn tiền"
+                              : status === "failed"
+                              ? "Thất bại"
+                              : status === "pending"
+                              ? "Chưa thanh toán"
+                              : status || "Chưa xác định"}
+                          </p>
+                          <p
+                            className={`text-xl font-bold ${
+                              status === "paid"
+                                ? "text-green-900"
+                                : status === "refunded"
+                                ? "text-teal-900"
+                                : status === "failed"
+                                ? "text-red-900"
+                                : "text-amber-900"
+                            }`}
+                          >
+                            {data.count}
+                          </p>
+                          <p className="text-2xl font-extrabold text-mono-900 mt-1">
+                            {formatCurrency(data.totalAmount)}
+                          </p>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

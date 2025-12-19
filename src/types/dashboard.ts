@@ -15,6 +15,27 @@ export interface DashboardData {
   totalCost: number;
   totalProfit: number;
   profitMargin: number;
+  // ✨ THÊM: Chi tiết thống kê đơn hàng
+  ordersByStatus?: {
+    pending: number;
+    confirmed: number;
+    assigned_to_shipper: number;
+    out_for_delivery: number;
+    delivered: number;
+    delivery_failed: number;
+    returning_to_warehouse: number;
+    cancelled: number;
+    returned: number;
+  };
+  ordersByPaymentMethod?: {
+    [key: string]: number;
+  };
+  ordersByPaymentStatus?: {
+    [key: string]: {
+      count: number;
+      totalAmount: number;
+    };
+  };
 }
 
 // =======================
