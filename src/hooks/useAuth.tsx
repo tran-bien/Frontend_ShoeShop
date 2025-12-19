@@ -23,6 +23,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isAdmin: boolean;
   user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
   loading: boolean;
   login: (email: string, password: string) => Promise<LoginResult>;
   logout: () => void;
@@ -446,6 +447,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     isAuthenticated,
     isAdmin: user?.role === "admin",
     user,
+    setUser,
     loading,
     login,
     logout,

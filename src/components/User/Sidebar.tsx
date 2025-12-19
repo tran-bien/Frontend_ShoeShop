@@ -94,7 +94,7 @@ const Sidebar: React.FC = () => {
       icon: <FaHistory className="text-lg" />,
       label: "Lịch sử xem",
     },
-     {
+    {
       path: "/user-sessions",
       icon: <FaLaptopCode className="text-lg" />,
       label: "Phiên đăng nhập",
@@ -114,7 +114,7 @@ const Sidebar: React.FC = () => {
           <img
             src={
               user?.avatar?.url ||
-              `https://ui-avatars.com/api/ẩname=${encodeURIComponent(
+              `https://ui-avatars.com/api/?name=${encodeURIComponent(
                 user?.name || "User"
               )}&background=171717&color=fff`
             }
@@ -124,7 +124,7 @@ const Sidebar: React.FC = () => {
           <div className="absolute bottom-0 right-0 w-5 h-5 bg-mono-500 border-2 border-white rounded-full"></div>
         </div>
         <h3 className="mt-4 text-lg font-bold text-mono-900">
-          {user?.name || "Tài khoẩn"}
+          {user?.name || "Tài khoản"}
         </h3>
         <p className="text-sm text-mono-500 truncate max-w-full">
           {user?.email}
