@@ -193,6 +193,9 @@ const ListOrderPage: React.FC = () => {
   );
   const [confirmReturnLoading, setConfirmReturnLoading] = useState(false);
 
+  // Expanded rows state for customer info
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+
   // Lấy danh sách đơn hàng từ API - gọi với status filter
   const fetchOrders = useCallback(
     async (page = 1, statusFilter?: string) => {
@@ -860,14 +863,61 @@ const ListOrderPage: React.FC = () => {
                           </span>
                         </td>
                         <td className="py-3 px-4 text-sm">
-                          <div className="font-medium text-mono-900">
-                            {order.customerName}
-                          </div>
-                          <div
-                            className="text-xs text-mono-500 truncate max-w-[180px]"
-                            title={order.address}
-                          >
-                            {order.address}
+                          <div className="relative">
+                            <button
+                              onClick={() => {
+                                const newExpanded = new Set(expandedRows);
+                                if (newExpanded.has(order._id)) {
+                                  newExpanded.delete(order._id);
+                                } else {
+                                  newExpanded.add(order._id);
+                                }
+                                setExpandedRows(newExpanded);
+                              }}
+                              className="text-left w-full hover:bg-mono-100 rounded px-2 py-1 transition-colors"
+                            >
+                              <div className="font-medium text-mono-900 flex items-center gap-1">
+                                {order.customerName}
+                                <svg
+                                  className={`w-4 h-4 text-mono-400 transition-transform ${
+                                    expandedRows.has(order._id)
+                                      ? "rotate-180"
+                                      : ""
+                                  }`}
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 9l-7 7-7-7"
+                                  />
+                                </svg>
+                              </div>
+                              {!expandedRows.has(order._id) && (
+                                <div className="text-xs text-mono-500 truncate max-w-[180px]">
+                                  {order.address}
+                                </div>
+                              )}
+                            </button>
+                            {expandedRows.has(order._id) && (
+                              <div className="mt-2 p-2 bg-mono-50 rounded text-xs text-mono-600 border border-mono-200">
+                                <div className="mb-1">
+                                  <span className="font-medium text-mono-700">
+                                    SĐT:
+                                  </span>{" "}
+                                  {order.phone}
+                                </div>
+                                <div>
+                                  <span className="font-medium text-mono-700">
+                                    Địa chỉ:
+                                  </span>{" "}
+                                  {order.address}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </td>
                         <td className="py-3 px-4 text-sm text-mono-700">

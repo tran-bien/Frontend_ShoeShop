@@ -230,6 +230,18 @@ const VariantPage: React.FC = () => {
     }
   };
 
+  // Đóng modal quản lý ảnh và reload danh sách
+  const closeImageManager = () => {
+    setShowImageManager(null);
+    setVariantImages([]);
+    // Reload variants list to update main image display
+    if (showDeleted) {
+      fetchDeletedVariants(currentPage);
+    } else {
+      fetchVariants(currentPage);
+    }
+  };
+
   return (
     <div className="p-6 w-full font-sans bg-mono-50 min-h-screen">
       <h2 className="text-3xl font-bold text-mono-800 tracking-tight leading-snug mb-6">
@@ -1010,7 +1022,7 @@ const VariantPage: React.FC = () => {
           <div className="bg-white rounded-lg p-4 w-full max-w-xl relative">
             <button
               className="absolute top-2 right-2 text-xl font-bold"
-              onClick={() => setShowImageManager(null)}
+              onClick={closeImageManager}
             >
               ×
             </button>

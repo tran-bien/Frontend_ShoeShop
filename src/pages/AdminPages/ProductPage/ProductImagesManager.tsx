@@ -11,6 +11,7 @@ type ImageInput = Image | ProductImage;
 const ProductImagesManager = ({
   productId,
   images,
+  reloadImages,
 }: {
   productId: string;
   images: ImageInput[];

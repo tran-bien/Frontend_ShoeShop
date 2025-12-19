@@ -322,6 +322,8 @@ const ProductPage = () => {
       case "images":
         setShowImageManager(null);
         setProductImages([]);
+        // Reload products list to update main image display
+        fetchProducts(currentPage);
         break;
     }
     setSelectedProduct(null);
@@ -1355,8 +1357,6 @@ const ProductPage = () => {
                 );
                 const productData = (res.data.data || res.data) as Product;
                 setProductImages(productData?.images || []);
-                // Refresh products list to update images
-                fetchProducts();
               }}
             />
           </div>
