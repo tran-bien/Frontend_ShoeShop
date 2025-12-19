@@ -73,7 +73,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           <div className="flex items-center gap-4 mb-6">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
             <span className="text-neutral-500 text-sm uppercase tracking-widest">
-              Since 2024
+              Premium Quality
             </span>
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
           </div>

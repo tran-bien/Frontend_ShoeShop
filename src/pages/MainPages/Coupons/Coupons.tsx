@@ -35,7 +35,9 @@ const CouponsPage: React.FC = () => {
   const [collectingId, setCollectingId] = useState<string | null>(null);
   const limit = 12; // Số lượng coupon mới trang
 
+  // Auto scroll to top on mount and when filter/page changes
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchCoupons();
   }, [currentPage, filterType]);
 
@@ -122,12 +124,19 @@ const CouponsPage: React.FC = () => {
     }
   };
 
-  // Lọc coupon theo searchTerm
-  const filteredCoupons = coupons.filter(
-    (coupon) =>
+  // Lọc coupon theo searchTerm và loại
+  const filteredCoupons = coupons.filter((coupon) => {
+    const matchesSearch =
       coupon.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      coupon.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      coupon.description.toLowerCase().includes(searchTerm.toLowerCase());
+    if (filterType === "percent") {
+      return matchesSearch && coupon.type === "percent";
+    }
+    if (filterType === "fixed") {
+      return matchesSearch && coupon.type === "fixed";
+    }
+    return matchesSearch;
+  });
 
   // Component hiển thị mã giảm giá
   const CouponCard = ({ coupon }: { coupon: Coupon }) => (
