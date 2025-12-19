@@ -122,6 +122,13 @@ export interface ReturnRequest {
   };
   reason: ReturnReason;
   reasonDetail?: string;
+
+  // Ảnh minh chứng lý do trả hàng (1-5 ảnh)
+  returnReasonImages?: Array<{
+    url: string;
+    public_id: string;
+  }>;
+
   refundMethod: RefundMethod;
   refundAmount: number;
   returnShippingFee: number;

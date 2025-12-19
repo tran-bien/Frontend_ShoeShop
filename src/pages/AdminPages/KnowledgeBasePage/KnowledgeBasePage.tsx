@@ -14,6 +14,8 @@ import {
   FiBook,
   FiTag,
   FiFilter,
+  FiChevronDown,
+  FiChevronUp,
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { adminKnowledgeService } from "../../../services/KnowledgeService";
@@ -69,6 +71,21 @@ const KnowledgeBasePage: React.FC = () => {
     useState<KnowledgeDocument | null>(null);
   const [documentToDelete, setDocumentToDelete] =
     useState<KnowledgeDocument | null>(null);
+
+  // Expanded rows state
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+
+  const toggleRowExpansion = (docId: string) => {
+    setExpandedRows((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(docId)) {
+        newSet.delete(docId);
+      } else {
+        newSet.add(docId);
+      }
+      return newSet;
+    });
+  };
 
   // Fetch documents
   const fetchDocuments = useCallback(async () => {
@@ -426,79 +443,107 @@ const KnowledgeBasePage: React.FC = () => {
               <tbody className="divide-y divide-mono-100">
                 {documents.map((doc) => {
                   const catInfo = getCategoryInfo(doc.category);
+                  const isExpanded = expandedRows.has(doc._id);
                   return (
-                    <tr key={doc._id} className="hover:bg-mono-50">
-                      <td className="px-4 py-3">
-                        <div>
-                          <p className="font-medium text-mono-900 line-clamp-1">
-                            {doc.title}
-                          </p>
-                          <p className="text-sm text-mono-500 line-clamp-1 mt-0.5">
-                            {doc.content.substring(0, 80)}...
-                          </p>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center gap-1 px-2 py-1 bg-mono-100 rounded-full text-sm">
-                          {catInfo.icon} {catInfo.label}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex flex-wrap gap-1">
-                          {doc.tags.slice(0, 3).map((tag, idx) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs"
-                            >
-                              {tag}
+                    <React.Fragment key={doc._id}>
+                      <tr className="hover:bg-mono-50">
+                        <td className="px-4 py-3">
+                          <div>
+                            <div className="flex items-start gap-2">
+                              <button
+                                onClick={() => toggleRowExpansion(doc._id)}
+                                className="flex-shrink-0 mt-1 p-1 hover:bg-mono-100 rounded transition-colors"
+                                title={isExpanded ? "Thu gọn" : "Xem toàn bộ"}
+                              >
+                                {isExpanded ? (
+                                  <FiChevronUp className="w-4 h-4 text-mono-600" />
+                                ) : (
+                                  <FiChevronDown className="w-4 h-4 text-mono-600" />
+                                )}
+                              </button>
+                              <div className="flex-1">
+                                <p
+                                  className={`font-medium text-mono-900 ${
+                                    isExpanded ? "" : "line-clamp-1"
+                                  }`}
+                                >
+                                  {doc.title}
+                                </p>
+                                <p
+                                  className={`text-sm text-mono-500 mt-0.5 ${
+                                    isExpanded ? "" : "line-clamp-1"
+                                  }`}
+                                >
+                                  {isExpanded
+                                    ? doc.content
+                                    : `${doc.content.substring(0, 80)}...`}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-mono-100 rounded-full text-sm">
+                            {catInfo.icon} {catInfo.label}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex flex-wrap gap-1">
+                            {doc.tags.slice(0, 3).map((tag, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                            {doc.tags.length > 3 && (
+                              <span className="px-2 py-0.5 bg-mono-100 text-mono-500 rounded text-xs">
+                                +{doc.tags.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {doc.isActive ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                              <FiCheckCircle className="w-3 h-3" />
+                              Hoạt động
                             </span>
-                          ))}
-                          {doc.tags.length > 3 && (
-                            <span className="px-2 py-0.5 bg-mono-100 text-mono-500 rounded text-xs">
-                              +{doc.tags.length - 3}
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded-full text-sm">
+                              <FiXCircle className="w-3 h-3" />
+                              Đã tắt
                             </span>
                           )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {doc.isActive ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-                            <FiCheckCircle className="w-3 h-3" />
-                            Hoạt động
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="text-sm text-mono-500">
+                            {doc.metadata?.source === "excel_import"
+                              ? "Excel Import"
+                              : "Manual"}
                           </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-700 rounded-full text-sm">
-                            <FiXCircle className="w-3 h-3" />
-                            Đã tắt
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="text-sm text-mono-500">
-                          {doc.metadata?.source === "excel_import"
-                            ? "Excel Import"
-                            : "Manual"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center justify-center gap-2">
-                          <button
-                            onClick={() => handleEdit(doc)}
-                            className="p-2 text-mono-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Chỉnh sửa"
-                          >
-                            <FiEdit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(doc)}
-                            className="p-2 text-mono-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Xóa"
-                          >
-                            <FiTrash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={() => handleEdit(doc)}
+                              className="p-2 text-mono-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              title="Chỉnh sửa"
+                            >
+                              <FiEdit2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(doc)}
+                              className="p-2 text-mono-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              title="Xóa"
+                            >
+                              <FiTrash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </React.Fragment>
                   );
                 })}
               </tbody>
@@ -508,26 +553,83 @@ const KnowledgeBasePage: React.FC = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-mono-200">
-            <p className="text-sm text-mono-500">
-              Trang {currentPage} / {totalPages}
-            </p>
-            <div className="flex gap-2">
+          <div className="flex items-center justify-between px-6 py-4 border-t border-mono-200 bg-mono-50">
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-mono-600">
+                Trang{" "}
+                <span className="font-semibold text-mono-900">
+                  {currentPage}
+                </span>{" "}
+                / {totalPages}
+              </p>
+              <span className="text-mono-300">•</span>
+              <p className="text-sm text-mono-500">
+                Tổng {statistics?.total || 0} tài liệu
+              </p>
+            </div>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="px-3 py-2 text-sm font-medium text-mono-700 hover:text-mono-900 hover:bg-white rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                title="Trang đầu"
+              >
+                ««
+              </button>
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1 border border-mono-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mono-50"
+                className="px-4 py-2 text-sm font-medium text-mono-700 hover:text-mono-900 hover:bg-white rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                Trước
+                « Trước
               </button>
+
+              {/* Page numbers */}
+              <div className="flex gap-1 mx-2">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`min-w-[40px] px-3 py-2 text-sm font-medium rounded-lg transition-all ${
+                        currentPage === pageNum
+                          ? "bg-mono-900 text-white shadow-md"
+                          : "text-mono-600 hover:text-mono-900 hover:bg-white"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+
               <button
                 onClick={() =>
                   setCurrentPage((p) => Math.min(totalPages, p + 1))
                 }
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 border border-mono-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-mono-50"
+                className="px-4 py-2 text-sm font-medium text-mono-700 hover:text-mono-900 hover:bg-white rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all"
               >
-                Sau
+                Sau »
+              </button>
+              <button
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-2 text-sm font-medium text-mono-700 hover:text-mono-900 hover:bg-white rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                title="Trang cuối"
+              >
+                »»
               </button>
             </div>
           </div>

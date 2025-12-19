@@ -422,6 +422,41 @@ const ReturnDetailPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* Return Reason Images */}
+              {request.returnReasonImages &&
+                request.returnReasonImages.length > 0 && (
+                  <div className="mb-8">
+                    <h2 className="text-lg font-semibold mb-4">
+                      Ảnh minh chứng lý do trả hàng (
+                      {request.returnReasonImages.length} ảnh)
+                    </h2>
+                    <div className="bg-white border border-mono-200 rounded-lg p-4">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                        {request.returnReasonImages.map((image, index) => (
+                          <a
+                            key={index}
+                            href={image.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative block"
+                          >
+                            <img
+                              src={image.url}
+                              alt={`Return reason ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg border-2 border-mono-200 group-hover:border-mono-900 transition-colors cursor-pointer"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 rounded-lg transition-opacity flex items-center justify-center">
+                              <span className="text-white opacity-0 group-hover:opacity-100 bg-black bg-opacity-50 px-2 py-1 rounded text-xs">
+                                Xem ảnh
+                              </span>
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
               {/* Tiến trình xử lý */}
               <div className="mb-8">
                 <h2 className="text-lg font-semibold mb-4">Tiến trình xử lý</h2>

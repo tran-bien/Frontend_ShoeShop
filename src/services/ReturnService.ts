@@ -36,11 +36,16 @@ interface ReturnStatsResponse {
 
 // Customer Return Service
 export const customerReturnService = {
-  // Tạo yêu cầu trả hàng/hoàn tiền
+  // Tạo yêu cầu trả hàng/hoàn tiền (with FormData for images)
   createReturnRequest: (
-    data: CreateReturnRequestData
-  ): Promise<{ data: ApiResponse<ReturnRequest> }> =>
-    axiosInstanceAuth.post("/api/v1/users/returns", data),
+    data: CreateReturnRequestData | FormData
+  ): Promise<{ data: ApiResponse<ReturnRequest> }> => {
+    const config =
+      data instanceof FormData
+        ? { headers: { "Content-Type": "multipart/form-data" } }
+        : undefined;
+    return axiosInstanceAuth.post("/api/v1/users/returns", data, config);
+  },
 
   // Lấy danh sách yêu cầu trả hàng
   getReturnRequests: (

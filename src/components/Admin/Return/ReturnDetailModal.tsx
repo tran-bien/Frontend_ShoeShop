@@ -227,6 +227,34 @@ const ReturnDetailModal = ({ returnRequest, onClose }: Props) => {
             )}
           </div>
 
+          {/* Return Reason Images */}
+          {returnRequest.returnReasonImages &&
+            returnRequest.returnReasonImages.length > 0 && (
+              <div className="bg-white border border-gray-200 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-700 mb-3">
+                  Ảnh minh chứng ({returnRequest.returnReasonImages.length} ảnh)
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                  {returnRequest.returnReasonImages.map((image, index) => (
+                    <a
+                      key={index}
+                      href={image.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative block"
+                    >
+                      <img
+                        src={image.url}
+                        alt={`Return reason ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border-2 border-gray-200 group-hover:border-blue-500 transition-colors cursor-pointer"
+                      />
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 rounded-lg transition-opacity" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
           {/* Products in Order */}
           {returnRequest.order?.orderItems &&
             returnRequest.order.orderItems.length > 0 && (

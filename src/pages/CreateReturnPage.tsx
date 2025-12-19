@@ -6,6 +6,9 @@ import {
   FiAlertCircle,
   FiCheck,
   FiMapPin,
+  FiImage,
+  FiX,
+  FiUpload,
 } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { customerReturnService } from "../services/ReturnService";
@@ -95,6 +98,10 @@ const CreateReturnPage: React.FC = () => {
     accountName: "",
   });
 
+  // Image upload state (1-5 images required)
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+
   const reasons: { value: ReturnReason; label: string }[] = [
     { value: "wrong_size", label: "Sai kích cỡ" },
     { value: "wrong_product", label: "Sai sản phẩm (giao nhầm)" },
@@ -174,6 +181,52 @@ const CreateReturnPage: React.FC = () => {
     setSelectedOrder(order);
   };
 
+  // Handle image upload
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+
+    // Check total number of images (existing + new)
+    if (selectedImages.length + files.length > 5) {
+      toast.error("Chỉ được tải lên tối đa 5 ảnh");
+      return;
+    }
+
+    // Validate file types and sizes
+    const validFiles = files.filter((file) => {
+      if (!file.type.startsWith("image/")) {
+        toast.error(`${file.name} không phải là file ảnh`);
+        return false;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.name} vượt quá 5MB`);
+        return false;
+      }
+      return true;
+    });
+
+    if (validFiles.length === 0) return;
+
+    // Add new files
+    setSelectedImages((prev) => [...prev, ...validFiles]);
+
+    // Create preview URLs
+    validFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviewUrls((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Reset input
+    e.target.value = "";
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+    setImagePreviewUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
   // Tính toán số tiền hoàn lại
   const calculateRefundAmount = () => {
     if (!selectedOrder) return 0;
@@ -196,6 +249,17 @@ const CreateReturnPage: React.FC = () => {
       return;
     }
 
+    // Validate images - bắt buộc có ít nhất 1 ảnh
+    if (selectedImages.length === 0) {
+      toast.error("Vui lòng tải lên ít nhất 1 ảnh minh chứng lý do trả hàng");
+      return;
+    }
+
+    if (selectedImages.length > 5) {
+      toast.error("Chỉ được tải lên tối đa 5 ảnh");
+      return;
+    }
+
     if (refundMethod === "bank_transfer") {
       if (
         !bankInfo.bankName ||
@@ -210,18 +274,29 @@ const CreateReturnPage: React.FC = () => {
     try {
       setSubmitting(true);
 
-      const data: CreateReturnRequestData = {
-        orderId: selectedOrder._id,
-        reason: reason as ReturnReason,
-        reasonDetail: reasonDetail || undefined,
-        refundMethod,
-        bankInfo: refundMethod === "bank_transfer" ? bankInfo : undefined,
-        // Chỉ gửi pickupAddressId nếu user chọn địa chỉ khác (không phải "default")
-        pickupAddressId:
-          selectedAddressId !== "default" ? selectedAddressId : undefined,
-      };
+      // Create FormData for multipart/form-data request
+      const formData = new FormData();
+      formData.append("orderId", selectedOrder._id);
+      formData.append("reason", reason as ReturnReason);
+      if (reasonDetail) formData.append("reasonDetail", reasonDetail);
+      formData.append("refundMethod", refundMethod);
 
-      await customerReturnService.createReturnRequest(data);
+      if (refundMethod === "bank_transfer" && bankInfo) {
+        formData.append("bankInfo[bankName]", bankInfo.bankName);
+        formData.append("bankInfo[accountNumber]", bankInfo.accountNumber);
+        formData.append("bankInfo[accountName]", bankInfo.accountName);
+      }
+
+      if (selectedAddressId !== "default") {
+        formData.append("pickupAddressId", selectedAddressId);
+      }
+
+      // Append images
+      selectedImages.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      await customerReturnService.createReturnRequest(formData);
       toast.success("Tạo yêu cầu trả hàng thành công!");
       navigate("/user-manage-order?tab=returns");
     } catch (error: unknown) {
@@ -551,6 +626,82 @@ const CreateReturnPage: React.FC = () => {
               <p className="text-xs text-gray-500 mt-1">
                 {reasonDetail.length}/500 ký tự
               </p>
+            </div>
+
+            {/* Image Upload Section */}
+            <div className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <FiImage className="w-5 h-5" />
+                <h2 className="text-lg font-semibold">
+                  Ảnh minh chứng <span className="text-red-500">*</span>
+                </h2>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Vui lòng tải lên từ 1-5 ảnh chụp sản phẩm để minh chứng lý do
+                trả hàng
+              </p>
+
+              {/* Image Preview Grid */}
+              {imagePreviewUrls.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-4">
+                  {imagePreviewUrls.map((url, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={url}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Xóa ảnh"
+                      >
+                        <FiX className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Upload Button */}
+              {selectedImages.length < 5 && (
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <FiUpload className="w-8 h-8 mb-2 text-gray-400" />
+                    <p className="text-sm text-gray-600">
+                      <span className="font-semibold">Nhấn để tải ảnh</span>
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      PNG, JPG, WEBP (tối đa 5MB mỗi ảnh)
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {selectedImages.length}/5 ảnh
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                    multiple
+                    onChange={handleImageSelect}
+                  />
+                </label>
+              )}
+
+              {selectedImages.length === 0 && (
+                <p className="text-sm text-red-500 mt-2 flex items-center gap-1">
+                  <FiAlertCircle className="w-4 h-4" />
+                  Bắt buộc phải có ít nhất 1 ảnh
+                </p>
+              )}
+
+              {selectedImages.length === 5 && (
+                <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
+                  <FiCheck className="w-4 h-4" />
+                  Đã đạt số lượng ảnh tối đa (5 ảnh)
+                </p>
+              )}
             </div>
 
             {/* Refund Method */}
