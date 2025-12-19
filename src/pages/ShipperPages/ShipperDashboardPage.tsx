@@ -1,6 +1,6 @@
 ﻿/**
  * ShipperDashboardPage - Tổng quan hoạt động của Shipper
- * SYNCED WITH BE: shipper.service.js - getShipperOrders()
+ * SYNCED WITH BE: shipper.service.js - getShipperOrders(), getMyStats()
  */
 import { useState, useEffect } from "react";
 import {
@@ -17,6 +17,7 @@ import {
   FiTrendingUp,
   FiAlertCircle,
   FiUser,
+  FiRotateCw,
 } from "react-icons/fi";
 import { shipperService } from "../../services/ShipperService";
 import { useNavigate } from "react-router-dom";
@@ -42,6 +43,12 @@ const STATUS_CONFIG: Record<
     color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
     icon: <FiCheckCircle size={14} />,
   },
+  // ✅ returned cũng hiển thị như "Đã giao"
+  returned: {
+    label: "Đã giao",
+    color: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+    icon: <FiCheckCircle size={14} />,
+  },
   delivery_failed: {
     label: "Thất bại",
     color: "bg-rose-50 text-rose-700 border border-rose-200",
@@ -52,14 +59,20 @@ const STATUS_CONFIG: Record<
     color: "bg-rose-50 text-rose-700 border border-rose-200",
     icon: <FiXCircle size={14} />,
   },
+  returning_to_warehouse: {
+    label: "Đang trả kho",
+    color: "bg-orange-50 text-orange-700 border border-orange-200",
+    icon: <FiRotateCw size={14} />,
+  },
 };
 
+// Stats theo API getMyStats (giống ShipperProfilePage)
 interface ShipperStats {
   totalOrders: number;
-  completed: number;
-  failed: number;
-  active: number;
-  successRate: string;
+  completedOrders: number;
+  failedOrders: number;
+  activeOrders: number;
+  successRate: string; // backend trả string "0" / "55.5"
 }
 
 const ShipperDashboardPage = () => {
@@ -76,23 +89,37 @@ const ShipperDashboardPage = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const response = await shipperService.getMyOrders();
+
+      // ✅ Lấy orders + stats song song
+      const [ordersRes, statsRes] = await Promise.all([
+        shipperService.getMyOrders(),
+        shipperService.getMyStats(),
+      ]);
+
       /* eslint-disable @typescript-eslint/no-explicit-any */
-      const responseData = (response.data as any)?.data || response.data;
-      const ordersData = responseData?.orders || responseData || [];
+      const ordersResponseData =
+        (ordersRes.data as any)?.data || (ordersRes.data as any);
+      const ordersData = ordersResponseData?.orders || ordersResponseData || [];
       const orders: Order[] = Array.isArray(ordersData) ? ordersData : [];
+
+      const statsData =
+        (statsRes.data as any)?.data?.stats ||
+        (statsRes.data as any)?.stats ||
+        (statsRes.data as any)?.data ||
+        {};
       /* eslint-enable @typescript-eslint/no-explicit-any */
 
-      // Filter today's orders
+      // ===== TODAY ORDERS =====
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+
       const todayOrdersList = orders.filter((order) => {
         const orderDate = new Date(order.createdAt);
         orderDate.setHours(0, 0, 0, 0);
         return orderDate.getTime() === today.getTime();
       });
 
-      // Filter active orders (shipper can action on these)
+      // ===== ACTIVE ORDERS (shipper can action) =====
       const activeOrdersList = orders.filter(
         (order) =>
           order.status === "assigned_to_shipper" ||
@@ -102,24 +129,13 @@ const ShipperDashboardPage = () => {
       setTodayOrders(todayOrdersList);
       setActiveOrders(activeOrdersList);
 
-      // Calculate stats
-      const totalOrders = orders.length;
-      const completed = orders.filter((o) => o.status === "delivered").length;
-      // FIX: Đơn returning_to_warehouse (sau 3 lần giao thất bại) cũng tính là failed
-      const failed = orders.filter(
-        (o) =>
-          o.status === "delivery_failed" ||
-          o.status === "returning_to_warehouse"
-      ).length;
-      const successRate =
-        totalOrders > 0 ? ((completed / totalOrders) * 100).toFixed(1) : "0";
-
+      // ===== STATS FROM API =====
       setStats({
-        totalOrders,
-        completed,
-        failed,
-        active: activeOrdersList.length,
-        successRate,
+        totalOrders: statsData.totalOrders || 0,
+        completedOrders: statsData.completedOrders || 0,
+        failedOrders: statsData.failedOrders || 0,
+        activeOrders: statsData.activeOrders || 0,
+        successRate: statsData.successRate || "0",
       });
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -221,7 +237,7 @@ const ShipperDashboardPage = () => {
                 Đã giao
               </p>
               <p className="text-2xl font-bold text-emerald-600">
-                {stats?.completed || 0}
+                {stats?.completedOrders || 0}
               </p>
             </div>
           </div>
@@ -238,7 +254,7 @@ const ShipperDashboardPage = () => {
                 Thất bại
               </p>
               <p className="text-2xl font-bold text-rose-600">
-                {stats?.failed || 0}
+                {stats?.failedOrders || 0}
               </p>
             </div>
           </div>
@@ -255,7 +271,7 @@ const ShipperDashboardPage = () => {
                 Tỷ lệ thành công
               </p>
               <p className="text-2xl font-bold text-blue-600">
-                {stats?.successRate}%
+                {stats?.successRate || "0"}%
               </p>
             </div>
           </div>
