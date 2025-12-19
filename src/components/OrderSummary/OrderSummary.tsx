@@ -331,9 +331,9 @@ const OrderSummary: React.FC = () => {
     <div className="max-w-6xl mx-auto p-6 bg-mono-50 min-h-screen">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Header */}
-        <div className="bg-mono-900 text-white p-6">
+        <div className="bg-white text-black p-6 border border-mono-300 rounded-lg">
           <h1 className="text-2xl font-bold">Xác nhận đơn hàng</h1>
-          <p className="text-mono-100 mt-1">
+          <p className="text-mono-700 mt-1">
             Vui lòng kiểm tra thông tin trước khi đặt hàng
           </p>
         </div>

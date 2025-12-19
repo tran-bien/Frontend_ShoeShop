@@ -349,8 +349,8 @@ const UserOrderDetailPage: React.FC = () => {
             <div className="border-b border-mono-300 p-6 bg-white">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-2xl font-bold mb-2">
-                    Đơn hàng {order.code}
+                  <h2 className="text-2xl font-bold mb-2 font-mono">
+                    {order.code}
                   </h2>
                   <span
                     className={`inline-block px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(

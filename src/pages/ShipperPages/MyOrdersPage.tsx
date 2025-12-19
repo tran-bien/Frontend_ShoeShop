@@ -178,7 +178,9 @@ const MyOrdersPage = () => {
   };
 
   const getStatusCounts = () => {
-    const deliveredCount = orders.filter((o) => o.status === "delivered").length;
+    const deliveredCount = orders.filter(
+      (o) => o.status === "delivered"
+    ).length;
     const returnedCount = orders.filter((o) => o.status === "returned").length;
 
     return {
@@ -192,7 +194,8 @@ const MyOrdersPage = () => {
       // ✅ "Đã giao" = delivered + returned
       delivered: deliveredCount + returnedCount,
 
-      delivery_failed: orders.filter((o) => o.status === "delivery_failed").length,
+      delivery_failed: orders.filter((o) => o.status === "delivery_failed")
+        .length,
       returning_to_warehouse: orders.filter(
         (o) => o.status === "returning_to_warehouse"
       ).length,
@@ -396,7 +399,7 @@ const MyOrdersPage = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-mono-900">
-                      #{order.code.slice(-8).toUpperCase()}
+                      {order.code}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-mono-400 mt-1">
@@ -477,23 +480,24 @@ const MyOrdersPage = () => {
                 </div>
 
                 {/* Delivery Attempts */}
-                {order.deliveryAttempts && order.deliveryAttempts.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-mono-100">
-                    <div className="flex items-center gap-2 text-xs text-mono-500">
-                      <FiClock size={12} />
-                      <span>
-                        Lần giao gần nhất:{" "}
-                        {formatDate(
-                          (
-                            order.deliveryAttempts[
-                              order.deliveryAttempts.length - 1
-                            ] as DeliveryAttempt
-                          ).time || order.createdAt
-                        )}
-                      </span>
+                {order.deliveryAttempts &&
+                  order.deliveryAttempts.length > 0 && (
+                    <div className="mt-3 pt-3 border-t border-mono-100">
+                      <div className="flex items-center gap-2 text-xs text-mono-500">
+                        <FiClock size={12} />
+                        <span>
+                          Lần giao gần nhất:{" "}
+                          {formatDate(
+                            (
+                              order.deliveryAttempts[
+                                order.deliveryAttempts.length - 1
+                              ] as DeliveryAttempt
+                            ).time || order.createdAt
+                          )}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </div>
 
               {/* Card Footer - Quick Actions theo BE logic */}

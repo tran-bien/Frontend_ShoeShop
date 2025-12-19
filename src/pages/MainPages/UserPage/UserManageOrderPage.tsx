@@ -564,8 +564,8 @@ const UserManageOrder: React.FC = () => {
                 {/* Header đơn hàng */}
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h2 className="text-lg font-semibold">
-                      Mã đơn hàng: {order.code}
+                    <h2 className="text-lg font-semibold font-mono">
+                      {order.code}
                     </h2>
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2 ${getStatusColor(

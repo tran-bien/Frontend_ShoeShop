@@ -179,10 +179,19 @@ const ReturnPage = () => {
     }
   };
 
+  // Effect để reset page về 1 khi filter thay đổi
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterStatus]);
+
+  // Effect để fetch data khi currentPage hoặc filterStatus thay đổi
   useEffect(() => {
     fetchReturns();
-    fetchStats();
   }, [fetchReturns]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   // Approve return request
   const handleApprove = async () => {
@@ -394,10 +403,7 @@ const ReturnPage = () => {
           <FiFilter className="text-gray-500" />
           <select
             value={filterStatus}
-            onChange={(e) => {
-              setFilterStatus(e.target.value);
-              setCurrentPage(1);
-            }}
+            onChange={(e) => setFilterStatus(e.target.value)}
             className="px-4 py-2 border rounded-lg"
           >
             <option value="">Tất cả trạng thái</option>

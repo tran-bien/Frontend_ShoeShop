@@ -327,7 +327,7 @@ const ShipperDashboardPage = () => {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <p className="font-mono font-bold text-mono-900">
-                          #{order.code.slice(-8).toUpperCase()}
+                          {order.code}
                         </p>
                         <div className="flex items-center gap-1.5 text-sm text-mono-600 mt-0.5">
                           <FiUser size={12} />
@@ -433,7 +433,7 @@ const ShipperDashboardPage = () => {
                     >
                       <td className="px-5 py-3.5">
                         <span className="font-mono font-semibold text-mono-900">
-                          #{order.code.slice(-8).toUpperCase()}
+                          {order.code}
                         </span>
                       </td>
                       <td className="px-5 py-3.5 text-sm text-mono-600">

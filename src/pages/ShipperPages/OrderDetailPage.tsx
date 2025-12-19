@@ -280,7 +280,7 @@ const OrderDetailPage = () => {
               <div>
                 <p className="text-mono-500 text-sm mb-1">Mã đơn hàng</p>
                 <h1 className="text-2xl font-bold text-mono-900 font-mono">
-                  #{order.code.slice(-8).toUpperCase()}
+                  {order.code}
                 </h1>
               </div>
               {getStatusBadge(order.status)}

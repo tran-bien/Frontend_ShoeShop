@@ -478,7 +478,7 @@ const ListOrderPage: React.FC = () => {
     const status = order.orderStatusRaw;
 
     return (
-      <div className="flex flex-col gap-1.5 min-w-[130px] items-stretch">
+      <div className="flex flex-col gap-1.5 min-w-[100px] items-stretch">
         {/* View details button - always show */}
         <button
           className="inline-flex items-center justify-center gap-1.5 bg-mono-900 hover:bg-mono-800 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
@@ -535,7 +535,7 @@ const ListOrderPage: React.FC = () => {
             )}
 
             {/* Delivery failed → Retry or return to warehouse */}
-            {status === "delivery_failed" && (
+            {/* {status === "delivery_failed" && (
               <>
                 <button
                   className="inline-flex items-center justify-center gap-1.5 bg-violet-600 hover:bg-violet-700 text-white text-xs px-3 py-2 rounded-lg transition-all font-medium"
@@ -555,7 +555,7 @@ const ListOrderPage: React.FC = () => {
                   Trả về kho
                 </button>
               </>
-            )}
+            )} */}
 
             {/* Returning to warehouse → Confirm received */}
             {status === "returning_to_warehouse" && (
@@ -856,7 +856,7 @@ const ListOrderPage: React.FC = () => {
                       >
                         <td className="py-3 px-4 text-sm">
                           <span className="font-mono font-medium text-mono-900">
-                            {order.orderCode.slice(-8).toUpperCase()}
+                            {order.orderCode}
                           </span>
                         </td>
                         <td className="py-3 px-4 text-sm">
@@ -1007,7 +1007,7 @@ const ListOrderPage: React.FC = () => {
               <div>
                 <h3 className="text-lg font-semibold">Chi tiết đơn hàng</h3>
                 <p className="text-mono-500 text-sm font-mono">
-                  #{selectedOrder.orderCode.slice(-8).toUpperCase()}
+                  {selectedOrder.orderCode}
                 </p>
               </div>
               <button
@@ -1319,7 +1319,7 @@ const ListOrderPage: React.FC = () => {
               {/* Order Info */}
               <div className="bg-mono-50 p-3 rounded-lg">
                 <p className="text-sm text-mono-600">Mã đơn hàng</p>
-                <p className="font-semibold text-mono-900">
+                <p className="font-semibold text-mono-900 font-mono">
                   {refundOrderInfo.orderCode}
                 </p>
                 <p className="text-sm text-mono-500 mt-1">
@@ -1441,7 +1441,7 @@ const ListOrderPage: React.FC = () => {
               {/* Order Info */}
               <div className="bg-mono-50 p-3 rounded-lg">
                 <p className="text-sm text-mono-600">Mã đơn hàng</p>
-                <p className="font-semibold text-mono-900">
+                <p className="font-semibold text-mono-900 font-mono">
                   {returnOrderInfo.orderCode}
                 </p>
                 <p className="text-sm text-mono-500 mt-1">
@@ -1451,12 +1451,16 @@ const ListOrderPage: React.FC = () => {
 
               {/* Warning */}
               <div className="bg-gray-50 p-4 rounded-lg border border-blue-200">
-                <p className="text-sm text-black
-                -800">
+                <p
+                  className="text-sm text-black
+                -800"
+                >
                   📦 Bạn có chắc chắn muốn xác nhận đã nhận hàng trả về?
                 </p>
-                <p className="text-xs text-black
-                -600 mt-2">
+                <p
+                  className="text-xs text-black
+                -600 mt-2"
+                >
                   Sau khi xác nhận, hàng sẽ được hoàn vào kho và đơn hàng sẽ
                   chuyển sang trạng thái "Đã Hủy".
                 </p>

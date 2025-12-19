@@ -68,11 +68,18 @@ const ReviewPage = () => {
     }
   };
 
+  // Effect để reset page và fetch khi filter thay đổi
   useEffect(() => {
     fetchStats();
+    setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, ratingFilter, hasReplyFilter, sortOption]);
+
+  // Effect để fetch khi currentPage thay đổi
+  useEffect(() => {
     fetchReviews(currentPage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, searchQuery, ratingFilter, hasReplyFilter, sortOption]);
+  }, [currentPage]);
 
   // Fetch stats
   const fetchStats = async () => {
