@@ -181,14 +181,14 @@ const ShipperProfilePage = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-mono-900">Hồ sơ cá nhân</h1>
-          <p className="text-mono-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-black">Hồ sơ cá nhân</h1>
+          <p className="text-black text-sm mt-1">
             Quản lý thông tin và trạng thái hoạt động
           </p>
         </div>
         <button
           onClick={fetchProfileData}
-          className="inline-flex items-center gap-2 bg-white hover:bg-mono-50 text-mono-700 border border-mono-200 px-4 py-2.5 rounded-lg transition-all font-medium text-sm"
+          className="inline-flex items-center gap-2 bg-white hover:bg-gray-100 text-black border border-gray-300 px-4 py-2.5 rounded-lg transition-all font-medium text-sm"
         >
           <FiRefreshCw size={16} />
           Làm mới
@@ -200,9 +200,9 @@ const ShipperProfilePage = () => {
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl border border-mono-200 shadow-sm overflow-hidden">
             {/* Profile Header */}
-            <div className="bg-gradient-to-r from-mono-800 to-mono-900 px-6 py-8">
+            <div className="bg-white px-6 py-8">
               <div className="flex items-center gap-5">
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center ring-4 ring-white/30 overflow-hidden">
+                <div className="w-20 h-20 bg-mono-200 rounded-full flex items-center justify-center ring-4 ring-mono-300 overflow-hidden">
                   <img
                     src={user?.avatar?.url || DEFAULT_AVATAR}
                     alt="Avatar"
@@ -212,16 +212,16 @@ const ShipperProfilePage = () => {
                     }}
                   />
                 </div>
-                <div className="text-white">
+                <div className="text-black">
                   <h2 className="text-xl font-bold">{user?.name || "N/A"}</h2>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-white/70 text-sm">Shipper</span>
-                    <span className="text-white/40">•</span>
+                    <span className="text-mono-700 text-sm">Shipper</span>
+                    <span className="text-mono-500">•</span>
                     <span
                       className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         isAvailable
-                          ? "bg-emerald-500/20 text-emerald-300"
-                          : "bg-rose-500/20 text-rose-300"
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-rose-100 text-rose-700"
                       }`}
                     >
                       {isAvailable ? (
@@ -243,23 +243,23 @@ const ShipperProfilePage = () => {
 
             {/* Profile Info */}
             <div className="p-6">
-              <h3 className="font-semibold text-mono-900 mb-4">
+              <h3 className="font-semibold text-black mb-4">
                 Thông tin cá nhân
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 p-3 bg-mono-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-mono-100 rounded-lg">
                   <div className="p-2 bg-white rounded-lg border border-mono-200">
                     <FiMail className="text-mono-500" size={18} />
                   </div>
                   <div>
                     <p className="text-xs text-mono-500 font-medium">Email</p>
-                    <p className="text-sm text-mono-900 font-medium">
+                    <p className="text-sm text-black font-medium">
                       {user?.email || "N/A"}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-3 bg-mono-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-mono-100 rounded-lg">
                   <div className="p-2 bg-white rounded-lg border border-mono-200">
                     <FiPhone className="text-mono-500" size={18} />
                   </div>
@@ -299,7 +299,7 @@ const ShipperProfilePage = () => {
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <p className="text-sm text-mono-900 font-medium">
+                        <p className="text-sm text-black font-medium">
                           {phoneValue || user?.phone || "Chưa cập nhật"}
                         </p>
                         <button
@@ -314,7 +314,7 @@ const ShipperProfilePage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-3 bg-mono-50 rounded-lg md:col-span-2">
+                <div className="flex items-center gap-3 p-3 bg-mono-100 rounded-lg md:col-span-2">
                   <div className="p-2 bg-white rounded-lg border border-mono-200">
                     <FiCalendar className="text-mono-500" size={18} />
                   </div>
@@ -322,7 +322,7 @@ const ShipperProfilePage = () => {
                     <p className="text-xs text-mono-500 font-medium">
                       Ngày tham gia
                     </p>
-                    <p className="text-sm text-mono-900 font-medium">
+                    <p className="text-sm text-black font-medium">
                       {user?.createdAt ? formatDate(user.createdAt) : "N/A"}
                     </p>
                   </div>
@@ -341,7 +341,7 @@ const ShipperProfilePage = () => {
                 <FiTruck className="text-mono-700" size={18} />
               </div>
               <div>
-                <h3 className="font-semibold text-mono-900">
+                <h3 className="font-semibold text-black">
                   Trạng thái hoạt động
                 </h3>
                 <p className="text-xs text-mono-500">
@@ -413,19 +413,17 @@ const ShipperProfilePage = () => {
               <div className="p-2 bg-mono-100 rounded-lg">
                 <FiTrendingUp className="text-mono-700" size={18} />
               </div>
-              <h3 className="font-semibold text-mono-900">
-                Thống kê giao hàng
-              </h3>
+              <h3 className="font-semibold text-black">Thống kê giao hàng</h3>
             </div>
 
             <div className="space-y-3">
               {/* Total Orders */}
-              <div className="flex items-center justify-between p-3 bg-mono-50 rounded-lg">
+              <div className="flex items-center justify-between p-3 bg-mono-100 rounded-lg">
                 <div className="flex items-center gap-3">
                   <FiPackage className="text-mono-500" size={18} />
                   <span className="text-sm text-mono-600">Tổng đơn</span>
                 </div>
-                <span className="font-bold text-mono-900">
+                <span className="font-bold text-black">
                   {stats?.totalOrders || 0}
                 </span>
               </div>
