@@ -620,7 +620,7 @@ const UserOrderDetailPage: React.FC = () => {
 
               {/* Danh sách sản phẩm */}
               <div className="border-t pt-6">
-                <h3 className="text-lg font-semibold mb-4">Sản phẩm dã đặt</h3>
+                <h3 className="text-lg font-semibold mb-4">Sản phẩm đã đặt</h3>
                 <div className="space-y-4">
                   {order.orderItems.map((item, idx) => (
                     <div
@@ -646,23 +646,23 @@ const UserOrderDetailPage: React.FC = () => {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Tạm tính:</span>
-                      <span>{order.subTotal.toLocaleString()}d</span>
+                      <span>{order.subTotal.toLocaleString()}đ</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Phí vẩn chuyện:</span>
-                      <span>{order.shippingFee?.toLocaleString()}d</span>
+                      <span>{order.shippingFee?.toLocaleString()}đ</span>
                     </div>
                     {order.discount > 0 && (
                       <div className="flex justify-between text-mono-800">
                         <span>Giảm giá:</span>
-                        <span>-{order.discount?.toLocaleString()}d</span>
+                        <span>-{order.discount?.toLocaleString()}đ</span>
                       </div>
                     )}
                     <hr />
                     <div className="flex justify-between text-lg font-bold text-mono-900">
                       <span>Tổng cộng:</span>
                       <span>
-                        {order.totalAfterDiscountAndShipping?.toLocaleString()}d
+                        {order.totalAfterDiscountAndShipping?.toLocaleString()}đ
                       </span>
                     </div>
                   </div>

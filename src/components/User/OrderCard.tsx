@@ -54,7 +54,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
           </span>
           {showTotal && (
             <span className="text-mono-800 font-semibold">
-              Tổng: {(price * quantity).toLocaleString()}d
+              Tổng: {(price * quantity).toLocaleString()}đ
             </span>
           )}
         </div>

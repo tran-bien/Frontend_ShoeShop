@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import Sidebar from "../../../components/User/Sidebar";
 import { useAuth } from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
@@ -24,19 +24,28 @@ const UserChangePasswordPage: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
 
-    // Xóa lỗi khi người dùng b?t đầu nhập
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // Xóa lỗi khi người dùng bắt đầu nhập
     if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: "",
-      });
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
+
+  const passwordRules = useMemo(() => {
+    const pw = formData.newPassword || "";
+    return {
+      minLength: pw.length >= 8,
+      hasLetter: /[A-Za-z]/.test(pw),
+      hasNumber: /\d/.test(pw),
+      hasSpecial: /[!@#$%^&*(),.?":{}|<>]/.test(pw),
+      notSameAsCurrent: pw.length > 0 && pw !== formData.currentPassword,
+    };
+  }, [formData.newPassword, formData.currentPassword]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -65,8 +74,7 @@ const UserChangePasswordPage: React.FC = () => {
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
     } else if (formData.confirmPassword !== formData.newPassword) {
-      newErrors.confirmPassword =
-        "Mật khẩu mới và xác nhận mật khẩu không khớp";
+      newErrors.confirmPassword = "Mật khẩu mới và xác nhận mật khẩu không khớp";
     }
 
     setErrors(newErrors);
@@ -76,9 +84,7 @@ const UserChangePasswordPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       setLoading(true);
@@ -89,24 +95,19 @@ const UserChangePasswordPage: React.FC = () => {
       );
 
       if (response.success) {
-        toast.success(
-          response.message || "Mật khẩu dã được thay đổi thành công"
-        );
+        toast.success(response.message || "Mật khẩu đã được thay đổi thành công");
 
-        // Reset form sau khi thay đổi thành công
         setFormData({
           currentPassword: "",
           newPassword: "",
           confirmPassword: "",
         });
 
-        // Đăng xuất sau vài giây vì backend cũng đã logout hết các phiên
         setTimeout(() => {
           toast.success("Hệ thống sẽ đăng xuất để áp dụng thay đổi mật khẩu");
           setTimeout(() => {
-            // Redirect to login
             window.location.href = "/login";
-          }, 5000); // 4 giây để người dùng đọc thông báo
+          }, 5000);
         }, 1000);
       }
     } catch (error: any) {
@@ -118,16 +119,21 @@ const UserChangePasswordPage: React.FC = () => {
       if (error.response?.data?.errors) {
         const apiErrors: Record<string, string> = {};
         error.response.data.errors.forEach((err: any) => {
-          if (err.param) {
-            apiErrors[err.param] = err.msg;
-          }
+          if (err.param) apiErrors[err.param] = err.msg;
         });
-        setErrors({ ...errors, ...apiErrors });
+        setErrors((prev) => ({ ...prev, ...apiErrors }));
       }
     } finally {
       setLoading(false);
     }
   };
+
+  const formatRuleClass = (ok: boolean) =>
+    formData.newPassword
+      ? ok
+        ? "text-emerald-700"
+        : "text-rose-600"
+      : "text-mono-700";
 
   return (
     <div className="flex flex-col min-h-screen bg-mono-100">
@@ -157,17 +163,19 @@ const UserChangePasswordPage: React.FC = () => {
                       name="currentPassword"
                       value={formData.currentPassword}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent ${
+                      aria-invalid={!!errors.currentPassword}
+                      aria-describedby={
+                        errors.currentPassword ? "currentPassword-error" : undefined
+                      }
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent ${
                         errors.currentPassword
-                          ? "border-mono-800"
-                          : "border-mono-300"
+                          ? "border-rose-400 focus:ring-rose-200"
+                          : "border-mono-300 focus:ring-mono-200"
                       }`}
                     />
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowCurrentPassword(!showCurrentPassword)
-                      }
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                       className="absolute inset-y-0 right-0 flex items-center pr-3"
                     >
                       {showCurrentPassword ? (
@@ -178,7 +186,10 @@ const UserChangePasswordPage: React.FC = () => {
                     </button>
                   </div>
                   {errors.currentPassword && (
-                    <p className="mt-1 text-sm text-mono-900">
+                    <p
+                      id="currentPassword-error"
+                      className="mt-1 text-sm text-rose-600"
+                    >
                       {errors.currentPassword}
                     </p>
                   )}
@@ -199,10 +210,12 @@ const UserChangePasswordPage: React.FC = () => {
                       name="newPassword"
                       value={formData.newPassword}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent ${
+                      aria-invalid={!!errors.newPassword}
+                      aria-describedby={errors.newPassword ? "newPassword-error" : undefined}
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent ${
                         errors.newPassword
-                          ? "border-mono-800"
-                          : "border-mono-300"
+                          ? "border-rose-400 focus:ring-rose-200"
+                          : "border-mono-300 focus:ring-mono-200"
                       }`}
                     />
                     <button
@@ -218,7 +231,7 @@ const UserChangePasswordPage: React.FC = () => {
                     </button>
                   </div>
                   {errors.newPassword && (
-                    <p className="mt-1 text-sm text-mono-900">
+                    <p id="newPassword-error" className="mt-1 text-sm text-rose-600">
                       {errors.newPassword}
                     </p>
                   )}
@@ -239,17 +252,19 @@ const UserChangePasswordPage: React.FC = () => {
                       name="confirmPassword"
                       value={formData.confirmPassword}
                       onChange={handleChange}
-                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-mono-500 focus:border-transparent ${
+                      aria-invalid={!!errors.confirmPassword}
+                      aria-describedby={
+                        errors.confirmPassword ? "confirmPassword-error" : undefined
+                      }
+                      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:border-transparent ${
                         errors.confirmPassword
-                          ? "border-mono-800"
-                          : "border-mono-300"
+                          ? "border-rose-400 focus:ring-rose-200"
+                          : "border-mono-300 focus:ring-mono-200"
                       }`}
                     />
                     <button
                       type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute inset-y-0 right-0 flex items-center pr-3"
                     >
                       {showConfirmPassword ? (
@@ -260,25 +275,36 @@ const UserChangePasswordPage: React.FC = () => {
                     </button>
                   </div>
                   {errors.confirmPassword && (
-                    <p className="mt-1 text-sm text-mono-900">
+                    <p
+                      id="confirmPassword-error"
+                      className="mt-1 text-sm text-rose-600"
+                    >
                       {errors.confirmPassword}
                     </p>
                   )}
                 </div>
 
-                {/* Huẩng đến mật khẩu */}
-                <div className="bg-mono-50 p-4 rounded-lg">
+                {/* Hướng dẫn mật khẩu */}
+                <div className="bg-mono-50 p-4 rounded-lg border border-mono-200">
                   <h3 className="text-sm font-medium text-mono-800 mb-2">
                     Yêu cầu mật khẩu:
                   </h3>
-                  <ul className="text-xs text-mono-700 list-disc pl-5 space-y-1">
-                    <li>Ít nhất 8 ký tự</li>
-                    <li>Ít nhất 1 chữ cái</li>
-                    <li>Ít nhất 1 số</li>
-                    <li>
+                  <ul className="text-xs list-disc pl-5 space-y-1">
+                    <li className={formatRuleClass(passwordRules.minLength)}>
+                      Ít nhất 8 ký tự
+                    </li>
+                    <li className={formatRuleClass(passwordRules.hasLetter)}>
+                      Ít nhất 1 chữ cái
+                    </li>
+                    <li className={formatRuleClass(passwordRules.hasNumber)}>
+                      Ít nhất 1 số
+                    </li>
+                    <li className={formatRuleClass(passwordRules.hasSpecial)}>
                       Ít nhất 1 ký tự đặc biệt (!@#$%^&*(),.?":{}|&lt;&gt;)
                     </li>
-                    <li>Phải khác mật khẩu hiện tại</li>
+                    <li className={formatRuleClass(passwordRules.notSameAsCurrent)}>
+                      Phải khác mật khẩu hiện tại
+                    </li>
                   </ul>
                 </div>
 
@@ -294,11 +320,10 @@ const UserChangePasswordPage: React.FC = () => {
                 </div>
 
                 {/* Thông báo quan trọng */}
-                <div className="bg-mono-100 p-4 rounded-lg">
+                <div className="bg-mono-100 p-4 rounded-lg border border-mono-200">
                   <p className="text-sm text-mono-800">
-                    <strong>Lưu ý:</strong> Sau khi đổi mật khẩu thành công, bạn
-                    sẽ được đăng xuất khỏi tất cả các thiết bị và cần đăng nhập
-                    lại.
+                    <strong>Lưu ý:</strong> Sau khi đổi mật khẩu thành công, bạn sẽ
+                    được đăng xuất khỏi tất cả các thiết bị và cần đăng nhập lại.
                   </p>
                 </div>
               </form>
