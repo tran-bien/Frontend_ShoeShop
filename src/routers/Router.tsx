@@ -307,8 +307,12 @@ const AppRouter = () => {
         <Route path="faq" element={<FAQPage />} />
       </Route>
 
-      {/* 404 Not Found - catch all route */}
-      <Route path="*" element={<NotFoundPage />} />
+      {/* 404 Not Found - catch all route to NotFoundPage */}
+      {/* <Route path="*" element={<NotFoundPage />} />
+    </Routes> */}
+
+      {/* 404 Not Found - catch all route to HomePage */}
+      <Route path="*" element={<LandingPage />} />
     </Routes>
   );
 };
