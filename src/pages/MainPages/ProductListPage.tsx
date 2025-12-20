@@ -494,6 +494,24 @@ const ProductListPage: React.FC = () => {
                   >
                     Nữ
                   </button>
+                  <button
+                    onClick={() =>
+                      setFiltersState({
+                        ...filtersState,
+                        gender:
+                          filtersState.gender === "unisex"
+                            ? undefined
+                            : "unisex",
+                      })
+                    }
+                    className={`px-3 py-1 border rounded-md ${
+                      filtersState.gender === "unisex"
+                        ? "bg-mono-50 border-mono-500 text-mono-900"
+                        : "border-mono-300"
+                    }`}
+                  >
+                    Unisex
+                  </button>
                 </div>
               </div>
 
