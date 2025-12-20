@@ -85,7 +85,7 @@ const OTPVerificationPage: React.FC = () => {
       } else {
         // Verify OTP for registration
         await authService.verifyOtp({ email, otp: otpCode });
-        toast.success("Xác thực thành công! Vui lòng đăng nhập.");
+        toast.success("Xác thực thành công!");
         navigate("/login");
       }
     } catch (error: unknown) {
