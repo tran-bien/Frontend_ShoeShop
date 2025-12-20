@@ -30,7 +30,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
               </div>
               <div>
                 <h1 className="text-2xl font-black tracking-tighter uppercase italic leading-none drop-shadow-lg">
-                  ShoeStore
+                  ShoeShop
                 </h1>
                 <p className="text-xs text-neutral-300 tracking-widest uppercase font-bold drop-shadow-md">
                   Premium Sneakers
@@ -111,7 +111,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                 </div>
                 <div className="text-left">
                   <h1 className="text-2xl font-black tracking-tighter uppercase italic leading-none text-black">
-                    ShoeStore
+                    ShoeShop
                   </h1>
                   <p className="text-xs text-neutral-500 tracking-widest uppercase">
                     Premium Sneakers

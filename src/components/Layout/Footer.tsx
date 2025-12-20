@@ -29,7 +29,7 @@ const Footer: React.FC = () => {
                 </div>
                 <div>
                   <h1 className="text-xl font-black tracking-tighter uppercase italic leading-none text-mono-900 group-hover:text-mono-700 transition-colors">
-                    ShoeStore
+                    ShoeShop
                   </h1>
                   <p className="text-[9px] text-mono-500 tracking-[0.2em] uppercase font-semibold">
                     Premium Sneakers
@@ -142,10 +142,10 @@ const Footer: React.FC = () => {
               <li className="flex items-center gap-3">
                 <FiMail className="w-5 h-5 text-mono-500 flex-shrink-0" />
                 <a
-                  href="mailto:support@shoestore.vn"
+                  href="mailto:support@shoeshop.vn"
                   className="text-mono-600 hover:text-mono-black transition-colors text-sm"
                 >
-                  support@shoestore.vn
+                  support@shoeshop.vn
                 </a>
               </li>
             </ul>
@@ -188,7 +188,7 @@ const Footer: React.FC = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-mono-600">
-              © {currentYear} ShoeStore. Tất cả các quyền được bảo lưu.
+              © {currentYear} ShoeShop. Tất cả các quyền được bảo lưu.
             </p>
             <div className="flex items-center gap-6 text-sm">
               <Link

@@ -59,7 +59,7 @@ const ContactPage: React.FC = () => {
     {
       icon: FiMail,
       title: "Email",
-      content: "support@shoestore.vn",
+      content: "support@shoeshop.vn",
       subContent: "Phản hồi trong 24h",
     },
     {
@@ -96,7 +96,7 @@ const ContactPage: React.FC = () => {
           </h1>
           <p className="text-mono-600 max-w-2xl">
             Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ bạn. Hãy liên hệ với
-            ShoeStore qua các kênh dưới đây hoặc gửi tin nhắn trực tiếp.
+            ShoeShop qua các kênh dưới đây hoặc gửi tin nhắn trực tiếp.
           </p>
         </div>
       </div>

@@ -274,9 +274,9 @@ const PrivacyPolicyPage: React.FC = () => {
               </p>
               <div className="bg-mono-50 rounded-xl p-6">
                 <p className="text-mono-700">
-                  <strong>ShoeStore</strong>
+                  <strong>ShoeShop</strong>
                 </p>
-                <p className="text-mono-700">Email: privacy@shoestore.com</p>
+                <p className="text-mono-700">Email: privacy@shoeshop.com</p>
                 <p className="text-mono-700">Hotline: 1900 xxxx</p>
                 <p className="text-mono-700">
                   Địa chỉ: 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh

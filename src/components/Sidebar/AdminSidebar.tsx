@@ -131,7 +131,7 @@ const AdminSidebar = () => {
           {isExpanded && (
             <div>
               <h1 className="text-lg font-black tracking-tighter uppercase italic leading-none text-white group-hover:text-mono-300 transition-colors">
-                ShoeStore
+                ShoeShop
               </h1>
               <p className="text-[8px] text-mono-400 tracking-[0.15em] uppercase font-semibold">
                 Admin Panel

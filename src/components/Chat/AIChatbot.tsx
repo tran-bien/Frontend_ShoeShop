@@ -63,7 +63,7 @@ const AIChatbot: React.FC = () => {
       const greeting =
         isTrained === false
           ? "⚠️ Xin chào! Tôi là AI assistant. Hiện tại tôi chưa được train nên có thể trả lời không chính xác. Bạn cần hỗ trợ gì?"
-          : "Xin chào! Tôi là trợ lý AI của ShoeStore. Tôi có thể giúp bạn tìm kiếm sản phẩm, giải đáp thắc mắc về đơn hàng, hoặc tư vấn chọn size giày phù hợp. Bạn cần hỗ trợ gì?";
+          : "Xin chào! Tôi là trợ lý AI của ShoeShop. Tôi có thể giúp bạn tìm kiếm sản phẩm, giải đáp thắc mắc về đơn hàng, hoặc tư vấn chọn size giày phù hợp. Bạn cần hỗ trợ gì?";
 
       setMessages([
         {

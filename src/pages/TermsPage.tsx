@@ -31,7 +31,7 @@ const TermsPage: React.FC = () => {
                 1. Giới thiệu
               </h2>
               <p className="text-mono-700 leading-relaxed">
-                Chào mừng bạn đến với ShoeStore. Bằng việc truy cập và sử dụng
+                Chào mừng bạn đến với ShoeShop. Bằng việc truy cập và sử dụng
                 website của chúng tôi, bạn đồng ý tuân thủ các điều khoản và
                 điều kiện được nêu dưới đây. Vui lòng đọc kỹ các điều khoản này
                 trước khi sử dụng dịch vụ của chúng tôi.
@@ -43,7 +43,7 @@ const TermsPage: React.FC = () => {
                 2. Tài khoản người dùng
               </h2>
               <p className="text-mono-700 leading-relaxed mb-4">
-                Khi đăng ký tài khoản tại ShoeStore, bạn đồng ý:
+                Khi đăng ký tài khoản tại ShoeShop, bạn đồng ý:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-mono-700">
                 <li>Cung cấp thông tin chính xác, đầy đủ và cập nhật</li>
@@ -64,7 +64,7 @@ const TermsPage: React.FC = () => {
                 3. Đặt hàng và thanh toán
               </h2>
               <p className="text-mono-700 leading-relaxed mb-4">
-                Khi đặt hàng tại ShoeStore:
+                Khi đặt hàng tại ShoeShop:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-mono-700">
                 <li>Giá sản phẩm được hiển thị đã bao gồm VAT (nếu có)</li>
@@ -120,7 +120,7 @@ const TermsPage: React.FC = () => {
               </h2>
               <p className="text-mono-700 leading-relaxed">
                 Tất cả nội dung trên website bao gồm hình ảnh, logo, văn bản,
-                thiết kế đều thuộc quyền sở hữu của ShoeStore hoặc các đối tác
+                thiết kế đều thuộc quyền sở hữu của ShoeShop hoặc các đối tác
                 được cấp phép. Việc sao chép, sử dụng mà không có sự cho phép là
                 vi phạm pháp luật.
               </p>
@@ -131,7 +131,7 @@ const TermsPage: React.FC = () => {
                 7. Giới hạn trách nhiệm
               </h2>
               <p className="text-mono-700 leading-relaxed">
-                ShoeStore không chịu trách nhiệm về bất kỳ thiệt hại trực tiếp,
+                ShoeShop không chịu trách nhiệm về bất kỳ thiệt hại trực tiếp,
                 gián tiếp, ngẫu nhiên hoặc đo hậu quả phát sinh từ việc sử dụng
                 hoặc không thể sử dụng dịch vụ của chúng tôi.
               </p>
@@ -155,7 +155,7 @@ const TermsPage: React.FC = () => {
               </h2>
               <p className="text-mono-700 leading-relaxed">
                 Nếu bạn có bất kỳ câu hỏi nào về điều khoản sử dụng, vui lòng
-                liên hệ với chúng tôi qua email: support@shoestore.com hoặc
+                liên hệ với chúng tôi qua email: support@shoeshop.com hoặc
                 hotline: 1900 xxxx.
               </p>
             </section>

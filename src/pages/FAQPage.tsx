@@ -37,7 +37,7 @@ const FAQPage: React.FC = () => {
       icon: FiShoppingBag,
       items: [
         {
-          question: "Làm thế nào để đặt hàng trên ShoeStore?",
+          question: "Làm thế nào để đặt hàng trên ShoeShop?",
           answer:
             "Bạn có thể đặt hàng theo các bước sau: 1) Tìm kiếm hoặc duyệt sản phẩm yêu thích, 2) Chọn size và màu sắc phù hợp, 3) Thêm vào giỏ hàng, 4) Tiến hành thanh toán và điền thông tin giao hàng, 5) Xác nhận đơn hàng. Bạn sẽ nhận được email xác nhận ngay sau khi đặt hàng thành công.",
         },
@@ -79,7 +79,7 @@ const FAQPage: React.FC = () => {
             "Hiện tại chúng tôi giao hàng trong khung giờ 8:00 - 18:00 các ngày trong tuần. Shipper sẽ liên hệ trước khi giao để xác nhận. Nếu bạn không có mặt, đơn hàng sẽ được giao lại vào ngày làm việc tiếp theo.",
         },
         {
-          question: "ShoeStore giao hàng đến những khu vực nào?",
+          question: "ShoeShop giao hàng đến những khu vực nào?",
           answer:
             "Chúng tôi giao hàng toàn quốc 63 tỉnh thành. Một số khu vực vùng sâu vùng xa có thể mất thêm 1-2 ngày làm việc. Liên hệ hotline để biết thêm chi tiết về khu vực của bạn.",
         },
@@ -91,9 +91,9 @@ const FAQPage: React.FC = () => {
       icon: FiRefreshCw,
       items: [
         {
-          question: "Chính sách trả hàng của ShoeStore như thế nào?",
+          question: "Chính sách trả hàng của ShoeShop như thế nào?",
           answer:
-            "ShoeStore hỗ trợ trả hàng trong vòng 7 ngày kể từ ngày nhận hàng (đơn hàng có trạng thái 'Đã giao') với điều kiện: Sản phẩm còn nguyên tem mác, chưa qua sử dụng, còn đầy đủ hộp và phụ kiện đi kèm. Lưu ý: Chỉ hỗ trợ trả toàn bộ đơn hàng, không trả từng sản phẩm riêng lẻ.",
+            "ShoeShop hỗ trợ trả hàng trong vòng 7 ngày kể từ ngày nhận hàng (đơn hàng có trạng thái 'Đã giao') với điều kiện: Sản phẩm còn nguyên tem mác, chưa qua sử dụng, còn đầy đủ hộp và phụ kiện đi kèm. Lưu ý: Chỉ hỗ trợ trả toàn bộ đơn hàng, không trả từng sản phẩm riêng lẻ.",
         },
         {
           question: "Làm thế nào để yêu cầu trả hàng?",
@@ -123,14 +123,14 @@ const FAQPage: React.FC = () => {
       icon: FiCreditCard,
       items: [
         {
-          question: "ShoeStore hỗ trợ những phương thức thanh toán nào?",
+          question: "ShoeShop hỗ trợ những phương thức thanh toán nào?",
           answer:
             "Chúng tôi hỗ trợ 2 phương thức thanh toán: 1) Thanh toán khi nhận hàng (COD) - Trả tiền mặt cho shipper khi giao hàng, 2) Thanh toán qua VNPay - Hỗ trợ thẻ ATM nội địa, Visa/Mastercard, QR Code. Tất cả giao dịch được bảo mật tuyệt đối.",
         },
         {
           question: "Thanh toán online có an toàn không?",
           answer:
-            "Hoàn toàn an toàn. ShoeStore sử dụng cổng thanh toán VNPay - đơn vị thanh toán uy tín hàng đầu Việt Nam. Tất cả thông tin thẻ được mã hóa SSL 256-bit và chúng tôi không lưu trữ thông tin thẻ của bạn.",
+            "Hoàn toàn an toàn. ShoeShop sử dụng cổng thanh toán VNPay - đơn vị thanh toán uy tín hàng đầu Việt Nam. Tất cả thông tin thẻ được mã hóa SSL 256-bit và chúng tôi không lưu trữ thông tin thẻ của bạn.",
         },
         {
           question:
@@ -186,22 +186,22 @@ const FAQPage: React.FC = () => {
         {
           question: "Làm sao để chọn đúng size giày?",
           answer:
-            "ShoeStore cung cấp hướng dẫn chọn size chi tiết cho từng sản phẩm. Vào trang sản phẩm và nhấn 'Hướng dẫn chọn size' để xem bảng quy đổi. Nếu bạn mang size giữa hai cỡ, khuyến nghị chọn size lớn hơn.",
+            "ShoeShop cung cấp hướng dẫn chọn size chi tiết cho từng sản phẩm. Vào trang sản phẩm và nhấn 'Hướng dẫn chọn size' để xem bảng quy đổi. Nếu bạn mang size giữa hai cỡ, khuyến nghị chọn size lớn hơn.",
         },
         {
-          question: "Sản phẩm trên ShoeStore có phải hàng chính hãng không?",
+          question: "Sản phẩm trên ShoeShop có phải hàng chính hãng không?",
           answer:
-            "100% sản phẩm tại ShoeStore là hàng chính hãng, được nhập khẩu trực tiếp từ hãng hoặc qua nhà phân phối ủy quyền. Chúng tôi cam kết hoàn tiền 200% nếu phát hiện hàng giả.",
+            "100% sản phẩm tại ShoeShop là hàng chính hãng, được nhập khẩu trực tiếp từ hãng hoặc qua nhà phân phối ủy quyền. Chúng tôi cam kết hoàn tiền 200% nếu phát hiện hàng giả.",
         },
         {
-          question: "ShoeStore có cửa hàng thực tế không?",
+          question: "ShoeShop có cửa hàng thực tế không?",
           answer:
             "Có, cửa hàng chính của chúng tôi tại: 123 Đường ABC, Quận 1, TP.HCM. Mở cửa từ 8:00 - 22:00 tất cả các ngày. Bạn có thể đến trực tiếp để xem và thử sản phẩm trước khi mua.",
         },
         {
           question: "Tôi có thể trở thành đối tác/cộng tác viên không?",
           answer:
-            "Chúng tôi luôn chào đón hợp tác. Với chương trình Affiliate, bạn có thể kiếm hoa hồng 5-10% cho mỗi đơn hàng giới thiệu thành công. Liên hệ email: partner@shoestore.vn để biết thêm chi tiết.",
+            "Chúng tôi luôn chào đón hợp tác. Với chương trình Affiliate, bạn có thể kiếm hoa hồng 5-10% cho mỗi đơn hàng giới thiệu thành công. Liên hệ email: partner@shoeshop.vn để biết thêm chi tiết.",
         },
       ],
     },

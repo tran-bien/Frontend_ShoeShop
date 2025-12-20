@@ -118,7 +118,7 @@ const LoginForm: React.FC = () => {
               }}
               className="text-mono-black"
             >
-              ShoeStore
+              ShoeShop
             </h1>
           </Link>
           <p className="text-mono-500 mt-2">Chào mừng bạn đến với ShoeShop</p>

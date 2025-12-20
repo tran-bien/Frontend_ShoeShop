@@ -114,7 +114,7 @@ const MainNavbar = () => {
             </div>
             <div>
               <h1 className="text-xl font-black tracking-tighter uppercase italic leading-none text-black">
-                ShoeStore
+                ShoeShop
               </h1>
               <p className="text-[10px] text-neutral-500 tracking-widest uppercase font-bold">
                 Premium Sneakers
