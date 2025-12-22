@@ -86,6 +86,7 @@ const VariantForm: React.FC<VariantFormProps> = ({
         gender: editingVariant.gender,
         sizes: editingVariant.sizes?.map((s: any) => ({
           size: s.size?._id || s.size,
+          sku: s.sku, // GIỮI LẠI SKU cũ để backend không tạo lại
         })) || [{ size: "" }],
       });
       // Fetch constraints for existing variant
@@ -111,7 +112,12 @@ const VariantForm: React.FC<VariantFormProps> = ({
       const field = name.split(".")[1];
       setForm((prev: any) => {
         const sizes = [...prev.sizes];
-        sizes[idx][field] = value;
+        // Nếu đổi size, xóa SKU cũ để backend tạo SKU mới cho size mới
+        if (field === "size" && sizes[idx].size !== value) {
+          sizes[idx] = { size: value }; // Xóa SKU cũ
+        } else {
+          sizes[idx][field] = value;
+        }
         return { ...prev, sizes };
       });
     } else {
@@ -244,8 +250,8 @@ const VariantForm: React.FC<VariantFormProps> = ({
           Kích thước (Size) <span className="text-red-500">*</span>
         </label>
         <p className="text-xs text-mono-500 mb-3">
-          Chọn các size có sẵn cho variant này. Số lượng sẽ được quản lý qua
-          kho hàng.
+          Chọn các size có sẵn cho variant này. Số lượng sẽ được quản lý qua kho
+          hàng.
         </p>
 
         {/* Constraints Summary khi editing */}
