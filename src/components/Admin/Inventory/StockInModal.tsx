@@ -22,7 +22,7 @@ interface StockInModalProps {
 interface SizeEntry {
   sizeId: string;
   sizeName: string;
-  sizeType: string; // Loại size: EU, US, UK, VN, CM, INCHES
+  sizeType: string; // Loại size: EU, US, UK, VN
   quantity: number;
 }
 
@@ -574,8 +574,6 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                                       : entry.sizeType === "UK"
                                       ? "bg-purple-100 text-purple-800"
                                       : entry.sizeType === "VN"
-                                      ? "bg-green-100 text-green-800"
-                                      : entry.sizeType === "CM"
                                       ? "bg-orange-100 text-orange-800"
                                       : "bg-mono-100 text-mono-800"
                                   }`}

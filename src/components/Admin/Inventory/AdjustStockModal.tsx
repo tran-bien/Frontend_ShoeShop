@@ -78,6 +78,15 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
     return "text-mono-600";
   };
 
+  // Helper functions to get color and size names
+  const getColorName = () => {
+    return item.variant?.colorName || item.variant?.color?.name || "N/A";
+  };
+
+  const getSizeName = () => {
+    return item.size?.name || item.size?.value?.toString() || "N/A";
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -89,14 +98,14 @@ const AdjustStockModal = ({ item, onClose, onSuccess }: Props) => {
         <div className="bg-mono-50 rounded-lg p-4 mb-4 space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-mono-600">Màu sắc:</span>
-            <strong>{item.variant?.colorName || "N/A"}</strong>
+            <strong>{getColorName()}</strong>
           </div>
           <div className="flex justify-between">
             <span className="text-mono-600">Kích thước:</span>
-            <strong>{item.size?.name || "N/A"}</strong>
+            <strong>{getSizeName()}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-mono-600">Tên kho hiện tại:</span>
+            <span className="text-mono-600">số lượng kho hiện tại:</span>
             <strong className="text-mono-black">{item.quantity}</strong>
           </div>
         </div>

@@ -7,7 +7,7 @@
 // SIZE TYPE ENUM
 // =======================
 
-export type SizeType = "EU" | "US" | "UK" | "VN" | "CM" | "INCHES";
+export type SizeType = "EU" | "US" | "UK" | "VN" ;
 
 // =======================
 // MAIN SIZE INTERFACE

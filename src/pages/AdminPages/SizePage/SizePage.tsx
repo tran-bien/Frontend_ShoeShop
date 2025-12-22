@@ -46,8 +46,6 @@ const ViewDetailModal: React.FC<{
                     : size.type === "UK"
                     ? "bg-mono-100 text-mono-800"
                     : size.type === "VN"
-                    ? "bg-mono-200 text-mono-900"
-                    : size.type === "CM"
                     ? "bg-mono-100 text-mono-800"
                     : "bg-mono-100 text-mono-800"
                 }`}
@@ -168,8 +166,6 @@ const EditSizeModal: React.FC<{
               <option value="US">US (United States)</option>
               <option value="UK">UK (United Kingdom)</option>
               <option value="VN">VN (Vietnam)</option>
-              <option value="CM">CM (Centimeters)</option>
-              <option value="INCHES">INCHES</option>
             </select>
           </div>
           <div className="mb-4">
@@ -485,9 +481,7 @@ const SizePage: React.FC = () => {
             <option value="US">US</option>
             <option value="UK">UK</option>
             <option value="VN">VN</option>
-            <option value="CM">CM</option>
-            <option value="INCHES">INCHES</option>
-          </select>
+            </select>
           {/* Sort Dropdown */}
           <select
             value={sortOption}
@@ -559,8 +553,6 @@ const SizePage: React.FC = () => {
                         : item.type === "UK"
                         ? "bg-mono-100 text-mono-800"
                         : item.type === "VN"
-                        ? "bg-mono-200 text-mono-900"
-                        : item.type === "CM"
                         ? "bg-mono-100 text-mono-800"
                         : "bg-mono-100 text-mono-800"
                     }`}

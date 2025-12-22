@@ -20,6 +20,22 @@ const InventoryDetailModal = ({
   const [updating, setUpdating] = useState(false);
   const [lowStockThreshold, setLowStockThreshold] = useState(10);
 
+  // Helper functions to get color and size info
+  const getColorName = () => {
+    if (!item) return "N/A";
+    return item.variant?.color?.name || item.variant?.colorName || "N/A";
+  };
+
+  const getColorHexCode = () => {
+    if (!item) return null;
+    return item.variant?.color?.hexCode || null;
+  };
+
+  const getSizeName = () => {
+    if (!item) return "N/A";
+    return item.size?.value?.toString() || item.size?.name || "N/A";
+  };
+
   const fetchDetail = useCallback(async () => {
     try {
       setLoading(true);
@@ -135,24 +151,22 @@ const InventoryDetailModal = ({
               <div>
                 <p className="text-sm text-mono-600">Màu sắc:</p>
                 <div className="flex items-center gap-2">
-                  {item.variant?.color?.hexCode && (
+                  {getColorHexCode() && (
                     <div
                       className="w-5 h-5 rounded-full border-2 border-mono-300"
                       style={{
-                        backgroundColor: item.variant.color.hexCode,
+                        backgroundColor: getColorHexCode() || undefined,
                       }}
                     />
                   )}
                   <p className="font-semibold text-mono-900">
-                    {item.variant?.color?.name || "N/A"}
+                    {getColorName()}
                   </p>
                 </div>
               </div>
               <div>
                 <p className="text-sm text-mono-600">Size:</p>
-                <p className="font-semibold text-mono-900">
-                  {item.size?.value || "N/A"}
-                </p>
+                <p className="font-semibold text-mono-900">{getSizeName()}</p>
               </div>
               <div>
                 <p className="text-sm text-mono-600">Giới tính:</p>

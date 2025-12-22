@@ -14,7 +14,7 @@ const STOCKOUT_REASONS = [
   { value: "sale", label: "Bán hàng" },
   { value: "damage", label: "Hàng hư hỏng" },
   { value: "lost", label: "Hàng mất mát" },
-  {value: "adjustment", label: "Điều chỉnh" },
+  { value: "adjustment", label: "Điều chỉnh" },
   { value: "other", label: "Lý do khác" },
 ];
 
@@ -27,6 +27,15 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Helper functions to get color and size names
+  const getColorName = () => {
+    return item.variant?.colorName || item.variant?.color?.name || "N/A";
+  };
+
+  const getSizeName = () => {
+    return item.size?.name || item.size?.value?.toString() || "N/A";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,14 +86,14 @@ const StockOutModal = ({ item, onClose, onSuccess }: Props) => {
         <div className="bg-mono-50 rounded-lg p-4 mb-4 space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-mono-600">Màu sắc:</span>
-            <strong>{item.variant?.colorName || "N/A"}</strong>
+            <strong>{getColorName()}</strong>
           </div>
           <div className="flex justify-between">
             <span className="text-mono-600">Kích thước:</span>
-            <strong>{item.size?.name || "N/A"}</strong>
+            <strong>{getSizeName()}</strong>
           </div>
           <div className="flex justify-between">
-            <span className="text-mono-600">Tên kho hiện tại:</span>
+            <span className="text-mono-600">Số lượng kho hiện tại:</span>
             <strong className="text-mono-black">{item.quantity}</strong>
           </div>
         </div>

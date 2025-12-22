@@ -76,8 +76,6 @@ const AddSize: React.FC<AddSizeProps> = ({ handleClose, onSuccess }) => {
               <option value="US">US (United States)</option>
               <option value="UK">UK (United Kingdom)</option>
               <option value="VN">VN (Vietnam)</option>
-              <option value="CM">CM (Centimeters)</option>
-              <option value="INCHES">INCHES</option>
             </select>
           </div>
           <div className="mb-4">
