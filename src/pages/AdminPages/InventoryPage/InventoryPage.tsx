@@ -351,7 +351,7 @@ const InventoryPage = () => {
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-mono-500 text-sm">Tổng sản phẩm</p>
+                <p className="text-mono-500 text-sm">Tổng mã sản phẩm</p>
                 <p className="text-2xl font-bold text-mono-800">
                   {stats.totalItems}
                 </p>

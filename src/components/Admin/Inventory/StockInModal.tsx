@@ -801,6 +801,24 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                       >
                         2 triệu
                       </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, costPrice: 2500000 })
+                        }
+                        className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                      >
+                        2,5 triệu
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, costPrice: 3500000 })
+                        }
+                        className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                      >
+                        3,5 triệu
+                      </button>
                     </div>
                   </div>
                   <div>
@@ -822,6 +840,15 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                     />
                     {/* Đề xuất % lợi nhuận */}
                     <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, targetProfitPercent: 10 })
+                        }
+                        className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                      >
+                        10%
+                      </button>
                       <button
                         type="button"
                         onClick={() =>
@@ -879,6 +906,15 @@ const StockInModal = ({ onClose, onSuccess }: StockInModalProps) => {
                         className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
                       >
                         0%
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({ ...formData, percentDiscount: 5 })
+                        }
+                        className="px-3 py-1 text-xs bg-mono-100 hover:bg-mono-200 border border-mono-300 rounded-lg transition-colors"
+                      >
+                        5%
                       </button>
                       <button
                         type="button"
