@@ -91,6 +91,8 @@ export interface SizeGuideApiData {
 export interface SizeGuideQueryParams {
   productId?: string;
   isActive?: boolean;
+  page?: number;
+  limit?: number;
 }
 
 // =======================

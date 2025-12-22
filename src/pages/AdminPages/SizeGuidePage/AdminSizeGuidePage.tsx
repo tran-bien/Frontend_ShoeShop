@@ -33,29 +33,42 @@ const AdminSizeGuidePage = () => {
     loading: false,
   });
 
-  // Fetch size guides
-  const fetchSizeGuides = useCallback(async () => {
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const PAGE_SIZE = 10;
+
+  // Fetch size guides with pagination
+  const fetchSizeGuides = useCallback(async (page = 1) => {
     setLoading(true);
     try {
-      const response = await adminSizeGuideService.getAllSizeGuides();
-      const sizeGuidesData = (response.data.data || []) as LegacySizeGuide[];
+      const response = await adminSizeGuideService.getAllSizeGuides({
+        page,
+        limit: PAGE_SIZE,
+      });
+      const responseData = response.data;
+
+      // Backend trả về: { success, data: SizeGuide[], totalPages, ... }
+      const sizeGuidesData = (responseData.data || []) as LegacySizeGuide[];
       setSizeGuides(sizeGuidesData);
       setFilteredGuides(sizeGuidesData);
+      setTotalPages(responseData.totalPages || 1);
     } catch (error) {
       console.error("Failed to fetch size guides:", error);
       toast.error("Không thể tải danh sách hướng dẫn size");
       setSizeGuides([]);
       setFilteredGuides([]);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchSizeGuides();
-  }, [fetchSizeGuides]);
+    fetchSizeGuides(currentPage);
+  }, [fetchSizeGuides, currentPage]);
 
-  // Filter by search
+  // Filter by search (client-side for current page)
   useEffect(() => {
     if (searchQuery) {
       const filtered = sizeGuides.filter((guide) =>
@@ -66,6 +79,13 @@ const AdminSizeGuidePage = () => {
       setFilteredGuides(sizeGuides);
     }
   }, [searchQuery, sizeGuides]);
+
+  // Reset to page 1 when search query changes
+  useEffect(() => {
+    if (searchQuery) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
 
   // Delete size guide
   const handleDeleteClick = (guide: LegacySizeGuide) => {
@@ -79,7 +99,7 @@ const AdminSizeGuidePage = () => {
     try {
       await adminSizeGuideService.deleteSizeGuide(deleteModal.sizeGuide._id);
       toast.success("Đã xóa hướng dẫn size");
-      fetchSizeGuides();
+      fetchSizeGuides(currentPage);
       setDeleteModal({ open: false, sizeGuide: null, loading: false });
     } catch (error) {
       console.error("Failed to delete size guide:", error);
@@ -238,117 +258,179 @@ const AdminSizeGuidePage = () => {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {filteredGuides.map((guide) => (
-              <div
-                key={guide._id}
-                className="bg-white border border-mono-200 rounded-xl p-6 hover:shadow-medium transition-shadow"
-              >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <h3 className="text-lg font-bold text-mono-black mb-1">
-                      {guide.product.name}
-                    </h3>
-                    <span
-                      className={`inline-block px-2 py-1 text-xs rounded ${
-                        guide.isActive
-                          ? "bg-mono-100 text-mono-700"
-                          : "bg-mono-100 text-mono-500"
-                      }`}
-                    >
-                      {guide.isActive ? "Active" : "Inactive"}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    {canUpdate() && (
-                      <button
-                        onClick={() => {
-                          setEditingSizeGuide(guide);
-                          setShowModal(true);
-                        }}
-                        className="p-2 text-mono-600 hover:text-mono-black hover:bg-mono-100 rounded-lg transition-colors"
-                        title="Sửa"
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {filteredGuides.map((guide) => (
+                <div
+                  key={guide._id}
+                  className="bg-white border border-mono-200 rounded-xl p-6 hover:shadow-medium transition-shadow"
+                >
+                  {/* Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-mono-black mb-1">
+                        {guide.product.name}
+                      </h3>
+                      <span
+                        className={`inline-block px-2 py-1 text-xs rounded ${
+                          guide.isActive
+                            ? "bg-mono-100 text-mono-700"
+                            : "bg-mono-100 text-mono-500"
+                        }`}
                       >
-                        <PencilIcon className="w-5 h-5" />
-                      </button>
-                    )}
-                    {canDelete() && (
-                      <button
-                        onClick={() => handleDeleteClick(guide)}
-                        className="p-2 text-mono-700 hover:text-mono-800 hover:bg-mono-100 rounded-lg transition-colors"
-                        title="Xóa"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Size Chart */}
-                <div className="space-y-4">
-                  <div className="border border-mono-200 rounded-lg p-4 bg-mono-50">
-                    <h4 className="text-sm font-semibold text-mono-700 mb-2 flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                        />
-                      </svg>
-                      Bảng size
-                    </h4>
-                    {guide.sizeChart.image && (
-                      <img
-                        src={guide.sizeChart.image.url}
-                        alt="Size chart"
-                        className="w-full h-40 object-contain bg-white rounded-lg mb-2"
-                      />
-                    )}
-                    <p className="text-xs text-mono-600 line-clamp-3">
-                      {guide.sizeChart.description || "Chưa có mô tả"}
-                    </p>
+                        {guide.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 ml-4">
+                      {canUpdate() && (
+                        <button
+                          onClick={() => {
+                            setEditingSizeGuide(guide);
+                            setShowModal(true);
+                          }}
+                          className="p-2 text-mono-600 hover:text-mono-black hover:bg-mono-100 rounded-lg transition-colors"
+                          title="Sửa"
+                        >
+                          <PencilIcon className="w-5 h-5" />
+                        </button>
+                      )}
+                      {canDelete() && (
+                        <button
+                          onClick={() => handleDeleteClick(guide)}
+                          className="p-2 text-mono-700 hover:text-mono-800 hover:bg-mono-100 rounded-lg transition-colors"
+                          title="Xóa"
+                        >
+                          <TrashIcon className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Measurement Guide */}
-                  <div className="border border-mono-200 rounded-lg p-4 bg-mono-50">
-                    <h4 className="text-sm font-semibold text-mono-700 mb-2 flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                  {/* Size Chart */}
+                  <div className="space-y-4">
+                    <div className="border border-mono-200 rounded-lg p-4 bg-mono-50">
+                      <h4 className="text-sm font-semibold text-mono-700 mb-2 flex items-center gap-2">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                          />
+                        </svg>
+                        Bảng size
+                      </h4>
+                      {guide.sizeChart.image && (
+                        <img
+                          src={guide.sizeChart.image.url}
+                          alt="Size chart"
+                          className="w-full h-40 object-contain bg-white rounded-lg mb-2"
                         />
-                      </svg>
-                      Hướng dẫn đo
-                    </h4>
-                    {guide.measurementGuide.image && (
-                      <img
-                        src={guide.measurementGuide.image.url}
-                        alt="Measurement guide"
-                        className="w-full h-40 object-contain bg-white rounded-lg mb-2"
-                      />
-                    )}
-                    <p className="text-xs text-mono-600 line-clamp-3 whitespace-pre-line">
-                      {guide.measurementGuide.description || "Chưa có mô tả"}
-                    </p>
+                      )}
+                      <p className="text-xs text-mono-600 line-clamp-3">
+                        {guide.sizeChart.description || "Chưa có mô tả"}
+                      </p>
+                    </div>
+
+                    {/* Measurement Guide */}
+                    <div className="border border-mono-200 rounded-lg p-4 bg-mono-50">
+                      <h4 className="text-sm font-semibold text-mono-700 mb-2 flex items-center gap-2">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                          />
+                        </svg>
+                        Hướng dẫn đo
+                      </h4>
+                      {guide.measurementGuide.image && (
+                        <img
+                          src={guide.measurementGuide.image.url}
+                          alt="Measurement guide"
+                          className="w-full h-40 object-contain bg-white rounded-lg mb-2"
+                        />
+                      )}
+                      <p className="text-xs text-mono-600 line-clamp-3 whitespace-pre-line">
+                        {guide.measurementGuide.description || "Chưa có mô tả"}
+                      </p>
+                    </div>
                   </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-8">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 border border-mono-300 rounded-lg bg-white text-mono-700 hover:bg-mono-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Trước
+                </button>
+
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => {
+                      // Show first page, last page, current page, and pages around current
+                      if (
+                        page === 1 ||
+                        page === totalPages ||
+                        (page >= currentPage - 1 && page <= currentPage + 1)
+                      ) {
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                              page === currentPage
+                                ? "bg-mono-800 text-white"
+                                : "bg-white border border-mono-300 text-mono-700 hover:bg-mono-100"
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        );
+                      } else if (
+                        page === currentPage - 2 ||
+                        page === currentPage + 2
+                      ) {
+                        return (
+                          <span key={page} className="text-mono-400">
+                            ...
+                          </span>
+                        );
+                      }
+                      return null;
+                    }
+                  )}
+                </div>
+
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(totalPages, p + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 border border-mono-300 rounded-lg bg-white text-mono-700 hover:bg-mono-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Sau
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
 
         {/* Modal */}
@@ -362,7 +444,7 @@ const AdminSizeGuidePage = () => {
             onSuccess={() => {
               setShowModal(false);
               setEditingSizeGuide(null);
-              fetchSizeGuides();
+              fetchSizeGuides(currentPage);
             }}
           />
         )}
