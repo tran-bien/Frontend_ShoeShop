@@ -171,7 +171,13 @@ const InventoryDetailModal = ({
               <div>
                 <p className="text-sm text-mono-600">Giới tính:</p>
                 <p className="font-semibold text-mono-900 capitalize">
-                  {item.variant?.gender || "N/A"}
+                  {item.variant?.gender === "male"
+                    ? "Nam"
+                    : item.variant?.gender === "female"
+                    ? "Nữ"
+                    : item.variant?.gender === "unisex"
+                    ? "Unisex"
+                    : "N/A"}
                 </p>
               </div>
             </div>
