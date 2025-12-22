@@ -276,6 +276,8 @@ const UserForm: React.FC = () => {
       });
 
       if (res.data.success && res.data.data) {
+        // Fetch latest user data after update
+        await fetchUserData();
         setEditingProfile(false);
         toast.success("Cập nhật thông tin thành công");
       }

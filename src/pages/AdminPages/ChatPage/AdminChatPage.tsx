@@ -107,6 +107,14 @@ const AdminChatPage: React.FC = () => {
             : message.senderId;
         const isOwnMessage = senderId === currentUserId;
 
+        // Check if sender is admin or staff (ANY admin/staff, not just current user)
+        const senderRole =
+          typeof message.senderId === "object"
+            ? message.senderId.role
+            : undefined;
+        const isAdminOrStaffMessage =
+          senderRole === "admin" || senderRole === "staff";
+
         const updated = prev.map((c) =>
           c._id === conversationId
             ? {
@@ -117,9 +125,14 @@ const AdminChatPage: React.FC = () => {
                   createdAt: message.createdAt,
                   senderId: senderId,
                 },
-                // Don't increase unread if it's our own message or we're viewing this conversation
+                // Don't increase unread if:
+                // - We're viewing this conversation, OR
+                // - It's our own message, OR
+                // - Sender is ANY admin/staff (they share unread state)
                 unreadCount:
-                  currentActive?._id === conversationId || isOwnMessage
+                  currentActive?._id === conversationId ||
+                  isOwnMessage ||
+                  isAdminOrStaffMessage
                     ? 0
                     : (c.unreadCount || 0) + 1,
               }
@@ -267,9 +280,15 @@ const AdminChatPage: React.FC = () => {
             if (prev.some((c) => c._id === data.conversationId)) {
               return prev;
             }
+            // Check if message sender is admin/staff
+            const senderRole = data.fullMessage?.senderId?.role;
+            const isAdminOrStaffMessage =
+              senderRole === "admin" || senderRole === "staff";
+
             const newConv = {
               ...data.conversation!,
-              unreadCount: 1,
+              // Don't show unread if admin/staff sent the message
+              unreadCount: isAdminOrStaffMessage ? 0 : 1,
             };
             // Sort with newest first
             return [newConv, ...prev].sort((a, b) => {
@@ -763,34 +782,43 @@ const AdminChatPage: React.FC = () => {
             <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-mono-50">
               {messages.map((msg) => {
                 const isOwn = msg.senderId._id === user?._id;
+                // Kiểm tra xem sender có phải admin/staff không
+                const isStaffOrAdmin = ["admin", "staff"].includes(
+                  msg.senderId.role || ""
+                );
+
                 return (
                   <div
                     key={msg._id}
                     className={`flex ${
-                      isOwn ? "justify-end" : "justify-start"
+                      isStaffOrAdmin ? "justify-end" : "justify-start"
                     }`}
                   >
                     <div
                       className={`max-w-[70%] p-3 rounded-2xl ${
-                        isOwn
+                        isStaffOrAdmin
                           ? "bg-mono-900 text-white rounded-br-sm"
                           : "bg-white text-mono-800 border border-mono-200 rounded-bl-sm"
                       }`}
                     >
                       {!isOwn && (
-                        <p className="text-xs text-mono-500 mb-1">
+                        <p
+                          className={`text-xs mb-1 ${
+                            isStaffOrAdmin ? "text-mono-300" : "text-mono-500"
+                          }`}
+                        >
                           {msg.senderId.name}
                         </p>
                       )}
                       <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
                       <div
                         className={`flex items-center gap-1 mt-1 ${
-                          isOwn ? "justify-end" : ""
+                          isStaffOrAdmin ? "justify-end" : ""
                         }`}
                       >
                         <span
                           className={`text-[10px] ${
-                            isOwn ? "text-mono-300" : "text-mono-400"
+                            isStaffOrAdmin ? "text-mono-300" : "text-mono-400"
                           }`}
                         >
                           {new Date(msg.createdAt).toLocaleTimeString("vi-VN", {
@@ -799,7 +827,11 @@ const AdminChatPage: React.FC = () => {
                           })}
                         </span>
                         {isOwn && msg.isRead && (
-                          <FiCheck className="w-3 h-3 text-mono-300" />
+                          <FiCheck
+                            className={`w-3 h-3 ${
+                              isStaffOrAdmin ? "text-mono-300" : "text-mono-400"
+                            }`}
+                          />
                         )}
                       </div>
                     </div>

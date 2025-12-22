@@ -25,8 +25,10 @@ const LoginPage: React.FC = () => {
       const response = await login(email.trim(), password);
       toast.success("Đăng nhập thành công!");
 
-      if (response.user?.role === "admin" || response.user?.role === "staff") {
+      if (response.user?.role === "admin") {
         navigate("/admin");
+      } else if (response.user?.role === "staff") {
+        navigate("/admin/products");
       } else if (response.user?.role === "shipper") {
         navigate("/shipper/dashboard");
       } else {

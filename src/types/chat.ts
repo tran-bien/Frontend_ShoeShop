@@ -105,6 +105,7 @@ export interface ConversationMessage {
     _id: string;
     name: string;
     avatar?: { url: string };
+    role?: "user" | "staff" | "admin" | "shipper";
   };
   type: "text";
   text: string;
