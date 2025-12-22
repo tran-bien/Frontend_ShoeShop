@@ -238,10 +238,19 @@ const SizePage: React.FC = () => {
 
   const fetchSizes = async (page: number = 1) => {
     try {
+      let searchParams = {};
+      if (searchQuery) {
+        // Nếu là số, tìm theo value, nếu là text, tìm theo description
+        if (!isNaN(Number(searchQuery))) {
+          searchParams = { value: searchQuery };
+        } else {
+          searchParams = { description: searchQuery };
+        }
+      }
       const params = {
         page,
         limit: 10,
-        ...(searchQuery && { name: searchQuery }),
+        ...searchParams,
         ...(typeFilter !== "all" && { type: typeFilter }),
         sort: sortOption,
       };
@@ -260,10 +269,18 @@ const SizePage: React.FC = () => {
 
   const fetchDeletedSizes = async (page: number = 1) => {
     try {
+      let searchParams = {};
+      if (searchQuery) {
+        if (!isNaN(Number(searchQuery))) {
+          searchParams = { value: searchQuery };
+        } else {
+          searchParams = { description: searchQuery };
+        }
+      }
       const params = {
         page,
         limit: 10,
-        ...(searchQuery && { name: searchQuery }),
+        ...searchParams,
         ...(typeFilter !== "all" && { type: typeFilter }),
         sort: sortOption,
       };
@@ -401,7 +418,7 @@ const SizePage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Tìm theo mô tả..."
+              placeholder="Tìm theo size, mô tả"
               className="w-full px-4 py-2 border border-mono-300 rounded-3xl focus:outline-none focus:ring-2 focus:ring-mono-600"
             />
           </div>
