@@ -356,7 +356,7 @@ const SizePage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      toast.error("Xóa kích thước thất bại!");
+      // Axios interceptor sẽ tự động hiển thị toast error từ BE
     } finally {
       setShowDeleteModal(false);
       setSizeToDelete(null);
@@ -423,7 +423,6 @@ const SizePage: React.FC = () => {
             </h3>
             <p className="text-3xl font-bold text-mono-900">{totalCount}</p>
           </div>
-          
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
@@ -481,7 +480,7 @@ const SizePage: React.FC = () => {
             <option value="US">US</option>
             <option value="UK">UK</option>
             <option value="VN">VN</option>
-            </select>
+          </select>
           {/* Sort Dropdown */}
           <select
             value={sortOption}

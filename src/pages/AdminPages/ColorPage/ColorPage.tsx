@@ -417,7 +417,7 @@ const ColorPage: React.FC = () => {
       }
       fetchStats();
     } catch {
-      toast.error("Xóa màu sắc thất bại!");
+      // Axios interceptor sẽ tự động hiển thị toast error từ BE
     } finally {
       setShowDeleteModal(false);
       setColorToDelete(null);

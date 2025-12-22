@@ -201,21 +201,15 @@ const TagPage: React.FC = () => {
       setSubmitting(true);
       await adminTagService.delete(selectedTag._id);
       toast.success("Xóa tag thành công!");
-      fetchTags();
       setShowDeleteModal(false);
       setSelectedTag(null);
+      fetchTags();
     } catch (error: unknown) {
       console.error("Error deleting tag:", error);
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
-          response?: { data?: { message?: string } };
-        };
-        toast.error(
-          axiosError.response?.data?.message || "Có lỗi xảy ra khi xóa tag"
-        );
-      } else {
-        toast.error("Có lỗi xảy ra khi xóa tag");
-      }
+      // Axios interceptor sẽ tự động hiển thị toast error từ BE
+      // Đóng modal ngay cả khi có lỗi để tránh double-click
+      setShowDeleteModal(false);
+      setSelectedTag(null);
     } finally {
       setSubmitting(false);
     }
