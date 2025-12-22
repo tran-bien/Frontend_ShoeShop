@@ -492,8 +492,8 @@ const SizePage: React.FC = () => {
           >
             <option value="created_at_desc">Mới nhất</option>
             <option value="created_at_asc">Cũ nhất</option>
-            <option value="name_asc">Size tăng dần</option>
-            <option value="name_desc">Size giảm dần</option>
+            <option value="value_asc">Size tăng dần</option>
+            <option value="value_desc">Size giảm dần</option>
           </select>
           {!showDeleted && canCreate() && (
             <button
