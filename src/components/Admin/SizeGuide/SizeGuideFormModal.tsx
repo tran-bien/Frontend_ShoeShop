@@ -293,26 +293,36 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                 </label>
                 {/* Image preview */}
                 {formData.sizeChart.image?.url ? (
-                  <div className="relative">
-                    <img
-                      src={formData.sizeChart.image.url}
-                      alt="Size chart preview"
-                      className="w-full h-48 object-contain bg-mono-50 rounded-lg border border-mono-200"
-                    />
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <img
+                        src={formData.sizeChart.image.url}
+                        alt="Size chart preview"
+                        className="w-full h-48 object-contain bg-mono-50 rounded-lg border border-mono-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            sizeChart: {
+                              ...formData.sizeChart,
+                              image: undefined,
+                            },
+                          })
+                        }
+                        className="absolute top-2 right-2 p-1 bg-mono-1000 text-white rounded-full hover:bg-mono-700"
+                      >
+                        <XMarkIcon className="w-4 h-4" />
+                      </button>
+                    </div>
                     <button
                       type="button"
-                      onClick={() =>
-                        setFormData({
-                          ...formData,
-                          sizeChart: {
-                            ...formData.sizeChart,
-                            image: undefined,
-                          },
-                        })
-                      }
-                      className="absolute top-2 right-2 p-1 bg-mono-1000 text-white rounded-full hover:bg-mono-700"
+                      onClick={() => sizeChartInputRef.current?.click()}
+                      disabled={uploadingSizeChart}
+                      className="w-full px-4 py-2 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg font-medium transition-colors disabled:opacity-50"
                     >
-                      <XMarkIcon className="w-4 h-4" />
+                      {uploadingSizeChart ? "Đang tải..." : "Thay đổi ảnh"}
                     </button>
                   </div>
                 ) : (
@@ -418,26 +428,36 @@ const SizeGuideFormModal: React.FC<SizeGuideFormModalProps> = ({
                 </label>
                 {/* Image preview */}
                 {formData.measurementGuide.image?.url ? (
-                  <div className="relative">
-                    <img
-                      src={formData.measurementGuide.image.url}
-                      alt="Measurement guide preview"
-                      className="w-full h-48 object-contain bg-mono-50 rounded-lg border border-mono-200"
-                    />
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <img
+                        src={formData.measurementGuide.image.url}
+                        alt="Measurement guide preview"
+                        className="w-full h-48 object-contain bg-mono-50 rounded-lg border border-mono-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setFormData({
+                            ...formData,
+                            measurementGuide: {
+                              ...formData.measurementGuide,
+                              image: undefined,
+                            },
+                          })
+                        }
+                        className="absolute top-2 right-2 p-1 bg-mono-1000 text-white rounded-full hover:bg-mono-700"
+                      >
+                        <XMarkIcon className="w-4 h-4" />
+                      </button>
+                    </div>
                     <button
                       type="button"
-                      onClick={() =>
-                        setFormData({
-                          ...formData,
-                          measurementGuide: {
-                            ...formData.measurementGuide,
-                            image: undefined,
-                          },
-                        })
-                      }
-                      className="absolute top-2 right-2 p-1 bg-mono-1000 text-white rounded-full hover:bg-mono-700"
+                      onClick={() => measurementInputRef.current?.click()}
+                      disabled={uploadingMeasurement}
+                      className="w-full px-4 py-2 bg-mono-100 hover:bg-mono-200 text-mono-700 rounded-lg font-medium transition-colors disabled:opacity-50"
                     >
-                      <XMarkIcon className="w-4 h-4" />
+                      {uploadingMeasurement ? "Đang tải..." : "Thay đổi ảnh"}
                     </button>
                   </div>
                 ) : (
