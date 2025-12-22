@@ -341,7 +341,7 @@ const AdminSizeGuidePage = () => {
                         className="w-full h-40 object-contain bg-white rounded-lg mb-2"
                       />
                     )}
-                    <p className="text-xs text-mono-600 line-clamp-3">
+                    <p className="text-xs text-mono-600 line-clamp-3 whitespace-pre-line">
                       {guide.measurementGuide.description || "Chưa có mô tả"}
                     </p>
                   </div>

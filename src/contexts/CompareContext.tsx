@@ -156,7 +156,7 @@ export const CompareProvider: React.FC<{ children: React.ReactNode }> = ({
       toast.success("Đã thêm vào danh sách so sánh");
     } catch (error) {
       console.error("Failed to fetch product for compare:", error);
-      toast.error("Không thể thêm sản phẩm vào danh sách so sánh");
+      toast.error("Không thể thêm sản phẩm vào danh sách so sánh. Tối đa 3 sản phẩm");
     } finally {
       setIsLoading(false);
     }

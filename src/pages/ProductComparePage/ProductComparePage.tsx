@@ -222,7 +222,10 @@ const ProductComparePage: React.FC = () => {
                   const currentLabel = allImages[imageIndex]?.label || "";
 
                   return (
-                    <th key={product._id} className="p-4 min-w-[320px]">
+                    <th
+                      key={product._id}
+                      className="p-4 min-w-[420px] align-top"
+                    >
                       <div className="relative">
                         {/* Remove Button */}
                         <button
@@ -239,7 +242,7 @@ const ProductComparePage: React.FC = () => {
                             <img
                               src={currentImage}
                               alt={product.name}
-                              className="w-full h-72 object-cover rounded-lg mb-2 hover:opacity-90 transition-opacity"
+                              className="w-full h-[520px] object-cover rounded-lg mb-2 hover:opacity-90 transition-opacity"
                             />
                           </Link>
 
@@ -608,7 +611,7 @@ const ProductComparePage: React.FC = () => {
                 </td>
                 {validProducts.map((product) => (
                   <td key={product._id} className="p-4">
-                    <p className="text-mono-600 text-sm line-clamp-4">
+                    <p className="text-mono-600 text-sm">
                       {product.description || "Không có mô tả"}
                     </p>
                   </td>
