@@ -281,10 +281,9 @@ const CreateReturnPage: React.FC = () => {
       if (reasonDetail) formData.append("reasonDetail", reasonDetail);
       formData.append("refundMethod", refundMethod);
 
-      if (refundMethod === "bank_transfer" && bankInfo) {
-        formData.append("bankInfo[bankName]", bankInfo.bankName);
-        formData.append("bankInfo[accountNumber]", bankInfo.accountNumber);
-        formData.append("bankInfo[accountName]", bankInfo.accountName);
+      // Only send bankInfo if bank_transfer method is selected
+      if (refundMethod === "bank_transfer") {
+        formData.append("bankInfo", JSON.stringify(bankInfo));
       }
 
       if (selectedAddressId !== "default") {
