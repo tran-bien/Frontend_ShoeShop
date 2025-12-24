@@ -99,7 +99,7 @@ const CouponsPage: React.FC = () => {
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return amount.toLocaleString("vi-VN") + "d";
+    return amount.toLocaleString("vi-VN") + "đ";
   };
 
   // Handle collect coupon
