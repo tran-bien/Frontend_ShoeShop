@@ -408,7 +408,7 @@ const UserOrderDetailPage: React.FC = () => {
                       className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       <FaUniversity />
-                      {refundLoading ? "Đang xử lý..." : "Điền TT hoàn tiền"}
+                      {refundLoading ? "Đang xử lý..." : "Điền thông tin hoàn tiền"}
                     </button>
                   )}
                 </div>
