@@ -426,7 +426,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
           </div>
 
           {/* Is Highlighted */}
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <input
               type="checkbox"
               id="isHighlighted"
@@ -442,7 +442,7 @@ const BlogPostFormModal: React.FC<BlogPostFormModalProps> = ({
             >
               Bài viết nổi bật (hiển thị ở trang chủ)
             </label>
-          </div>
+          </div> */}
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-mono-200">
