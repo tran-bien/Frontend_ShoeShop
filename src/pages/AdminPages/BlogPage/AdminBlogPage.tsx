@@ -293,10 +293,10 @@ const AdminBlogPage = () => {
                           Bài viết
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-medium text-mono-700 uppercase tracking-wider">
-                          Danh mục
+                          <span className="whitespace-nowrap">Danh mục</span>
                         </th>
-                        <th className="px-6 py-4 text-left text-xs font-medium text-mono-700 uppercase tracking-wider">
-                          Trạng thái
+                        <th className="px-6 py-4 text-left text-xs font-medium text-mono-700 uppercase tracking-wider w-40">
+                          <span className="whitespace-nowrap">Trạng thái</span>
                         </th>
                         <th className="px-6 py-4 text-left text-xs font-medium text-mono-700 uppercase tracking-wider">
                           Lượt xem
