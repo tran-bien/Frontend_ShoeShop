@@ -30,6 +30,10 @@ const ReviewPage = () => {
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showReplyModal, setShowReplyModal] = useState(false);
+  const [showDeleteReplyModal, setShowDeleteReplyModal] = useState(false);
+  const [reviewToDeleteReply, setReviewToDeleteReply] = useState<Review | null>(
+    null
+  );
 
   const limit = 10;
 
@@ -98,12 +102,19 @@ const ReviewPage = () => {
     }
   };
 
-  const handleDeleteReply = async (reviewId: string) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa phản hồi này?")) return;
+  const handleDeleteReply = (review: Review) => {
+    setReviewToDeleteReply(review);
+    setShowDeleteReplyModal(true);
+  };
+
+  const confirmDeleteReply = async () => {
+    if (!reviewToDeleteReply) return;
 
     try {
-      await adminReviewApi.deleteReply(reviewId);
+      await adminReviewApi.deleteReply(reviewToDeleteReply._id);
       toast.success("Đã xóa phản hồi");
+      setShowDeleteReplyModal(false);
+      setReviewToDeleteReply(null);
       fetchReviews(currentPage);
       fetchStats();
     } catch (error) {
@@ -504,7 +515,7 @@ const ReviewPage = () => {
                             </button>
                             {/* Xóa phản hồi */}
                             <button
-                              onClick={() => handleDeleteReply(review._id)}
+                              onClick={() => handleDeleteReply(review)}
                               className="px-3 py-1.5 bg-mono-200 hover:bg-mono-300 text-mono-900 text-xs font-medium rounded-lg border border-mono-300 transition-colors flex items-center gap-1.5"
                             >
                               <svg
@@ -654,6 +665,80 @@ const ReviewPage = () => {
           onClose={() => setShowReplyModal(false)}
           onSuccess={onReplySuccess}
         />
+      )}
+
+      {/* Modal xác nhận xóa phản hồi */}
+      {showDeleteReplyModal && reviewToDeleteReply && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md relative">
+            {/* Header */}
+            <div className="p-6 border-b border-mono-200">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-mono-200 flex items-center justify-center flex-shrink-0">
+                  <svg
+                    className="w-6 h-6 text-mono-700"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-mono-900">
+                    Xóa phản hồi
+                  </h2>
+                  <p className="text-sm text-red-600 mt-1">
+                    Hành động này không thể hoàn tác
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              <p className="text-mono-700">
+                Bạn có chắc chắn muốn xóa phản hồi của{" "}
+                <span className="font-semibold">
+                  {reviewToDeleteReply.reply?.repliedBy?.name ||
+                    "Quản trị viên"}
+                </span>{" "}
+                cho đánh giá của{" "}
+                <span className="font-semibold">
+                  {reviewToDeleteReply.user.name}
+                </span>
+                ?
+              </p>
+              <p className="text-sm text-red-600 mt-2">
+                Nội dung phản hồi sẽ bị xóa vĩnh viễn.
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="px-6 py-4 bg-mono-50 rounded-b-xl flex justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteReplyModal(false);
+                  setReviewToDeleteReply(null);
+                }}
+                className="px-4 py-2 text-mono-700 hover:bg-mono-100 rounded-lg transition-colors font-medium"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={confirmDeleteReply}
+                className="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-colors font-medium"
+              >
+                Xóa phản hồi
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

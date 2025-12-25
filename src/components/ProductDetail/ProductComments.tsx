@@ -333,36 +333,11 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
                             </span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-mono-500 text-xs">
-                            {new Date(
-                              review.reply.repliedAt
-                            ).toLocaleDateString("vi-VN")}
-                          </span>
-                          {isAdminOrStaff && (
-                            <>
-                              <button
-                                onClick={() =>
-                                  handleEditReply(
-                                    review._id,
-                                    review.reply!.content
-                                  )
-                                }
-                                className="p-1 text-mono-500 hover:text-mono-800 transition-colors"
-                                title="Chỉnh sửa"
-                              >
-                                <FiEdit2 size={14} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteReply(review._id)}
-                                className="p-1 text-mono-500 hover:text-mono-700 transition-colors"
-                                title="Xóa"
-                              >
-                                <FiTrash2 size={14} />
-                              </button>
-                            </>
+                        <span className="text-mono-500 text-xs">
+                          {new Date(review.reply.repliedAt).toLocaleDateString(
+                            "vi-VN"
                           )}
-                        </div>
+                        </span>
                       </div>
                       <p className="text-mono-700 text-sm whitespace-pre-line">
                         {review.reply.content}
