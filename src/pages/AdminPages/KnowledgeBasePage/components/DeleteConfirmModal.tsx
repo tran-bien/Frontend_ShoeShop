@@ -23,7 +23,7 @@ const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
             Xác nhận xóa?
           </h3>
           <p className="text-mono-500 mb-2">
-            Bạn có chắc muốn xóa tài liệu này?
+            Bạn có chắc muốn xóa dữ liệu này?
           </p>
           <p className="font-medium text-mono-700 bg-mono-100 px-3 py-1 rounded-lg">
             "{title}"

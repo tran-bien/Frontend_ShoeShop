@@ -85,7 +85,7 @@ const ImportModal: React.FC<ImportModalProps> = ({ onClose, onSuccess }) => {
       if (response.data.success && response.data.data) {
         const { imported, skipped } = response.data.data;
         toast.success(
-          `Đã import ${imported} tài liệu${
+          `Đã import ${imported} dữ liệu${
             skipped > 0 ? `, bỏ qua ${skipped}` : ""
           }`
         );

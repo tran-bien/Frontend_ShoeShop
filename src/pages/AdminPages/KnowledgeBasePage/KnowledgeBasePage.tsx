@@ -109,7 +109,7 @@ const KnowledgeBasePage: React.FC = () => {
       }
     } catch (error) {
       console.error("Fetch documents error:", error);
-      toast.error("Không thể tải danh sách tài liệu");
+      toast.error("Không thể tải danh sách dữ liệu");
     } finally {
       setIsLoading(false);
     }
@@ -158,14 +158,14 @@ const KnowledgeBasePage: React.FC = () => {
     if (!documentToDelete) return;
     try {
       await adminKnowledgeService.deleteDocument(documentToDelete._id);
-      toast.success("Đã xóa tài liệu");
+      toast.success("Đã xóa dữ liệu");
       setIsDeleteModalOpen(false);
       setDocumentToDelete(null);
       fetchDocuments();
       fetchStatistics();
     } catch (error) {
       console.error("Delete error:", error);
-      toast.error("Không thể xóa tài liệu");
+      toast.error("Không thể xóa dữ liệu");
     }
   };
 
@@ -288,7 +288,7 @@ const KnowledgeBasePage: React.FC = () => {
                 <FiFileText className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-mono-500 text-sm">Tổng tài liệu</p>
+                <p className="text-mono-500 text-sm">Tổng dữ liệu</p>
                 <p className="text-2xl font-bold text-mono-900">
                   {statistics.total}
                 </p>
@@ -347,7 +347,7 @@ const KnowledgeBasePage: React.FC = () => {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Tìm kiếm tài liệu..."
+                placeholder="Tìm kiếm dữ liệu..."
                 className="w-full pl-10 pr-4 py-2 border border-mono-200 rounded-lg focus:ring-2 focus:ring-mono-900 focus:border-transparent"
               />
             </div>
@@ -407,12 +407,12 @@ const KnowledgeBasePage: React.FC = () => {
         ) : documents.length === 0 ? (
           <div className="text-center py-12">
             <FiAlertTriangle className="w-12 h-12 text-mono-300 mx-auto mb-4" />
-            <p className="text-mono-500">Không tìm thấy tài liệu nào</p>
+            <p className="text-mono-500">Không tìm thấy dữ liệu nào</p>
             <button
               onClick={handleCreateNew}
               className="mt-4 px-4 py-2 bg-mono-900 text-white rounded-lg hover:bg-mono-800 transition-colors"
             >
-              Thêm tài liệu đầu tiên
+              Thêm dữ liệu đầu tiên
             </button>
           </div>
         ) : (
@@ -564,7 +564,7 @@ const KnowledgeBasePage: React.FC = () => {
               </p>
               <span className="text-mono-300">•</span>
               <p className="text-sm text-mono-500">
-                Tổng {statistics?.total || 0} tài liệu
+                Tổng {statistics?.total || 0} dữ liệu
               </p>
             </div>
             <div className="flex items-center gap-1">
@@ -688,7 +688,7 @@ const KnowledgeBasePage: React.FC = () => {
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
               <p className="text-sm text-red-800">
                 <strong>⚠️ Cảnh báo:</strong> Thao tác này sẽ xóa{" "}
-                <strong>{statistics?.total || 0}</strong> tài liệu và AI sẽ quay
+                <strong>{statistics?.total || 0}</strong> dữ liệu và AI sẽ quay
                 về trạng thái chưa được huấn luyện.
               </p>
             </div>

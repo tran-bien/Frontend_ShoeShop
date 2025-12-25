@@ -78,17 +78,17 @@ const KnowledgeModal: React.FC<KnowledgeModalProps> = ({
           document._id,
           baseData as UpdateKnowledgeDocumentData
         );
-        toast.success("Đã cập nhật tài liệu");
+        toast.success("Đã cập nhật dữ liệu");
       } else {
         await adminKnowledgeService.createDocument(
           baseData as CreateKnowledgeDocumentData
         );
-        toast.success("Đã tạo tài liệu mới");
+        toast.success("Đã tạo dữ liệu mới");
       }
       onSuccess();
     } catch (error) {
       console.error("Save error:", error);
-      toast.error(isEdit ? "Không thể cập nhật" : "Không thể tạo tài liệu");
+      toast.error(isEdit ? "Không thể cập nhật" : "Không thể tạo dữ liệu");
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +100,7 @@ const KnowledgeModal: React.FC<KnowledgeModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-mono-200">
           <h2 className="text-xl font-semibold text-mono-900">
-            {isEdit ? "Chỉnh sửa tài liệu" : "Thêm tài liệu mới"}
+            {isEdit ? "Chỉnh sửa dữ liệu" : "Thêm dữ liệu mới"}
           </h2>
           <button
             onClick={onClose}
@@ -126,7 +126,7 @@ const KnowledgeModal: React.FC<KnowledgeModalProps> = ({
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              placeholder="Nhập tiêu đề tài liệu"
+              placeholder="Nhập tiêu đề dữ liệu"
               className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:ring-2 focus:ring-mono-900 focus:border-transparent"
               required
             />
@@ -165,7 +165,7 @@ const KnowledgeModal: React.FC<KnowledgeModalProps> = ({
               onChange={(e) =>
                 setFormData({ ...formData, content: e.target.value })
               }
-              placeholder="Nhập nội dung tài liệu (AI sẽ học từ nội dung này)"
+              placeholder="Nhập nội dung dữ liệu (AI sẽ học từ nội dung này)"
               rows={8}
               className="w-full px-4 py-2 border border-mono-200 rounded-lg focus:ring-2 focus:ring-mono-900 focus:border-transparent resize-none"
               required

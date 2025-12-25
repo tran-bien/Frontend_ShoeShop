@@ -138,7 +138,7 @@ const AdminLoyaltyTierPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-mono-black mb-2">
-            Quản lý Loyalty Tiers
+            Quản lý hạng thành viên
           </h1>
           <p className="text-mono-600">
             Quản lý các hạng thành viên và quyền lợi của chương trình khách hàng
