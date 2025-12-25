@@ -63,12 +63,12 @@ const Sidebar: React.FC = () => {
       icon: <FaTimesCircle className="text-lg" />,
       label: "Yêu cầu hủy đơn",
     },
-    {
-      path: "/returns/create",
-      icon: <FaUndo className="text-lg" />,
-      label: "Yêu cầu trả hàng",
-      matchPaths: ["/returns/create", "/returns/"],
-    },
+    // {
+    //   path: "/returns/create",
+    //   icon: <FaUndo className="text-lg" />,
+    //   label: "Yêu cầu trả hàng",
+    //   matchPaths: ["/returns/create", "/returns/"],
+    // },
     {
       path: "/user-reviews",
       icon: <FaStar className="text-lg" />,

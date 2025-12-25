@@ -370,65 +370,100 @@ const CreateReturnPage: React.FC = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Order Selection */}
-            <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h2 className="text-lg font-semibold mb-4">Chọn đơn hàng</h2>
-              {orders.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <FiPackage className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>Không có đơn hàng nào đủ điều kiện trả hàng</p>
-                  <p className="text-sm mt-1">
-                    (Đơn hàng phải đã giao trong vòng 7 ngày)
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {orders.map((order) => (
-                    <div
-                      key={order._id}
-                      onClick={() => handleSelectOrder(order)}
-                      className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
-                        selectedOrder?._id === order._id
-                          ? "border-black bg-gray-50"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div className="flex items-start gap-3">
-                          {selectedOrder?._id === order._id && (
-                            <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                              <FiCheck className="w-4 h-4 text-white" />
+            {/* Order Selection - Only show if no orderId in URL */}
+            {!orderId ? (
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h2 className="text-lg font-semibold mb-4">Chọn đơn hàng</h2>
+                {orders.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <FiPackage className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                    <p>Không có đơn hàng nào đủ điều kiện trả hàng</p>
+                    <p className="text-sm mt-1">
+                      (Đơn hàng phải đã giao trong vòng 7 ngày)
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {orders.map((order) => (
+                      <div
+                        key={order._id}
+                        onClick={() => handleSelectOrder(order)}
+                        className={`p-4 rounded-lg border-2 cursor-pointer transition-colors ${
+                          selectedOrder?._id === order._id
+                            ? "border-black bg-gray-50"
+                            : "border-gray-200 hover:border-gray-300"
+                        }`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div className="flex items-start gap-3">
+                            {selectedOrder?._id === order._id && (
+                              <div className="w-6 h-6 bg-black rounded-full flex items-center justify-center">
+                                <FiCheck className="w-4 h-4 text-white" />
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-medium">{order.code}</p>
+                              <p className="text-sm text-gray-600">
+                                {order.orderItems.length} sản phẩm
+                              </p>
                             </div>
-                          )}
-                          <div>
-                            <p className="font-medium">{order.code}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-medium">
+                              {order.totalAfterDiscountAndShipping?.toLocaleString(
+                                "vi-VN"
+                              )}
+                              đ
+                            </p>
                             <p className="text-sm text-gray-600">
-                              {order.orderItems.length} sản phẩm
+                              Giao ngày:{" "}
+                              {order.deliveredAt
+                                ? new Date(
+                                    order.deliveredAt
+                                  ).toLocaleDateString("vi-VN")
+                                : "N/A"}
                             </p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="font-medium">
-                            {order.totalAfterDiscountAndShipping?.toLocaleString(
-                              "vi-VN"
-                            )}
-                            đ
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            Giao ngày:{" "}
-                            {order.deliveredAt
-                              ? new Date(order.deliveredAt).toLocaleDateString(
-                                  "vi-VN"
-                                )
-                              : "N/A"}
-                          </p>
-                        </div>
                       </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              // Show selected order info if orderId is in URL
+              selectedOrder && (
+                <div className="bg-white rounded-lg p-6 shadow-sm border-2 border-black">
+                  <h2 className="text-lg font-semibold mb-4">Đơn hàng trả</h2>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="font-medium text-lg">
+                        {selectedOrder.code}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {selectedOrder.orderItems.length} sản phẩm
+                      </p>
                     </div>
-                  ))}
+                    <div className="text-right">
+                      <p className="font-medium">
+                        {selectedOrder.totalAfterDiscountAndShipping?.toLocaleString(
+                          "vi-VN"
+                        )}
+                        đ
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Giao ngày:{" "}
+                        {selectedOrder.deliveredAt
+                          ? new Date(
+                              selectedOrder.deliveredAt
+                            ).toLocaleDateString("vi-VN")
+                          : "N/A"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
+              )
+            )}
 
             {/* Order Items Preview */}
             {selectedOrder && (
