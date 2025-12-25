@@ -14,12 +14,12 @@ const ViewDetailModal: React.FC<{
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-gradient-to-r from-mono-800 to-mono-black text-white p-6 rounded-t-xl">
+        <div className="sticky top-0 bg-white text-black p-6 rounded-t-xl border-b">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold">Chi tiết Màu sắc</h2>
             <button
               onClick={onClose}
-              className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
+              className="text-black hover:text-mono-500 text-3xl font-bold leading-none"
             >
               ×
             </button>
