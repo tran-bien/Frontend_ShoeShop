@@ -134,16 +134,21 @@ const ProductComparePage: React.FC = () => {
     );
   }
 
-  if (validProducts.length === 0 && compareList.length === 0) {
+  // Hiển thị thông báo nếu không có sản phẩm hoặc chỉ có 1 sản phẩm
+  if (validProducts.length < 2) {
     return (
       <div className="min-h-screen bg-mono-50 flex items-center justify-center">
         <div className="text-center">
           <Squares2X2Icon className="h-16 w-16 text-mono-400 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-mono-900 mb-2">
-            Chưa có sản phẩm để so sánh
+            {validProducts.length === 0
+              ? "Chưa có sản phẩm để so sánh"
+              : "Cần thêm sản phẩm để so sánh"}
           </h2>
           <p className="text-mono-600 mb-6">
-            Thêm sản phẩm vào danh sách so sánh để xem chi tiết
+            {validProducts.length === 0
+              ? "Thêm sản phẩm vào danh sách so sánh để xem chi tiết"
+              : "Vui lòng chọn thêm sản phẩm để so sánh (tối thiểu 2 sản phẩm)"}
           </p>
           <Link
             to="/products"
