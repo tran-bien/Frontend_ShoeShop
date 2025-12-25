@@ -622,10 +622,10 @@ const LoyaltyDashboardContent: React.FC = () => {
                       {pointCost.toLocaleString()} điểm
                     </span>
                   </div>
-                  {coupon.minOrderValue && (
+                  {coupon.minOrderValue > 0 && (
                     <p className="text-xs text-gray-500 mb-3">
                       Đơn tối thiểu{" "}
-                      {coupon.minOrderValue?.toLocaleString("vi-VN")}đ
+                      {coupon.minOrderValue.toLocaleString("vi-VN")}đ
                     </p>
                   )}
                   <button
