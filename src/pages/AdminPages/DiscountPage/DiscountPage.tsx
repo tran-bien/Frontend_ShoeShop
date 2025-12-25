@@ -591,7 +591,7 @@ const DiscountPage = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-mono-900">Quản lý Coupon</h2>
+          <h2 className="text-2xl font-bold text-mono-900">Quản lý mã giảm giá</h2>
           <p className="text-sm text-mono-500 mt-1">
             Quản lý mã giảm giá và khuyến mãi
           </p>
