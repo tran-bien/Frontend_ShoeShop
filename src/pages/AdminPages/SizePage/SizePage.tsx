@@ -19,7 +19,7 @@ const ViewDetailModal: React.FC<{
             <h2 className="text-2xl font-bold">Chi tiết Kích thước</h2>
             <button
               onClick={onClose}
-              className="text-white hover:text-mono-200 text-3xl font-bold leading-none"
+              className="text-black hover:text-mono-700 text-3xl font-bold leading-none"
             >
               ×
             </button>
