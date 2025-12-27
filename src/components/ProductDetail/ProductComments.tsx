@@ -91,7 +91,7 @@ const ProductComments: React.FC<ProductCommentsProps> = ({ productId }) => {
       }
     } catch (error) {
       console.error("Error toggling like review:", error);
-      toast.error("Không thể thực hiện thao tác này");
+      // toast.error("Không thể thực hiện thao tác này");
     } finally {
       setLikeLoading((prev) => ({ ...prev, [reviewId]: false }));
     }
