@@ -82,7 +82,7 @@ const ResetPasswordPage: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     if (!formData.password) {
-      newErrors.password = "Vui lòng nhập mật khẩu mới";
+      newErrors.password = "Vui lòng nhập mật khẩu mới không trùng lặp mật khẩu cũ";
     } else {
       const passwordError = getPasswordError(formData.password);
       if (passwordError) {
@@ -93,7 +93,7 @@ const ResetPasswordPage: React.FC = () => {
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = "Vui lòng xác nhận mật khẩu";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
+      newErrors.confirmPassword = "Mật khẩu và mật khẩu xác nhận không khớp";
     }
 
     if (Object.keys(newErrors).length > 0) {
