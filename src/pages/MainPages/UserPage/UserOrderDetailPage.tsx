@@ -408,7 +408,9 @@ const UserOrderDetailPage: React.FC = () => {
                       className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                       <FaUniversity />
-                      {refundLoading ? "Đang xử lý..." : "Điền thông tin hoàn tiền"}
+                      {refundLoading
+                        ? "Đang xử lý..."
+                        : "Điền thông tin hoàn tiền"}
                     </button>
                   )}
                 </div>
@@ -445,7 +447,7 @@ const UserOrderDetailPage: React.FC = () => {
                   </div>
                   <p className="text-sm text-green-700 mt-1">
                     Số tiền {order.refund?.amount?.toLocaleString()}đ đã được
-                    chuyển vào tài khoản của bạn.
+                    hoàn trả.
                   </p>
                   {order.refund?.completedAt && (
                     <p className="text-sm text-green-600 mt-1">
