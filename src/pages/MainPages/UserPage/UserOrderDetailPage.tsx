@@ -188,6 +188,28 @@ const UserOrderDetailPage: React.FC = () => {
     }
   };
 
+  // Chuyển đổi mã lý do trả hàng sang tiếng Việt 
+  const formatNoteWithVietnameseReason = (note: string) => {
+    if (!note) return note;
+
+    const reasonLabels: Record<string, string> = {
+      wrong_size: "Sai kích cỡ",
+      wrong_product: "Sai sản phẩm (giao nhầm)",
+      defective: "Sản phẩm lỗi/hư hỏng",
+      not_as_described: "Không giống mô tả",
+      changed_mind: "Đổi ý (không muốn nữa)",
+      other: "Lý do khác",
+    };
+
+    // Thay thế các mã lý do trong note bằng tiếng Việt
+    let formattedNote = note;
+    Object.entries(reasonLabels).forEach(([code, label]) => {
+      formattedNote = formattedNote.replace(new RegExp(code, "g"), label);
+    });
+
+    return formattedNote;
+  };
+
   const canCancelOrder = (order: Order) => {
     return (
       ["pending", "confirmed"].includes(order.status) && !order.hasCancelRequest
@@ -692,7 +714,7 @@ const UserOrderDetailPage: React.FC = () => {
                               </span>
                               {history.note && (
                                 <p className="text-sm text-mono-600 mt-1">
-                                  {history.note}
+                                  {formatNoteWithVietnameseReason(history.note)}
                                 </p>
                               )}
                             </div>
