@@ -63,6 +63,11 @@ export interface DynamicFilterParams {
   name?: string;
   category?: string;
   brand?: string;
+  colors?: string;
+  sizes?: string;
+  gender?: string;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 export interface DynamicFiltersResponse {

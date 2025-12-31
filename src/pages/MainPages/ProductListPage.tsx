@@ -218,6 +218,61 @@ const ProductListPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Fetch dynamic filters khi có filter được chọn (cascading filters)
+  const fetchDynamicFilters = useCallback(
+    async (currentFilters: ProductQueryParams) => {
+      // Kiểm tra xem có filter nào được chọn không
+      const hasActiveFilter =
+        currentFilters.category ||
+        currentFilters.brand ||
+        currentFilters.colors ||
+        currentFilters.sizes ||
+        currentFilters.gender ||
+        currentFilters.name;
+
+      if (!hasActiveFilter) {
+        // Nếu không có filter nào, reset về originalFilters
+        if (originalFilters) {
+          setFilters(originalFilters);
+        }
+        return;
+      }
+
+      try {
+        // Convert colors và sizes sang string nếu là array
+        const colorsParam = Array.isArray(currentFilters.colors)
+          ? currentFilters.colors.join(",")
+          : currentFilters.colors;
+        const sizesParam = Array.isArray(currentFilters.sizes)
+          ? currentFilters.sizes.join(",")
+          : currentFilters.sizes;
+
+        const { data } = await filterService.getFilterAttributesBySearch({
+          name: currentFilters.name,
+          category: currentFilters.category,
+          brand: currentFilters.brand,
+          colors: colorsParam,
+          sizes: sizesParam,
+          gender: currentFilters.gender,
+        });
+
+        if (data.success && data.filters) {
+          // Cập nhật filters với kết quả động, nhưng giữ nguyên priceRange từ originalFilters
+          setFilters({
+            categories: data.filters.categories || [],
+            brands: data.filters.brands || [],
+            colors: data.filters.colors || [],
+            sizes: data.filters.sizes || [],
+            priceRange: originalFilters?.priceRange || data.filters.priceRange,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching dynamic filters:", error);
+      }
+    },
+    [originalFilters]
+  );
+
   // Hàm cập nhật URL params và trigger fetch products
   const updateFiltersAndFetch = (newFiltersState: ProductQueryParams) => {
     const newParams: Record<string, string> = {};
@@ -253,6 +308,8 @@ const ProductListPage: React.FC = () => {
     }
     setFiltersState(newParams);
     fetchProducts();
+    // Fetch dynamic filters khi URL thay đổi
+    fetchDynamicFilters(newParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, originalFilters]);
 
