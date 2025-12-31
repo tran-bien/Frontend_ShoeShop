@@ -118,69 +118,18 @@ const BannerPage: React.FC = () => {
     }
   };
 
-  const handleReorderBanner = async (bannerId: string, newOrder: number) => {
-    try {
-      // Tìm banner hiện tại
-      const currentBanner = banners.find((b) => b._id === bannerId);
-      if (!currentBanner) return;
-
-      // Kiểm tra nếu vị trí không thay đổi
-      if (currentBanner.displayOrder === newOrder) {
-        toast.error("Banner đã ở vị trí này rồi!");
-        return; // Không cần cập nhật nếu vị trí giống nhau
-      }
-
-      // Kiểm tra xung đột vị trí với banner active khác trên frontend trước khi gửi API
-      const conflictingBanner = banners.find(
-        (b) => b._id !== bannerId && b.displayOrder === newOrder && b.isActive
-      );
-
-      if (conflictingBanner) {
-        toast.error(
-          `Vị trí ${newOrder} đã được sử dụng bởi banner "${conflictingBanner.title}". Vui lòng chọn vị trí khác.`
-        );
-        return;
-      }
-
-      // Cập nhật displayOrder của banner
-      await bannerAdminService.updateBanner(bannerId, {
-        displayOrder: newOrder,
-      });
-      toast.success(
-        `Đã chuyển banner "${currentBanner.title}" đến vị trí ${newOrder}`
-      );
-      fetchBanners();
-    } catch (error: unknown) {
-      console.error("Error reordering banner:", error);
-
-      // Xử lý lỗi 409 từ backend
-      if (error && typeof error === "object" && "response" in error) {
-        const axiosError = error as {
-          response?: { status?: number; data?: { message?: string } };
-        };
-        if (axiosError.response?.status === 409) {
-          toast.error(
-            axiosError.response?.data?.message ||
-              `Vị trí ${newOrder} đã được sử dụng. Vui lòng chọn vị trí khác.`
-          );
-        } else {
-          toast.error(
-            "Có lỗi xảy ra khi thay đổi vị trí banner. Vui lòng thử lại."
-          );
-        }
-      } else {
-        toast.error(
-          "Có lỗi xảy ra khi thay đổi vị trí banner. Vui lòng thử lại."
-        );
-      }
-    }
+  // Hàm tính displayOrder tiếp theo - di chuyển ra ngoài để dùng chung
+  const getNextDisplayOrder = () => {
+    if (banners.length === 0) return 1;
+    const maxOrder = Math.max(...banners.map((b) => b.displayOrder));
+    return maxOrder + 1;
   };
 
   // Create Banner Modal
   const CreateBannerModal = () => {
     const [formData, setFormData] = useState({
       title: "",
-      displayOrder: 1,
+      displayOrder: getNextDisplayOrder(),
       link: "",
       isActive: true,
       banner: null as File | null,
@@ -220,7 +169,7 @@ const BannerPage: React.FC = () => {
         setShowCreateModal(false);
         setFormData({
           title: "",
-          displayOrder: 1,
+          displayOrder: getNextDisplayOrder(),
           link: "",
           isActive: true,
           banner: null,
@@ -274,24 +223,24 @@ const BannerPage: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
-                Vị trí hiện thể
+                Vị trí hiển thị
               </label>
-              <select
+              <input
+                type="number"
+                min="1"
                 value={formData.displayOrder}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    displayOrder: parseInt(e.target.value),
+                    displayOrder: parseInt(e.target.value) || 1,
                   })
                 }
                 className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
-              >
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <option key={num} value={num}>
-                    Vị trí {num}
-                  </option>
-                ))}
-              </select>
+                required
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Vị trí tiếp theo được đề xuất: {getNextDisplayOrder()}
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
@@ -450,7 +399,9 @@ const BannerPage: React.FC = () => {
               <label className="block text-sm font-medium text-mono-700 mb-1">
                 Vị trí hiện thể
               </label>
-              <select
+              <input
+                type="number"
+                min="1"
                 value={formData.displayOrder}
                 onChange={(e) =>
                   setFormData({
@@ -459,13 +410,11 @@ const BannerPage: React.FC = () => {
                   })
                 }
                 className="w-full px-3 py-2 border border-mono-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-mono-500"
-              >
-                {[1, 2, 3, 4, 5].map((num) => (
-                  <option key={num} value={num}>
-                    Vị trí {num}
-                  </option>
-                ))}
-              </select>
+                required
+              />
+              <p className="text-xs text-mono-500 mt-1">
+                Vị trí tiếp theo được đề xuất: {getNextDisplayOrder()}
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-mono-700 mb-1">
@@ -1045,24 +994,6 @@ const BannerPage: React.FC = () => {
                             </svg>
                             Đổi ảnh
                           </button>
-
-                          {/* Dropdown đổi vị trí */}
-                          <select
-                            value={banner.displayOrder}
-                            onChange={(e) =>
-                              handleReorderBanner(
-                                banner._id,
-                                parseInt(e.target.value)
-                              )
-                            }
-                            className="px-3 py-2 bg-white hover:bg-mono-50 text-mono-700 text-sm font-medium rounded-lg border border-mono-200 transition-colors"
-                          >
-                            {[1, 2, 3, 4, 5].map((position) => (
-                              <option key={position} value={position}>
-                                Vị trí {position}
-                              </option>
-                            ))}
-                          </select>
                         </>
                       )}
 

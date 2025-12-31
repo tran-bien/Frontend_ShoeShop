@@ -360,34 +360,6 @@ const LoyaltyDashboardContent: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Quick Actions - Kho Voucher */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.25 }}
-        className="mb-8"
-      >
-        <div
-          onClick={() => navigate("/my-coupons")}
-          className="bg-white text-black p-6 rounded-xl cursor-pointer hover:shadow-lg transition-all group border border-gray-200"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-black/10 rounded-xl flex items-center justify-center">
-                <Wallet className="w-6 h-6 text-black" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold">Kho Voucher Của Bạn</h3>
-                <p className="text-sm text-gray-500">
-                  Xem và quản lý các mã giảm giá đã thu thập
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="w-6 h-6 text-gray-400 group-hover:translate-x-1 transition-transform" />
-          </div>
-        </div>
-      </motion.div>
-
       {/* Progress to Next Tier */}
       {nextTierInfo && (
         <motion.div

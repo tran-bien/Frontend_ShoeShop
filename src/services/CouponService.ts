@@ -2,7 +2,6 @@ import { axiosInstance, axiosInstanceAuth } from "../utils/axiosIntance";
 import type {
   Coupon,
   CouponQuery,
-  PublicCouponsResponse,
   AdminCouponsResponse,
   AdminCouponDetailResponse,
   CreateCouponData,
@@ -15,24 +14,11 @@ import { ApiResponse } from "../types/api";
 export type {
   Coupon,
   CouponQuery,
-  PublicCouponsResponse,
   AdminCouponsResponse,
   AdminCouponDetailResponse,
   CreateCouponData,
   UpdateCouponData,
   UpdateCouponStatusData,
-};
-
-// =======================
-// PUBLIC COUPON SERVICE
-// =======================
-
-export const publicCouponService = {
-  // Lấy danh sách coupon công khai đang hoạt động
-  getPublicCoupons: (
-    params: CouponQuery = {}
-  ): Promise<{ data: PublicCouponsResponse }> =>
-    axiosInstance.get("/api/v1/coupons/public", { params }),
 };
 
 // =======================
@@ -155,7 +141,6 @@ export const adminCouponService = {
 };
 
 export default {
-  public: publicCouponService,
   user: userCouponService,
   admin: adminCouponService,
 };

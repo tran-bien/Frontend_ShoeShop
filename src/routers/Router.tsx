@@ -31,7 +31,7 @@ import VariantPage from "../pages/AdminPages/VariantPage/VariantPage";
 import BannerPage from "../pages/AdminPages/BannerPage";
 import AuthGuard from "../components/Auth/AuthGuard";
 import UnauthorizedPage from "../pages/UnauthorizedPage/UnauthorizedPage";
-import CouponsPage from "../pages/MainPages/Coupons/Coupons";
+import CouponsPage from "../pages/MainPages/CouponsPage/CouponsPage";
 import ResetPasswordPage from "../pages/AuthPages/ResetPasswordPage";
 import UserChangePasswordPage from "../pages/MainPages/UserPage/UserChangePasswordPage";
 import UserSessionsPage from "../pages/MainPages/UserPage/UserSessionsPage";

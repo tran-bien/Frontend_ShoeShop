@@ -4,7 +4,6 @@ import type {
   CreateBannerData,
   UpdateBannerData,
   BannerQueryParams,
-  ReorderBannerData,
 } from "../types/banner";
 import { ApiResponse } from "../types/api";
 
@@ -66,13 +65,6 @@ export const bannerAdminService = {
   toggleBannerStatus: (id: string): Promise<{ data: ApiResponse<Banner> }> =>
     axiosInstanceAuth.put(`${ADMIN_BANNER_PREFIX}/${id}/toggle-status`),
 
-  // Sắp xếp lại thứ tự banner (dùng image routes)
-  reorderBanners: (
-    bannerOrders: ReorderBannerData[]
-  ): Promise<{ data: ApiResponse }> =>
-    axiosInstanceAuth.put(`${ADMIN_IMAGE_PREFIX}/banner/reorder`, {
-      bannerOrders,
-    }),
 };
 
 // Public Banner Service
