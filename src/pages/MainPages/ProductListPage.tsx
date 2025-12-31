@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import { FiFilter, FiX } from "react-icons/fi";
@@ -47,10 +47,10 @@ const parseQueryParams = (
 
 const ProductListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  // Auto scroll to top when page mounts hoặc searchParams thay đổi
+  // Auto scroll to top chỉ khi component mount lần đầu
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [searchParams]);
+  }, []);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -79,6 +79,15 @@ const ProductListPage: React.FC = () => {
     categories: [],
     brands: [],
   });
+
+  // State để lưu trữ filters gốc (tất cả attributes)
+  const [originalFilters, setOriginalFilters] = useState<{
+    colors: ColorFilter[];
+    sizes: SizeFilter[];
+    categories: CategoryFilter[];
+    brands: BrandFilter[];
+    priceRange?: { min: number; max: number };
+  } | null>(null);
 
   // Lấy thông tin bộ lọc từ URL
   const queryParamsFromUrl = parseQueryParams(searchParams);
@@ -161,28 +170,30 @@ const ProductListPage: React.FC = () => {
         hasNext: false,
         hasPrev: false,
       });
-      toast.error("Không thể tải danh sách sản phẩm");
+      //toast.error("Không thể tải danh sách sản phẩm");
     } finally {
       setLoading(false);
     }
   };
 
-  // Lấy danh sách danh mục, thương hiệu, màu sắc và kích thước
+  // Lấy tất cả danh mục, thương hiệu, màu sắc và kích thước (static filters)
   useEffect(() => {
-    const fetchFilterOptions = async () => {
+    const fetchAllFilterOptions = async () => {
       try {
         const { data } = await filterService.getFilterAttributes();
         if (data.success && data.filters) {
           const { categories, brands, colors, sizes, priceRange } =
             data.filters;
-          setFilters({
+          const allFilters = {
             categories,
             brands,
             colors,
             sizes,
             priceRange,
-          });
-          console.log("Loaded filter options:", data.filters);
+          };
+          setFilters(allFilters);
+          setOriginalFilters(allFilters); // Lưu lại filters gốc
+          console.log("Loaded all filter options:", data.filters);
 
           // Nếu chưa có giá trị minPrice và maxPrice trong URL, khởi tạo chúng từ API
           if (filtersState.minPrice === undefined) {
@@ -203,22 +214,16 @@ const ProductListPage: React.FC = () => {
       }
     };
 
-    fetchFilterOptions();
+    fetchAllFilterOptions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Cập nhật lỗi filters khi URL thay đổi và fetch sản phẩm
-  useEffect(() => {
-    setFiltersState(parseQueryParams(searchParams));
-    fetchProducts();
-  }, [searchParams]);
-
-  // Áp dụng bộ lọc
-  const applyFilters = () => {
-    // Loại bỏ các filter undefined, null hoặc empty string
+  // Hàm cập nhật URL params và trigger fetch products
+  const updateFiltersAndFetch = (newFiltersState: ProductQueryParams) => {
     const newParams: Record<string, string> = {};
 
     // Thêm tất cả tham số hợp lệ vào URL
-    Object.entries(filtersState).forEach(([key, value]) => {
+    Object.entries(newFiltersState).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
         newParams[key] = String(value);
       }
@@ -228,18 +233,79 @@ const ProductListPage: React.FC = () => {
     newParams.page = "1";
 
     setSearchParams(newParams);
-    setShowMobileFilter(false);
   };
 
-  // Reset bỏ lọc
+  // Cập nhật filtersState khi URL thay đổi và fetch sản phẩm
+  useEffect(() => {
+    const newParams = parseQueryParams(searchParams);
+    // Đảm bảo minPrice và maxPrice có giá trị từ originalFilters nếu chưa có
+    if (
+      newParams.minPrice === undefined &&
+      originalFilters?.priceRange?.min !== undefined
+    ) {
+      newParams.minPrice = originalFilters.priceRange.min;
+    }
+    if (
+      newParams.maxPrice === undefined &&
+      originalFilters?.priceRange?.max !== undefined
+    ) {
+      newParams.maxPrice = originalFilters.priceRange.max;
+    }
+    setFiltersState(newParams);
+    fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, originalFilters]);
+
+  // Áp dụng bộ lọc ngay khi thay đổi
+  const applyFilterImmediately = (newState: Partial<ProductQueryParams>) => {
+    const updatedState = { ...filtersState, ...newState };
+    setFiltersState(updatedState);
+    updateFiltersAndFetch(updatedState);
+  };
+
+  // Debounce ref cho price filter
+  const priceDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Xử lý thay đổi giá với debounce (chờ 500ms sau khi ngừng kéo)
+  const handlePriceChange = useCallback(
+    (minPrice: number | undefined, maxPrice: number | undefined) => {
+      // Clear timeout cũ
+      if (priceDebounceRef.current) {
+        clearTimeout(priceDebounceRef.current);
+      }
+
+      // Set timeout mới
+      priceDebounceRef.current = setTimeout(() => {
+        updateFiltersAndFetch({
+          ...filtersState,
+          minPrice,
+          maxPrice,
+        });
+      }, 500);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [filtersState]
+  );
+
+  // Cleanup debounce khi unmount
+  useEffect(() => {
+    return () => {
+      if (priceDebounceRef.current) {
+        clearTimeout(priceDebounceRef.current);
+      }
+    };
+  }, []);
+
+  // Reset bỏ lọc - khôi phục về filters gốc
   const resetFilters = () => {
-    setFiltersState({
+    const defaultState: ProductQueryParams = {
       page: 1,
       limit: 12,
       sort: "newest",
-      minPrice: filters.priceRange?.min,
-      maxPrice: filters.priceRange?.max,
-    });
+      minPrice: originalFilters?.priceRange?.min,
+      maxPrice: originalFilters?.priceRange?.max,
+    };
+    setFiltersState(defaultState);
     setSearchParams({ sort: "newest" });
   };
 
@@ -289,8 +355,8 @@ const ProductListPage: React.FC = () => {
         }
         // Đảm bảo giá min không nhỏ hơn giá min cho phép
         if (
-          filters.priceRange?.min !== undefined &&
-          numValue < filters.priceRange.min
+          originalFilters?.priceRange?.min !== undefined &&
+          numValue < originalFilters.priceRange.min
         ) {
           return;
         }
@@ -299,6 +365,8 @@ const ProductListPage: React.FC = () => {
         ...filtersState,
         minPrice: numValue,
       });
+      // Auto-apply với debounce
+      handlePriceChange(numValue, filtersState.maxPrice);
     } else {
       if (numValue !== undefined) {
         // Đảm bảo giá max không nhỏ hơn giá min
@@ -310,8 +378,8 @@ const ProductListPage: React.FC = () => {
         }
         // Đảm bảo giá max không vượt quá giá max cho phép
         if (
-          filters.priceRange?.max !== undefined &&
-          numValue > filters.priceRange.max
+          originalFilters?.priceRange?.max !== undefined &&
+          numValue > originalFilters.priceRange.max
         ) {
           return;
         }
@@ -320,6 +388,8 @@ const ProductListPage: React.FC = () => {
         ...filtersState,
         maxPrice: numValue,
       });
+      // Auto-apply với debounce
+      handlePriceChange(filtersState.minPrice, numValue);
     }
   };
 
@@ -386,6 +456,11 @@ const ProductListPage: React.FC = () => {
       ...filtersState,
       [type]: newValue,
     });
+    // Áp dụng filter ngay lập tức
+    updateFiltersAndFetch({
+      ...filtersState,
+      [type]: newValue,
+    });
   };
 
   // Hàm điều hướng đến trang chi tiết sản phẩm
@@ -444,7 +519,7 @@ const ProductListPage: React.FC = () => {
                 <select
                   value={filtersState.sort}
                   onChange={(e) =>
-                    setFiltersState({ ...filtersState, sort: e.target.value })
+                    applyFilterImmediately({ sort: e.target.value })
                   }
                   className="w-full p-2 border border-mono-300 rounded-md"
                 >
@@ -462,8 +537,7 @@ const ProductListPage: React.FC = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() =>
-                      setFiltersState({
-                        ...filtersState,
+                      applyFilterImmediately({
                         gender:
                           filtersState.gender === "male" ? undefined : "male",
                       })
@@ -478,8 +552,7 @@ const ProductListPage: React.FC = () => {
                   </button>
                   <button
                     onClick={() =>
-                      setFiltersState({
-                        ...filtersState,
+                      applyFilterImmediately({
                         gender:
                           filtersState.gender === "female"
                             ? undefined
@@ -496,8 +569,7 @@ const ProductListPage: React.FC = () => {
                   </button>
                   <button
                     onClick={() =>
-                      setFiltersState({
-                        ...filtersState,
+                      applyFilterImmediately({
                         gender:
                           filtersState.gender === "unisex"
                             ? undefined
@@ -531,21 +603,21 @@ const ProductListPage: React.FC = () => {
                       style={{
                         left: `${
                           (((filtersState.minPrice ||
-                            filters.priceRange?.min ||
+                            originalFilters?.priceRange?.min ||
                             0) -
-                            (filters.priceRange?.min || 0)) /
-                            ((filters.priceRange?.max || 1000000) -
-                              (filters.priceRange?.min || 0))) *
+                            (originalFilters?.priceRange?.min || 0)) /
+                            ((originalFilters?.priceRange?.max || 10000000) -
+                              (originalFilters?.priceRange?.min || 0))) *
                           100
                         }%`,
                         right: `${
                           100 -
                           (((filtersState.maxPrice ||
-                            filters.priceRange?.max ||
-                            1000000) -
-                            (filters.priceRange?.min || 0)) /
-                            ((filters.priceRange?.max || 1000000) -
-                              (filters.priceRange?.min || 0))) *
+                            originalFilters?.priceRange?.max ||
+                            10000000) -
+                            (originalFilters?.priceRange?.min || 0)) /
+                            ((originalFilters?.priceRange?.max || 10000000) -
+                              (originalFilters?.priceRange?.min || 0))) *
                             100
                         }%`,
                       }}
@@ -554,24 +626,26 @@ const ProductListPage: React.FC = () => {
                     {/* Thanh trượt giá thấp nhất */}
                     <input
                       type="range"
-                      min={filters.priceRange?.min || 0}
-                      max={filters.priceRange?.max || 1000000}
+                      min={originalFilters?.priceRange?.min || 0}
+                      max={originalFilters?.priceRange?.max || 10000000}
                       value={
-                        filtersState.minPrice || filters.priceRange?.min || 0
+                        filtersState.minPrice ||
+                        originalFilters?.priceRange?.min ||
+                        0
                       }
                       onChange={(e) => {
                         const value = Number(e.target.value);
+                        const maxValue =
+                          filtersState.maxPrice ||
+                          originalFilters?.priceRange?.max ||
+                          10000000;
                         // Đảm bảo minPrice không vượt quá maxPrice
-                        if (
-                          value <=
-                          (filtersState.maxPrice ||
-                            filters.priceRange?.max ||
-                            1000000)
-                        ) {
+                        if (value <= maxValue) {
                           setFiltersState({
                             ...filtersState,
                             minPrice: value,
                           });
+                          handlePriceChange(value, maxValue);
                         }
                       }}
                       className="absolute w-full appearance-none bg-transparent pointer-events-auto cursor-pointer h-1"
@@ -585,26 +659,26 @@ const ProductListPage: React.FC = () => {
                     {/* Thanh trượt giá cao nhất */}
                     <input
                       type="range"
-                      min={filters.priceRange?.min || 0}
-                      max={filters.priceRange?.max || 1000000}
+                      min={originalFilters?.priceRange?.min || 0}
+                      max={originalFilters?.priceRange?.max || 10000000}
                       value={
                         filtersState.maxPrice ||
-                        filters.priceRange?.max ||
-                        1000000
+                        originalFilters?.priceRange?.max ||
+                        10000000
                       }
                       onChange={(e) => {
                         const value = Number(e.target.value);
+                        const minValue =
+                          filtersState.minPrice ||
+                          originalFilters?.priceRange?.min ||
+                          0;
                         // Đảm bảo maxPrice không nhỏ hơn giá minPrice
-                        if (
-                          value >=
-                          (filtersState.minPrice ||
-                            filters.priceRange?.min ||
-                            0)
-                        ) {
+                        if (value >= minValue) {
                           setFiltersState({
                             ...filtersState,
                             maxPrice: value,
                           });
+                          handlePriceChange(minValue, value);
                         }
                       }}
                       className="absolute w-full appearance-none bg-transparent pointer-events-auto cursor-pointer h-1"
@@ -622,11 +696,11 @@ const ProductListPage: React.FC = () => {
                   <input
                     type="number"
                     className="border rounded-md px-3 py-2 bg-white w-[45%] text-sm"
-                    min={filters.priceRange?.min || 0}
+                    min={originalFilters?.priceRange?.min || 0}
                     max={
                       filtersState.maxPrice ||
-                      filters.priceRange?.max ||
-                      1000000
+                      originalFilters?.priceRange?.max ||
+                      10000000
                     }
                     value={
                       filtersState.minPrice !== undefined
@@ -634,21 +708,27 @@ const ProductListPage: React.FC = () => {
                         : ""
                     }
                     onChange={(e) => handlePriceInput("min", e.target.value)}
-                    placeholder={`${filters.priceRange?.min || 0}`}
+                    placeholder={`${originalFilters?.priceRange?.min || 0}`}
                   />
                   <span className="text-mono-500">đến</span>
                   <input
                     type="number"
                     className="border rounded-md px-3 py-2 bg-white w-[45%] text-sm"
-                    min={filtersState.minPrice || filters.priceRange?.min || 0}
-                    max={filters.priceRange?.max || 1000000}
+                    min={
+                      filtersState.minPrice ||
+                      originalFilters?.priceRange?.min ||
+                      0
+                    }
+                    max={originalFilters?.priceRange?.max || 10000000}
                     value={
                       filtersState.maxPrice !== undefined
                         ? filtersState.maxPrice
                         : ""
                     }
                     onChange={(e) => handlePriceInput("max", e.target.value)}
-                    placeholder={`${filters.priceRange?.max || 1000000}`}
+                    placeholder={`${
+                      originalFilters?.priceRange?.max || 10000000
+                    }`}
                   />
                 </div>
 
@@ -824,14 +904,6 @@ const ProductListPage: React.FC = () => {
                   ))}
                 </div>
               </div>
-
-              {/* Apply filters button */}
-              <button
-                onClick={applyFilters}
-                className="w-full py-2 bg-mono-black text-white rounded-md hover:bg-mono-800 transition-colors"
-              >
-                Áp dụng
-              </button>
             </div>
           </div>
 
@@ -853,12 +925,14 @@ const ProductListPage: React.FC = () => {
                     <h3 className="font-medium text-mono-700">Sắp xếp</h3>
                     <select
                       value={filtersState.sort}
-                      onChange={(e) =>
+                      onChange={(e) => {
+                        const newSort = e.target.value;
                         setFiltersState({
                           ...filtersState,
-                          sort: e.target.value,
-                        })
-                      }
+                          sort: newSort,
+                        });
+                        applyFilterImmediately({ sort: newSort });
+                      }}
                       className="w-full p-2 border border-mono-300 rounded-md"
                     >
                       <option value="newest">Mới nhất</option>
@@ -874,15 +948,15 @@ const ProductListPage: React.FC = () => {
                     <h3 className="font-medium text-mono-700">Giới tính</h3>
                     <div className="flex gap-2">
                       <button
-                        onClick={() =>
+                        onClick={() => {
+                          const newGender =
+                            filtersState.gender === "male" ? undefined : "male";
                           setFiltersState({
                             ...filtersState,
-                            gender:
-                              filtersState.gender === "male"
-                                ? undefined
-                                : "male",
-                          })
-                        }
+                            gender: newGender,
+                          });
+                          applyFilterImmediately({ gender: newGender });
+                        }}
                         className={`px-3 py-1 border rounded-md ${
                           filtersState.gender === "male"
                             ? "bg-mono-50 border-mono-500 text-mono-900"
@@ -892,15 +966,17 @@ const ProductListPage: React.FC = () => {
                         Nam
                       </button>
                       <button
-                        onClick={() =>
+                        onClick={() => {
+                          const newGender =
+                            filtersState.gender === "female"
+                              ? undefined
+                              : "female";
                           setFiltersState({
                             ...filtersState,
-                            gender:
-                              filtersState.gender === "female"
-                                ? undefined
-                                : "female",
-                          })
-                        }
+                            gender: newGender,
+                          });
+                          applyFilterImmediately({ gender: newGender });
+                        }}
                         className={`px-3 py-1 border rounded-md ${
                           filtersState.gender === "female"
                             ? "bg-mono-50 border-mono-500 text-mono-900"
@@ -928,21 +1004,21 @@ const ProductListPage: React.FC = () => {
                           style={{
                             left: `${
                               (((filtersState.minPrice ||
-                                filters.priceRange?.min ||
+                                originalFilters?.priceRange?.min ||
                                 0) -
-                                (filters.priceRange?.min || 0)) /
-                                ((filters.priceRange?.max || 1000000) -
-                                  (filters.priceRange?.min || 0))) *
+                                (originalFilters?.priceRange?.min || 0)) /
+                                ((originalFilters?.priceRange?.max || 1000000) -
+                                  (originalFilters?.priceRange?.min || 0))) *
                               100
                             }%`,
                             right: `${
                               100 -
                               (((filtersState.maxPrice ||
-                                filters.priceRange?.max ||
+                                originalFilters?.priceRange?.max ||
                                 1000000) -
-                                (filters.priceRange?.min || 0)) /
-                                ((filters.priceRange?.max || 1000000) -
-                                  (filters.priceRange?.min || 0))) *
+                                (originalFilters?.priceRange?.min || 0)) /
+                                ((originalFilters?.priceRange?.max || 1000000) -
+                                  (originalFilters?.priceRange?.min || 0))) *
                                 100
                             }%`,
                           }}
@@ -951,11 +1027,11 @@ const ProductListPage: React.FC = () => {
                         {/* Thanh trượt giá thấp nhất */}
                         <input
                           type="range"
-                          min={filters.priceRange?.min || 0}
-                          max={filters.priceRange?.max || 1000000}
+                          min={originalFilters?.priceRange?.min || 0}
+                          max={originalFilters?.priceRange?.max || 1000000}
                           value={
                             filtersState.minPrice ||
-                            filters.priceRange?.min ||
+                            originalFilters?.priceRange?.min ||
                             0
                           }
                           onChange={(e) => {
@@ -964,13 +1040,14 @@ const ProductListPage: React.FC = () => {
                             if (
                               value <=
                               (filtersState.maxPrice ||
-                                filters.priceRange?.max ||
+                                originalFilters?.priceRange?.max ||
                                 1000000)
                             ) {
                               setFiltersState({
                                 ...filtersState,
                                 minPrice: value,
                               });
+                              handlePriceChange(value, filtersState.maxPrice);
                             }
                           }}
                           className="absolute w-full appearance-none bg-transparent pointer-events-auto cursor-pointer h-1"
@@ -984,11 +1061,11 @@ const ProductListPage: React.FC = () => {
                         {/* Thanh trượt giá cao nhất */}
                         <input
                           type="range"
-                          min={filters.priceRange?.min || 0}
-                          max={filters.priceRange?.max || 1000000}
+                          min={originalFilters?.priceRange?.min || 0}
+                          max={originalFilters?.priceRange?.max || 1000000}
                           value={
                             filtersState.maxPrice ||
-                            filters.priceRange?.max ||
+                            originalFilters?.priceRange?.max ||
                             1000000
                           }
                           onChange={(e) => {
@@ -997,13 +1074,14 @@ const ProductListPage: React.FC = () => {
                             if (
                               value >=
                               (filtersState.minPrice ||
-                                filters.priceRange?.min ||
+                                originalFilters?.priceRange?.min ||
                                 0)
                             ) {
                               setFiltersState({
                                 ...filtersState,
                                 maxPrice: value,
                               });
+                              handlePriceChange(filtersState.minPrice, value);
                             }
                           }}
                           className="absolute w-full appearance-none bg-transparent pointer-events-auto cursor-pointer h-1"
@@ -1021,10 +1099,10 @@ const ProductListPage: React.FC = () => {
                       <input
                         type="number"
                         className="border rounded-md px-3 py-2 bg-white w-[45%] text-sm"
-                        min={filters.priceRange?.min || 0}
+                        min={originalFilters?.priceRange?.min || 0}
                         max={
                           filtersState.maxPrice ||
-                          filters.priceRange?.max ||
+                          originalFilters?.priceRange?.max ||
                           1000000
                         }
                         value={
@@ -1035,16 +1113,18 @@ const ProductListPage: React.FC = () => {
                         onChange={(e) =>
                           handlePriceInput("min", e.target.value)
                         }
-                        placeholder={`${filters.priceRange?.min || 0}`}
+                        placeholder={`${originalFilters?.priceRange?.min || 0}`}
                       />
                       <span className="text-mono-500">đến</span>
                       <input
                         type="number"
                         className="border rounded-md px-3 py-2 bg-white w-[45%] text-sm"
                         min={
-                          filtersState.minPrice || filters.priceRange?.min || 0
+                          filtersState.minPrice ||
+                          originalFilters?.priceRange?.min ||
+                          0
                         }
-                        max={filters.priceRange?.max || 1000000}
+                        max={originalFilters?.priceRange?.max || 1000000}
                         value={
                           filtersState.maxPrice !== undefined
                             ? filtersState.maxPrice
@@ -1053,7 +1133,9 @@ const ProductListPage: React.FC = () => {
                         onChange={(e) =>
                           handlePriceInput("max", e.target.value)
                         }
-                        placeholder={`${filters.priceRange?.max || 1000000}`}
+                        placeholder={`${
+                          originalFilters?.priceRange?.max || 1000000
+                        }`}
                       />
                     </div>
                   </div>
@@ -1197,19 +1279,13 @@ const ProductListPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Action buttons */}
+                  {/* Action buttons - chỉ giữ nút Đặt lại */}
                   <div className="flex gap-2 pt-4">
                     <button
                       onClick={resetFilters}
-                      className="flex-1 py-2 border border-mono-300 rounded-md"
+                      className="w-full py-2 border border-mono-300 rounded-md"
                     >
                       Đặt lại
-                    </button>
-                    <button
-                      onClick={applyFilters}
-                      className="flex-1 py-2 bg-mono-black text-white rounded-md"
-                    >
-                      Áp dụng
                     </button>
                   </div>
                 </div>

@@ -8,6 +8,8 @@ import type {
   CategoryFilter,
   BrandFilter,
   SearchSuggestion,
+  DynamicFiltersResponse,
+  DynamicFilterParams,
 } from "../types/filter";
 
 // Re-export types for convenience
@@ -21,9 +23,15 @@ export type {
 
 // Filter Service
 export const filterService = {
-  // Lấy thuộc tính lọc cho sản phẩm
+  // Lấy tất cả thuộc tính lọc cho sản phẩm (static)
   getFilterAttributes: (): Promise<{ data: FiltersResponse }> =>
     axiosInstance.get("/api/v1/filters/attributes"),
+
+  // Lấy thuộc tính lọc động dựa trên kết quả tìm kiếm
+  getFilterAttributesBySearch: (
+    params: DynamicFilterParams
+  ): Promise<{ data: DynamicFiltersResponse }> =>
+    axiosInstance.get("/api/v1/filters/attributes/search", { params }),
 
   // Lấy gợi ý tìm kiếm
   getSuggestions: (

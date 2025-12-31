@@ -56,6 +56,36 @@ export interface FiltersResponse {
 }
 
 // =======================
+// DYNAMIC FILTER TYPES
+// =======================
+
+export interface DynamicFilterParams {
+  name?: string;
+  category?: string;
+  brand?: string;
+}
+
+export interface DynamicFiltersResponse {
+  success: boolean;
+  filters: {
+    categories: CategoryFilter[];
+    brands: BrandFilter[];
+    colors: ColorFilter[];
+    sizes: SizeFilter[];
+    priceRange: PriceRangeFilter;
+    genders: GenderFilter[];
+    tags?: Array<{
+      _id: string;
+      name: string;
+      type: string;
+      description?: string;
+    }>;
+  };
+  isFiltered: boolean;
+  matchedProductCount: number;
+}
+
+// =======================
 // SEARCH SUGGESTION TYPES
 // =======================
 
