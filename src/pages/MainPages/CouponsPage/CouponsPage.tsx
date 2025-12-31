@@ -199,9 +199,6 @@ const CouponsPage: React.FC = () => {
           </button>
 
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-black rounded-full mb-4">
-              <FiGift className="w-8 h-8 text-white" />
-            </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
               Thu Thập Mã Giảm Giá
             </h1>

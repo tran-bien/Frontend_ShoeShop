@@ -13,7 +13,6 @@ import {
   convertToProductCardProduct,
 } from "../../services/ProductService";
 import { Product, ProductQueryParams } from "../../types/product";
-import { toast } from "react-hot-toast";
 
 // Helper function để xử lý split cho string hoặc array
 const safeStringToArray = (value: string | string[] | undefined): string[] => {
@@ -193,7 +192,6 @@ const ProductListPage: React.FC = () => {
           };
           setFilters(allFilters);
           setOriginalFilters(allFilters); // Lưu lại filters gốc
-          console.log("Loaded all filter options:", data.filters);
 
           // Nếu chưa có giá trị minPrice và maxPrice trong URL, khởi tạo chúng từ API
           if (filtersState.minPrice === undefined) {
@@ -257,6 +255,19 @@ const ProductListPage: React.FC = () => {
         });
 
         if (data.success && data.filters) {
+          // Nếu API trả về empty filters, giữ nguyên originalFilters để user vẫn thấy các options
+          const hasResults =
+            data.filters.categories?.length > 0 ||
+            data.filters.brands?.length > 0 ||
+            data.filters.colors?.length > 0 ||
+            data.filters.sizes?.length > 0;
+
+          if (!hasResults && originalFilters) {
+            // Không có kết quả nào - giữ nguyên filters gốc để user có thể bỏ chọn
+            // Không update filters để tránh mất options
+            return;
+          }
+
           // Cập nhật filters với kết quả động, nhưng giữ nguyên priceRange từ originalFilters
           setFilters({
             categories: data.filters.categories || [],
@@ -509,15 +520,14 @@ const ProductListPage: React.FC = () => {
       }
     }
 
-    setFiltersState({
+    const updatedFilters = {
       ...filtersState,
       [type]: newValue,
-    });
-    // Áp dụng filter ngay lập tức
-    updateFiltersAndFetch({
-      ...filtersState,
-      [type]: newValue,
-    });
+    };
+
+    setFiltersState(updatedFilters);
+    // Áp dụng filter ngay lập tức - URL sẽ được update và useEffect sẽ fetch dynamic filters
+    updateFiltersAndFetch(updatedFilters);
   };
 
   // Hàm điều hướng đến trang chi tiết sản phẩm
