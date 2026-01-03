@@ -676,17 +676,16 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                     đ
                   </p>
 
-                  {selectedSizeInfo.discountPercent &&
-                    selectedSizeInfo.discountPercent > 0 && (
-                      <div className="flex items-center space-x-2 mt-1">
-                        <span className="text-lg text-mono-500 line-through">
-                          {(selectedSizeInfo.price || 0).toLocaleString()}đ
-                        </span>
-                        <span className="text-sm font-medium text-mono-900 bg-mono-200 px-2 py-1 rounded">
-                          -{selectedSizeInfo.discountPercent}%
-                        </span>
-                      </div>
-                    )}
+                  {selectedSizeInfo.discountPercent > 0 && (
+                    <div className="flex items-center space-x-2 mt-1">
+                      <span className="text-lg text-mono-500 line-through">
+                        {(selectedSizeInfo.price || 0).toLocaleString()}đ
+                      </span>
+                      <span className="text-sm font-medium text-mono-900 bg-mono-200 px-2 py-1 rounded">
+                        -{selectedSizeInfo.discountPercent}%
+                      </span>
+                    </div>
+                  )}
                 </>
               ) : (
                 <p className="text-3xl font-bold text-mono-900">

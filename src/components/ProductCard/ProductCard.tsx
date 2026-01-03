@@ -96,7 +96,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
           <span className="text-mono-900 font-bold text-base md:text-lg">
             {displayMin.toLocaleString()} - {displayMax.toLocaleString()}đ
           </span>
-          {product.originalPrice && (
+          {product.originalPrice && product.originalPrice > 0 && (
             <span className="text-mono-400 text-sm line-through">
               Gốc: {product.originalPrice.toLocaleString()}đ
             </span>
@@ -114,7 +114,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
             <span className="text-mono-900 font-bold text-base md:text-lg">
               {finalPrice.toLocaleString()}đ
             </span>
-            {product.originalPrice && (
+            {product.originalPrice && product.originalPrice > 0 && (
               <span className="text-mono-400 text-sm line-through">
                 {product.originalPrice.toLocaleString()}đ
               </span>
