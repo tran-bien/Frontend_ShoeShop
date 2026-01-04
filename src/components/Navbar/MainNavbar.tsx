@@ -12,7 +12,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { filterService, SearchSuggestion } from "../../services/FilterService";
 import { useAuth } from "../../hooks/useAuth";
 import NotificationBell from "./NotificationBell";
-import LoyaltyBadge from "./LoyaltyBadge";
 // @ts-expect-error - Google Fonts import does not have TypeScript declarations
 import "@fontsource/lobster";
 
@@ -260,13 +259,6 @@ const MainNavbar = () => {
       </div>
 
       <ul className="flex gap-1 xl:gap-2 items-center flex-shrink-0">
-        {/* Loyalty Badge - Chỉ hiển thị khi đã đăng nhập và là user thường */}
-        {isAuthenticated && user?.role === "user" && (
-          <li>
-            <LoyaltyBadge />
-          </li>
-        )}
-
         {/* Notifications - Chỉ hiển thị khi đã đăng nhập */}
         {isAuthenticated && (
           <li className="mr-1">
