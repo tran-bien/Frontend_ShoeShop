@@ -209,8 +209,7 @@ const UserViewHistoryContent: React.FC = () => {
               </div>
             </div>
             <p className="text-gray-700 mb-6">
-              Bạn có chắc chắn muốn xóa toàn bộ lịch sử xem của mình? Tất cả{" "}
-              {history.length} sản phẩm sẽ bị xóa khỏi danh sách.
+              Bạn có chắc chắn muốn xóa toàn bộ lịch sử xem của mình? 
             </p>
             <div className="flex gap-3 justify-end">
               <button
