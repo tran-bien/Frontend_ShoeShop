@@ -203,13 +203,6 @@ const MyCouponsContent: React.FC = () => {
               ? "Bạn không có coupon nào đang hoạt động"
               : "Không có coupon hết hạn"}
           </p>
-          <Link
-            to="/coupons"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            <Gift className="w-5 h-5" />
-            Khám phá coupon
-          </Link>
         </div>
       ) : (
         <AnimatePresence mode="wait">

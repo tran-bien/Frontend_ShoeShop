@@ -116,12 +116,6 @@ const LikePage: React.FC = () => {
           <p className="text-mono-500 mb-6">
             Bạn chưa thêm sản phẩm nào vào danh sách yêu thích
           </p>
-          <button
-            onClick={() => navigate("/products")}
-            className="px-6 py-3 bg-mono-black text-white rounded-lg hover:bg-mono-800 transition-colors"
-          >
-            Khám phá sản phẩm ngay
-          </button>
         </div>
       );
     }
