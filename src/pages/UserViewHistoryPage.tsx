@@ -133,13 +133,6 @@ const UserViewHistoryContent: React.FC = () => {
             <p className="text-gray-500 mb-8 max-w-md mx-auto">
               Các sản phẩm bạn xem sẽ được lưu lại ở đây để bạn dễ dàng tìm lại
             </p>
-            <button
-              onClick={() => navigate("/products")}
-              className="inline-flex items-center gap-2 px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium"
-            >
-              <FiShoppingBag className="w-5 h-5" />
-              Khám phá sản phẩm
-            </button>
           </div>
         ) : (
           <>
