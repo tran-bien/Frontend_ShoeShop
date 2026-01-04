@@ -150,12 +150,6 @@ const ProductComparePage: React.FC = () => {
               ? "Thêm sản phẩm vào danh sách so sánh để xem chi tiết"
               : "Vui lòng chọn thêm sản phẩm để so sánh (tối thiểu 2 sản phẩm)"}
           </p>
-          <Link
-            to="/products"
-            className="inline-block bg-mono-black text-white px-6 py-3 rounded-lg hover:bg-mono-800 transition-colors"
-          >
-            Khám phá sản phẩm
-          </Link>
         </div>
       </div>
     );
@@ -174,13 +168,6 @@ const ProductComparePage: React.FC = () => {
               So sánh {validProducts.length} sản phẩm
             </p>
           </div>
-          <button
-            onClick={clearCompare}
-            className="bg-mono-100 hover:bg-mono-200 text-mono-700 px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-          >
-            <XMarkIcon className="h-5 w-5" />
-            Xóa tất cả
-          </button>
         </div>
 
         {/* Comparison Table */}
@@ -626,23 +613,6 @@ const ProductComparePage: React.FC = () => {
           </table>
         </div>
 
-        {/* Action Buttons */}
-        <div className="mt-8 flex justify-center gap-4">
-          <Link
-            to="/products"
-            className="bg-mono-100 hover:bg-mono-200 text-mono-700 px-6 py-3 rounded-lg transition-colors font-medium"
-          >
-            Thêm sản phẩm
-          </Link>
-          {validProducts.length > 1 && (
-            <button
-              onClick={clearCompare}
-              className="bg-mono-black hover:bg-mono-800 text-white px-6 py-3 rounded-lg transition-colors font-medium"
-            >
-              Bắt đầu lại
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );
