@@ -31,11 +31,12 @@ export const publicRecommendationService = {
       params: { algorithm: "CONTENT_BASED", limit },
     }),
 
-  // Track product view (không cần đăng nhập - sử dụng session)
+  // Track product view (sử dụng axiosInstanceAuth để gửi token nếu có)
+  // BE sẽ dùng optionalAuth để lấy userId nếu đã đăng nhập
   trackProductView: (
     productId: string
   ): Promise<{ data: { success: boolean; message: string } }> =>
-    axiosInstance.post("/api/v1/users/view-history", { productId }),
+    axiosInstanceAuth.post("/api/v1/users/view-history", { productId }),
 };
 
 // =======================

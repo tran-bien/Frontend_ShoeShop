@@ -10,6 +10,7 @@ import type { ProductImage } from "../../types/common";
 import type { SizeGuide } from "../../types/sizeGuide";
 import ProductDetail from "../../components/ProductDetail/ProductDetail";
 import { productPublicService } from "../../services/ProductService";
+import { publicRecommendationService } from "../../services/RecommendationService";
 import RecentlyViewed from "../../components/ViewHistory/RecentlyViewed";
 
 const ProductDetailPage: React.FC = () => {
@@ -30,6 +31,17 @@ const ProductDetailPage: React.FC = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug, location.pathname]);
+
+  // Track product view để cập nhật UserBehavior cho recommendation
+  useEffect(() => {
+    if (product?._id) {
+      // Track view sau khi product được load
+      publicRecommendationService.trackProductView(product._id).catch((err) => {
+        // Silent fail - không ảnh hưởng UX
+        console.debug("[ViewHistory] Track view failed:", err.message);
+      });
+    }
+  }, [product?._id]);
 
   useEffect(() => {
     const fetchProduct = async () => {
