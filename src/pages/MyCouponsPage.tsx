@@ -339,13 +339,6 @@ const MyCouponsContent: React.FC = () => {
               </p>
             </div>
           </div>
-          <Link
-            to="/loyalty/dashboard"
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            Xem điểm thưởng
-            <ChevronRight className="w-4 h-4" />
-          </Link>
         </div>
       </div>
     </div>
