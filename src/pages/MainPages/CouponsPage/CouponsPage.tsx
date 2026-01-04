@@ -39,6 +39,11 @@ const CouponsPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     // Chờ auth load xong trước khi fetch
     if (!authLoading) {
+      // Redirect to login if not authenticated
+      if (!isAuthenticated) {
+        navigate("/login");
+        return;
+      }
       fetchPublicCoupons();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,31 +160,6 @@ const CouponsPage: React.FC = () => {
         <div className="text-center">
           <FiLoader className="w-12 h-12 animate-spin text-gray-400 mx-auto mb-4" />
           <p className="text-gray-500">Đang tải mã giảm giá...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Chỉ hiển thị thông báo đăng nhập khi auth đã load xong VÀ user chưa đăng nhập
-  if (!authLoading && !isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center py-16 bg-white rounded-2xl shadow-lg max-w-md mx-4 px-8">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6">
-            <FiGift className="w-12 h-12 text-gray-400" />
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">
-            Vui lòng đăng nhập
-          </h3>
-          <p className="text-gray-600 mb-6">
-            Đăng nhập để xem và thu thập các mã giảm giá hấp dẫn
-          </p>
-          <button
-            onClick={() => navigate("/login")}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            Đăng nhập ngay
-          </button>
         </div>
       </div>
     );
