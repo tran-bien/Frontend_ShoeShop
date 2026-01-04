@@ -188,7 +188,7 @@ const UserOrderDetailPage: React.FC = () => {
     }
   };
 
-  // Chuyển đổi mã lý do trả hàng sang tiếng Việt 
+  // Chuyển đổi mã lý do trả hàng và trạng thái sang tiếng Việt
   const formatNoteWithVietnameseReason = (note: string) => {
     if (!note) return note;
 
@@ -201,9 +201,29 @@ const UserOrderDetailPage: React.FC = () => {
       other: "Lý do khác",
     };
 
+    // Map trạng thái tiếng Anh sang tiếng Việt
+    const statusLabels: Record<string, string> = {
+      pending: "Chờ xác nhận",
+      confirmed: "Đã xác nhận",
+      assigned_to_shipper: "Đã gán shipper",
+      out_for_delivery: "Đang giao hàng",
+      shipping: "Đang giao",
+      delivered: "Giao thành công",
+      delivery_failed: "Giao hàng thất bại",
+      returning_to_warehouse: "Đang trả về kho",
+      cancelled: "Đã hủy",
+      returned: "Đã hoàn trả",
+      refunded: "Đã hoàn tiền",
+    };
+
     // Thay thế các mã lý do trong note bằng tiếng Việt
     let formattedNote = note;
     Object.entries(reasonLabels).forEach(([code, label]) => {
+      formattedNote = formattedNote.replace(new RegExp(code, "g"), label);
+    });
+
+    // Thay thế các trạng thái tiếng Anh trong note bằng tiếng Việt
+    Object.entries(statusLabels).forEach(([code, label]) => {
       formattedNote = formattedNote.replace(new RegExp(code, "g"), label);
     });
 
