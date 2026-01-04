@@ -335,7 +335,7 @@ const AssignOrderModal = ({
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                               <span className="font-mono font-bold text-mono-900">
-                                #{order.code.slice(-8).toUpperCase()}
+                                {order.code}
                               </span>
                               {selectedOrderId === order._id && (
                                 <span className="bg-mono-900 text-white rounded-full p-0.5">
@@ -541,7 +541,7 @@ const AssignOrderModal = ({
                     <span className="text-mono-500">Đơn hàng:</span>
                     {selectedOrder ? (
                       <span className="font-bold text-mono-900 bg-mono-100 px-2 py-0.5 rounded">
-                        #{selectedOrder.code.slice(-8).toUpperCase()}
+                        {selectedOrder.code}
                       </span>
                     ) : (
                       <span className="text-mono-400 italic">Chưa chọn</span>
