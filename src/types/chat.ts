@@ -135,7 +135,6 @@ export interface CreateConversationData {
   participantIds?: string[];
   initialMessage?: string;
   message?: string;
-  orderId?: string;
 }
 
 export interface SendMessageData {
