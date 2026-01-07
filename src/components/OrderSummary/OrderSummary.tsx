@@ -425,11 +425,11 @@ const OrderSummary: React.FC = () => {
               )}
             </div>
 
-            {/* Phuong thực thanh toán */}
+            {/* Phương thức thanh toán */}
             <div className="bg-mono-50 rounded-lg p-4">
               <h3 className="font-semibold text-lg mb-4 flex items-center">
                 <FaCreditCard className="mr-2 text-mono-800" />
-                Phuong thực thanh toán
+                Phương thức thanh toán
               </h3>
               <div className="space-y-3">
                 <label className="flex items-center space-x-3 cursor-pointer">
