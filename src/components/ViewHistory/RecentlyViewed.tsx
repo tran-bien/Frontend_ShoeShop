@@ -38,7 +38,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
           limit: limit + (excludeProductId ? 1 : 0), // Get extra if excluding
         });
 
-        let history = data?.data?.viewHistory || [];
+        let history = data?.data?.history || [];
 
         // Filter out current product
         if (excludeProductId) {
@@ -115,4 +115,3 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({
 };
 
 export default RecentlyViewed;
-

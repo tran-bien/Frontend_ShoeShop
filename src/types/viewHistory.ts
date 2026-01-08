@@ -19,7 +19,7 @@ export interface ViewHistoryQueryParams {
 export interface ViewHistoryResponse {
   success: boolean;
   data: {
-    viewHistory: ViewHistory[];
+    history: ViewHistory[]; // BE trả về 'history' thay vì 'viewHistory'
     pagination: {
       page: number;
       limit: number;

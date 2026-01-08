@@ -135,7 +135,6 @@ const LandingPage: React.FC = () => {
         setLoadingRecommendations(true);
         const res =
           await userRecommendationService.getPersonalizedRecommendations({
-            algorithm: "HYBRID",
             limit: 8,
           });
 

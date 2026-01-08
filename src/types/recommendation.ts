@@ -48,11 +48,7 @@ export interface UserBehavior {
 // RECOMMENDATION TYPES
 // =======================
 
-export type RecommendationType =
-  | "personalized"
-  | "trending"
-  | "similar"
-  | "collaborative";
+export type RecommendationType = "personalized";
 
 export interface Recommendation {
   product: Product;
@@ -72,10 +68,6 @@ export interface ViewHistoryQueryParams {
 
 export interface RecommendationQueryParams {
   limit?: number;
-  type?: RecommendationType;
-  categoryId?: string;
-  excludeProductIds?: string[];
-  algorithm?: "HYBRID" | "COLLABORATIVE" | "CONTENT_BASED" | "TRENDING";
 }
 
 // =======================

@@ -35,8 +35,10 @@ const UserViewHistoryContent: React.FC = () => {
         limit: 12,
       });
       if (response.data.success) {
-        setHistory(response.data.data.viewHistory as PopulatedViewHistory[]);
-        setTotalPages(response.data.data.pagination.totalPages);
+        setHistory(
+          (response.data.data.history || []) as PopulatedViewHistory[]
+        );
+        setTotalPages(response.data.data.pagination?.totalPages || 1);
       }
     } catch (error) {
       console.error("Error fetching view history:", error);
@@ -202,7 +204,7 @@ const UserViewHistoryContent: React.FC = () => {
               </div>
             </div>
             <p className="text-gray-700 mb-6">
-              Bạn có chắc chắn muốn xóa toàn bộ lịch sử xem của mình? 
+              Bạn có chắc chắn muốn xóa toàn bộ lịch sử xem của mình?
             </p>
             <div className="flex gap-3 justify-end">
               <button
