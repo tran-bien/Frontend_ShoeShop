@@ -72,7 +72,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [wishlistItemId, setWishlistItemId] = useState<string | null>(null);
   const [loadingAdd, setLoadingAdd] = useState(false);
-  const [loadingBuyNow, setLoadingBuyNow] = useState(false);
   const [displayedImages, setDisplayedImages] = useState<ProductImage[]>([]);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<ProductType[]>([]);
@@ -387,60 +386,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
       }
     } finally {
       setLoadingAdd(false);
-    }
-  };
-
-  // Xử lý mua ngay
-  const handleBuyNow = async () => {
-    if (!isAuthenticated) {
-      toast.error("Vui lòng đăng nhập để mua hàng");
-      navigate(
-        `/login?returnUrl=${encodeURIComponent(window.location.pathname)}`
-      );
-      return;
-    }
-
-    if (!selectedGender || !selectedColorId || !selectedSizeId) {
-      toast.error("Vui lòng chọn đầy đủ thông tin sản phẩm");
-      return;
-    }
-
-    if (availableStock < selectedQuantity) {
-      toast.error("Số lượng vượt quá tồn kho");
-      return;
-    }
-
-    setLoadingBuyNow(true);
-    try {
-      const variantId = getVariantId();
-      if (!variantId) {
-        toast.error("Không tìm thấy thông tin sản phẩm");
-        return;
-      }
-
-      const response = await cartService.addToCart({
-        variantId,
-        sizeId: selectedSizeId,
-        quantity: selectedQuantity,
-      });
-
-      if (response.data.success) {
-        navigate("/cart?checkout=true");
-        toast.success("Đã thêm sản phẩm vào giỏ hàng, chuyển đến thanh toán");
-      }
-    } catch (error: unknown) {
-      console.error("Buy now error:", error);
-      const apiError = error as ApiError;
-
-      if (apiError.response?.status === 401) {
-        toast.error("Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại");
-      } else {
-        const errorMessage =
-          apiError?.response?.data?.message || "Có lỗi xảy ra khi mua ngay";
-        toast.error(errorMessage);
-      }
-    } finally {
-      setLoadingBuyNow(false);
     }
   };
 
@@ -945,31 +890,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({
                 <>
                   <FiShoppingCart size={20} />
                   <span>Thêm vào giỏ hàng</span>
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={handleBuyNow}
-              disabled={
-                loadingBuyNow ||
-                !selectedSizeId ||
-                availableStock < selectedQuantity
-              }
-              className={`flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium ${
-                loadingBuyNow ||
-                !selectedSizeId ||
-                availableStock < selectedQuantity
-                  ? "bg-mono-300 text-mono-500 cursor-not-allowed"
-                  : "bg-mono-900 text-white hover:bg-mono-800 transform hover:scale-105 transition-all duration-200"
-              }`}
-            >
-              {loadingBuyNow ? (
-                <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
-              ) : (
-                <>
-                  <FiShoppingBag size={20} />
-                  <span>Mua ngay</span>
                 </>
               )}
             </button>

@@ -414,13 +414,7 @@ const OrderSummary: React.FC = () => {
                       </option>
                     ))}
                   </select>
-                  <Link
-                    to="/user-information"
-                    className="inline-flex items-center text-mono-black hover:text-mono-800 text-sm"
-                  >
-                    <FaPlus className="mr-1" />
-                    Thêm địa chỉ mới
-                  </Link>
+                  
                 </div>
               )}
             </div>
