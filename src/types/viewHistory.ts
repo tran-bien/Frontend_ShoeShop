@@ -8,6 +8,7 @@ export interface ViewHistory {
   sessionId?: string;
   createdAt: string;
   updatedAt: string;
+  lastViewedAt: string; // Thời gian xem gần nhất
 }
 
 export interface ViewHistoryQueryParams {

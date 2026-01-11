@@ -151,7 +151,7 @@ const UserViewHistoryContent: React.FC = () => {
                     {/* Time badge overlay */}
                     <div className="absolute top-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 z-10 pointer-events-none">
                       <FiClock className="w-3 h-3" />
-                      <span>{formatDate(item.createdAt)}</span>
+                      <span>{formatDate(item.lastViewedAt || item.createdAt)}</span>
                     </div>
                   </div>
                 );
